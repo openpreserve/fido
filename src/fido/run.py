@@ -8,8 +8,8 @@ import formats
 
 version = 'fido/0.2.2'
 defaults = {'bufsize': 16 * io.DEFAULT_BUFFER_SIZE,
-            'printmatch': "OK,{4:%H:%M:%S},{1.Identifier},{1.FormatName},{0}\n",
-            'printnomatch' : "KO,{1:%H:%M:%S},,,{0}\n",
+            'printmatch': "OK,{5},{1.Identifier},{1.FormatName},{0}\n",
+            'printnomatch' : "KO,{2},,,{0}\n",
             'description' : """
     Format Identification for Digital Objects (fido).
     FIDO is a command-line tool to identify the file formats of digital objects.
@@ -52,13 +52,13 @@ class Fido:
                 for b in s.bytesequences:
                     b.regex = re.compile(b.regexstring, re.DOTALL | re.MULTILINE)
     
-    def print_matches(self, fullname, matches):
+    def print_matches(self, fullname, matches, start, end):
         count = len(matches)
         if count == 0:
-            sys.stdout.write(self.printnomatch.format(fullname, datetime.datetime.now()))
+            sys.stdout.write(self.printnomatch.format(fullname, datetime.datetime.now(), int(1000 * (end - start))))
         else:
             for (f, s) in matches:
-                sys.stdout.write(self.printmatch.format(fullname, f, s, count, datetime.datetime.now()))
+                sys.stdout.write(self.printmatch.format(fullname, f, s, count, datetime.datetime.now(), int(1000 * (end - start))))
         
     def print_times(self, attr, dict):
         for (k, v) in sorted(dict.items(), key=lambda x: x[1])[0:10]:
@@ -94,9 +94,11 @@ class Fido:
     
     def check_file_or_zip(self, filename, zip=False):
         count = 1
+        t0 = time.clock()
+        self.time_check_file = time.clock()
         try:
             matches = self.check_file(filename)
-            self.print_matches(filename, matches)
+            self.print_matches(filename, matches, start=t0, end=time.clock())
             if zip and self.is_zip(matches):
                 count += self.check_zipfile(os.path.dirname(filename), os.path.basename(filename), matches)
         except IOError as (errno, strerror):
@@ -105,10 +107,11 @@ class Fido:
     
     def check_zipfile(self, path, file, matches):
         try:
+            count = 0
+            t0 = time.clock()
             zipfullname = os.path.join(path, file)
             if zipfile.is_zipfile(zipfullname):
                 dir = tempfile.mkdtemp()
-                count = 0
                 with zipfile.ZipFile(zipfullname, 'r') as zip:
                     for name in zip.namelist():
                         if name.startswith('..') or name.startswith('/'):
@@ -117,7 +120,7 @@ class Fido:
                         tempitempath = os.path.join(dir, name)
                         count += 1
                         matches = self.check_file(tempitempath)
-                        self.print_matches(zipfullname + '!' + name, matches)
+                        self.print_matches(zipfullname + '!' + name, matches, start=t0, end=time.clock())
                         if self.is_zip(matches):
                             count += self.check_zipfile(path, name, matches)
                         os.remove(tempitempath)
@@ -240,10 +243,10 @@ def main(arglist=None):
 if __name__ == '__main__':
     #main(['-r', r'e:\Code\fidotests\corpus\Buckland -- Concepts of Library Goodness.htm' ])
     #check(r'e:\Code\fidotests',True,True)
-    main(['-r', '-d', r'e:/Code/fidotests/corpus'])
+    #main(['-r', '-d', r'e:/Code/fidotests/corpus'])
     #main(['-r',r'c:/Documents and Settings/afarquha/My Documents'])
     #main(['-r', r'c:\Documents and Settings\afarquha\My Documents\Proposals'])
     #main(['-h'])
-    #main()
+    main()
     
 
