@@ -4,7 +4,7 @@
 #
 
 import argparse, sys, re, os, io, time, zipfile, tempfile, datetime
-import formats
+import formats, signature
 
 version = 'fido/0.2.2'
 defaults = {'bufsize': 16 * io.DEFAULT_BUFFER_SIZE,
@@ -45,6 +45,11 @@ class Fido:
         self.formats = formats.all_formats[:]
         self.compile_signatures()
         self.t_compile = time.clock() - t
+        # current_* for helpful messages on interrupt, etc
+        self.current_file = ''
+        self.current_format = None
+        self.current_sig = None
+        self.current_pat = None
         
     def compile_signatures(self):
         for f in self.formats:
@@ -96,6 +101,7 @@ class Fido:
         count = 1
         t0 = time.clock()
         self.time_check_file = time.clock()
+        self.current_file = filename
         try:
             matches = self.check_file(filename)
             self.print_matches(filename, matches, start=t0, end=time.clock())
@@ -136,6 +142,7 @@ class Fido:
         return count
     
     def check_file(self, file):
+        self.current_file = file
         with open(file, 'rb') as f:
             size = os.stat(file)[6]
             bofbuffer = f.read(self.bufsize)
@@ -162,8 +169,9 @@ class Fido:
         # Collect matches for each format
         result = []
         for format in self.formats:
+            self.current_format = format
             # we can prune out formats that are worse than the current match, but for every 3, well test 300, so it has to be efficient. 
-            #if as_good_as_any(format, result):
+            if self.as_good_as_any(format, result):
                 match = self.check_format(format, bofbuffer, eofbuffer)
                 if match != None:
                     result.append(match)
@@ -180,6 +188,7 @@ class Fido:
         t = time.clock()
         result = None  
         for s in format.signatures:
+            self.current_sig = s
             if self.check_sig(s, bofbuffer, eofbuffer):
                 # only need one match for each format
                 result = (format, s)
@@ -192,6 +201,8 @@ class Fido:
         t = time.clock()
         for b in sig.bytesequences:
             #print "try", sig.SignatureName, b.PositionType, b.regexstring
+            self.current_pat = b
+            t_beg = time.clock()
             if 'BOF' in b.PositionType:
                 if not re.match(b.regex, bofbuffer):
                     return False
@@ -203,6 +214,9 @@ class Fido:
                     match = False
             else:
                 raise Exception("bad positionType")
+            t_end = time.clock()
+            if t_end - t_beg > 0.05:
+                print "FIDO: Slow sig {}s {1.SignatureName} {2.regexstring}".format(t_end - t_beg, sig, b)
         # Should fall through to here if everything matched
         self.time_sigs[sig] = time.clock() - t + self.time_sigs.get(sig, 0.0)
         return match
@@ -235,18 +249,28 @@ def main(arglist=None):
     else:
         args.files = [os.path.normpath(line) for line in args.files]
     t0 = time.clock()
-    count = fido.check(args.files, recurse=args.recurse, zip=args.zip)
+    try:
+        count = fido.check(args.files, recurse=args.recurse, zip=args.zip)
+    except KeyboardInterrupt:
+        try:
+            print "FIDO: Aborted during: File: {}, Format: {1.FormatName} Sig: {2.SignatureName}, Pat={3.regexstring}".format(fido.current_file, fido.current_format,
+                                                       fido.current_sig, fido.current_pat)
+        except AttributeError:
+            # the things may not be set yet.
+            print "FIDO: Aborted during: File: {}".format(fido.current_file)
+        raise
     t1 = time.clock()
     if not args.q:
         fido.print_summary(count, t1 - t0, args.diagnose)
-                    
+       
 if __name__ == '__main__':
     #main(['-r', r'e:\Code\fidotests\corpus\Buckland -- Concepts of Library Goodness.htm' ])
     #check(r'e:\Code\fidotests',True,True)
-    #main(['-r', '-d', r'e:/Code/fidotests/corpus'])
+    #main(['-r', '-b 3000', r'e:/Code/fidotests/corpus/b.ppt'])
+    main(['-r', r'e:/Code/fidotests/corpus/'])
     #main(['-r',r'c:/Documents and Settings/afarquha/My Documents'])
     #main(['-r', r'c:\Documents and Settings\afarquha\My Documents\Proposals'])
     #main(['-h'])
-    main()
+    #main()
     
 

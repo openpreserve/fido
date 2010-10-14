@@ -1,0 +1,11 @@
+*.pyc
+*.pyo
+/src/fido/analysis.py
+/src/build
+/src/dist
+/src/MANIFEST
+/src/fmtinfo.csv
+/fmtinfo.csv
+*.py~
+/build
+/dist

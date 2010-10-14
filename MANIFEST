@@ -1,0 +1,9 @@
+setup.py
+src\fido\__init__.py
+src\fido\analysis.py
+src\fido\fetch.py
+src\fido\formats.py
+src\fido\prepare.py
+src\fido\run.py
+src\fido\signature.py
+src\fido\conf\pronom-xml.zip

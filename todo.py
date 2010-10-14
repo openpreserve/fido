@@ -33,12 +33,22 @@
 # done. ppt - fido  sees ole2, droid sees ppt.  The sig looks for a pattern that shows up at about 500kb, outside the default buffer.  Better to improve the signature.
 # done. Test fidotests/corpus against droid results until they are the same.  They are correct, but not identical.
 # done: Add more flexible output syntax (match droid?)
+# done: Add timing to output at file, format, sig level.
 
+# BUG: why are some files (always ppt?) so slow?  E.g. *v6B JM.ppt (might just be a bad signature)
+#      When the bufsize goes from 7500 -> 7800, runtime goes from 100ms -> 20315ms!
+#      Some bad non-linearity in the regex package
+#      The offender appears to be FormatID=u'687',FormatName=u'MPEG 1/2 Audio Layer 3'
+#      And other mpeg signatures.  They have multiple {36-1426} or so
+# BUG: Need to be careful about SignatureName in print_times
+
+
+# TODO: Add 
 # TODO: Let prepare take xml from the zip.  This is to simplify distribution.
 # TODO: Remove analysis from the distribution; create README.txt; add how-to
 # TODO: Cleanup after zip properly.  We currently leave empty directories in the tempdir
 # TODO: Rejig the file processing to us an iterator that could then read from a queue, stream, etc.
-# TODO: Rejig the formats.py to implement a single function check_formats that is free to be optimised.
+# TODO: Rejig the formats.py to implement a single function check_formats that is free to be optimsied.
 # TODO: Add in some unittests
 # TODO: Handle tar, jar, gzip container formats / transforms as in METS
 # TODO: Introduce a lite syntax for signatures using just the needed information
