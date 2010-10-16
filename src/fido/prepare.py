@@ -2,54 +2,84 @@
 #
 # Format Identification for Digital Objects
 
-import xml.parsers.expat
-import glob, time, re
-import cStringIO
-from signature import FileFormat, InternalSignature, ByteSequence, time_msg
+import xml.parsers.expat, re, cStringIO, zipfile
+import format_fixup
+from signature import FileFormat, InternalSignature, ByteSequence
 
-def convert(srcdir='.\\conf\\xml\\puid.*.xml', dst="formats.py"):
-    """
-    Convert the pronom xml in srcdir and write result into dst in the fido source directory.
-    """
-    t = [time.clock()]
-    specs = []
-    for srcfile in glob.glob(srcdir):
-        #print srcfile
-        for spec in parsePronomReport(srcfile):
-            if spec.signatures != []:
-                specs.append(spec)
-    t.append(time.clock())
-    with open(dst, 'wb') as out:
-        out.write('from signature import FileFormat, InternalSignature, ByteSequence\n')
-        out.write('all_formats = [\n    ')
-        for s in sort_formats(specs):
-            out.write(repr(s))
-            out.write(',\n    ')
-        out.write(']\n')
-    t.append(time.clock())
-    time_msg("Load and parse signature xml,Write fido format file", t)
+class FormatInfo:
+    def __init__(self, format_list=[]):
+        self.info = {}
+        self.formats = []
 
-def sort_formats(formatlist):
-    def compare_formats(f1, f2):
-        f1ID = f1.FormatID
-        f2ID = f2.FormatID
-        for (rel, val) in getattr(f1, 'relatedformat', []):
-            if rel == 'Has priority over' and val == f2ID:
-                return - 1
-            elif rel == 'Has lower priority than' and val == f2ID:
-                return 1
-            elif rel == 'Is supertype of':
-                return 1
-        return int(f1ID) - int(f2ID)
-    return sorted(formatlist, cmp=compare_formats)
+        for f in format_list:
+            self.add_format(f)
+                           
 
-def print_graph(formatlist):
-    for format in formatlist:
-        print format.FormatID, format.FormatName
-        for (rel, val) in getattr(format, 'relatedformat', []):
-            print '  ', rel, val
+    def add_format(self, f):
+        self.formats.append(f)
+        self.info[('Format', f.FormatID)] = (f, None)
+        for s in f.signatures:
+            self.info[('Signature', s.SignatureID)] = (s, f)
+            for b in s.bytesequences:
+                self.info[('ByteSequence', b.ByteSequenceID)] = (b, s)
+        
+    def remove(self, type, id):
+        key = (type, id)
+        (child, parent) = self.info[key]
+        if type == 'Format':
+            list = self.format_list
+        elif type == 'Signature':
+            list = parent.signatures
+        elif type == 'ByteSequence':
+            list = parent.bytesequnces
+        else:
+            raise Exception("Unknown type: " + str(type))
+        list.remove(child)
+        del self.info[key]
+                
+    def modify(self, type, id, **kwargs):
+        (o, unused_parent) = self.info[(type, id)]
+        for (k) in kwargs.keys():
+            if getattr(o, k, None) != None:
+                print "FIDO: Modifying {} {}\n  Old={}\n  New={}".format(type, id,
+                                                                          repr(getattr(o, k)),
+                                                                          repr(kwargs[k]))
+            setattr(o, k, kwargs[k])   
+    
+    def load(self, zipfullname='.\\conf\\pronom-xml.zip'):
+        with zipfile.ZipFile(zipfullname, 'r') as zip:
+            for item in zip.infolist():
+                # FIXME: need to scan to the end, as there is no seek.
+                with zip.open(item) as stream:
+                    for format in parsePronomReport(stream):
+                        self.add_format(format)
+        self._sort_formats(self.formats)
+      
+    def save(self, dst="formats.py"):
+        with open(dst, 'wb') as out:
+            out.write('from signature import FileFormat, InternalSignature, ByteSequence\n')
+            out.write('all_formats = [\n    ')
+            for format in self.formats:
+                if format.signatures != []:
+                    out.write(repr(format))
+                    out.write(',\n    ')
+            out.write(']\n')
+    
+    def _sort_formats(self, formatlist):
+        def compare_formats(f1, f2):
+            f1ID = f1.FormatID
+            f2ID = f2.FormatID
+            for (rel, val) in getattr(f1, 'relatedformat', []):
+                if rel == 'Has priority over' and val == f2ID:
+                    return - 1
+                elif rel == 'Has lower priority than' and val == f2ID:
+                    return 1
+                elif rel == 'Is supertype of':
+                    return 1
+            return int(f1ID) - int(f2ID)
+        return sorted(formatlist, cmp=compare_formats)
 
-def parsePronomReport(file):
+def parsePronomReport(stream):
     """
     Parse the pronom XML file for a file format.
     Return a list of Signature instances, one for each InternalSignature in the file.
@@ -133,9 +163,8 @@ def parsePronomReport(file):
     p.StartElementHandler = start
     p.EndElementHandler = end
     p.CharacterDataHandler = data
-    
-    with open(file, 'rb') as f:
-        p.ParseFile(f)
+        
+    p.ParseFile(stream)
     return results
 
 def err(msg, c, i, chars):
@@ -297,6 +326,14 @@ def convertToRegex(chars, endianness='', pos='BOF', offset='0', maxoffset=None):
     buf.close()
     return val
 
+def list_find(item, list, key=lambda x: x):
+    i = 0
+    for e in list:
+        if key(e) == item:
+            return (e, i)
+        i += 1
+    return None
+
 def test1():
     return parsePronomReport("e:/Code/droid/fetch/xml/puid.fmt.1.xml")
 
@@ -311,4 +348,9 @@ def test2():
 # convert('.\\conf\\xml\\puid.fmt.276.xml')
 
 if __name__ == '__main__':
-    convert()
+    info = FormatInfo()
+    info.load()
+    format_fixup.fixup(info)
+    info.save()
+    print 'FIDO: {} formats'.format(len(info.formats))
+    

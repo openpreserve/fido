@@ -3,10 +3,10 @@
 # FIDO: Format Identifier for Digital Objects
 #
 
-import argparse, sys, re, os, io, time, zipfile, tempfile, datetime
-import formats, signature
+import argparse, sys, re, os, io, time, zipfile, datetime
+import formats
 
-version = 'fido/0.2.2'
+version = 'fido/0.3.1'
 defaults = {'bufsize': 16 * io.DEFAULT_BUFFER_SIZE,
             'printmatch': "OK,{5},{1.Identifier},{1.FormatName},{0}\n",
             'printnomatch' : "KO,{2},,,{0}\n",
@@ -27,18 +27,9 @@ class Fido:
     def __init__(self, quiet=False, bufsize=None, printnomatch=None, printmatch=None):
         global defaults
         self.quiet = quiet
-        if bufsize == None:
-            self.bufsize = defaults['bufsize']
-        else:
-            self.bufsize = bufsize
-        if printmatch == None:
-            self.printmatch = defaults['printmatch']
-        else:
-            self.printmatch = printmatch
-        if printnomatch == None:
-            self.printnomatch = defaults['printnomatch']
-        else:
-            self.printnomatch = printnomatch
+        self.bufsize = (defaults['bufsize'] if bufsize == None else bufsize)
+        self.printmatch = (defaults['printmatch'] if printmatch == None else printmatch)
+        self.printnomatch = (defaults['printnomatch'] if printnomatch == None else printnomatch)
         self.time_sigs = {'name':'Sig'}
         self.time_formats = {'name':'Format'}
         t = time.clock()
@@ -50,6 +41,7 @@ class Fido:
         self.current_format = None
         self.current_sig = None
         self.current_pat = None
+        self.current_count = 0  # Count of files with attempted identifies
         
     def compile_signatures(self):
         for f in self.formats:
@@ -68,9 +60,9 @@ class Fido:
     def print_times(self, attr, dict):
         for (k, v) in sorted(dict.items(), key=lambda x: x[1])[0:10]:
             print "{:>6} {:>15} {:>6d}msec".format(dict['name'], getattr(k, attr)[0:15], int(v * 1000))
-
         
-    def print_summary(self, count, secs, diagnose=False):
+    def print_summary(self, secs, diagnose=False):
+        count = self.current_count
         if not self.quiet:
             print "FIDO: Loaded    {:>6d} formats in {:>2.4f} sec".format(len(self.formats), self.t_compile)
             print "FIDO: Processed {:>6d} files in {:>6.2f} msec, {:d} files/sec".format(count, secs * 1000, int(count / secs))
@@ -79,18 +71,16 @@ class Fido:
                 self.print_times('SignatureName', self.time_sigs)
                 
     def check(self, roots, recurse=False, zip=False):
-        count = 0
         for root in roots:
             if os.path.isfile(root):
-                count += self.check_file_or_zip(root, zip)
+                self.check_file_or_zip(root, zip)
             else:
                 for path, unused, files in os.walk(root):
                     for f in files:
-                        count += self.check_file_or_zip(os.path.join(path, f), zip)
+                        self.check_file_or_zip(os.path.join(path, f), zip)
                     if recurse == False:
                         break
-        return count
-    
+        
     def is_zip(self, matches):
         if len(matches) == 1 and matches[0][0].Identifier == 'x-fmt/263':
             return True
@@ -98,48 +88,39 @@ class Fido:
             return False
     
     def check_file_or_zip(self, filename, zip=False):
-        count = 1
-        t0 = time.clock()
-        self.time_check_file = time.clock()
         self.current_file = filename
+        t0 = self.time_check_file = time.clock()
         try:
             matches = self.check_file(filename)
             self.print_matches(filename, matches, start=t0, end=time.clock())
             if zip and self.is_zip(matches):
-                count += self.check_zipfile(os.path.dirname(filename), os.path.basename(filename), matches)
+                self.check_zipfile(os.path.dirname(filename), os.path.basename(filename), matches)
         except IOError as (errno, strerror):
             print "FIDO: Error: I/O error ({0}): {1} Path is {2}".format(errno, strerror, filename)
-        return count
-    
+        
     def check_zipfile(self, path, file, matches):
-        try:
-            count = 0
-            t0 = time.clock()
-            zipfullname = os.path.join(path, file)
-            if zipfile.is_zipfile(zipfullname):
-                dir = tempfile.mkdtemp()
-                with zipfile.ZipFile(zipfullname, 'r') as zip:
-                    for name in zip.namelist():
-                        if name.startswith('..') or name.startswith('/'):
-                            raise Exception('zip file has unsafe names')
-                        zip.extract(name, dir)
-                        tempitempath = os.path.join(dir, name)
-                        count += 1
-                        matches = self.check_file(tempitempath)
-                        self.print_matches(zipfullname + '!' + name, matches, start=t0, end=time.clock())
-                        if self.is_zip(matches):
-                            count += self.check_zipfile(path, name, matches)
-                        os.remove(tempitempath)
-            else:
-                raise Exception('Not a valid zipfile: {}'.format(zipfullname))
-        except IOError:
-            print 'Error in check_zipfile'
-            raise
-        finally:
-            pass
-            # not quite right - it won't be empty of subdirs.
-            # os.rmdir(dir)
-        return count
+        t0 = time.clock()
+        zipfullname = os.path.join(path, file)
+        if zipfile.is_zipfile(zipfullname):
+            with zipfile.ZipFile(zipfullname, 'r') as zip:
+                for item in zip.infolist():
+                    # FIXME: need to scan to the end, as there is no seek.
+                    with zip.open(item) as f:
+                        bofbuffer = f.read()
+                        if item.file_size > self.bufsize:
+                            eofbuffer = bofbuffer[-self.bufsize:]
+                            bofbuffer = bofbuffer[0:self.bufsize]
+                        else:
+                            eofbuffer = bofbuffer
+                    matches = self.check_formats(bofbuffer, eofbuffer)
+                    self.print_matches(zipfullname + '!' + item.filename, matches, start=t0, end=time.clock())
+                    if self.is_zip(matches):
+                        #FIXME: Need to recurse into the zips
+                        #self.check_zipfile(path, name, matches)
+                        if not self.quiet:
+                            print 'FIDO: Skipping recursive zip processing: ' + zipfullname + '!' + item.filename 
+        else:
+            raise Exception('Not a valid zipfile: {}'.format(zipfullname))
     
     def check_file(self, file):
         self.current_file = file
@@ -167,6 +148,7 @@ class Fido:
         
     def check_formats(self, bofbuffer, eofbuffer):
         # Collect matches for each format
+        self.current_count += 1
         result = []
         for format in self.formats:
             self.current_format = format
@@ -248,12 +230,13 @@ def main(arglist=None):
         args.files = [os.path.normpath(line[:-1]) for line in open(args.input, 'r').readlines()]
     else:
         args.files = [os.path.normpath(line) for line in args.files]
+    #print args.files
     t0 = time.clock()
     try:
-        count = fido.check(args.files, recurse=args.recurse, zip=args.zip)
+        fido.check(args.files, recurse=args.recurse, zip=args.zip)
     except KeyboardInterrupt:
         try:
-            print "FIDO: Aborted during: File: {}, Format: {1.FormatName} Sig: {2.SignatureName}, Pat={3.regexstring}".format(fido.current_file, fido.current_format,
+            print "FIDO: Interrupt during:\n  File: {0}\n  Format: Puid={1.Identifier} [{1.FormatName}]\n  Sig: ID={2.SignatureID} [{2.SignatureName}]\n  Pat={3.ByteSequenceID} {3.regexstring!r}".format(fido.current_file, fido.current_format,
                                                        fido.current_sig, fido.current_pat)
         except AttributeError:
             # the things may not be set yet.
@@ -261,16 +244,15 @@ def main(arglist=None):
         raise
     t1 = time.clock()
     if not args.q:
-        fido.print_summary(count, t1 - t0, args.diagnose)
+        fido.print_summary(t1 - t0, args.diagnose)
        
 if __name__ == '__main__':
     #main(['-r', r'e:\Code\fidotests\corpus\Buckland -- Concepts of Library Goodness.htm' ])
     #check(r'e:\Code\fidotests',True,True)
     #main(['-r', '-b 3000', r'e:/Code/fidotests/corpus/b.ppt'])
-    main(['-r', r'e:/Code/fidotests/corpus/'])
+    #main(['-r', '-z', r'e:/Code/fidotests/corpus/'])
     #main(['-r',r'c:/Documents and Settings/afarquha/My Documents'])
     #main(['-r', r'c:\Documents and Settings\afarquha\My Documents\Proposals'])
     #main(['-h'])
-    #main()
+    main()
     
-

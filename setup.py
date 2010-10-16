@@ -1,7 +1,10 @@
 #!python
 from distutils.core import setup
+import py2exe
+
 setup(name='fido',
       version='0.3.2',
+      options={"py2exe": { }},
       package_dir={'': 'src'},
       packages=['fido'],
       package_data={'fido':['conf/*.*']},

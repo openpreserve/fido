@@ -58,3 +58,11 @@ def time_msg(messages, times):
     for msg in messages.split(','):
         print "FIDO: {: >10.2f}ms {}".format((times[i+1]-times[i])*1000,msg)
         i+=1
+        
+def list_find(item, list, key=lambda x: x):
+    i = 0
+    for e in list:
+        if key(e) == item:
+            return (e, i)
+        i += 1
+    return None        
