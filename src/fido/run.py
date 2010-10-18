@@ -6,10 +6,10 @@
 import argparse, sys, re, os, io, time, zipfile, datetime
 import formats
 
-version = 'fido/0.3.1'
+version = 'fido/0.4'
 defaults = {'bufsize': 16 * io.DEFAULT_BUFFER_SIZE,
-            'printmatch': "OK,{5},{1.Identifier},{1.FormatName},{0}\n",
-            'printnomatch' : "KO,{2},,,{0}\n",
+            'printmatch': "OK,{5},{1.Identifier},{1.FormatName},{6.current_filesize},{0}\n",
+            'printnomatch' : "KO,{2},,{3.current_filesize},{0}\n",
             'description' : """
     Format Identification for Digital Objects (fido).
     FIDO is a command-line tool to identify the file formats of digital objects.
@@ -38,6 +38,7 @@ class Fido:
         self.t_compile = time.clock() - t
         # current_* for helpful messages on interrupt, etc
         self.current_file = ''
+        self.current_filesize = 0
         self.current_format = None
         self.current_sig = None
         self.current_pat = None
@@ -52,10 +53,10 @@ class Fido:
     def print_matches(self, fullname, matches, start, end):
         count = len(matches)
         if count == 0:
-            sys.stdout.write(self.printnomatch.format(fullname, datetime.datetime.now(), int(1000 * (end - start))))
+            sys.stdout.write(self.printnomatch.format(fullname, datetime.datetime.now(), int(1000 * (end - start)), self))
         else:
             for (f, s) in matches:
-                sys.stdout.write(self.printmatch.format(fullname, f, s, count, datetime.datetime.now(), int(1000 * (end - start))))
+                sys.stdout.write(self.printmatch.format(fullname, f, s, count, datetime.datetime.now(), int(1000 * (end - start)), self))
         
     def print_times(self, attr, dict):
         for (k, v) in sorted(dict.items(), key=lambda x: x[1])[0:10]:
@@ -99,21 +100,31 @@ class Fido:
             print "FIDO: Error: I/O error ({0}): {1} Path is {2}".format(errno, strerror, filename)
         
     def check_zipfile(self, path, file, matches):
-        t0 = time.clock()
         zipfullname = os.path.join(path, file)
         if zipfile.is_zipfile(zipfullname):
             with zipfile.ZipFile(zipfullname, 'r') as zip:
                 for item in zip.infolist():
-                    # FIXME: need to scan to the end, as there is no seek.
+                    if item.file_size == 0:
+                        #TODO: Find a correct test for zip items that are just directories
+                        continue
+                    t0 = time.clock()
                     with zip.open(item) as f:
-                        bofbuffer = f.read()
+                        zip_item_name = zipfullname + '!' + item.filename
+                        self.current_file = zip_item_name
+                        self.current_filesize = item.file_size
+                        bofbuffer = f.read(self.bufsize)
                         if item.file_size > self.bufsize:
-                            eofbuffer = bofbuffer[-self.bufsize:]
-                            bofbuffer = bofbuffer[0:self.bufsize]
+                            # Need to read file_size%bufsize-1 buffers, 
+                            # then the remainder, then we have a full left.
+                            (n, r) = divmod(item.file_size, self.bufsize)
+                            for unused_i in range(1, n - 1):
+                                f.read(self.bufsize)
+                            f.read(r)
+                            eofbuffer = f.read(self.bufsize)
                         else:
                             eofbuffer = bofbuffer
                     matches = self.check_formats(bofbuffer, eofbuffer)
-                    self.print_matches(zipfullname + '!' + item.filename, matches, start=t0, end=time.clock())
+                    self.print_matches(zip_item_name, matches, start=t0, end=time.clock())
                     if self.is_zip(matches):
                         #FIXME: Need to recurse into the zips
                         #self.check_zipfile(path, name, matches)
@@ -126,6 +137,7 @@ class Fido:
         self.current_file = file
         with open(file, 'rb') as f:
             size = os.stat(file)[6]
+            self.current_filesize = size
             bofbuffer = f.read(self.bufsize)
             if size > self.bufsize:
                 f.seek(-self.bufsize, 2)
@@ -157,8 +169,6 @@ class Fido:
                 match = self.check_format(format, bofbuffer, eofbuffer)
                 if match != None:
                     result.append(match)
-        #        else:   
-        #            print '*** Pruned', format.FormatID, format.FormatName, format.Identifier
         # Remove any non-preferred formats
         # This is very inefficient, but doesn't happen often
         # So far, I've seen max 7, a couple of 4, 2, almost all 0 or 1 matches
@@ -218,7 +228,7 @@ def main(arglist=None):
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-input', default=False, help='file containing a list of files to check, one per line')
     group.add_argument('files', nargs='*', default=[], metavar='FILE', help='files to check')
-    
+        
     args = parser.parse_args(arglist)
         
     if args.v :
@@ -253,6 +263,6 @@ if __name__ == '__main__':
     #main(['-r', '-z', r'e:/Code/fidotests/corpus/'])
     #main(['-r',r'c:/Documents and Settings/afarquha/My Documents'])
     #main(['-r', r'c:\Documents and Settings\afarquha\My Documents\Proposals'])
-    #main(['-h'])
+    main(['-h'])
     main()
     

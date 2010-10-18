@@ -107,6 +107,7 @@ def dummy():
     # - The ppt signature has a variable P.o.w.e.r. .P.o.i.n.t pattern that shows up in file rather late, after the buffer ends. Fido is OK.  Better to improve the sig.
     # - The doc signature misses some of my documents, and treats them as ole2.  The doc signatures are not very good!
     # - The doc signatures could have a EOF 'Microsoft Office Word Document\x00.*\Z' or similar
+    # - Signatures needed for specific types of OOXML such as docx, pptx, xslx, dotx, and the macro versions thereof
     # 
     # PYTHON NOTES
     # - regex (?iLmsux) - (One or more letters from the set 'i', 'L', 'm', 's', 'u', 'x'.) 

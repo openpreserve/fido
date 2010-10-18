@@ -1,7 +1,9 @@
+README.txt
 setup.py
 src\fido\__init__.py
 src\fido\analysis.py
 src\fido\fetch.py
+src\fido\format_fixup.py
 src\fido\formats.py
 src\fido\prepare.py
 src\fido\run.py

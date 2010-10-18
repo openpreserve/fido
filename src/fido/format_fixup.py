@@ -15,5 +15,8 @@ def fixup(info):
     for id in [340, 341, 342, 343]:
         info.modify('ByteSequence', str(id),
                 regexstring='.*\\\xff[\\\xf2|\\\xf3|\\\xfa|\\\xfb][\\\x10-\\\xeb].{7,500}\\000\\000\\000.{36,1426}\\Z')
-    # Fix the  PPT that looks deep into the file looking for p o w e r p o i n t
-    
+    # TODO: Fix the  PPT that looks deep into the file looking for p o w e r p o i n t
+    # Change the recogniser for the ZIP component of OOXML formats to be more efficient. 
+    for id in [331]:
+        info.modify('ByteSequence', str(id),
+            regexstring='\\APK\\\x03\\\x04')

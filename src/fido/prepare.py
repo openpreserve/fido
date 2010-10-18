@@ -46,6 +46,7 @@ class FormatInfo:
                                                                           repr(kwargs[k]))
             setattr(o, k, kwargs[k])   
     
+    #TODO: read the pronom-xml from configured location.  This will break in real life.
     def load(self, zipfullname='.\\conf\\pronom-xml.zip'):
         with zipfile.ZipFile(zipfullname, 'r') as zip:
             for item in zip.infolist():
@@ -334,10 +335,7 @@ def list_find(item, list, key=lambda x: x):
         i += 1
     return None
 
-def test1():
-    return parsePronomReport("e:/Code/droid/fetch/xml/puid.fmt.1.xml")
-
-def test2():
+def test():
     tests = [('3132(3333|343434)35??36*{250-*}37{10-20}', '\\A12(?:33|444)5.?6.*.{250,}7.{10,20}'),
            ('31[3233:3435]36', 'x'),
            ('31[09:0B]36', '^1[\\\t-\\\x0b]6')
