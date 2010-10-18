@@ -263,6 +263,6 @@ if __name__ == '__main__':
     #main(['-r', '-z', r'e:/Code/fidotests/corpus/'])
     #main(['-r',r'c:/Documents and Settings/afarquha/My Documents'])
     #main(['-r', r'c:\Documents and Settings\afarquha\My Documents\Proposals'])
-    main(['-h'])
+    #main(['-h'])
     main()
     
