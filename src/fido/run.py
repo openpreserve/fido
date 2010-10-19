@@ -20,7 +20,7 @@ limitations under the License.
 import argparse, sys, re, os, io, time, zipfile, datetime
 import formats
 
-version = '0.5'
+version = '0.5.1'
 defaults = {'bufsize': 16 * io.DEFAULT_BUFFER_SIZE,
             #OK/KO,msec,puid,format name,file size,file name            
             'printmatch': "OK,{5},{1.Identifier},{1.FormatName},{6.current_filesize},\"{0}\"\n",
