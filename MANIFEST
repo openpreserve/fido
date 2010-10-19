@@ -1,11 +1,13 @@
 README.txt
-setup.py
 src\fido\__init__.py
 src\fido\analysis.py
 src\fido\fetch.py
 src\fido\format_fixup.py
 src\fido\formats.py
 src\fido\prepare.py
+src\fido\profile.py
 src\fido\run.py
+src\fido\setup.py
 src\fido\signature.py
+src\fido\tmp.py
 src\fido\conf\pronom-xml.zip

@@ -83,8 +83,7 @@ class FormatInfo:
 def parsePronomReport(stream):
     """
     Parse the pronom XML file for a file format.
-    Return a list of Signature instances, one for each InternalSignature in the file.
-    Signature [SignaturePattern ... ]
+    Return a list of Formats.
     """
     stack = []
     results = []
@@ -143,6 +142,15 @@ def parsePronomReport(stream):
         # ByteSequence properties
         elif tag in ["ByteSequenceID", "PositionType", "Offset",
                      "MaxOffset", "IndirectOffsetLocation", "Endianness", "ByteSequenceValue"]:
+            if tag == 'PositionType':
+                if 'BOF' in info['data']:
+                    set('FidoPosition', 'BOF')
+                elif 'EOF' in info['data']:
+                    set('FidoPosition', 'EOF')
+                elif 'Var' in info['data']:
+                    set('FidoPosition', 'VAR')
+                else:
+                    raise Exception('Bad Position Type')
             set(tag, info['data'])
 
         if tag == 'ByteSequenceValue':
@@ -195,8 +203,8 @@ def convertToRegex(chars, endianness='', pos='BOF', offset='0', maxoffset=None):
     buf = cStringIO.StringIO()
     i = 0
     state = 'start'
-    # HACK
-    if 'EOF' in pos:
+    # FIXME: trying without the .& in EOF; seems a slight improvement.
+    if False and 'EOF' in pos:
         buf.write('.*')
     if 'BOF' in pos:
         buf.write('\\A')

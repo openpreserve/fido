@@ -1,4 +1,5 @@
 def dummy():
+    pass
     #===============================================================================
     # A python version of the Droid algorithm using the Droid Signature File
     # 
