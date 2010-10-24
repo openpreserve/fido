@@ -64,7 +64,7 @@ class Fido:
             for s in f.signatures:
                 for b in s.bytesequences:
                     b.regex = re.compile(b.regexstring, re.DOTALL | re.MULTILINE)
-    
+
     def print_matches(self, fullname, matches, start, end):
         count = len(matches)
         if count == 0:
@@ -80,7 +80,7 @@ class Fido:
     def print_summary(self, secs, diagnose=False):
         count = self.current_count
         if not self.quiet:
-            print >> sys.stderr, "FIDO: Loaded    {:>6d} formats in {:>2.4f} sec".format(len(self.formats), self.t_compile)
+            print >> sys.stderr, "FIDO: Compiled    {:>6d} formats in {:>6.2f} msec".format(len(self.formats), 1000 * self.t_compile)
             print >> sys.stderr, "FIDO: Processed {:>6d} files in {:>6.2f} msec, {:d} files/sec".format(count, secs * 1000, int(count / secs))
             if diagnose:
                 self.print_times('FormatName', self.time_formats)
@@ -221,11 +221,17 @@ class Fido:
                 raise Exception("bad positionType")
             t_end = time.clock()
             if t_end - t_beg > 0.05:
-                print >> sys.stderr, "FIDO: Slow sig {0}s {1.SignatureName} {2.regexstring!r}".format(t_end - t_beg, sig, b)
+                print >> sys.stderr, "FIDO: {3.current_format.Identifier} {3.current_file}: Slow sig {0}s  - sig:{1.SignatureID} {1.SignatureName} pat:{2.ByteSequenceID} {2.regexstring!r}".format(t_end - t_beg, sig, b, self)
         # Should fall through to here if everything matched
         #self.time_sigs[sig] = time.clock() - t + self.time_sigs.get(sig, 0.0)
         return True
 
+def show_formats(format_list):
+    #print'#Identifier,FormatName,MimeType,MimeType'
+    for f in sorted(format_list, key=lambda x: x.Identifier):
+        mimetypes = ",".join(getattr(f, 'MimeType', ['None']))
+        print "{0},\"{1}\",{2!s}".format(f.Identifier, f.FormatName, mimetypes)
+            
 def main(arglist=None):
     if arglist == None:
         arglist = sys.argv[1:]
@@ -238,16 +244,30 @@ def main(arglist=None):
     parser.add_argument('-diagnose', default=False, action='store_true', help='show some diagnostic information')
     parser.add_argument('-matchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use on match. {0}=path, {1}=format object, {2}=signature, {3}=match count, {4}=now.')
     parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use if no match. {0}=path, {1}=now.')
+    parser.add_argument('-formats', metavar='PUIDS', default=None, help='comma separated string of formats to use in identification')
+    parser.add_argument('-excludeformats', metavar='PUIDS', default=None, help='comma separated string of formats not to use in identification')
+    parser.add_argument('-showformats', default=False, action='store_true', help='show current format set')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-input', default=False, help='file containing a list of files to check, one per line. - means stdin')
     group.add_argument('files', nargs='*', default=[], metavar='FILE', help='files to check')
         
     args = parser.parse_args(arglist)
-        
+   
     if args.v :
         print "fido/" + version
         exit(1)
+    if args.showformats:
+        show_formats(formats.all_formats)
+        exit(1)
    
+    if args.formats:
+        args.formats = args.formats.split(',')
+        formats.all_formats = [f for f in formats.all_formats if f.Identifier in args.formats]
+    elif args.excludeformats:
+        args.excludeformats = args.excludeformats.split(',')
+        print args.excludeformats
+        formats.all_formats = [f for f in formats.all_formats if f.Identifier not in args.excludeformats]
+    
     t0 = time.clock()     
     fido = Fido(quiet=args.q, bufsize=args.bufsize, printmatch=args.matchprintf, printnomatch=args.nomatchprintf)
     if args.input == '-':
@@ -282,5 +302,9 @@ if __name__ == '__main__':
     #main(['-r',r'c:/Documents and Settings/afarquha/My Documents'])
     #main(['-r', r'c:\Documents and Settings\afarquha\My Documents\Proposals'])
     #main(['-h'])
+    #main(['-s'])
+    #main(['-f', "fmt/50,fmt/99,fmt/100,fmt/101", r'e:/Code/fidotests/corpus/'])
+    #main(['-n', '', '-f', "fmt/50,fmt/99,fmt/100,fmt/101", r'e:/Code/fidotests/corpus/'])
+    #main(['-ex', "fmt/50,fmt/99,fmt/100,fmt/101,fmt/199", r'e:/Code/fidotests/corpus/'])
     main()
     
