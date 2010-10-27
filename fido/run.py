@@ -223,7 +223,7 @@ class Fido:
                 raise Exception("bad positionType")
             t_end = time.clock()
             if t_end - t_beg > 0.05:
-                print >> sys.stderr, "FIDO: {3.current_format.Identifier} {3.current_file}: Slow sig {0}s  - sig:{1.SignatureID} {1.SignatureName} pat:{2.ByteSequenceID} {2.regexstring!r}".format(t_end - t_beg, sig, b, self)
+                print >> sys.stderr, "FIDO: Slow Signature {0:>6.2f}s: {3.current_format.Identifier} SigID={1.SignatureID} PatID={2.ByteSequenceID} {1.SignatureName}\n  File:{3.current_file}\n  Regex:{2.regexstring!r}".format(t_end - t_beg, sig, b, self)
         # Should fall through to here if everything matched
         #self.time_sigs[sig] = time.clock() - t + self.time_sigs.get(sig, 0.0)
         return True
@@ -300,7 +300,7 @@ if __name__ == '__main__':
     #check(r'e:\Code\fidotests',True,True)
     #main(['-r', '-b 3000', r'e:/Code/fidotests/corpus/b.ppt'])
     #main(['-r', '-z', r'e:/Code/fidotests/corpus/'])
-    main(['-r',r'c:/Documents and Settings/afarquha/My Documents'])
+    #main(['-r',r'c:/Documents and Settings/afarquha/My Documents'])
     #main(['-r', r'c:\Documents and Settings\afarquha\My Documents\Proposals'])
     #main(['-h'])
     #main(['-s'])
