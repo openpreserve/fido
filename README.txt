@@ -1,11 +1,17 @@
+Version 0.5.2
 Format Identification for Digital Objects (fido). FIDO is a command-line tool
 to identify the file formats of digital objects. It is designed for simple
 integration into automated work-flows.
 
 usage: python -m fido.run [-h] [-v] [-q] [-bufsize BUFSIZE] [-recurse] [-zip] [-diagnose]
               [-matchprintf FORMATSTRING] [-nomatchprintf FORMATSTRING]
+              [-formats PUIDS] [-excludeformats PUIDS] [-showformats]
               [-input INPUT]
               [FILE [FILE ...]]
+
+Format Identification for Digital Objects (fido). FIDO is a command-line tool
+to identify the file formats of digital objects. It is designed for simple
+integration into automated work-flows.
 
 positional arguments:
   FILE                  files to check
@@ -25,9 +31,16 @@ optional arguments:
   -nomatchprintf FORMATSTRING
                         format string (Python style) to use if no match.
                         {0}=path, {1}=now.
-  -input INPUT          file containing a list of files to check, one per line
+  -formats PUIDS        comma separated string of formats to use in
+                        identification
+  -excludeformats PUIDS
+                        comma separated string of formats not to use in
+                        identification
+  -showformats          show current format set
+  -input INPUT          file containing a list of files to check, one per
+                        line. - means stdin
 
-Author: Adam Farquhar
+Open Planets Foundation (www.openplanetsfoundation.org) Author: Adam Farquhar,
 2010 FIDO uses the UK National Archives (TNA) PRONOM File Format descriptions.
 PRONOM is available from www.tna.gov.uk/pronom.
 

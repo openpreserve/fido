@@ -49,9 +49,18 @@ done: Handle large zip file items by buffered-read to end (if fs=75, bl=33, read
 done: Provide a files=- which reads the filenames from stdin
 done: Move the xml to a zip file.  Would be good, but there isn't a good way to get the items without creating the file.
 done: One of the PDFs ends with \n\r, instead of \r\n and the regex fails.  What is the right thing to do?  Change the regex to 'EOF..?. ?
+done: Add way to show formats, select formats, exclude formats.
+done: Remove analysis.py from the distribution; (done: create README.txt); add how-to
 
+
+
+BUG: Correct the setup.py and directory configuration so that Fido installs for linux
+TODO: Find out how to distribute the windows installer though github.
+TODO: Parse the Droid-v40 and check for any new / updated format definitions. 
+TODO: Tidy interface to the (no)print options.
+TODO: Recursive zip handling - extract internal zip to a tempfile and recurse; remove on exit.
+TODO: Try multiprocessing or threading to do IO and matching in parallel; the 0.5 setup doesn't seem to max out the CPU
 TODO: Use int ids, offsets, etc, not strings.
-TODO: Remove analysis from the distribution; (done: create README.txt); add how-to
 TODO: Rejig the file processing to us an iterator that could then read from a queue, stream, etc.
 TODO: Rejig the formats.py to implement a single function check_formats that is free to be optimised.
 TODO: Add in some unittests
@@ -68,7 +77,6 @@ TODO: Handle bigendian. x-fmt/392 JPEG2000 is the only one; consider reworking s
 TODO: Consider using mmap instead of reading the buffer
 TODO: Fix parseReport so that it doesn't create a new parser for each file.
 TODO: Skip zero-len files
-TODO: Thread/process so that recursive file find, file read, signature check can be done in parallel
 TODO: Try some alternate implementations of format checking.  E.g., no-compiled regex, try-me-else, first n-byte hash, reverse end
 TODO: Move the fetch code into python
 TODO: Produce a single file app / .exe
