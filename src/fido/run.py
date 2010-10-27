@@ -20,7 +20,7 @@ limitations under the License.
 import argparse, sys, re, os, io, time, zipfile, datetime
 import formats
 
-version = '0.5.2'
+version = '0.5.3'
 defaults = {'bufsize': 16 * io.DEFAULT_BUFFER_SIZE,
             #OK/KO,msec,puid,format name,file size,file name            
             'printmatch': "OK,{5},{1.Identifier},{1.FormatName},{6.current_filesize},\"{0}\"\n",
@@ -150,6 +150,8 @@ class Fido:
     def check_file(self, file):
         self.current_file = file
         with open(file, 'rb') as f:
+            if 'NUL' in file or 'zip' in file:
+                pass
             size = os.stat(file)[6]
             self.current_filesize = size
             bofbuffer = f.read(self.bufsize)
@@ -298,7 +300,7 @@ if __name__ == '__main__':
     #check(r'e:\Code\fidotests',True,True)
     #main(['-r', '-b 3000', r'e:/Code/fidotests/corpus/b.ppt'])
     #main(['-r', '-z', r'e:/Code/fidotests/corpus/'])
-    #main(['-r',r'c:/Documents and Settings/afarquha/My Documents'])
+    main(['-r',r'c:/Documents and Settings/afarquha/My Documents'])
     #main(['-r', r'c:\Documents and Settings\afarquha\My Documents\Proposals'])
     #main(['-h'])
     #main(['-s'])
