@@ -109,6 +109,8 @@ def parsePronomReport(stream):
             results.append(e)
         elif tag == "InternalSignature":
             e = InternalSignature(bytesequences=[])
+            if len(results)==0:
+                pass
             results[-1].signatures.append(e)
             results.append(e)
         elif tag == "ByteSequence":
