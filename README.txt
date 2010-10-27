@@ -58,8 +58,11 @@ The instructions in the download are surprisingly straightforward.
 
 Examples
 --------
+Identify all files in the current directory and below, sending output into file-info.csv
+	python -m fido.run -r . > file-info.csv
 
-python -m fido.run -r . > file-info.csv
+Only show files that could not be identified.
+	python -m fido.run -r -matchprintf "" .
 
 License information
 -------------------
