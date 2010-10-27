@@ -14,3 +14,6 @@
 /.settings/org.eclipse.ltk.core.refactoring.prefs
 /.externalToolBuilders/Pythont distutils bdist_msi.launch
 /MANIFEST
+/exp
+/.settings
+/.externalToolBuilders
