@@ -109,7 +109,7 @@ def parsePronomReport(stream):
             results.append(e)
         elif tag == "InternalSignature":
             e = InternalSignature(bytesequences=[])
-            if len(results)==0:
+            if len(results) == 0:
                 pass
             results[-1].signatures.append(e)
             results.append(e)
@@ -326,7 +326,7 @@ def convertToRegex(chars, endianness='', pos='BOF', offset='0', maxoffset=None):
             raise Exception('Illegal state {}'.format(state))
     if 'EOF' in pos:
         if offset != '0':
-            buf.write('.*{' + offset)
+            buf.write('.{' + offset)
             if maxoffset != None:
                 buf.write(',' + maxoffset)
             buf.write('}')
@@ -344,16 +344,6 @@ def list_find(item, list, key=lambda x: x):
             return (e, i)
         i += 1
     return None
-
-def test():
-    tests = [('3132(3333|343434)35??36*{250-*}37{10-20}', '\\A12(?:33|444)5.?6.*.{250,}7.{10,20}'),
-           ('31[3233:3435]36', 'x'),
-           ('31[09:0B]36', '^1[\\\t-\\\x0b]6')
-           ]
-    for (a, b) in tests:
-        assert(convertToRegex(a) == b)
-
-# convert('.\\conf\\xml\\puid.fmt.276.xml')
 
 if __name__ == '__main__':
     info = FormatInfo()
