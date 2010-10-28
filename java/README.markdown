@@ -8,7 +8,9 @@ java -jar java-fido-0.0.1-SNAPSHOT.jar
 
 Of course, if you are behind a proxy, you'll have to tell Java about it.
 
-
+java -Dhttp.proxyHost=bspcache.bl.uk -Dhttp.proxyPort=8080 \
+     -Dhttp.proxyUser=username -Dhttp.proxyPassword=password \
+     -jar java-fido-0.0.1-SNAPSHOT.jar
 
 Working with the PRONOM service
 -------------------------------
