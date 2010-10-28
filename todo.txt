@@ -1,4 +1,4 @@
-Release Notes: Fido Version 0.5.1 19-Oct-2010
+FIDO TODO LIST
 
 done. Evaluate current droid signatures to see which features are used
 done. Parse the sig file, building up an internal representation
@@ -51,12 +51,10 @@ done: Move the xml to a zip file.  Would be good, but there isn't a good way to 
 done: One of the PDFs ends with \n\r, instead of \r\n and the regex fails.  What is the right thing to do?  Change the regex to 'EOF..?. ?
 done: Add way to show formats, select formats, exclude formats.
 done: Remove analysis.py from the distribution; (done: create README.txt); add how-to
+done: Correct the setup.py and directory configuration so that Fido installs for linux
+done: Parse the Droid-v40 and check for any new / updated format definitions. 
 
-
-
-BUG: Correct the setup.py and directory configuration so that Fido installs for linux
 TODO: Find out how to distribute the windows installer though github.
-TODO: Parse the Droid-v40 and check for any new / updated format definitions. 
 TODO: Tidy interface to the (no)print options.
 TODO: Recursive zip handling - extract internal zip to a tempfile and recurse; remove on exit.
 TODO: Try multiprocessing or threading to do IO and matching in parallel; the 0.5 setup doesn't seem to max out the CPU
@@ -78,7 +76,7 @@ TODO: Consider using mmap instead of reading the buffer
 TODO: Fix parseReport so that it doesn't create a new parser for each file.
 TODO: Skip zero-len files
 TODO: Try some alternate implementations of format checking.  E.g., no-compiled regex, try-me-else, first n-byte hash, reverse end
-TODO: Move the fetch code into python
+TODO: Move the fetch code from shell/wget to python
 TODO: Produce a single file app / .exe
 
 QUESTIONS

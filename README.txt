@@ -1,9 +1,11 @@
-Version 0.5.2
 Format Identification for Digital Objects (fido). FIDO is a command-line tool
 to identify the file formats of digital objects. It is designed for simple
 integration into automated work-flows.
 
-usage: python -m fido.run [-h] [-v] [-q] [-bufsize BUFSIZE] [-recurse] [-zip] [-diagnose]
+Usage
+-----
+
+python -m fido.run [-h] [-v] [-q] [-bufsize BUFSIZE] [-recurse] [-zip] [-diagnose]
               [-matchprintf FORMATSTRING] [-nomatchprintf FORMATSTRING]
               [-formats PUIDS] [-excludeformats PUIDS] [-showformats]
               [-input INPUT]
@@ -44,18 +46,28 @@ Open Planets Foundation (www.openplanetsfoundation.org) Author: Adam Farquhar,
 2010 FIDO uses the UK National Archives (TNA) PRONOM File Format descriptions.
 PRONOM is available from www.tna.gov.uk/pronom.
 
-===Beg:License
-Copyright 2010 The British Library
+Dependencies
+------------
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+Fido 0.5.x requires Python 2.7.  It uses the argparse module, as well as the new format string syntax.
 
-  http://www.apache.org/licenses/LICENSE-2.0
+Download and install Python 2.7 from http://www.python.org/download/releases/2.7/ 
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-===End:License             
+This is very simple for Windows users.  For Linux users, it will require building Python as well.
+The instructions in the download are surprisingly straightforward.
+
+Examples
+--------
+Identify all files in the current directory and below, sending output into file-info.csv
+	python -m fido.run -r . > file-info.csv
+
+Only show files that could not be identified.
+	python -m fido.run -r -matchprintf "" .
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+

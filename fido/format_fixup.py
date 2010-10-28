@@ -8,9 +8,9 @@ def fixup(info):
     to correct things.
     """
     #info.add_format()
-    # Fix the PDF EOF matches that don't cover all the options: 
+    # Fix the PDF EOF matches that don't cover all the options. I have observed many PDFs with no bytes after EOF.
     for id in [59, 61, 114, 117, 120, 186, 249, 250, 251, 248]:
-        info.modify('ByteSequence', str(id), regexstring='\\%\\%EOF.{1,2}\\Z')
+        info.modify('ByteSequence', str(id), regexstring='\\%\\%EOF.{0,2}\\Z')
     # Fix the horrible fmt/134 EOF signatures that require massive backtracking
     for id in [340, 341, 342, 343]:
         info.modify('ByteSequence', str(id),

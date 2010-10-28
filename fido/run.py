@@ -20,7 +20,7 @@ limitations under the License.
 import argparse, sys, re, os, io, time, zipfile, datetime
 import formats
 
-version = '0.5.2'
+version = '0.5.4'
 defaults = {'bufsize': 16 * io.DEFAULT_BUFFER_SIZE,
             #OK/KO,msec,puid,format name,file size,file name            
             'printmatch': "OK,{5},{1.Identifier},{1.FormatName},{6.current_filesize},\"{0}\"\n",
@@ -150,6 +150,8 @@ class Fido:
     def check_file(self, file):
         self.current_file = file
         with open(file, 'rb') as f:
+            if 'NUL' in file or 'zip' in file:
+                pass
             size = os.stat(file)[6]
             self.current_filesize = size
             bofbuffer = f.read(self.bufsize)
@@ -221,7 +223,7 @@ class Fido:
                 raise Exception("bad positionType")
             t_end = time.clock()
             if t_end - t_beg > 0.05:
-                print >> sys.stderr, "FIDO: {3.current_format.Identifier} {3.current_file}: Slow sig {0}s  - sig:{1.SignatureID} {1.SignatureName} pat:{2.ByteSequenceID} {2.regexstring!r}".format(t_end - t_beg, sig, b, self)
+                print >> sys.stderr, "FIDO: Slow Signature {0:>6.2f}s: {3.current_format.Identifier} SigID={1.SignatureID} PatID={2.ByteSequenceID} {1.SignatureName}\n  File:{3.current_file}\n  Regex:{2.regexstring!r}".format(t_end - t_beg, sig, b, self)
         # Should fall through to here if everything matched
         #self.time_sigs[sig] = time.clock() - t + self.time_sigs.get(sig, 0.0)
         return True
