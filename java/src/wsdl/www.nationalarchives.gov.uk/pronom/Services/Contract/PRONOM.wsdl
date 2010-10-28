@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="PronomService" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://pronom.nationalarchives.gov.uk" xmlns:sfns="http://www.nationalarchives.gov.uk/pronom/SignatureFile" targetNamespace="http://pronom.nationalarchives.gov.uk" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+	<wsdl:types>
+	
+		<xs:schema elementFormDefault="qualified" xmlns:tns="http://www.nationalarchives.gov.uk/pronom/SignatureFile" targetNamespace="http://www.nationalarchives.gov.uk/pronom/SignatureFile">
+
+			<xs:complexType name="SigFile">
+				<xs:all>
+					<xs:element name="FFSignatureFile" type="tns:SignatureFileType">
+						<xs:key name="FormatIdKey">
+							<xs:annotation>
+								<xs:documentation>
+									Define ID as key (ensuring they are also unique)
+								</xs:documentation>
+							</xs:annotation>
+							<xs:selector xpath="FileFormatCollection/FileFormat"/>
+							<xs:field xpath="@ID"/>
+						</xs:key>
+						<xs:key name="SignatureIdKey">
+							<xs:annotation>
+								<xs:documentation>
+									Define ID as key (ensuring they are also unique)
+								</xs:documentation>
+							</xs:annotation>
+							<xs:selector xpath="InternalSignatureCollection/InternalSignature"/>
+							<xs:field xpath="@ID"/>
+						</xs:key>
+						<xs:keyref name="fileformat-haspriorityover-formatid" refer="tns:FormatIdKey">
+							<xs:annotation>
+								<xs:documentation>
+									Ensure file formats refer to other formats that exist
+								</xs:documentation>
+							</xs:annotation>
+							<xs:selector xpath="FileFormatCollection/FileFormat/HasPriorityOverFileFormatID"/>
+							<xs:field xpath="*"/>
+						</xs:keyref>
+						<xs:keyref name="fileformat-to-signatureid" refer="tns:SignatureIdKey">
+							<xs:annotation>
+								<xs:documentation>
+									Ensure file formats refer to signatures that exist
+								</xs:documentation>
+							</xs:annotation>
+							<xs:selector xpath="FileFormatCollection/FileFormat/InternalSignatureID"/>
+							<xs:field xpath="*"/>
+						</xs:keyref>
+					</xs:element>
+				</xs:all>
+			</xs:complexType>
+
+			<xs:complexType name="SignatureFileType">
+				<xs:all>
+					<xs:element name="InternalSignatureCollection">
+						<xs:complexType>
+							<xs:choice minOccurs="0" maxOccurs="unbounded">
+								<xs:element name="InternalSignature" type="tns:InternalSignatureType"/>
+							</xs:choice>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="FileFormatCollection">
+						<xs:complexType>
+							<xs:choice minOccurs="0" maxOccurs="unbounded">
+								<xs:element name="FileFormat" type="tns:FileFormatType"/>
+							</xs:choice>
+						</xs:complexType>
+					</xs:element>
+				</xs:all>
+				<xs:attribute name="Version" type="xs:positiveInteger" use="required"/>
+				<xs:attribute name="DateCreated" type="xs:dateTime" use="required"/>
+			</xs:complexType>
+
+			<xs:simpleType name="String50">
+				<xs:restriction base="xs:string">
+					<xs:maxLength value="50"/>
+				</xs:restriction>
+			</xs:simpleType>
+
+			<xs:simpleType name="String100">
+				<xs:restriction base="xs:string">
+					<xs:maxLength value="100"/>
+				</xs:restriction>
+			</xs:simpleType>
+
+			<xs:simpleType name="String150">
+				<xs:restriction base="xs:string">
+					<xs:maxLength value="150"/>
+				</xs:restriction>
+			</xs:simpleType>
+
+			<xs:simpleType name="NonEmptyString">
+				<xs:restriction base="xs:string">
+					<xs:minLength value="1"/>
+				</xs:restriction>
+			</xs:simpleType>
+
+			<xs:complexType name="FileFormatType">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="InternalSignatureID" type="xs:nonNegativeInteger"/>
+					<xs:element name="Extension" type="tns:NonEmptyString"/>
+					<xs:element name="HasPriorityOverFileFormatID" type="xs:nonNegativeInteger"/>
+				</xs:choice>
+				<xs:attribute name="ID" type="xs:nonNegativeInteger" use="required"/>
+				<xs:attribute name="Name" type="tns:String100" use="required"/>
+				<xs:attribute name="Version" type="tns:String50" use="optional"/>
+				<xs:attribute name="PUID" type="tns:String150" use="optional"/>
+				<xs:attribute name="MIMEType" type="tns:String150" use="optional"/>
+			</xs:complexType>
+
+			<xs:complexType name="InternalSignatureType">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="ByteSequence" type="tns:ByteSequenceType"/>
+				</xs:choice>
+				<xs:attribute name="ID" type="xs:nonNegativeInteger" use="required"/>
+				<xs:attribute name="Specificity" use="required">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Generic"/>
+							<xs:enumeration value="Specific"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:complexType>
+
+			<xs:complexType name="ByteSequenceType">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="SubSequence" type="tns:SubSequenceType"/>
+				</xs:choice>
+				<xs:attribute name="Reference" use="optional">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="BOFoffset"/>
+							<xs:enumeration value="EOFoffset"/>
+							<xs:enumeration value="IndirectBOFoffset"/>
+							<xs:enumeration value="IndirectEOFoffset"/>
+							<xs:enumeration value="NOoffset"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="Endianness" use="optional">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Big-endian"/>
+							<xs:enumeration value="Little-endian"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="IndirectOffsetLocation" use="optional"/>
+				<xs:attribute name="IndirectOffsetLength" use="optional"/>
+			</xs:complexType>
+
+			<xs:complexType name="SubSequenceType">
+				<xs:sequence>
+					<xs:element name="Sequence" type="tns:HexBytes"/>
+					<xs:element name="DefaultShift" type="xs:integer"/>
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="Shift" type="tns:ShiftType"/>
+						<xs:element name="LeftFragment" type="tns:FragmentType"/>
+						<xs:element name="RightFragment" type="tns:FragmentType"/>
+					</xs:choice>
+				</xs:sequence>
+				<xs:attribute name="Position" type="xs:integer" use="required"/>
+				<xs:attribute name="SubSeqMinOffset" type="xs:integer" use="required"/>
+				<xs:attribute name="SubSeqMaxOffset" type="xs:integer" use="optional"/>
+				<xs:attribute name="MinFragLength" type="xs:integer" use="required"/>
+			</xs:complexType>
+
+			<xs:complexType name="ShiftType">
+				<xs:simpleContent>
+					<xs:extension base="xs:integer">
+						<xs:attribute name="Byte" type="tns:HexByte" use="optional"/>
+					</xs:extension>
+				</xs:simpleContent>
+			</xs:complexType>
+
+			<xs:simpleType name="HexByte">
+				<xs:annotation>
+					<xs:documentation>
+						A byte expressed as hexadecimal
+					</xs:documentation>
+				</xs:annotation>
+				<xs:restriction base="xs:string">
+					<xs:pattern value="[0-9A-F]{2}"/>
+				</xs:restriction>
+			</xs:simpleType>
+
+			<xs:simpleType name="HexBytes">
+				<xs:annotation>
+					<xs:documentation>
+						One or more bytes expressed as hexadecimal
+					</xs:documentation>
+				</xs:annotation>
+				<xs:restriction base="xs:string">
+					<xs:pattern value="([0-9A-F]{2})+"/>
+				</xs:restriction>
+			</xs:simpleType>
+
+			<xs:simpleType name="HexByteRange">
+				<xs:annotation>
+					<xs:documentation>
+						One or more bytes expressed as hexadecimal, with patterns.
+						Eg. [A1:A4]
+					</xs:documentation>
+				</xs:annotation>
+				<xs:restriction base="xs:string">
+					<xs:pattern value="(\[!?([0-9A-F]{2})+(:([0-9A-F]{2})+)?\]|[0-9A-F]{2})+"/>
+				</xs:restriction>
+			</xs:simpleType>
+
+			<xs:complexType name="FragmentType">
+				<xs:simpleContent>
+					<xs:extension base="tns:HexByteRange">
+						<xs:attribute name="Position" type="xs:integer" use="required"/>
+						<xs:attribute name="MinOffset" type="xs:integer" use="required"/>
+						<xs:attribute name="MaxOffset" type="xs:integer" use="required"/>
+					</xs:extension>
+				</xs:simpleContent>
+			</xs:complexType>
+
+		</xs:schema>
+
+		<xs:schema elementFormDefault="qualified" xmlns:tns="http://pronom.nationalarchives.gov.uk" xmlns:sfns="http://www.nationalarchives.gov.uk/pronom/SignatureFile" targetNamespace="http://pronom.nationalarchives.gov.uk">
+
+			<!-- ANJ Had to hack this in to get JAX-WS to build stubs. -->
+			<xs:import namespace="http://www.nationalarchives.gov.uk/pronom/SignatureFile"/>
+
+			<!-- Get Messages Schemas -->
+
+			<xs:element name="getSignatureFileVersionV1">
+				<xs:complexType>
+					<xs:sequence/>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="getSignatureFileV1">
+				<xs:complexType>
+					<xs:sequence>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+		
+
+			<!-- Response message schemas -->
+
+			<xs:element name="getSignatureFileVersionV1Response">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Version" type="tns:Version"/>
+						<xs:element name="Deprecated" type="xs:boolean"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="getSignatureFileV1Response">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="SignatureFile" type="sfns:SigFile"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<!-- Types -->
+
+			
+
+			<xs:complexType name="Version">
+				<xs:sequence>
+					<xs:element name="Version" type="xs:int"/>
+				</xs:sequence>
+			</xs:complexType>
+
+			
+
+
+		</xs:schema>
+
+
+	</wsdl:types>
+
+	<!-- Messages -->
+
+	
+
+	<wsdl:message name="getSignatureFileVersionV1In">
+		<wsdl:part name="messagePart" element="tns:getSignatureFileVersionV1"/>
+	</wsdl:message>
+	<wsdl:message name="getSignatureFileVersionV1Out">
+		<wsdl:part name="messagePart" element="tns:getSignatureFileVersionV1Response"/>
+	</wsdl:message>
+
+	<wsdl:message name="getSignatureFileV1In">
+		<wsdl:part name="messagePart" element="tns:getSignatureFileV1"/>
+	</wsdl:message>
+	<wsdl:message name="getSignatureFileV1Out">
+		<wsdl:part name="messagePart" element="tns:getSignatureFileV1Response"/>
+	</wsdl:message>
+
+
+
+	<!-- Operations -->
+
+	<wsdl:portType name="PronomService">
+		<wsdl:operation name="getSignatureFileVersionV1">
+			<wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"> Returns the current signature file version </wsdl:documentation>
+			<wsdl:input message="tns:getSignatureFileVersionV1In"/>
+			<wsdl:output message="tns:getSignatureFileVersionV1Out"/>
+		</wsdl:operation>
+		<wsdl:operation name="getSignatureFileV1">
+			<wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"> Returns the current signature file </wsdl:documentation>
+			<wsdl:input message="tns:getSignatureFileV1In"/>
+			<wsdl:output message="tns:getSignatureFileV1Out"/>
+		</wsdl:operation>
+	</wsdl:portType>
+
+
+	<wsdl:binding name="PronomServiceSoap" type="tns:PronomService">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+		<wsdl:operation name="getSignatureFileVersionV1">
+			<soap:operation soapAction="http://pronom.nationalarchives.gov.uk:getSignatureFileVersionV1In" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getSignatureFileV1">
+			<soap:operation soapAction="http://pronom.nationalarchives.gov.uk:getSignatureFileV1In" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+
+<!--  ANJ Had to remove this duplicate declaration.
+	<wsdl:service name="PronomService">
+		<wsdl:port name="PronomServiceSoap" binding="tns:PronomServiceSoap">
+			<soap:address location=""/>
+		</wsdl:port>
+	</wsdl:service>
+ -->
+</wsdl:definitions>
