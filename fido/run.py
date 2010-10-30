@@ -1,30 +1,13 @@
 #!python
-'''
-This module is part of the Fido Format Identifier for Digital Objects tool
 
-Copyright 2010 The British Library
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
-
-import argparse, sys, re, os, io, time, zipfile, datetime
+import argparse, sys, re, os, io, time, zipfile
 import formats
-
-version = '0.5.5'
+re._MAXCACHE = 1000
+version = '0.5.7'
 defaults = {'bufsize': 16 * io.DEFAULT_BUFFER_SIZE,
             #OK/KO,msec,puid,format name,file size,file name            
-            'printmatch': "OK,{5},{1.Identifier},{1.FormatName},{6.current_filesize},\"{0}\"\n",
-            'printnomatch' : "KO,{2},,,{3.current_filesize},{0}\n",
+            'printmatch': "OK,{1},{4.Identifier},{4.FormatName},{2.current_filesize},\"{0}\"\n",
+            'printnomatch' : "KO,{1},,,{2.current_filesize},{0}\n",
             'description' : """
     Format Identification for Digital Objects (fido).
     FIDO is a command-line tool to identify the file formats of digital objects.
@@ -32,6 +15,7 @@ defaults = {'bufsize': 16 * io.DEFAULT_BUFFER_SIZE,
     """,
     'epilog' : """
     Open Planets Foundation (www.openplanetsfoundation.org)
+    See License.txt for license information.  Download from: http://github.com/openplanets/fido
     Author: Adam Farquhar, 2010
         
     FIDO uses the UK National Archives (TNA) PRONOM File Format descriptions.
@@ -47,63 +31,49 @@ class Fido:
         self.printnomatch = (defaults['printnomatch'] if printnomatch == None else printnomatch)
         self.time_sigs = {'name':'Sig'}
         self.time_formats = {'name':'Format'}
-        t = time.clock()
         self.formats = formats.all_formats[:]
-        self.compile_signatures()
-        self.t_compile = time.clock() - t
-        # current_* for helpful messages on interrupt, etc
         self.current_file = ''
         self.current_filesize = 0
         self.current_format = None
         self.current_sig = None
         self.current_pat = None
         self.current_count = 0  # Count of files with attempted identifies
-        
-    def compile_signatures(self):
-        for f in self.formats:
-            for s in f.signatures:
-                for b in s.bytesequences:
-                    b.regex = re.compile(b.regexstring, re.DOTALL | re.MULTILINE)
 
     def print_matches(self, fullname, matches, start, end):
         count = len(matches)
+        delta = int(1000 * (end - start))
         if count == 0:
-            sys.stdout.write(self.printnomatch.format(fullname, datetime.datetime.now(), int(1000 * (end - start)), self))
+            sys.stdout.write(self.printnomatch.format(fullname, delta, self))
         else:
             for (f, s) in matches:
-                sys.stdout.write(self.printmatch.format(fullname, f, s, count, datetime.datetime.now(), int(1000 * (end - start)), self))
+                sys.stdout.write(self.printmatch.format(fullname, delta, self, count, f, s))
         
     def print_times(self, attr, dict):
         for (k, v) in sorted(dict.items(), key=lambda x: x[1])[0:10]:
             print >> sys.stderr, "{:>6} {:>15} {:>6d}msec".format(dict['name'], getattr(k, attr)[0:15], int(v * 1000))
         
-    def print_summary(self, secs, diagnose=False):
+    def print_summary(self, secs):
         count = self.current_count
         if not self.quiet:
-            print >> sys.stderr, "FIDO: Compiled    {:>6d} formats in {:>6.2f} msec".format(len(self.formats), 1000 * self.t_compile)
             print >> sys.stderr, "FIDO: Processed {:>6d} files in {:>6.2f} msec, {:d} files/sec".format(count, secs * 1000, int(count / secs))
-            if diagnose:
-                self.print_times('FormatName', self.time_formats)
-                self.print_times('SignatureName', self.time_sigs)
-                
-    def check(self, roots, recurse=False, zip=False):
-        for root in roots:
-            if os.path.isfile(root):
-                self.check_file_or_zip(root, zip)
-            else:
-                for path, unused, files in os.walk(root):
-                    for f in files:
-                        self.check_file_or_zip(os.path.join(path, f), zip)
-                    if recurse == False:
-                        break
-        
-    def is_zip(self, matches):
-        if len(matches) == 1 and matches[0][0].Identifier == 'x-fmt/263':
-            return True
+                            
+    def check(self, root, recurse=False, zip=False):
+        "Output the format identifications for root.  Perhaps recurse or look into zip files."
+        if os.path.isfile(root):
+            self.check_file_or_zip(root, zip)
         else:
-            return False
+            for path, unused, files in os.walk(root):
+                for f in files:
+                    self.check_file_or_zip(os.path.join(path, f), zip)
+                if recurse == False:
+                    break
+
+    def is_zip(self, matches):
+        "Return True if one of the matches is a zip file (x-fmt/263)."
+        return len(matches) == 1 and matches[0][0].Identifier == 'x-fmt/263'
     
     def check_file_or_zip(self, filename, zip=False):
+        "Output the format identifications for filename.  Perhaps look at its contents if it is a zip file."
         self.current_file = filename
         t0 = self.time_check_file = time.clock()
         try:
@@ -148,10 +118,9 @@ class Fido:
             raise Exception('Not a valid zipfile: {}'.format(zipfilename))
     
     def check_file(self, file):
+        "Return a list of matches for FILE."
         self.current_file = file
         with open(file, 'rb') as f:
-            if 'NUL' in file or 'zip' in file:
-                pass
             size = os.stat(file)[6]
             self.current_filesize = size
             bofbuffer = f.read(self.bufsize)
@@ -163,7 +132,8 @@ class Fido:
         return self.check_formats(bofbuffer, eofbuffer)
     
     def as_good_as_any(self, f1, match_list):
-        #return True
+        """Return True if the proposed format is as good as any in the match_list.
+        For example, if there is no format in the match_list that has priority over the proposed one"""
         for (f2, unused) in match_list:
             if f1 == f2:
                 continue
@@ -175,57 +145,56 @@ class Fido:
         return True
         
     def check_formats(self, bofbuffer, eofbuffer):
-        # Collect matches for each format
+        """Apply the patterns for formats to the supplied buffers.
+        Return a match list of (format, signature) tuples. The list has inferior matches removed."""
         self.current_count += 1
         result = []
         for format in self.formats:
             self.current_format = format
             # we can prune out formats that are worse than the current match, but for every 3, well test 300, so it has to be efficient. 
             if self.as_good_as_any(format, result):
-                match = self.check_format(format, bofbuffer, eofbuffer)
-                if match != None:
-                    result.append(match)
-        # Remove any non-preferred formats
+                sig = self.check_format(format, bofbuffer, eofbuffer)
+                if sig != None:
+                    result.append((format, sig))
+        # Remove any inferior formats
         # This is very inefficient, but doesn't happen often
         # So far, I've seen max 7, a couple of 4, 2, almost all 0 or 1 matches
         # There are few better-than me, and more worse-than me relations
-        result = [(f, s) for (f, s) in result if self.as_good_as_any(f, result)]
+        result = [match for match in result if self.as_good_as_any(match[0], result)]
         return result
     
     def check_format(self, format, bofbuffer, eofbuffer):
-        #t = time.clock()
+        "Return the first of Format's signatures to match against the buffers or None."
         result = None  
         for s in format.signatures:
             self.current_sig = s
             if self.check_sig(s, bofbuffer, eofbuffer):
                 # only need one match for each format
-                result = (format, s)
+                result = s
                 break
-        #self.time_formats[format] = time.clock() - t + self.time_formats.get(format, 0.0)
         return result
     
-    #TODO: use an efficient test for BOF/EOF/VAR
     def check_sig(self, sig, bofbuffer, eofbuffer):
+        "Return the True if this signature matches the buffers or False."
         for b in sig.bytesequences:
-            #print "try", sig.SignatureName, b.PositionType, b.regexstring
             self.current_pat = b
             t_beg = time.clock()
             if b.FidoPosition == 'BOF':
-                if not re.match(b.regex, bofbuffer):
+                if not re.match(b.regexstring, bofbuffer):
                     return False
             elif b.FidoPosition == 'EOF':
-                if not re.search(b.regex, eofbuffer):
+                if not re.search(b.regexstring, eofbuffer):
                     return False
             elif b.FidoPosition == 'VAR':
-                if not re.search(b.regex, bofbuffer):
+                #FIXME: Perhaps this should apply to both buffers?
+                if not re.search(b.regexstring, bofbuffer):
                     return False
             else:
                 raise Exception("bad positionType")
             t_end = time.clock()
-            if t_end - t_beg > 0.05:
+            if not self.quiet and t_end - t_beg > 0.05:
                 print >> sys.stderr, "FIDO: Slow Signature {0:>6.2f}s: {3.current_format.Identifier} SigID={1.SignatureID} PatID={2.ByteSequenceID} {1.SignatureName}\n  File:{3.current_file}\n  Regex:{2.regexstring!r}".format(t_end - t_beg, sig, b, self)
         # Should fall through to here if everything matched
-        #self.time_sigs[sig] = time.clock() - t + self.time_sigs.get(sig, 0.0)
         return True
 
 def show_formats(format_list):
@@ -233,6 +202,10 @@ def show_formats(format_list):
     for f in sorted(format_list, key=lambda x: x.Identifier):
         mimetypes = ",".join(getattr(f, 'MimeType', ['None']))
         print "{0},\"{1}\",{2!s}".format(f.Identifier, f.FormatName, mimetypes)
+        for s in f.signatures:
+            print ",,,{0.SignatureID},{0.SignatureName}".format(s)
+            for b in s.bytesequences:
+                print ",,,,,{0.ByteSequenceID},{0.FidoPosition},{0.Offset},{0.MaxOffset},{0.regexstring!r},{0.ByteSequenceValue}".format(b)
             
 def main(arglist=None):
     if arglist == None:
@@ -243,9 +216,8 @@ def main(arglist=None):
     parser.add_argument('-bufsize', type=int, default=None, help='size of the buffer to match against')
     parser.add_argument('-recurse', default=False, action='store_true', help='recurse into subdirectories')
     parser.add_argument('-zip', default=False, action='store_true', help='recurse into zip files')
-    parser.add_argument('-diagnose', default=False, action='store_true', help='show some diagnostic information')
-    parser.add_argument('-matchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use on match. {0}=path, {1}=format object, {2}=signature, {3}=match count, {4}=now.')
-    parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use if no match. {0}=path, {1}=now.')
+    parser.add_argument('-matchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use on match. {0}=path, {1}=delta-t, {2}=fido, {3}=format, {4}=sig, {5}=count.')
+    parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use if no match. {0}=path, {1}=delta-t, {2}=fido.')
     parser.add_argument('-formats', metavar='PUIDS', default=None, help='comma separated string of formats to use in identification')
     parser.add_argument('-excludeformats', metavar='PUIDS', default=None, help='comma separated string of formats not to use in identification')
     parser.add_argument('-showformats', default=False, action='store_true', help='show current format set')
@@ -261,51 +233,34 @@ def main(arglist=None):
     if args.showformats:
         show_formats(formats.all_formats)
         exit(1)
-    if args.formats:
-        args.formats = args.formats.split(',')
-        formats.all_formats = [f for f in formats.all_formats if f.Identifier in args.formats]
-    elif args.excludeformats:
-        args.excludeformats = args.excludeformats.split(',')
-        print args.excludeformats
-        formats.all_formats = [f for f in formats.all_formats if f.Identifier not in args.excludeformats]
-    
     t0 = time.clock()     
     fido = Fido(quiet=args.q, bufsize=args.bufsize, printmatch=args.matchprintf, printnomatch=args.nomatchprintf)
+    if args.formats:
+        args.formats = args.formats.split(',')
+        fido.formats = [f for f in fido.formats if f.Identifier in args.formats]
+    elif args.excludeformats:
+        args.excludeformats = args.excludeformats.split(',')
+        fido.formats = [f for f in formats.all_formats if f.Identifier not in args.excludeformats]
+    
     if args.input == '-':
         args.files = sys.stdin
     elif args.input:
         args.files = open(args.input, 'r')
+        
     for filename in args.files:
         if filename[-1] == '\n':
             filename = filename[:-1]
         try:
-            fido.check([filename], recurse=args.recurse, zip=args.zip)
+            fido.check(filename, recurse=args.recurse, zip=args.zip)
         except KeyboardInterrupt:
-            try:
-                print >> sys.stderr, "FIDO: Interrupt during:\n  File: {0}\n  Format: Puid={1.Identifier} [{1.FormatName}]\n  Sig: ID={2.SignatureID} [{2.SignatureName}]\n  Pat={3.ByteSequenceID} {3.regexstring!r}".format(fido.current_file, fido.current_format,
-                                                           fido.current_sig, fido.current_pat)
-            except AttributeError:
-                # the things may not be set yet.
-                print >> sys.stderr, "FIDO: Aborted during: File: {}".format(fido.current_file)
-            # TODO: Is this a good thing to do?
-            exit(1)
+            print >> sys.stderr, "FIDO: Interrupt during:\n  File: {0}\n  Format: Puid={1.Identifier} [{1.FormatName}]\n  Sig: ID={2.SignatureID} [{2.SignatureName}]\n  Pat={3.ByteSequenceID} {3.regexstring!r}".format(fido.current_file,
+                                  fido.current_format, fido.current_sig, fido.current_pat)
         except IOError:
             exit(1)
-    t1 = time.clock()
     if not args.q:
-        fido.print_summary(t1 - t0, args.diagnose)
+        fido.print_summary(time.clock() - t0)
        
 if __name__ == '__main__':
-    #main(['-r', r'e:\Code\fidotests\corpus\Buckland -- Concepts of Library Goodness.htm' ])
-    #check(r'e:\Code\fidotests',True,True)
-    #main(['-r', '-b 3000', r'e:/Code/fidotests/corpus/b.ppt'])
     #main(['-r', '-z', r'e:/Code/fidotests/corpus/'])
-    #main(['-r',r'c:/Documents and Settings/afarquha/My Documents'])
-    #main(['-r', r'c:\Documents and Settings\afarquha\My Documents\Proposals'])
-    #main(['-h'])
-    #main(['-s'])
-    #main(['-f', "fmt/50,fmt/99,fmt/100,fmt/101", r'e:/Code/fidotests/corpus/'])
-    #main(['-n', '', '-f', "fmt/50,fmt/99,fmt/100,fmt/101", r'e:/Code/fidotests/corpus/'])
-    #main(['-ex', "fmt/50,fmt/99,fmt/100,fmt/101,fmt/199", r'e:/Code/fidotests/corpus/'])
     main()
     

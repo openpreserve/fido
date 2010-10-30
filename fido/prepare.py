@@ -157,7 +157,7 @@ def parsePronomReport(stream):
 
         if tag == 'ByteSequenceValue':
             spec = results[-1]
-            spec.regexstring = convertToRegex(spec.ByteSequenceValue,
+            spec.regexstring = convert_to_regex(spec.ByteSequenceValue,
                                               spec.Endianness, spec.PositionType, spec.Offset, spec.MaxOffset)
         # Cleanup
         # When done, the results list should only contain FileFormat
@@ -193,7 +193,7 @@ def doByte(chars, i, littleendian):
     return (re.escape(val), 2)
 
 # Have to escape any regex special stuff like []*. and so on with re.escape()
-def convertToRegex(chars, endianness='', pos='BOF', offset='0', maxoffset=None):
+def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=None):
     if 'Big' in endianness:
         littleendian = False
     else:
@@ -203,11 +203,9 @@ def convertToRegex(chars, endianness='', pos='BOF', offset='0', maxoffset=None):
     if len(maxoffset) == 0:
         maxoffset = None
     buf = cStringIO.StringIO()
+    buf.write("(?s)")   #If a regex starts with (?s), it is equivalent to DOTALL.   
     i = 0
     state = 'start'
-    # FIXME: trying without the .& in EOF; seems a slight improvement.
-    if False and 'EOF' in pos:
-        buf.write('.*')
     if 'BOF' in pos:
         buf.write('\\A')
         if offset != '0':
