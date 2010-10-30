@@ -1,9 +1,8 @@
 #!python
 
-import argparse, sys, re, os, io, time, zipfile
+import argparse, sys, re, os, io, time, zipfile, tempfile
 import formats
-re._MAXCACHE = 1000
-version = '0.5.7'
+version = '0.6.0'
 defaults = {'bufsize': 16 * io.DEFAULT_BUFFER_SIZE,
             #OK/KO,msec,puid,format name,file size,file name            
             'printmatch': "OK,{1},{4.Identifier},{4.FormatName},{2.current_filesize},\"{0}\"\n",
@@ -29,15 +28,24 @@ class Fido:
         self.bufsize = (defaults['bufsize'] if bufsize == None else bufsize)
         self.printmatch = (defaults['printmatch'] if printmatch == None else printmatch)
         self.printnomatch = (defaults['printnomatch'] if printnomatch == None else printnomatch)
-        self.time_sigs = {'name':'Sig'}
-        self.time_formats = {'name':'Format'}
         self.formats = formats.all_formats[:]
         self.current_file = ''
         self.current_filesize = 0
         self.current_format = None
         self.current_sig = None
         self.current_pat = None
-        self.current_count = 0  # Count of files with attempted identifies
+        self.current_count = 0  # Count of calls to check_formats
+        re._MAXCACHE = self.count_formats()[2] + re._MAXCACHE   # Make sure we have room for our patterns
+
+    def count_formats(self):
+        "Return a tuple (num_formats, num_signatures, num_bytesequences)"
+        count = [0, 0, 0]
+        for f in self.formats:
+            count[0] += 1
+            for s in f.signatures:
+                count[1] += 1
+                count[2] += len(s.bytesequences)
+        return count
 
     def print_matches(self, fullname, matches, start, end):
         count = len(matches)
@@ -80,43 +88,44 @@ class Fido:
             matches = self.check_file(filename)
             self.print_matches(filename, matches, start=t0, end=time.clock())
             if zip and self.is_zip(matches):
-                self.check_zipfile(filename, matches)
+                self.check_zipfile(filename)
         except IOError as (errno, strerror):
             print >> sys.stderr, "FIDO: Error: I/O error ({0}): {1} Path is {2}".format(errno, strerror, filename)
         
-    def check_zipfile(self, zipfilename, matches):
-        if zipfile.is_zipfile(zipfilename):
-            with zipfile.ZipFile(zipfilename, 'r') as zip:
-                for item in zip.infolist():
-                    if item.file_size == 0:
-                        #TODO: Find a correct test for zip items that are just directories
-                        continue
-                    t0 = time.clock()
-                    with zip.open(item) as f:
-                        zip_item_name = zipfilename + '!' + item.filename
-                        self.current_file = zip_item_name
-                        self.current_filesize = item.file_size
-                        bofbuffer = f.read(self.bufsize)
-                        if item.file_size > self.bufsize:
-                            # Need to read file_size%bufsize-1 buffers, 
-                            # then the remainder, then we have a full left.
-                            (n, r) = divmod(item.file_size, self.bufsize)
-                            for unused_i in range(1, n - 1):
-                                f.read(self.bufsize)
-                            f.read(r)
-                            eofbuffer = f.read(self.bufsize)
-                        else:
-                            eofbuffer = bofbuffer
-                    matches = self.check_formats(bofbuffer, eofbuffer)
-                    self.print_matches(zip_item_name, matches, start=t0, end=time.clock())
-                    if self.is_zip(matches):
-                        #FIXME: Need to recurse into the zips
-                        #self.check_zipfile(path, name, matches)
-                        if not self.quiet:
-                            print >> sys.stderr, 'FIDO: Skipping recursive zip processing: ' + zipfilename + '!' + item.filename 
+    def check_zipfile(self, zipfilename, zipstream=None):
+        if zipstream == None:
+            with zipfile.ZipFile(zipfilename, 'r') as stream:
+                self.check_zipfile(zipfilename, stream)
         else:
-            raise Exception('Not a valid zipfile: {}'.format(zipfilename))
-    
+            for item in zipstream.infolist():
+                if item.file_size == 0:
+                    #TODO: Find a correct test for zip items that are just directories
+                    continue
+                t0 = time.clock()
+                with zipstream.open(item) as f:
+                    zip_item_name = zipfilename + '!' + item.filename
+                    self.current_file = zip_item_name
+                    self.current_filesize = item.file_size
+                    bofbuffer = f.read(self.bufsize)
+                    if item.file_size > self.bufsize:
+                        # Need to read file_size%bufsize-1 buffers, 
+                        # then the remainder, then we have a full left.
+                        (n, r) = divmod(item.file_size, self.bufsize)
+                        for unused_i in range(1, n - 1):
+                            f.read(self.bufsize)
+                        f.read(r)
+                        eofbuffer = f.read(self.bufsize)
+                    else:
+                        eofbuffer = bofbuffer
+                matches = self.check_formats(bofbuffer, eofbuffer)
+                self.print_matches(zip_item_name, matches, start=t0, end=time.clock())
+                if self.is_zip(matches):
+                    with tempfile.SpooledTemporaryFile(prefix='Fido') as target:
+                        with zipstream.open(item) as source:
+                            self.copy_stream(source, target)
+                        with zipfile.ZipFile(target, 'r') as internal_zip:
+                            self.check_zipfile(zip_item_name, internal_zip) 
+
     def check_file(self, file):
         "Return a list of matches for FILE."
         self.current_file = file
@@ -196,7 +205,14 @@ class Fido:
                 print >> sys.stderr, "FIDO: Slow Signature {0:>6.2f}s: {3.current_format.Identifier} SigID={1.SignatureID} PatID={2.ByteSequenceID} {1.SignatureName}\n  File:{3.current_file}\n  Regex:{2.regexstring!r}".format(t_end - t_beg, sig, b, self)
         # Should fall through to here if everything matched
         return True
-
+    
+    def copy_stream(self, source, target):
+        while True:
+            buf = source.read(self.bufsize)
+            if len(buf) == 0:
+                break
+            target.write(buf)
+            
 def show_formats(format_list):
     #print'#Identifier,FormatName,MimeType,MimeType'
     for f in sorted(format_list, key=lambda x: x.Identifier):
@@ -205,7 +221,7 @@ def show_formats(format_list):
         for s in f.signatures:
             print ",,,{0.SignatureID},{0.SignatureName}".format(s)
             for b in s.bytesequences:
-                print ",,,,,{0.ByteSequenceID},{0.FidoPosition},{0.Offset},{0.MaxOffset},{0.regexstring!r},{0.ByteSequenceValue}".format(b)
+                print ",,,,,{0.ByteSequenceID},{0.FidoPosition},{0.Offset},{0.MaxOffset},{0.regexstring!r},{0.ByteSequenceValue}".format(b)    
             
 def main(arglist=None):
     if arglist == None:
@@ -240,7 +256,7 @@ def main(arglist=None):
         fido.formats = [f for f in fido.formats if f.Identifier in args.formats]
     elif args.excludeformats:
         args.excludeformats = args.excludeformats.split(',')
-        fido.formats = [f for f in formats.all_formats if f.Identifier not in args.excludeformats]
+        fido.formats = [f for f in fido.formats if f.Identifier not in args.excludeformats]
     
     if args.input == '-':
         args.files = sys.stdin
@@ -261,6 +277,6 @@ def main(arglist=None):
         fido.print_summary(time.clock() - t0)
        
 if __name__ == '__main__':
-    #main(['-r', '-z', r'e:/Code/fidotests/corpus/'])
+    #main(['-r', '-z', r'e:/Code/fidotests/corpus/nested1.zip'])
     main()
     
