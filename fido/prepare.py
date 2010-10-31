@@ -2,15 +2,15 @@
 #
 # Format Identification for Digital Objects
 
-import xml.parsers.expat, re, cStringIO, zipfile
+import xml.parsers.expat, re, cStringIO, zipfile, os
 import format_fixup
 from signature import FileFormat, InternalSignature, ByteSequence
 
 class FormatInfo:
-    def __init__(self, format_list=[]):
+    def __init__(self, pronom_files, format_list=[]):
         self.info = {}
         self.formats = []
-
+        self.pronom_files = pronom_files
         for f in format_list:
             self.add_format(f)
                            
@@ -47,8 +47,8 @@ class FormatInfo:
             setattr(o, k, kwargs[k])   
     
     #TODO: read the pronom-xml from configured location.  This will break in real life.
-    def load(self, zipfullname='.\\conf\\pronom-xml.zip'):
-        with zipfile.ZipFile(zipfullname, 'r') as zip:
+    def load(self):
+        with zipfile.ZipFile(self.pronom_files, 'r') as zip:
             for item in zip.infolist():
                 # FIXME: need to scan to the end, as there is no seek.
                 with zip.open(item) as stream:
@@ -344,7 +344,7 @@ def list_find(item, list, key=lambda x: x):
     return None
 
 if __name__ == '__main__':
-    info = FormatInfo()
+    info = FormatInfo(os.path.join(os.path.dirname(__file__), 'conf', 'pronom-xml.zip'))
     info.load()
     format_fixup.fixup(info)
     info.save()
