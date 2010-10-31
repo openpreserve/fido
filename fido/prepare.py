@@ -2,15 +2,15 @@
 #
 # Format Identification for Digital Objects
 
-import xml.parsers.expat, re, cStringIO, zipfile
+import xml.parsers.expat, re, cStringIO, zipfile, os
 import format_fixup
 from signature import FileFormat, InternalSignature, ByteSequence
 
 class FormatInfo:
-    def __init__(self, format_list=[]):
+    def __init__(self, pronom_files, format_list=[]):
         self.info = {}
         self.formats = []
-
+        self.pronom_files = pronom_files
         for f in format_list:
             self.add_format(f)
                            
@@ -47,8 +47,8 @@ class FormatInfo:
             setattr(o, k, kwargs[k])   
     
     #TODO: read the pronom-xml from configured location.  This will break in real life.
-    def load(self, zipfullname='.\\conf\\pronom-xml.zip'):
-        with zipfile.ZipFile(zipfullname, 'r') as zip:
+    def load(self):
+        with zipfile.ZipFile(self.pronom_files, 'r') as zip:
             for item in zip.infolist():
                 # FIXME: need to scan to the end, as there is no seek.
                 with zip.open(item) as stream:
@@ -105,7 +105,7 @@ def parsePronomReport(stream):
     def start(tag, attrs):
         stack.append(tag)
         if tag == "FileFormat":
-            e = FileFormat(signatures=[])
+            e = FileFormat(signatures=[], extensions=[])
             results.append(e)
         elif tag == "InternalSignature":
             e = InternalSignature(bytesequences=[])
@@ -138,6 +138,8 @@ def parsePronomReport(stream):
             spec.relatedformat.append((info['reltype'], info['data']))
             info['reltype'] = None
         # ExternalSignature properties
+        elif tag == 'Signature': #This is where the extension is held
+            results[-1].extensions.append('.' + info['data'].lower())
         # InternalSignature properties
         elif tag in ["SignatureName", "SignatureID"]:
             set(tag, info['data'])
@@ -157,7 +159,7 @@ def parsePronomReport(stream):
 
         if tag == 'ByteSequenceValue':
             spec = results[-1]
-            spec.regexstring = convertToRegex(spec.ByteSequenceValue,
+            spec.regexstring = convert_to_regex(spec.ByteSequenceValue,
                                               spec.Endianness, spec.PositionType, spec.Offset, spec.MaxOffset)
         # Cleanup
         # When done, the results list should only contain FileFormat
@@ -193,7 +195,7 @@ def doByte(chars, i, littleendian):
     return (re.escape(val), 2)
 
 # Have to escape any regex special stuff like []*. and so on with re.escape()
-def convertToRegex(chars, endianness='', pos='BOF', offset='0', maxoffset=None):
+def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=None):
     if 'Big' in endianness:
         littleendian = False
     else:
@@ -203,11 +205,9 @@ def convertToRegex(chars, endianness='', pos='BOF', offset='0', maxoffset=None):
     if len(maxoffset) == 0:
         maxoffset = None
     buf = cStringIO.StringIO()
+    buf.write("(?s)")   #If a regex starts with (?s), it is equivalent to DOTALL.   
     i = 0
     state = 'start'
-    # FIXME: trying without the .& in EOF; seems a slight improvement.
-    if False and 'EOF' in pos:
-        buf.write('.*')
     if 'BOF' in pos:
         buf.write('\\A')
         if offset != '0':
@@ -346,7 +346,7 @@ def list_find(item, list, key=lambda x: x):
     return None
 
 if __name__ == '__main__':
-    info = FormatInfo()
+    info = FormatInfo(os.path.join(os.path.dirname(__file__), 'conf', 'pronom-xml.zip'))
     info.load()
     format_fixup.fixup(info)
     info.save()

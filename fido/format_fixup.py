@@ -10,13 +10,13 @@ def fixup(info):
     #info.add_format()
     # Fix the PDF EOF matches that don't cover all the options. I have observed many PDFs with no bytes after EOF.
     for id in [59, 61, 114, 117, 120, 186, 249, 250, 251, 248]:
-        info.modify('ByteSequence', str(id), regexstring='\\%\\%EOF.{0,2}\\Z')
+        info.modify('ByteSequence', str(id), regexstring='(?s)\\%\\%EOF.{0,2}\\Z')
     # Fix the horrible fmt/134 EOF signatures that require massive backtracking
     for id in [340, 341, 342, 343]:
         info.modify('ByteSequence', str(id),
-                regexstring='\\\xff[\\\xf2|\\\xf3|\\\xfa|\\\xfb][\\\x10-\\\xeb].{7,500}\\000\\000\\000.{36,1426}\\Z')
+                regexstring='(?s)\\\xff[\\\xf2|\\\xf3|\\\xfa|\\\xfb][\\\x10-\\\xeb].{7,500}\\000\\000\\000.{36,1426}\\Z')
     # TODO: Fix the  PPT that looks deep into the file looking for p o w e r p o i n t
     # Change the recogniser for the ZIP component of OOXML formats to be more efficient. 
     for id in [331]:
         info.modify('ByteSequence', str(id),
-            regexstring='\\APK\\\x03\\\x04')
+            regexstring='(?s)\\APK\\\x03\\\x04')

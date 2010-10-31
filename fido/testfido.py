@@ -6,9 +6,21 @@ Created on 28 Oct 2010
 import unittest
 import prepare
 
+    #main(['-r', r'e:\Code\fidotests\corpus\Buckland -- Concepts of Library Goodness.htm' ])
+    #check(r'e:\Code\fidotests',True,True)
+    #main(['-r', '-b 3000', r'e:/Code/fidotests/corpus/b.ppt'])
+    #main(['-r', '-z', r'e:/Code/fidotests/corpus/'])
+    #main(['-r',r'c:/Documents and Settings/afarquha/My Documents'])
+    #main(['-r', r'c:\Documents and Settings\afarquha\My Documents\Proposals'])
+    #main(['-h'])
+    #main(['-s'])
+    #main(['-f', "fmt/50,fmt/99,fmt/100,fmt/101", r'e:/Code/fidotests/corpus/'])
+    #main(['-n', '', '-f', "fmt/50,fmt/99,fmt/100,fmt/101", r'e:/Code/fidotests/corpus/'])
+    #main(['-ex', "fmt/50,fmt/99,fmt/100,fmt/101,fmt/199", r'e:/Code/fidotests/corpus/'])
+    
 class Test(unittest.TestCase):
     def test_convert(self):
-        "convertToRegex checking BOF/EOF/VAR with all features"
+        "convert_to_regex checking BOF/EOF/VAR with all features"
         tests = [
         (('414141', 'Little', 'Absolute from BOF', '0', ''), r'\AAAA'),
         (('4141*42', 'Little', 'Absolute from BOF', '0', ''), r'\AAA.*B'),
@@ -35,7 +47,7 @@ class Test(unittest.TestCase):
         ]
         i = 0
         for (args, expected) in tests: 
-            result = prepare.convertToRegex(*args)
+            result = prepare.convert_to_regex(*args)
             self.assertEqual(result, expected, 'Failed conversion. Item {}: Expected {!r}, got {!r}'.format(i, expected, result))
             i += 1
 
