@@ -105,7 +105,7 @@ def parsePronomReport(stream):
     def start(tag, attrs):
         stack.append(tag)
         if tag == "FileFormat":
-            e = FileFormat(signatures=[])
+            e = FileFormat(signatures=[], extensions=[])
             results.append(e)
         elif tag == "InternalSignature":
             e = InternalSignature(bytesequences=[])
@@ -138,6 +138,8 @@ def parsePronomReport(stream):
             spec.relatedformat.append((info['reltype'], info['data']))
             info['reltype'] = None
         # ExternalSignature properties
+        elif tag == 'Signature': #This is where the extension is held
+            results[-1].extensions.append('.' + info['data'].lower())
         # InternalSignature properties
         elif tag in ["SignatureName", "SignatureID"]:
             set(tag, info['data'])

@@ -1,4 +1,26 @@
 FIDO TODO LIST
+TODO: Change order of preference for extension matches!
+TODO: Add in extension handling / requires modifying prepare as well as run.
+TODO: Find out how to distribute the windows installer though github.
+TODO: Try multiprocessing or threading to do IO and matching in parallel; the 0.5 setup doesn't seem to max out the CPU
+TODO: Use int ids, offsets, etc, not strings.
+TODO: Rejig the formats.py to implement a single function check_formats that is free to be optimised.
+TODO: Handle tar, jar, gzip container formats / transforms as in METS
+TODO: Handle end-tests efficiently.  Or review them for other optimisations. Reverse? s[::-1]
+TODO: Add a no EOF option (perhaps a bad idea until sigs are improved)
+TODO: Review api against jhove/2
+TODO: Review format information against FITS
+TODO: Add thread to handle signal and report on current file, #done, #todo, time
+TODO: Consider if we should use the non-greedy qualifiers *?, +?, ??, or {m,n}?; consider (?i)
+TODO: Rename _parse to _convert
+TODO: Get the magic file and add signatures from it
+TODO: Handle bigendian. x-fmt/392 JPEG2000 is the only one; consider reworking sig and dropping feature
+TODO: Consider using mmap instead of reading the buffer
+TODO: Fix parseReport so that it doesn't create a new parser for each file.
+TODO: Skip zero-len files
+TODO: Try some alternate implementations of format checking.  E.g., no-compiled regex, try-me-else, first n-byte hash, reverse end
+TODO: Move the fetch code from shell/wget to python
+TODO: Produce a single file app / .exe
 
 done. Evaluate current droid signatures to see which features are used
 done. Parse the sig file, building up an internal representation
@@ -53,31 +75,13 @@ done: Add way to show formats, select formats, exclude formats.
 done: Remove analysis.py from the distribution; (done: create README.txt); add how-to
 done: Correct the setup.py and directory configuration so that Fido installs for linux
 done: Parse the Droid-v40 and check for any new / updated format definitions. 
+done: Tidy interface to the (no)print options.
+done: Recursive zip handling - extract internal zip to a tempfile and recurse; remove on exit.
+done: Handle tar as well as zip
+done: Rejig the file processing to us an iterator that could then read from a queue, stream, etc.
+done: Add in some unittests
 
-TODO: Find out how to distribute the windows installer though github.
-TODO: Tidy interface to the (no)print options.
-TODO: Recursive zip handling - extract internal zip to a tempfile and recurse; remove on exit.
-TODO: Try multiprocessing or threading to do IO and matching in parallel; the 0.5 setup doesn't seem to max out the CPU
-TODO: Use int ids, offsets, etc, not strings.
-TODO: Rejig the file processing to us an iterator that could then read from a queue, stream, etc.
-TODO: Rejig the formats.py to implement a single function check_formats that is free to be optimised.
-TODO: Add in some unittests
-TODO: Handle tar, jar, gzip container formats / transforms as in METS
-TODO: Handle end-tests efficiently.  Or review them for other optimisations. Reverse? s[::-1]
-TODO: Add a no EOF option (perhaps a bad idea until sigs are improved)
-TODO: Review api against jhove/2
-TODO: Review format information against FITS
-TODO: Add thread to handle signal and report on current file, #done, #todo, time
-TODO: Consider if we should use the non-greedy qualifiers *?, +?, ??, or {m,n}?; consider (?i)
-TODO: Rename _parse to _convert
-TODO: Get the magic file and add signatures from it
-TODO: Handle bigendian. x-fmt/392 JPEG2000 is the only one; consider reworking sig and dropping feature
-TODO: Consider using mmap instead of reading the buffer
-TODO: Fix parseReport so that it doesn't create a new parser for each file.
-TODO: Skip zero-len files
-TODO: Try some alternate implementations of format checking.  E.g., no-compiled regex, try-me-else, first n-byte hash, reverse end
-TODO: Move the fetch code from shell/wget to python
-TODO: Produce a single file app / .exe
+
 
 QUESTIONS
 - How can I get the string that r or b prefixes?  These are much more readable than repr(s).
@@ -134,3 +138,6 @@ The following are define in the language, but never used
 [!abc] -> (?!abc) - There are none
 [!a:b] ->  - There are none
 Indirect offset
+
+====
+tarfile.open(name=fn,fileobj=obj

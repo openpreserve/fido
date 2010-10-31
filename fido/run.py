@@ -1,13 +1,13 @@
 #!python
 
-import argparse, sys, re, os, time
+import argparse, sys, re, os, time, signature
 import formats
-version = '0.6.1'
+version = '0.6.3'
 defaults = {'bufsize': 32 * 4096,
             'regexcachesize' : 1024,
             #OK/KO,msec,puid,format name,file size,file name            
-            'printmatch': "OK,{1},{4.Identifier},{4.FormatName},{2.current_filesize},\"{0}\"\n",
-            'printnomatch' : "KO,{1},,,{2.current_filesize},{0}\n",
+            'printmatch': "OK,{1},{4.Identifier},{4.FormatName},{5.SignatureName},{2.current_filesize},\"{0}\"\n",
+            'printnomatch' : "KO,{1},,,,{2.current_filesize},{0}\n",
             'description' : """
     Format Identification for Digital Objects (fido).
     FIDO is a command-line tool to identify the file formats of digital objects.
@@ -23,13 +23,14 @@ defaults = {'bufsize': 32 * 4096,
     """
 }
 class Fido:
-    def __init__(self, quiet=False, bufsize=None, printnomatch=None, printmatch=None, zip=False):
+    def __init__(self, quiet=False, bufsize=None, printnomatch=None, printmatch=None, extension=False, zip=False):
         global defaults
         self.quiet = quiet
         self.bufsize = (defaults['bufsize'] if bufsize == None else bufsize)
         self.printmatch = (defaults['printmatch'] if printmatch == None else printmatch)
         self.printnomatch = (defaults['printnomatch'] if printnomatch == None else printnomatch)
         self.zip = zip
+        self.extension = extension
         self.formats = formats.all_formats[:]
         self.current_file = ''
         self.current_filesize = 0
@@ -38,6 +39,7 @@ class Fido:
         self.current_pat = None
         self.current_count = 0  # Count of calls to match_formats
         re._MAXCACHE = defaults['regexcachesize']
+        self.externalsig = signature.InternalSignature(SignatureID=u'-1', SignatureName=u'FILE EXTENSION', bytesequences=[])
 
     def count_formats(self):
         "Return a tuple (num_formats, num_signatures, num_bytesequences)"
@@ -92,6 +94,8 @@ class Fido:
                 else:
                     eofbuffer = bofbuffer
             matches = self.match_formats(bofbuffer, eofbuffer)
+            if self.extension and len(matches) == 0:
+                matches = self.match_extensions(filename)
             self.print_matches(filename, matches, start=t0, end=time.clock())
             if self.zip:
                 self.identify_contents(filename, type=self.container_type(matches))
@@ -200,6 +204,17 @@ class Fido:
         result = [match for match in result if self.as_good_as_any(match[0], result)]
         return result
     
+    def match_extensions(self, filename):
+        myext = os.path.splitext(filename)[1].lower()
+        result = []
+        if len(myext) > 0:
+            for format in self.formats:
+                self.current_format = format
+                if myext in format.extensions:
+                    result.append((format, self.externalsig))
+        result = [match for match in result if self.as_good_as_any(match[0], result)]
+        return result
+                    
     def match_signatures(self, format, bofbuffer, eofbuffer):
         "Return the first of Format's signatures to match against the buffers or None."
         result = None  
@@ -209,7 +224,7 @@ class Fido:
                 # only need one match for each format
                 result = s
                 break
-        return result
+        return result          
     
     def match_patterns(self, sig, bofbuffer, eofbuffer):
         "Return the True if this signature matches the buffers or False."
@@ -251,6 +266,37 @@ def show_formats(format_list):
             for b in s.bytesequences:
                 print ",,,,,{0.ByteSequenceID},{0.FidoPosition},{0.Offset},{0.MaxOffset},{0.regexstring!r},{0.ByteSequenceValue}".format(b)    
 
+def dump_formats(format_list):
+    "Write out the format definitions in csv as required for loading"
+    import csv
+    writer = csv.writer(sys.stdout, delimiter=',', quotechar='"')
+    #writer.writeheader("FNAME,MIMETYPE,SNAME,BOFREGEX,VARREGEX,EOFREGEX".split())
+    for f in format_list:
+        for s in f.signatures:
+            row = [f.FormatName, ';'.join(getattr(f, 'MimeType', [])), s.SignatureName]
+            bof = ''
+            eof = ''
+            var = ''
+            for b in s.bytesequences:
+                if b.FidoPosition == 'BOF' and bof == '':
+                    bof = repr(b.regexstring)[1:-1]
+                if b.FidoPosition == 'EOF' and eof == '':
+                    eof = repr(b.regexstring)[1:-1]
+                if b.FidoPosition == 'VAR' and var == '':
+                    var = repr(b.regexstring)[1:-1]
+                row.append(bof)
+                row.append(var)
+                row.append(eof)
+                writer.writerow(row)
+        
+def load_extensions(file):
+    import csv
+    #FNAME,MIMETYPE,SNAME,BOFREGEX,VARREGEX,EOFREGEX
+    with open(file, 'rb') as stream:
+        reader = csv.reader(stream, delimiter=',', quotechar='"')
+        for unused_row in reader:
+            pass
+     
 def list_files(roots, recurse=False):
     "Return the files one at a time.  Roots could be a fileobj or a list."
     for root in roots:
@@ -273,6 +319,7 @@ def main(arglist=None):
     parser.add_argument('-bufsize', type=int, default=None, help='size of the buffer to match against')
     parser.add_argument('-recurse', default=False, action='store_true', help='recurse into subdirectories')
     parser.add_argument('-zip', default=False, action='store_true', help='recurse into zip files')
+    parser.add_argument('-extension', default=False, action='store_true', help='use file extensions if the patterns fail.  May return many matches.')
     parser.add_argument('-matchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use on match. {0}=path, {1}=delta-t, {2}=fido, {3}=format, {4}=sig, {5}=count.')
     parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use if no match. {0}=path, {1}=delta-t, {2}=fido.')
     parser.add_argument('-formats', metavar='PUIDS', default=None, help='comma separated string of formats to use in identification')
@@ -282,20 +329,19 @@ def main(arglist=None):
     group.add_argument('-input', default=False, help='file containing a list of files to check, one per line. - means stdin')
     group.add_argument('files', nargs='*', default=[], metavar='FILE', help='files to check')
         
+    # PROCESS ARGUMENTS
     args = parser.parse_args(arglist)
-   
     if args.v :
         print "fido/" + version
-        exit(1)
-    if args.show == 'formats':
-        show_formats(formats.all_formats)
         exit(1)
     if args.show == 'defaults':
         for (k, v) in defaults.iteritems():
             print k, '=', repr(v)
         exit(1)
+    
     t0 = time.clock()
-    fido = Fido(quiet=args.q, bufsize=args.bufsize, printmatch=args.matchprintf, printnomatch=args.nomatchprintf, zip=args.zip)
+    fido = Fido(quiet=args.q, bufsize=args.bufsize, extension=args.extension,
+                printmatch=args.matchprintf, printnomatch=args.nomatchprintf, zip=args.zip)
     
     if args.formats:
         args.formats = args.formats.split(',')
@@ -304,17 +350,23 @@ def main(arglist=None):
         args.excludeformats = args.excludeformats.split(',')
         fido.formats = [f for f in fido.formats if f.Identifier not in args.excludeformats]
     
+    if args.show == 'formats':
+        show_formats(fido.formats)
+        exit(1)
+        
     if args.input == '-':
         args.files = sys.stdin
     elif args.input:
         args.files = open(args.input, 'r')
     
+    # RUN
     try:
         fido.run(list_files(args.files, args.recurse))
     except KeyboardInterrupt:
         msg = "FIDO: Interrupt during:\n  File: {0}\n  Format: Puid={1.Identifier} [{1.FormatName}]\n  Sig: ID={2.SignatureID} [{2.SignatureName}]\n  Pat={3.ByteSequenceID} {3.regexstring!r}"
         print >> sys.stderr, msg.format(fido.current_file, fido.current_format, fido.current_sig, fido.current_pat)
         exit(1)
+        
     if not args.q:
         sys.stdout.flush()
         fido.print_summary(time.clock() - t0)
