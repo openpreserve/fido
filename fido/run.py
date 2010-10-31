@@ -2,9 +2,9 @@
 
 import argparse, sys, re, os, time
 import formats
-re._MAXCACHE = 1000
 version = '0.6.1'
 defaults = {'bufsize': 32 * 4096,
+            'regexcachesize' : 1024,
             #OK/KO,msec,puid,format name,file size,file name            
             'printmatch': "OK,{1},{4.Identifier},{4.FormatName},{2.current_filesize},\"{0}\"\n",
             'printnomatch' : "KO,{1},,,{2.current_filesize},{0}\n",
@@ -37,7 +37,7 @@ class Fido:
         self.current_sig = None
         self.current_pat = None
         self.current_count = 0  # Count of calls to match_formats
-        #re._MAXCACHE = self.count_formats()[2] + re._MAXCACHE   # Make sure we have room for our patterns
+        re._MAXCACHE = defaults['regexcachesize']
 
     def count_formats(self):
         "Return a tuple (num_formats, num_signatures, num_bytesequences)"
@@ -277,7 +277,7 @@ def main(arglist=None):
     parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use if no match. {0}=path, {1}=delta-t, {2}=fido.')
     parser.add_argument('-formats', metavar='PUIDS', default=None, help='comma separated string of formats to use in identification')
     parser.add_argument('-excludeformats', metavar='PUIDS', default=None, help='comma separated string of formats not to use in identification')
-    parser.add_argument('-showformats', default=False, action='store_true', help='show current format set')
+    parser.add_argument('-show', default=False, help='show "format" or "defaults"')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-input', default=False, help='file containing a list of files to check, one per line. - means stdin')
     group.add_argument('files', nargs='*', default=[], metavar='FILE', help='files to check')
@@ -287,8 +287,12 @@ def main(arglist=None):
     if args.v :
         print "fido/" + version
         exit(1)
-    if args.showformats:
+    if args.show == 'formats':
         show_formats(formats.all_formats)
+        exit(1)
+    if args.show == 'defaults':
+        for (k, v) in defaults.iteritems():
+            print k, '=', repr(v)
         exit(1)
     t0 = time.clock()
     fido = Fido(quiet=args.q, bufsize=args.bufsize, printmatch=args.matchprintf, printnomatch=args.nomatchprintf, zip=args.zip)
