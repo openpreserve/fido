@@ -47,7 +47,8 @@ Installation
 
 Any platform
 1. Ensure that you have Python 2.7 installed (http://www.python.org/download/releases/2.7)
-2. Download the zip file from the dist directory
+2. Download the latest zip release from http://github.com/openplanets/fido/downloads
+   (or use the big Downloads button on http://github.com/openplanets/fido)
 3. Unzip into some directory
 4. Open a command shell, cd to the directory that you placed the zip contents into
 5. python setup.py install
@@ -56,7 +57,8 @@ Any platform
 
 Windows
 1. Ensure that you have Python 2.7 installed (http://www.python.org/download/releases/2.7)
-2. Download the msi file from the dist directory
+2. Download the latest msi release from http://github.com/openplanets/fido/downloads
+   (or use the big Downloads button on http://github.com/openplanets/fido)
 3. Double click
 4. Open a comnand shell.  You should now be able to run fido:
    python -m fido.run -h
