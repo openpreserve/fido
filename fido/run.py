@@ -2,7 +2,7 @@
 
 import argparse, sys, re, os, time, signature
 import formats
-version = '0.6.5'
+version = '0.6.6'
 defaults = {'bufsize': 32 * 4096,
             'regexcachesize' : 1024,
             #OK/KO,msec,puid,format name,file size,file name            
@@ -42,7 +42,7 @@ class Fido:
         self.externalsig = signature.InternalSignature(SignatureID=u'-1', SignatureName=u'FILE EXTENSION', bytesequences=[])
 
     def count_formats(self):
-        "Return a tuple (num_formats, num_signatures, num_bytesequences)"
+        "Return a list [num_formats, num_signatures, num_bytesequences]"
         count = [0, 0, 0]
         for f in self.formats:
             count[0] += 1
@@ -100,9 +100,10 @@ class Fido:
             if self.zip:
                 self.identify_contents(filename, type=self.container_type(matches))
         except Exception:
-            print >> sys.stderr, "FIDO: Error: Path is {2}".format(filename)
+            print >> sys.stderr, "FIDO: Error: Path is {}".format(filename)
         
     def identify_contents(self, filename, fileobj=None, type=False):
+        "Output the format identifications for the contents of a zip or tar file."
         if type == False:
             return
         import zipfile, tarfile
@@ -121,6 +122,7 @@ class Fido:
             raise RuntimeError("Unknown container type: " + repr(type))    
         
     def walk_zip(self, zipfilename, zipstream):
+        "Output the format identifications for the contents of a zip file."
         import tempfile
         for item in zipstream.infolist():
             if item.file_size == 0:
@@ -152,6 +154,7 @@ class Fido:
                         self.identify_contents(zip_item_name, target, self.container_type(matches))
 
     def walk_tar(self, tarfilename, tarstream=None):
+        "Output the format identification for the contents of a tar file."
         for item in tarstream.getmembers():
             if item.isfile():
                 t0 = time.clock()
@@ -205,6 +208,7 @@ class Fido:
         return result
     
     def match_extensions(self, filename):
+        "Return the list of (format, externalsig) for every format whose extension matches the filename."
         myext = os.path.splitext(filename)[1].lower()
         result = []
         if len(myext) > 0:
@@ -257,6 +261,7 @@ class Fido:
             target.write(buf)
             
 def show_formats(format_list):
+    "Write out a CSV file if information about all of the current formats, signatures, and byte sequences"
     #print'#Identifier,FormatName,MimeType,MimeType'
     for f in sorted(format_list, key=lambda x: x.Identifier):
         mimetypes = ",".join(getattr(f, 'MimeType', ['None']))
@@ -316,18 +321,18 @@ def main(arglist=None):
     parser = argparse.ArgumentParser(description=defaults['description'], epilog=defaults['epilog'])
     parser.add_argument('-v', default=False, action='store_true', help='show version information')
     parser.add_argument('-q', default=False, action='store_true', help='run (more) quietly')
-    parser.add_argument('-bufsize', type=int, default=None, help='size of the buffer to match against')
     parser.add_argument('-recurse', default=False, action='store_true', help='recurse into subdirectories')
     parser.add_argument('-zip', default=False, action='store_true', help='recurse into zip files')
-    parser.add_argument('-extension', default=False, action='store_true', help='use file extensions if the patterns fail.  May return many matches.')
-    parser.add_argument('-matchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use on match. {0}=path, {1}=delta-t, {2}=fido, {3}=format, {4}=sig, {5}=count.')
-    parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use if no match. {0}=path, {1}=delta-t, {2}=fido.')
-    parser.add_argument('-formats', metavar='PUIDS', default=None, help='comma separated string of formats to use in identification')
-    parser.add_argument('-excludeformats', metavar='PUIDS', default=None, help='comma separated string of formats not to use in identification')
-    parser.add_argument('-show', default=False, help='show "format" or "defaults"')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-input', default=False, help='file containing a list of files to check, one per line. - means stdin')
     group.add_argument('files', nargs='*', default=[], metavar='FILE', help='files to check')
+    parser.add_argument('-formats', metavar='PUIDS', default=None, help='comma separated string of formats to use in identification')
+    parser.add_argument('-excludeformats', metavar='PUIDS', default=None, help='comma separated string of formats not to use in identification')
+    parser.add_argument('-extension', default=False, action='store_true', help='use file extensions if the patterns fail.  May return many matches.')
+    parser.add_argument('-matchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use on match. {0}=path, {1}=delta-t, {2}=fido, {3}=format, {4}=sig, {5}=count.')
+    parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use if no match. {0}=path, {1}=delta-t, {2}=fido.')
+    parser.add_argument('-bufsize', type=int, default=None, help='size of the buffer to match against')
+    parser.add_argument('-show', default=False, help='show "format" or "defaults"')
         
     # PROCESS ARGUMENTS
     args = parser.parse_args(arglist)
