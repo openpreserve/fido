@@ -4,6 +4,7 @@ import fido.run
 
 setup(name='fido',
       version=fido.run.version,
+      scripts=['fido/fido.bat'],
       #options={"py2exe": { }},
       url="http://github.com/openplanets/fido",
       packages=['fido'],
