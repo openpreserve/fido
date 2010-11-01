@@ -1,12 +1,12 @@
 # Fido Makefile
 
-install: setup.py fido/*.py formats
+install: setup.py fido/*.py fido/formats.py
 	python setup.py install
 	
 dist: formats
 	python setup.py sdist bdist_msi
 	
-formats: formats.py
+formats: fido/formats.py
 
 formats.py: fido/prepare.py fido/conf/*.zip
 	python fido/prepare.py
