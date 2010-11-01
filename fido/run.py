@@ -2,7 +2,7 @@
 
 import argparse, sys, re, os, time, signature
 import formats
-version = '0.6.4'
+version = '0.6.5'
 defaults = {'bufsize': 32 * 4096,
             'regexcachesize' : 1024,
             #OK/KO,msec,puid,format name,file size,file name            
@@ -99,8 +99,8 @@ class Fido:
             self.print_matches(filename, matches, start=t0, end=time.clock())
             if self.zip:
                 self.identify_contents(filename, type=self.container_type(matches))
-        except IOError as (errno, strerror):
-            print >> sys.stderr, "FIDO: Error: I/O error ({0}): {1} Path is {2}".format(errno, strerror, filename)
+        except Exception:
+            print >> sys.stderr, "FIDO: Error: Path is {2}".format(filename)
         
     def identify_contents(self, filename, fileobj=None, type=False):
         if type == False:
