@@ -2,7 +2,7 @@
 
 import argparse, sys, re, os, time, signature
 import formats
-version = '0.6.3'
+version = '0.6.4'
 defaults = {'bufsize': 32 * 4096,
             'regexcachesize' : 1024,
             #OK/KO,msec,puid,format name,file size,file name            

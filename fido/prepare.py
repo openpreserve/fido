@@ -56,7 +56,7 @@ class FormatInfo:
                         self.add_format(format)
         self._sort_formats(self.formats)
       
-    def save(self, dst="formats.py"):
+    def save(self, dst):
         with open(dst, 'wb') as out:
             out.write('from signature import FileFormat, InternalSignature, ByteSequence\n')
             out.write('all_formats = [\n    ')
@@ -349,6 +349,6 @@ if __name__ == '__main__':
     info = FormatInfo(os.path.join(os.path.dirname(__file__), 'conf', 'pronom-xml.zip'))
     info.load()
     format_fixup.fixup(info)
-    info.save()
+    info.save(os.path.join(os.path.dirname(__file__), 'formats.py'))
     print 'FIDO: {} formats'.format(len(info.formats))
     
