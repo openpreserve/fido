@@ -4,7 +4,7 @@ install: setup.py fido/*.py formats
 	python setup.py install
 	
 dist: formats
-	python setup.py sdist bdist_wininst
+	python setup.py sdist bdist_msi
 	
 formats: formats.py
 
