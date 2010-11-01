@@ -1,10 +1,24 @@
 *.pyc
 *.pyo
+/src/fido/analysis.py
+/src/build
+/src/dist
 /src/MANIFEST
+/src/fmtinfo.csv
+/fmtinfo.csv
+*.py~
 /build
+/dist
 *.~is
-/.settings
+/.settings/org.eclipse.wst.sse.core.prefs
+/.settings/org.eclipse.ltk.core.refactoring.prefs
+/.externalToolBuilders/Pythont distutils bdist_msi.launch
 /MANIFEST
 /exp
+<<<<<<< HEAD
 /.externalToolBuilders
 /dist
+=======
+/.settings
+/.externalToolBuilders
+>>>>>>> parent of 714655e... Adding the dist/ files, hoping that github will offer them for download.
