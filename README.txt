@@ -41,37 +41,31 @@ license information. Download from: http://github.com/openplanets/fido Author:
 Adam Farquhar, 2010 FIDO uses the UK National Archives (TNA) PRONOM File
 Format descriptions. PRONOM is available from www.tna.gov.uk/pronom.
 
-
 Installation
 ------------
 
 Any platform
-1. Ensure that you have Python 2.7 installed (http://www.python.org/download/releases/2.7)
-2. Download the latest zip release from http://github.com/openplanets/fido/downloads
+1. Download the latest zip release from http://github.com/openplanets/fido/downloads
    (or use the big Downloads button on http://github.com/openplanets/fido)
-3. Unzip into some directory
-4. Open a command shell, cd to the directory that you placed the zip contents into
-5. python setup.py install
-6. You should now be able to see the help text: 
+2. Unzip into some directory
+3. Open a command shell, cd to the directory that you placed the zip contents into
+4. python setup.py install
+5. You should now be able to see the help text: 
    python -m fido.run -h
+   If you are lucky, you may also be able to run with 
+   fido.sh -h
 
 Windows
-1. Ensure that you have Python 2.7 installed (http://www.python.org/download/releases/2.7)
-2. Download the latest msi release from http://github.com/openplanets/fido/downloads
+1. Download the latest msi release from http://github.com/openplanets/fido/downloads
    (or use the big Downloads button on http://github.com/openplanets/fido)
-3. Double click
-4. Open a comnand shell.  You should now be able to run fido:
+2. Double click
+3. Open a comnand shell.  You should now be able to run fido:
    python -m fido.run -h
 
 Dependencies
 ------------
 
-Fido 0.6.x requires Python 2.7.  It uses the argparse module, as well as the new format string syntax.
-
-Download and install Python 2.7 from http://www.python.org/download/releases/2.7/ 
-
-This is very simple for Windows users.  For Linux users, it will require building Python as well.
-The instructions in the download are surprisingly straightforward.
+Fido 0.7 and later will run on Python 2.6 or Python 2.7.
 
 Examples
 --------
