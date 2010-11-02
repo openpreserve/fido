@@ -9,7 +9,7 @@ except ImportError:
     # Were in Python2.6 land
     from argparselocal import ArgumentParser    
     
-version = '0.7.0'
+version = '0.7.1'
 defaults = {'bufsize': 32 * 4096,
             'regexcachesize' : 1024,
             #OK/KO,msec,puid,format name,file size,file name            
