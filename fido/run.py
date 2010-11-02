@@ -1,8 +1,15 @@
 #!python
 
-import argparse, sys, re, os, time, signature
+import sys, re, os, time, signature
 import formats
-version = '0.6.6'
+
+try:
+    from argparse import ArgumentParser
+except ImportError:
+    # Were in Python2.6 land
+    from argparselocal import ArgumentParser    
+    
+version = '0.7.0'
 defaults = {'bufsize': 32 * 4096,
             'regexcachesize' : 1024,
             #OK/KO,msec,puid,format name,file size,file name            
@@ -63,7 +70,8 @@ class Fido:
     def print_summary(self, secs):
         count = self.current_count
         if not self.quiet:
-            print >> sys.stderr, "FIDO: Processed {:>6d} files in {:>6.2f} msec, {:d} files/sec".format(count, secs * 1000, int(count / secs))
+            rate = (int(count / secs) if secs != 0 else 9999)
+            print >> sys.stderr, "FIDO: Processed {0:>6d} files in {1:>6.2f} msec, {2:d} files/sec".format(count, secs * 1000, rate)
     
     def run(self, generator):
         for filename in generator:
@@ -99,8 +107,8 @@ class Fido:
             self.print_matches(filename, matches, start=t0, end=time.clock())
             if self.zip:
                 self.identify_contents(filename, type=self.container_type(matches))
-        except Exception:
-            print >> sys.stderr, "FIDO: Error: Path is {}".format(filename)
+        except IOError:
+            print >> sys.stderr, "FIDO: Error in identify_file: Path is {0}".format(filename)
         
     def identify_contents(self, filename, fileobj=None, type=False):
         "Output the format identifications for the contents of a zip or tar file."
@@ -108,8 +116,15 @@ class Fido:
             return
         import zipfile, tarfile
         if type == 'zip':
-            with zipfile.ZipFile((fileobj if fileobj != None else filename), 'r') as stream:
+            # ZipFile has no __exit__
+            # with zipfile.ZipFile((fileobj if fileobj != None else filename), 'r') as stream:
+            try:
+                stream = zipfile.ZipFile((fileobj if fileobj != None else filename))
                 self.walk_zip(filename, stream)
+            except IOError:
+                print >> sys.stderr, "FIDO: Error: ZipError {0}".format(filename)
+            finally:
+                stream.close()
         elif type == 'tar':
             try:
                 stream = tarfile.TarFile(filename, fileobj=fileobj, mode='r')
@@ -129,7 +144,9 @@ class Fido:
                 #TODO: Find a correct test for zip items that are just directories
                 continue
             t0 = time.clock()
-            with zipstream.open(item) as f:
+            # with zipstream.open(item) as f:
+            try:
+                f = zipstream.open(item)
                 zip_item_name = zipfilename + '!' + item.filename
                 self.current_file = zip_item_name
                 self.current_filesize = item.file_size
@@ -144,14 +161,20 @@ class Fido:
                     eofbuffer = f.read(self.bufsize)
                 else:
                     eofbuffer = bofbuffer
+            finally:
+                f.close()
             matches = self.match_formats(bofbuffer, eofbuffer)
             self.print_matches(zip_item_name, matches, start=t0, end=time.clock())
             if self.container_type(matches):
                 with tempfile.SpooledTemporaryFile(prefix='Fido') as target:
-                    with zipstream.open(item) as source:
+                    #with zipstream.open(item) as source:
+                    try:
+                        source = zipstream.open(item)
                         self.copy_stream(source, target)
                         #target.seek(0)
                         self.identify_contents(zip_item_name, target, self.container_type(matches))
+                    finally:
+                        source.close()
 
     def walk_tar(self, tarfilename, tarstream=None):
         "Output the format identification for the contents of a tar file."
@@ -271,36 +294,36 @@ def show_formats(format_list):
             for b in s.bytesequences:
                 print ",,,,,{0.ByteSequenceID},{0.FidoPosition},{0.Offset},{0.MaxOffset},{0.regexstring!r},{0.ByteSequenceValue}".format(b)    
 
-def dump_formats(format_list):
-    "Write out the format definitions in csv as required for loading"
-    import csv
-    writer = csv.writer(sys.stdout, delimiter=',', quotechar='"')
-    #writer.writeheader("FNAME,MIMETYPE,SNAME,BOFREGEX,VARREGEX,EOFREGEX".split())
-    for f in format_list:
-        for s in f.signatures:
-            row = [f.FormatName, ';'.join(getattr(f, 'MimeType', [])), s.SignatureName]
-            bof = ''
-            eof = ''
-            var = ''
-            for b in s.bytesequences:
-                if b.FidoPosition == 'BOF' and bof == '':
-                    bof = repr(b.regexstring)[1:-1]
-                if b.FidoPosition == 'EOF' and eof == '':
-                    eof = repr(b.regexstring)[1:-1]
-                if b.FidoPosition == 'VAR' and var == '':
-                    var = repr(b.regexstring)[1:-1]
-                row.append(bof)
-                row.append(var)
-                row.append(eof)
-                writer.writerow(row)
-        
-def load_extensions(file):
-    import csv
-    #FNAME,MIMETYPE,SNAME,BOFREGEX,VARREGEX,EOFREGEX
-    with open(file, 'rb') as stream:
-        reader = csv.reader(stream, delimiter=',', quotechar='"')
-        for unused_row in reader:
-            pass
+#def dump_formats(format_list):
+#    "Write out the format definitions in csv as required for loading"
+#    import csv
+#    writer = csv.writer(sys.stdout, delimiter=',', quotechar='"')
+#    #writer.writeheader("FNAME,MIMETYPE,SNAME,BOFREGEX,VARREGEX,EOFREGEX".split())
+#    for f in format_list:
+#        for s in f.signatures:
+#            row = [f.FormatName, ';'.join(getattr(f, 'MimeType', [])), s.SignatureName]
+#            bof = ''
+#            eof = ''
+#            var = ''
+#            for b in s.bytesequences:
+#                if b.FidoPosition == 'BOF' and bof == '':
+#                    bof = repr(b.regexstring)[1:-1]
+#                if b.FidoPosition == 'EOF' and eof == '':
+#                    eof = repr(b.regexstring)[1:-1]
+#                if b.FidoPosition == 'VAR' and var == '':
+#                    var = repr(b.regexstring)[1:-1]
+#                row.append(bof)
+#                row.append(var)
+#                row.append(eof)
+#                writer.writerow(row)
+#        
+#def load_extensions(file):
+#    import csv
+#    #FNAME,MIMETYPE,SNAME,BOFREGEX,VARREGEX,EOFREGEX
+#    with open(file, 'rb') as stream:
+#        reader = csv.reader(stream, delimiter=',', quotechar='"')
+#        for unused_row in reader:
+#            pass
      
 def list_files(roots, recurse=False):
     "Return the files one at a time.  Roots could be a fileobj or a list."
@@ -318,7 +341,7 @@ def list_files(roots, recurse=False):
 def main(arglist=None):
     if arglist == None:
         arglist = sys.argv[1:]
-    parser = argparse.ArgumentParser(description=defaults['description'], epilog=defaults['epilog'])
+    parser = ArgumentParser(description=defaults['description'], epilog=defaults['epilog'])
     parser.add_argument('-v', default=False, action='store_true', help='show version information')
     parser.add_argument('-q', default=False, action='store_true', help='run (more) quietly')
     parser.add_argument('-recurse', default=False, action='store_true', help='recurse into subdirectories')

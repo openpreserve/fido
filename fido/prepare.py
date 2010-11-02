@@ -14,7 +14,6 @@ class FormatInfo:
         for f in format_list:
             self.add_format(f)
                            
-
     def add_format(self, f):
         self.formats.append(f)
         self.info[('Format', f.FormatID)] = (f, None)
@@ -41,19 +40,27 @@ class FormatInfo:
         (o, unused_parent) = self.info[(type, id)]
         for (k) in kwargs.keys():
             if getattr(o, k, None) != None:
-                print "FIDO: Modifying {} {}\n  Old={}\n  New={}".format(type, id,
+                print "FIDO: Modifying {0} {1}\n  Old={2}\n  New={3}".format(type, id,
                                                                           repr(getattr(o, k)),
                                                                           repr(kwargs[k]))
             setattr(o, k, kwargs[k])   
     
     #TODO: read the pronom-xml from configured location.  This will break in real life.
     def load(self):
-        with zipfile.ZipFile(self.pronom_files, 'r') as zip:
+        #with zipfile.ZipFile(self.pronom_files, 'r') as zip:
+        try:
+            zip = zipfile.ZipFile(self.pronom_files, 'r')
             for item in zip.infolist():
                 # FIXME: need to scan to the end, as there is no seek.
-                with zip.open(item) as stream:
+                #with zip.open(item) as stream:
+                try:
+                    stream = zip.open(item)
                     for format in parsePronomReport(stream):
                         self.add_format(format)
+                finally:
+                    stream.close()
+        finally:
+            zip.close()
         self._sort_formats(self.formats)
       
     def save(self, dst):
@@ -93,7 +100,7 @@ def parsePronomReport(stream):
         if   getattr(results[-1], prop, None) == None:
             setattr(results[-1], prop, val)
         else:
-            raise Exception("Value {} of {} in {} already set".format(val, prop, results[-1]))
+            raise Exception("Value {0} of {1} in {2} already set".format(val, prop, results[-1]))
         
     def add(prop, val):
         current = getattr(results[-1], prop, None)
@@ -181,7 +188,7 @@ def parsePronomReport(stream):
     return results
 
 def err(msg, c, i, chars):
-    return "Conversion: {}: char='{}', at pos {} in \n  {}\n  {}^".format(msg, c, i, chars, i * ' ')
+    return "Conversion: {0}: char='{1}', at pos {2} in \n  {3}\n  {4}^".format(msg, c, i, chars, i * ' ')
 
 def doByte(chars, i, littleendian):
     c1 = '0123456789ABCDEF'.find(chars[i].upper())
@@ -323,7 +330,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=None
                 i += 2
             state = 'start'
         else:
-            raise Exception('Illegal state {}'.format(state))
+            raise Exception('Illegal state {0}'.format(state))
     if 'EOF' in pos:
         if offset != '0':
             buf.write('.{' + offset)
@@ -350,5 +357,5 @@ if __name__ == '__main__':
     info.load()
     format_fixup.fixup(info)
     info.save(os.path.join(os.path.dirname(__file__), 'formats.py'))
-    print 'FIDO: {} formats'.format(len(info.formats))
+    print 'FIDO: {0} formats'.format(len(info.formats))
     
