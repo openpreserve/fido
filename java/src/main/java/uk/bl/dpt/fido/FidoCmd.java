@@ -61,6 +61,7 @@ public class FidoCmd {
 	
 	static void downloadSigFile() {
 		// To make java.net.URL cope with an authenticating proxy.
+		// Apache HTTPClient does this automatically, but we're not using that here at the moment.
 		String proxyUser = System.getProperty("http.proxyUser");
 		if (proxyUser != null) {
             Authenticator.setDefault(

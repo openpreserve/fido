@@ -1,4 +1,4 @@
-#!python
+#!/bin/env -e python
 from distutils.core import setup
 import fido.run
 
