@@ -1,20 +1,15 @@
 #!python
-
-import sys, re, os, time, signature
-import formats
-
-try:
-    from argparse import ArgumentParser
-except ImportError:
-    # Were in Python2.6 land
-    from argparselocal import ArgumentParser    
+#TODO: Yield matches deltaT
+#Caller can do print_matches and use the current_ info from fido.
+#Make printmatch take named arguments
+import sys, re, os, time
+import signature, formats
     
-version = '0.7.1'
+version = '0.8.0'
 defaults = {'bufsize': 32 * 4096,
             'regexcachesize' : 1024,
-            #OK/KO,msec,puid,format name,file size,file name            
-            'printmatch': "OK,{1},{4.Identifier},{4.FormatName},{5.SignatureName},{2.current_filesize},\"{0}\"\n",
-            'printnomatch' : "KO,{1},,,,{2.current_filesize},{0}\n",
+            'printmatch': "OK,{info.time},{format.Identifier},{format.FormatName},{sig.SignatureName},{info.size},\"{info.name}\"\n",
+            'printnomatch' : "KO,{info.time},,,,{info.size},\"{info.name}\"\n",
             'description' : """
     Format Identification for Digital Objects (fido).
     FIDO is a command-line tool to identify the file formats of digital objects.
@@ -29,13 +24,15 @@ defaults = {'bufsize': 32 * 4096,
     PRONOM is available from www.tna.gov.uk/pronom.
     """
 }
+
 class Fido:
-    def __init__(self, quiet=False, bufsize=None, printnomatch=None, printmatch=None, extension=False, zip=False):
+    def __init__(self, quiet=False, bufsize=None, printnomatch=None, printmatch=None, extension=False, zip=False, match_handler=None):
         global defaults
         self.quiet = quiet
         self.bufsize = (defaults['bufsize'] if bufsize == None else bufsize)
         self.printmatch = (defaults['printmatch'] if printmatch == None else printmatch)
         self.printnomatch = (defaults['printnomatch'] if printnomatch == None else printnomatch)
+        self.match_handler = (self.print_matches if match_handler == None else match_handler)
         self.zip = zip
         self.extension = extension
         self.formats = formats.all_formats[:]
@@ -48,35 +45,87 @@ class Fido:
         re._MAXCACHE = defaults['regexcachesize']
         self.externalsig = signature.InternalSignature(SignatureID=u'-1', SignatureName=u'FILE EXTENSION', bytesequences=[])
 
-    def count_formats(self):
-        "Return a list [num_formats, num_signatures, num_bytesequences]"
-        count = [0, 0, 0]
-        for f in self.formats:
-            count[0] += 1
-            for s in f.signatures:
-                count[1] += 1
-                count[2] += len(s.bytesequences)
-        return count
-
-    def print_matches(self, fullname, matches, start, end):
-        count = len(matches)
-        delta = int(1000 * (end - start))
-        if count == 0:
-            sys.stdout.write(self.printnomatch.format(fullname, delta, self))
+    def print_matches(self, fullname, matches, delta_t):
+        class Group:
+            pass
+        obj = Group()
+        obj.count = len(matches)
+        obj.name = fullname
+        obj.time = int(delta_t * 1000)
+        obj.size = self.current_filesize
+        if obj.count == 0:
+            sys.stdout.write(self.printnomatch.format(info=obj))
         else:
             for (f, s) in matches:
-                sys.stdout.write(self.printmatch.format(fullname, delta, self, count, f, s))
+                sys.stdout.write(self.printmatch.format(info=obj, format=f, sig=s))
         
     def print_summary(self, secs):
         count = self.current_count
         if not self.quiet:
             rate = (int(count / secs) if secs != 0 else 9999)
             print >> sys.stderr, "FIDO: Processed {0:>6d} files in {1:>6.2f} msec, {2:d} files/sec".format(count, secs * 1000, rate)
-    
-    def run(self, generator):
-        for filename in generator:
-            self.identify_file(filename)
-                                        
+                                         
+    def identify_file(self, filename):
+        "Yield (effective_name, matches, delta_t).  Perhaps look at its contents if it is a zip file."
+        self.current_file = filename
+        try:
+            t0 = time.clock()
+            with open(filename, 'rb') as f:
+                size = os.stat(filename)[6]
+                self.current_filesize = size
+                bofbuffer = f.read(self.bufsize)
+                eofbuffer = self.eof_buffer(f, bofbuffer, size, seek=True)
+            matches = self.match_formats(bofbuffer, eofbuffer)
+            self.match_handler(filename, matches, time.clock() - t0)
+            if self.extension and len(matches) == 0:
+                matches = self.match_extensions(filename)
+                self.match_handler(filename, matches, time.clock() - t0)
+            if self.zip:
+                self.identify_contents(filename, type=self.container_type(matches))
+        except IOError:
+            print >> sys.stderr, "FIDO: Error in identify_file: Path is {0}".format(filename)
+        
+    def identify_multi_object_stream(self, stream):
+        """Stream may contain one or more objects each with an HTTP style header that must include content-length.
+           The headers consist of keyword:value pairs terminated by a newline.  There must be a newline following the headers.
+        """
+        offset = 0
+        while True:
+            t0 = time.clock()
+            content_length = -1
+            for line in stream:
+                offset += len(line)
+                if line == '\n':
+                    if content_length < 0:
+                        raise EnvironmentError("No content-length provided.")
+                    else:
+                        break
+                pair = line.lower().split(':', 2)
+                if pair[0] == 'content-length':
+                    content_length = int(pair[1])
+            if content_length == -1:
+                return
+            # Consume exactly content-length bytes        
+            self.current_file = 'STDIN!(at ' + str(offset) + ' bytes)'
+            nbytes = min(self.bufsize, content_length)
+            bofbuffer = stream.read(nbytes)
+            eofbuffer = self.eof_buffer(stream, bofbuffer, content_length)
+            self.current_filesize = content_length
+            matches = self.match_formats(bofbuffer, eofbuffer)
+            self.match_handler(self.current_file, matches, time.clock() - t0)
+                
+    def identify_stream(self, stream):
+        """Name is the name to use when providing results. 
+           Stream is a file-like object, but it may only support the read(nbytes) method, not seek. 
+           Returns the list of matches.  Does not close the stream."""
+        t0 = time.clock()
+        bofbuffer = stream.read(self.bufsize)
+        (eofbuffer, bytes_read) = self.eof_buffer(stream, bofbuffer, length=None)
+        self.current_filesize = bytes_read
+        self.current_file = 'STDIN'
+        matches = self.match_formats(bofbuffer, eofbuffer)
+        self.match_handler(self.current_file, matches, time.clock() - t0)
+                    
     def container_type(self, matches):
         "Return True if one of the matches is a zip file (x-fmt/263)."
         for m in matches:
@@ -85,119 +134,123 @@ class Fido:
             if m[0].Identifier == 'x-fmt/265':
                 return 'tar'
         return False
-    
-    def identify_file(self, filename):
-        "Output the format identifications for filename.  Perhaps look at its contents if it is a zip file."
-        self.current_file = filename
-        try:
-            t0 = time.clock()
-            self.current_file = filename
-            with open(filename, 'rb') as f:
-                size = os.stat(filename)[6]
-                self.current_filesize = size
-                bofbuffer = f.read(self.bufsize)
-                if size > self.bufsize:
-                    f.seek(-self.bufsize, 2)
-                    eofbuffer = f.read(self.bufsize)
-                else:
-                    eofbuffer = bofbuffer
-            matches = self.match_formats(bofbuffer, eofbuffer)
-            if self.extension and len(matches) == 0:
-                matches = self.match_extensions(filename)
-            self.print_matches(filename, matches, start=t0, end=time.clock())
-            if self.zip:
-                self.identify_contents(filename, type=self.container_type(matches))
-        except IOError:
-            print >> sys.stderr, "FIDO: Error in identify_file: Path is {0}".format(filename)
-        
+                        
     def identify_contents(self, filename, fileobj=None, type=False):
         "Output the format identifications for the contents of a zip or tar file."
         if type == False:
             return
-        import zipfile, tarfile
-        if type == 'zip':
-            # ZipFile has no __exit__
-            # with zipfile.ZipFile((fileobj if fileobj != None else filename), 'r') as stream:
-            try:
-                stream = zipfile.ZipFile((fileobj if fileobj != None else filename))
-                self.walk_zip(filename, stream)
-            except IOError:
-                print >> sys.stderr, "FIDO: Error: ZipError {0}".format(filename)
-            finally:
-                stream.close()
+        elif type == 'zip':
+            self.walk_zip(filename, fileobj)
         elif type == 'tar':
-            try:
-                stream = tarfile.TarFile(filename, fileobj=fileobj, mode='r')
-                self.walk_tar(filename, stream)
-            except tarfile.TarError:
-                print >> sys.stderr, "FIDO: Error: TarError {0}".format(filename)
-            finally:
-                stream.close()
+            self.walk_tar(filename, fileobj)
         else:
-            raise RuntimeError("Unknown container type: " + repr(type))    
+            raise RuntimeError("Unknown container type: " + repr(type))
         
-    def walk_zip(self, zipfilename, zipstream):
+    def eof_buffer(self, stream, bofbuffer, length=None, seek=False):
+        "Return the EOF Buffer and len if it was None where EOF is at length-len(bofbuffer) bytes down.  If length is None, return the length as found."
+        bytes_read = 0
+        if length == None:
+            # A stream with unknown length; have to keep two buffers around
+            prevbuffer = bofbuffer
+            while True:
+                buffer = stream.read(self.bufsize)
+                bytes_read += len(buffer)
+                if len(buffer) == self.bufsize:
+                    prevbuffer = buffer
+                else:
+                    eofbuffer = prevbuffer[-(self.bufsize - len(buffer)):] + buffer
+                    break
+        else:
+            bytes_unread = length - len(bofbuffer)
+            if bytes_unread == 0:
+                eofbuffer = bofbuffer
+            elif bytes_unread < self.bufsize:
+                # The buffs overlap
+                eofbuffer = bofbuffer[bytes_unread:] + stream.read(bytes_unread)
+            elif bytes_unread == self.bufsize:
+                eofbuffer = stream.read(self.bufsize)
+            elif seek:  # easy case when we can just seek!
+                stream.seek(length - self.bufsize)
+                eofbuffer = stream.read(self.bufsize)
+            else:
+                # we have more to read and know how much.    
+                # Need to read file_size%bufsize-1 buffers, 
+                # then the remainder, then we have a full left.
+                (n, r) = divmod(bytes_unread, self.bufsize)
+                # skip n-2 buffers
+                for unused_i in xrange(1, n):
+                    stream.read(self.bufsize)
+                # skip the remainder, r
+                stream.read(r)
+                # and grab the n
+                eofbuffer = stream.read(self.bufsize)
+        if length == None:
+            return eofbuffer, bytes_read + len(bofbuffer)
+        else:
+            return eofbuffer
+    
+    def walk_zip(self, filename, fileobj=None):
         "Output the format identifications for the contents of a zip file."
-        import tempfile
-        for item in zipstream.infolist():
-            if item.file_size == 0:
-                #TODO: Find a correct test for zip items that are just directories
-                continue
-            t0 = time.clock()
-            # with zipstream.open(item) as f:
-            try:
-                f = zipstream.open(item)
-                zip_item_name = zipfilename + '!' + item.filename
-                self.current_file = zip_item_name
-                self.current_filesize = item.file_size
-                bofbuffer = f.read(self.bufsize)
-                if item.file_size > self.bufsize:
-                    # Need to read file_size%bufsize-1 buffers, 
-                    # then the remainder, then we have a full left.
-                    (n, r) = divmod(item.file_size, self.bufsize)
-                    for unused_i in range(1, n - 1):
-                        f.read(self.bufsize)
-                    f.read(r)
-                    eofbuffer = f.read(self.bufsize)
-                else:
-                    eofbuffer = bofbuffer
-            finally:
-                f.close()
-            matches = self.match_formats(bofbuffer, eofbuffer)
-            self.print_matches(zip_item_name, matches, start=t0, end=time.clock())
-            if self.container_type(matches):
-                with tempfile.SpooledTemporaryFile(prefix='Fido') as target:
-                    #with zipstream.open(item) as source:
-                    try:
-                        source = zipstream.open(item)
-                        self.copy_stream(source, target)
-                        #target.seek(0)
-                        self.identify_contents(zip_item_name, target, self.container_type(matches))
-                    finally:
-                        source.close()
-
-    def walk_tar(self, tarfilename, tarstream=None):
-        "Output the format identification for the contents of a tar file."
-        for item in tarstream.getmembers():
-            if item.isfile():
+        # IN 2.7+: with zipfile.ZipFile((fileobj if fileobj != None else filename), 'r') as stream:
+        import zipfile, tempfile
+        try:
+            zipstream = zipfile.ZipFile((fileobj if fileobj != None else filename))    
+            for item in zipstream.infolist():
+                if item.file_size == 0:
+                    continue           #TODO: Find a better test for isdir
                 t0 = time.clock()
-                f = tarstream.extractfile(item)
-                tar_item_name = tarfilename + '!' + item.name
-                self.current_file = tar_item_name
-                self.current_filesize = item.size
-                bofbuffer = f.read(self.bufsize)
-                if item.size > self.bufsize:
-                    f.seek(item.size - self.bufsize)
-                    eofbuffer = f.read(self.bufsize)
-                else:
-                    eofbuffer = bofbuffer
-                matches = self.match_formats(bofbuffer, eofbuffer)
-                self.print_matches(tar_item_name, matches, start=t0, end=time.clock())
-                if self.container_type(matches):
-                    f.seek(0)
-                    self.identify_contents(tar_item_name, f, self.container_type(matches))
+                # with zipstream.open(item) as f:
+                try:
+                    f = zipstream.open(item)
+                    item_name = filename + '!' + item.filename
+                    self.current_file = item_name
+                    self.current_filesize = item.file_size
+                    bofbuffer = f.read(self.bufsize)
+                    eofbuffer = self.eof_buffer(f, bofbuffer, item.file_size)
+                finally:
                     f.close()
-  
+                matches = self.match_formats(bofbuffer, eofbuffer)
+                self.match_handler(item_name, matches, time.clock() - t0)
+                if self.container_type(matches):
+                    with tempfile.SpooledTemporaryFile(prefix='Fido') as target:
+                        #with zipstream.open(item) as source:
+                        try:
+                            source = zipstream.open(item)
+                            self.copy_stream(source, target)
+                            #target.seek(0)
+                            self.identify_contents(item_name, target, self.container_type(matches))
+                        finally:
+                            source.close()
+        except IOError:
+            print >> sys.stderr, "FIDO: Error: ZipError {0}".format(filename)
+        finally:
+            zipstream.close()
+
+    def walk_tar(self, filename, fileobj):
+        "Output the format identification for the contents of a tar file."
+        import tarfile
+        try:
+            tarstream = tarfile.TarFile(filename, fileobj=fileobj, mode='r')
+            for item in tarstream.getmembers():
+                if item.isfile():
+                    t0 = time.clock()
+                    f = tarstream.extractfile(item)
+                    tar_item_name = filename + '!' + item.name
+                    self.current_file = tar_item_name
+                    self.current_filesize = item.size
+                    bofbuffer = f.read(self.bufsize)
+                    eofbuffer = self.eof_buffer(f, bofbuffer, item.size)
+                    matches = self.match_formats(bofbuffer, eofbuffer)
+                    self.match_handler(tar_item_name, matches, time.clock() - t0)
+                    if self.container_type(matches):
+                        f.seek(0)
+                        self.identify_contents(tar_item_name, f, self.container_type(matches))
+                        f.close()
+        except tarfile.TarError:
+                print >> sys.stderr, "FIDO: Error: TarError {0}".format(filename)
+        finally:
+            tarstream.close()
+
     def as_good_as_any(self, f1, match_list):
         """Return True if the proposed format is as good as any in the match_list.
         For example, if there is no format in the match_list that has priority over the proposed one"""
@@ -249,9 +302,7 @@ class Fido:
             self.current_sig = s
             if self.match_patterns(s, bofbuffer, eofbuffer):
                 # only need one match for each format
-                result = s
-                break
-        return result          
+                return s          
     
     def match_patterns(self, sig, bofbuffer, eofbuffer):
         "Return the True if this signature matches the buffers or False."
@@ -292,39 +343,8 @@ def show_formats(format_list):
         for s in f.signatures:
             print ",,,{0.SignatureID},{0.SignatureName}".format(s)
             for b in s.bytesequences:
-                print ",,,,,{0.ByteSequenceID},{0.FidoPosition},{0.Offset},{0.MaxOffset},{0.regexstring!r},{0.ByteSequenceValue}".format(b)    
-
-#def dump_formats(format_list):
-#    "Write out the format definitions in csv as required for loading"
-#    import csv
-#    writer = csv.writer(sys.stdout, delimiter=',', quotechar='"')
-#    #writer.writeheader("FNAME,MIMETYPE,SNAME,BOFREGEX,VARREGEX,EOFREGEX".split())
-#    for f in format_list:
-#        for s in f.signatures:
-#            row = [f.FormatName, ';'.join(getattr(f, 'MimeType', [])), s.SignatureName]
-#            bof = ''
-#            eof = ''
-#            var = ''
-#            for b in s.bytesequences:
-#                if b.FidoPosition == 'BOF' and bof == '':
-#                    bof = repr(b.regexstring)[1:-1]
-#                if b.FidoPosition == 'EOF' and eof == '':
-#                    eof = repr(b.regexstring)[1:-1]
-#                if b.FidoPosition == 'VAR' and var == '':
-#                    var = repr(b.regexstring)[1:-1]
-#                row.append(bof)
-#                row.append(var)
-#                row.append(eof)
-#                writer.writerow(row)
-#        
-#def load_extensions(file):
-#    import csv
-#    #FNAME,MIMETYPE,SNAME,BOFREGEX,VARREGEX,EOFREGEX
-#    with open(file, 'rb') as stream:
-#        reader = csv.reader(stream, delimiter=',', quotechar='"')
-#        for unused_row in reader:
-#            pass
-     
+                print ",,,,,{b.ByteSequenceID},{b.FidoPosition},{b.Offset},{b.MaxOffset},{b.regexstring!r},{b.ByteSequenceValue}".format(b=b)    
+   
 def list_files(roots, recurse=False):
     "Return the files one at a time.  Roots could be a fileobj or a list."
     for root in roots:
@@ -339,6 +359,13 @@ def list_files(roots, recurse=False):
                     break
             
 def main(arglist=None):
+    # The argparse package was introduced in 2.7 
+    try:
+        from argparse import ArgumentParser
+    except ImportError:
+        # Were in Python2.6 land
+        from argparselocal import ArgumentParser    
+
     if arglist == None:
         arglist = sys.argv[1:]
     parser = ArgumentParser(description=defaults['description'], epilog=defaults['epilog'])
@@ -348,12 +375,12 @@ def main(arglist=None):
     parser.add_argument('-zip', default=False, action='store_true', help='recurse into zip files')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-input', default=False, help='file containing a list of files to check, one per line. - means stdin')
-    group.add_argument('files', nargs='*', default=[], metavar='FILE', help='files to check')
+    group.add_argument('files', nargs='*', default=[], metavar='FILE', help='files to check.  If the file is -, then read content from stdin. In this case, python must be invoked with -u or it may convert the line terminators.')
     parser.add_argument('-formats', metavar='PUIDS', default=None, help='comma separated string of formats to use in identification')
     parser.add_argument('-excludeformats', metavar='PUIDS', default=None, help='comma separated string of formats not to use in identification')
     parser.add_argument('-extension', default=False, action='store_true', help='use file extensions if the patterns fail.  May return many matches.')
-    parser.add_argument('-matchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use on match. {0}=path, {1}=delta-t, {2}=fido, {3}=format, {4}=sig, {5}=count.')
-    parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use if no match. {0}=path, {1}=delta-t, {2}=fido.')
+    parser.add_argument('-matchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use on match. See nomatchprintf.  You also have access to info.count, the number of matches; format; and sig.')
+    parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use if no match. You have access to info with attributes name, size, time.')
     parser.add_argument('-bufsize', type=int, default=None, help='size of the buffer to match against')
     parser.add_argument('-show', default=False, help='show "format" or "defaults"')
         
@@ -370,7 +397,7 @@ def main(arglist=None):
     t0 = time.clock()
     fido = Fido(quiet=args.q, bufsize=args.bufsize, extension=args.extension,
                 printmatch=args.matchprintf, printnomatch=args.nomatchprintf, zip=args.zip)
-    
+       
     if args.formats:
         args.formats = args.formats.split(',')
         fido.formats = [f for f in fido.formats if f.Identifier in args.formats]
@@ -389,7 +416,11 @@ def main(arglist=None):
     
     # RUN
     try:
-        fido.run(list_files(args.files, args.recurse))
+        if (not args.input) and len(args.files) == 1 and args.files[0] == '-':
+            fido.identify_stream(sys.stdin)
+        else:
+            for file in list_files(args.files, args.recurse):
+                fido.identify_file(file)
     except KeyboardInterrupt:
         msg = "FIDO: Interrupt during:\n  File: {0}\n  Format: Puid={1.Identifier} [{1.FormatName}]\n  Sig: ID={2.SignatureID} [{2.SignatureName}]\n  Pat={3.ByteSequenceID} {3.regexstring!r}"
         print >> sys.stderr, msg.format(fido.current_file, fido.current_format, fido.current_sig, fido.current_pat)
@@ -398,7 +429,7 @@ def main(arglist=None):
     if not args.q:
         sys.stdout.flush()
         fido.print_summary(time.clock() - t0)
-       
+
 if __name__ == '__main__':
     #main(['-r', '-z', r'e:/Code/fidotests/corpus/nested1.zip', r'e:/Code/fidotests/corpus/test.tar'])
     main()
