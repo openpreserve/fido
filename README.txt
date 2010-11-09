@@ -1,7 +1,6 @@
-usage: python -m fido.run [-h] [-v] [-q] [-bufsize BUFSIZE] [-recurse]
-              [-zip] [-extension] [-matchprintf FORMATSTRING]
-              [-nomatchprintf FORMATSTRING] [-formats PUIDS]
-              [-excludeformats PUIDS] [-show SHOW] [-input INPUT]
+usage: python -m fido.run [-h] [-v] [-q] [-recurse] [-zip] [-input INPUT] [-formats PUIDS]
+              [-excludeformats PUIDS] [-extension] [-matchprintf FORMATSTRING]
+              [-nomatchprintf FORMATSTRING] [-bufsize BUFSIZE] [-show SHOW]
               [FILE [FILE ...]]
 
 Format Identification for Digital Objects (fido). FIDO is a command-line tool
@@ -9,32 +8,34 @@ to identify the file formats of digital objects. It is designed for simple
 integration into automated work-flows.
 
 positional arguments:
-  FILE                  files to check
+  FILE                  files to check. If the file is -, then read content
+                        from stdin. In this case, python must be invoked with
+                        -u or it may convert the line terminators.
 
 optional arguments:
   -h, --help            show this help message and exit
   -v                    show version information
   -q                    run (more) quietly
-  -bufsize BUFSIZE      size of the buffer to match against
   -recurse              recurse into subdirectories
   -zip                  recurse into zip files
-  -extension            use file extensions if the patterns fail. May return
-                        many matches.
-  -matchprintf FORMATSTRING
-                        format string (Python style) to use on match.
-                        {0}=path, {1}=delta-t, {2}=fido, {3}=format, {4}=sig,
-                        {5}=count.
-  -nomatchprintf FORMATSTRING
-                        format string (Python style) to use if no match.
-                        {0}=path, {1}=delta-t, {2}=fido.
+  -input INPUT          file containing a list of files to check, one per
+                        line. - means stdin
   -formats PUIDS        comma separated string of formats to use in
                         identification
   -excludeformats PUIDS
                         comma separated string of formats not to use in
                         identification
+  -extension            use file extensions if the patterns fail. May return
+                        many matches.
+  -matchprintf FORMATSTRING
+                        format string (Python style) to use on match. See
+                        nomatchprintf. You also have access to info.count, the
+                        number of matches; format; and sig.
+  -nomatchprintf FORMATSTRING
+                        format string (Python style) to use if no match. You
+                        have access to info with attributes name, size, time.
+  -bufsize BUFSIZE      size of the buffer to match against
   -show SHOW            show "format" or "defaults"
-  -input INPUT          file containing a list of files to check, one per
-                        line. - means stdin
 
 Open Planets Foundation (www.openplanetsfoundation.org) See License.txt for
 license information. Download from: http://github.com/openplanets/fido Author:
