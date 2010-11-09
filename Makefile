@@ -2,7 +2,7 @@
 
 python='e:\Apps\Python26\python.exe'
 
-install: setup.py fido/*.py fido/formats.py
+install: setup.py fido/*.py fido/fido.bat fido/fido.sh
 	${python} setup.py install
 	
 dist: formats
@@ -10,7 +10,7 @@ dist: formats
 	
 formats: fido/formats.py
 
-formats.py: fido/prepare.py fido/conf/*.zip
+formats.py: fido/prepare.py fido/format_fixup.py fido/conf/*.zip
 	${python} fido/prepare.py
 	
 clean:
