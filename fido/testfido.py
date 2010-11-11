@@ -12,8 +12,7 @@ class Test(unittest.TestCase):
         self.results = []
         def stash(name, matches, delta_t):
             self.results.append((name, [x[0].Identifier for x in matches]))
-        fido.match_handler = stash
- 
+        fido.handle_matches = stash
         
     def test_convert(self):
         import prepare
