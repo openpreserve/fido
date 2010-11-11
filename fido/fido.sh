@@ -1,2 +1,2 @@
 #!/bin/sh
-python -m fido.run $*
+python -u -m fido.run $*
