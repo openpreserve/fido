@@ -1,11 +1,15 @@
 # Fido Makefile
 python=python
+python26=/cygdrive/e/apps/python26/python
+python27=/cygdrive/e/apps/python27/python
 
 install: setup.py fido/*.py fido/fido.bat fido/fido.sh
-	${python} setup.py install
-	
+	${python26} setup.py install
+	${python27} setup.py install
+
 dist: formats
-	${python} setup.py sdist bdist_msi
+	${python26} setup.py bdist_msi
+	${python27} setup.py sdist bdist_msi
 	
 formats: fido/formats.py
 
@@ -44,3 +48,4 @@ test/files.txt: test/files/*.*
 clean:
 	rm -rf build
 	rm fido/*.pyc
+	rm test/out*.csv test/test.txt
