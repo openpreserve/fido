@@ -1,27 +1,27 @@
 FIDO TODO LIST
+TODO: I noted that some signatures share byte sequences.  Check how many there are any if more than a few, handle properly.
 TODO: Change order of preference for extension matches!
-TODO: Add in extension handling / requires modifying prepare as well as run.
-TODO: Find out how to distribute the windows installer though github.
-TODO: Try multiprocessing or threading to do IO and matching in parallel; the 0.5 setup doesn't seem to max out the CPU
 TODO: Use int ids, offsets, etc, not strings.
-TODO: Rejig the formats.py to implement a single function check_formats that is free to be optimised.
-TODO: Handle tar, jar, gzip container formats / transforms as in METS
-TODO: Handle end-tests efficiently.  Or review them for other optimisations. Reverse? s[::-1]
-TODO: Add a no EOF option (perhaps a bad idea until sigs are improved)
 TODO: Review api against jhove/2
 TODO: Review format information against FITS
-TODO: Add thread to handle signal and report on current file, #done, #todo, time
-TODO: Consider if we should use the non-greedy qualifiers *?, +?, ??, or {m,n}?; consider (?i)
-TODO: Rename _parse to _convert
 TODO: Get the magic file and add signatures from it
-TODO: Handle bigendian. x-fmt/392 JPEG2000 is the only one; consider reworking sig and dropping feature
-TODO: Consider using mmap instead of reading the buffer
-TODO: Fix parseReport so that it doesn't create a new parser for each file.
-TODO: Skip zero-len files
-TODO: Try some alternate implementations of format checking.  E.g., no-compiled regex, try-me-else, first n-byte hash, reverse end
 TODO: Move the fetch code from shell/wget to python
-TODO: Produce a single file app / .exe
-
+skip: Handle bigendian. x-fmt/392 JPEG2000 is the only one; consider reworking sig and dropping feature
+skip: Consider using mmap instead of reading the buffer
+skip: Skip zero-len files
+skip: Try some alternate implementations of format checking.  E.g., no-compiled regex, try-me-else, first n-byte hash, reverse end
+skip: Try multiprocessing or threading to do IO and matching in parallel; the 0.5 setup doesn't seem to max out the CPU
+skip: Rejig the formats.py to implement a single function check_formats that is free to be optimised.
+skip: Handle tar, jar, gzip container formats / transforms as in METS
+skip: Handle end-tests efficiently.  Or review them for other optimisations. Reverse? s[::-1]
+skip: Add a no EOF option (perhaps a bad idea until sigs are improved)
+skip: Add thread to handle signal and report on current file, #done, #todo, time
+done: Add in extension handling / requires modifying prepare as well as run.
+done: Produce a single file app / .exe.  Well, there is now a script fido.bat and fido.sh.
+done: Fix parseReport so that it doesn't create a new parser for each file. Not worth the trouble.
+done: Rename _parse to _convert
+done: Consider if we should use the non-greedy qualifiers *?, +?, ??, or {m,n}?; consider (?i).  Doesn't seem to matter in general.
+done: Find out howone to distribute the windows installer though github.
 done. Evaluate current droid signatures to see which features are used
 done. Parse the sig file, building up an internal representation
 done. Match a sig against a string / byte array
@@ -92,7 +92,7 @@ SIG NOTES
 - One of the .mov files has ftypqt which is probably quicktime.  There is not signature for this! There is an mp4a at offset 591, 599.
 - The indirectoffset is not used
 - At least some of the variable patterns really seem to have bof+maxoffset nature
-- fmt/50 and fmt/51 (RTD) have identical signatures and no precedence.
+- fmt/50 and fmt/51 (RTF) have identical signatures and no precedence.
 - zip x-fmt/263 and JAR x-fmt have no precedence relation.  But jar > zip 
 - Check JP2 in c:\Documents and Settings\afarquha\My Documents\DPT\Image Comparison\000833138_01_000021.jp2
 - Add signatures for: .txt, .sh, .css, .bib, .tex, .java, .py, .c, .dot (msft), .*~, .dot (graphs), Makefile, .bz2, .aspx, .js, .warc, .wgz, .xsd, .ini, .mm, .tab, 
@@ -138,6 +138,3 @@ The following are define in the language, but never used
 [!abc] -> (?!abc) - There are none
 [!a:b] ->  - There are none
 Indirect offset
-
-====
-tarfile.open(name=fn,fileobj=obj
