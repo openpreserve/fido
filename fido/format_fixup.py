@@ -1,7 +1,7 @@
 '''
 Modify the definition of fixup to add or correct the format definitions.
 '''
-
+import formats, signature
 def fixup(info):
     """Fixup pronom definitions and extend with local modifications.
     info is a prepare.FormatInfo object.  Use the methods such as add_format, remove, modify
@@ -23,3 +23,8 @@ def fixup(info):
     for id in [331]:
         info.modify('ByteSequence', str(id),
             regexstring='(?s)\\APK\\\x03\\\x04')
+    #FormatID=u'686',FormatName=u'JPEG2000',Identifier=u'x-fmt/392',MimeType=[u'image/jp2']
+    #ByteSequenceValue=u'0000000C6A5020200D0A870A'
+    for id in [323]:
+        info.modify('ByteSequence', str(id),
+            regexstring=r'(?s)\x00\x00\x00\x0cjP\x20\x20\x0d\x0a\x87\x0a\x00\x00\x00\x14ftypjp2')
