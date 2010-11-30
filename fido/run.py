@@ -4,7 +4,7 @@ import sys, re, os, time
 from xml.etree.cElementTree import parse
 from xml.etree import cElementTree as ET
  
-version = '0.9.0'
+version = '0.9.1'
 defaults = {'bufsize': 32 * 4096,
             'regexcachesize' : 1024,
             'printmatch': "OK,{info.time},{info.puid},{info.formatname},{info.signaturename},{info.filesize},\"{info.filename}\"\n",
@@ -66,9 +66,13 @@ class Fido:
         #print "Loaded format specs in {0:>6.2f}ms".format((t1 - t0) * 1000)
         for element in root.findall('format'):
             puid = element.find('puid').text
-            #silently over write
+            existing = self.puid_format_map.get(puid, False) 
+            if  existing:
+                # Already have one, so delete it!
+                self.formats[self.formats.index(existing)] = element
+            else:
+                self.formats.append(element)
             self.puid_format_map[puid] = element
-            self.formats.append(element)
         return self.formats
             
     def print_matches(self, fullname, matches, delta_t):
