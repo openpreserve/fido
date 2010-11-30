@@ -1,0 +1,107 @@
+<?xml version="1.0" ?>
+<formats version="0.1">
+  <format>
+    <puid> fido-fmt/189.word </puid>
+    <name> Microsoft Office Open XML - Word </name>
+    <extension>docx</extension>
+    <has_priority_over> x-fmt/263 </has_priority_over>
+    <has_priority_over> fmt/189 </has_priority_over>
+    <signature>
+      <name> Microsoft Office Open XML - Word </name>
+      <pattern>
+        <position> BOF </position>
+        <regex>(?s)\\APK\\\x03\\\x04</regex>
+      </pattern>
+      <pattern>
+        <position> BOF </position>
+        <regex> (?s)\\A.{30}\\[Content\\_Types\\]\\.xml\\ \\\xa2 </regex>
+      </pattern>
+      <pattern>
+        <position> EOF </position>
+        <regex> (?s)\\\x00\\\x00word/document.xmlPK\\\x01\\\x02\\\x2d.{0,2000}\\Z </regex>
+      </pattern>
+    </signature>
+  </format>
+  <format>
+    <puid> fido-fmt/189.xl </puid>
+    <name> Microsoft Office Open XML - Excel </name>
+    <extension>xlsx</extension>
+    <has_priority_over> x-fmt/263 </has_priority_over>
+    <has_priority_over> fmt/189 </has_priority_over>
+    <signature>
+      <name> Microsoft Office Open XML - Excel </name>
+      <pattern>
+        <position> BOF </position>
+        <regex>(?s)\\APK\\\x03\\\x04</regex>
+      </pattern>
+      <pattern>
+        <position> BOF </position>
+        <regex> (?s)\\A.{30}\\[Content\\_Types\\]\\.xml\\ \\\xa2 </regex>
+      </pattern>
+      <pattern>
+        <position> EOF </position>
+        <regex> (?s)\\\x00\\\x00xl/workbook.xmlPK\\\x01\\\x02\\\x2d.{0,2000}\\Z </regex>
+      </pattern>
+    </signature>
+  </format>
+  <format>
+    <puid> fido-fmt/189.ppt </puid>
+    <name> Microsoft Office Open XML - Powerpoint </name>
+    <extension>pptx</extension>
+    <has_priority_over> x-fmt/263 </has_priority_over>
+    <has_priority_over> fmt/189 </has_priority_over>
+    <signature>
+      <name> Microsoft Office Open XML - Powerpoint </name>
+      <pattern>
+        <position> BOF </position>
+        <regex>(?s)\\APK\\\x03\\\x04</regex>
+      </pattern>
+      <pattern>
+        <position> BOF </position>
+        <regex> (?s)\\A.{30}\\[Content\\_Types\\]\\.xml\\ \\\xa2 </regex>
+      </pattern>
+      <pattern>
+        <position> EOF </position>
+        <!-- ppt/presentation.xml might be better, but it can be far from the end. -->
+        <regex> (?s)\\\x00\\\x00ppt/.{1,20}\\.xmlPK\\\x01\\\x02\\\x2d.{0,2000}\\Z </regex>
+      </pattern>
+    </signature>
+  </format>
+  <format>
+        <mime>audio/mpeg</mime>
+        <puid>fmt/134</puid>
+        <name>MPEG 1/2 Audio Layer 3 - fido update</name>
+        <pronom_id>687</pronom_id>
+        <extension>mp3</extension>
+        <signature>
+            <name>MPEG-1/2 Audio Layer 3</name>
+            <note>The pronom signatures for fmt/134 were horrendous.  This is an attempt to consolidate several
+                  nearly identical patterns into one.  It is not clear if they should be BOF or EOF or both.
+                  Regularly-spaced frame headers should always be discoverable near EOF. An ID3v1
+                tag of up to 355 bytes may be present at EOF.</note>
+            <pattern>
+                <position>EOF</position>
+                <regex>(?s)\\\xff[\\\xfa\\\xfb\\\xf2\\\xf3][\\\x10-\\\xeb].{46,1439}\\\xff[\\\xfa\\\xfb\\\xf2\\\xf3][\\\x10-\\\xeb].{46,1439}\\Z</regex>
+            </pattern>
+            <pattern>
+                <position>BOF</position>
+                <pronom_pattern>494433</pronom_pattern>
+                <regex>(?s)\\AID3</regex>
+            </pattern>
+        </signature>
+    </format>
+    <format>
+        <mime>video/quicktime</mime>
+        <puid>fido-x-fmt/384</puid>
+        <name>Quicktime</name>
+        <extension>mov</extension>
+        <signature>
+            <name>QuickTime</name>
+            <note>Simple addition to cover the case in the fido test suite.  Needs research to correct and merge with x-fmt/384</note>
+            <pattern>
+                <position>BOF</position>
+                <regex>(?s)\\A\\\x00{3} ftypqt.{0,25}qt.{0,20}moov.{4}mvhd</regex>
+            </pattern>
+        </signature>
+    </format>
+</formats>
