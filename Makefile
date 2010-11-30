@@ -18,13 +18,10 @@ fido/conf/formats.xml: fido/prepare.py fido/conf/*.zip
 	
 all: clean install test dist
 
-test: test/ok1.txt test/ok2.txt test/ok3.txt
-	
-# Need to remember how to error properly
-test/ok1.txt test/ok2.txt test/ok3.txt: test/expected.csv testrun
-	(diff  test/expected.csv test/out-1.csv) && (echo 'success' > test/ok1.txt)
-	(diff  test/expected.csv test/out-2.csv) && (echo 'success' > test/ok2.txt)
-	(diff  test/expected.csv test/out-3.csv) && (echo 'success' > test/ok3.txt)
+test: test/expected.csv testrun
+	(diff  test/expected.csv test/out-1.csv)
+	(diff  test/expected.csv test/out-2.csv)
+	(diff  test/expected.csv test/out-3.csv)
 
 ok="{info.filename},{info.puid},{info.signaturename}\n"
 ko="{info.filename},NONE,NONE\n"
