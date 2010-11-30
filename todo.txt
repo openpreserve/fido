@@ -1,12 +1,13 @@
 FIDO TODO LIST
+TODO: Make sure that the fixups get applied; at the moment, they are in formats.xml, but may be lost 
 TODO: I noted that some signatures share byte sequences.  Check how many there are any if more than a few, handle properly.
 TODO: Change order of preference for extension matches!
-TODO: Use int ids, offsets, etc, not strings.
 TODO: Review api against jhove/2
 TODO: Review format information against FITS
 TODO: Get the magic file and add signatures from it
 TODO: Move the fetch code from shell/wget to python
-skip: Handle bigendian. x-fmt/392 JPEG2000 is the only one; consider reworking sig and dropping feature
+done: Handle bigendian. x-fmt/392 JPEG2000 is the only one; consider reworking sig and dropping feature
+skip: Use int ids, offsets, etc, not strings.
 skip: Consider using mmap instead of reading the buffer
 skip: Skip zero-len files
 skip: Try some alternate implementations of format checking.  E.g., no-compiled regex, try-me-else, first n-byte hash, reverse end
