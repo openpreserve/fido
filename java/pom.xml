@@ -43,7 +43,7 @@
 							<!-- this is important -->
 							<overwrite>true</overwrite>
 							<!-- target -->
-							<outputDirectory>${basedir}/target/classes/uk/bl/dpt/fido</outputDirectory>
+							<outputDirectory>${basedir}/target/classes</outputDirectory>
 							<resources>
 								<resource>
 									<!-- source -->
@@ -57,6 +57,48 @@
 					</execution>
 				</executions>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>uk.bl.dpt.fido.FidoCmd</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.dstovall</groupId>
+                <artifactId>onejar-maven-plugin</artifactId>
+                <version>1.4.4</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <!-- Optional -->
+                            <onejarVersion>0.97</onejarVersion>
+                            <!-- Optional, use only if you need to include native libraries (dll's) -->
+                            <!-- 
+                            <binlibs>
+                                <fileSet>
+                                    <directory>${project.build.directory}/dllextract</directory>
+                                    <includes>
+                                        <include>test.dll</include>
+                                    </includes>
+                                </fileSet>
+                            </binlibs>
+                             -->
+                            <!-- Optional, default is false -->
+                            <attachToBuild>true</attachToBuild>
+                            <!-- Optional, default is "onejar" -->
+                            <classifier>onejar</classifier>
+                        </configuration>
+                        <goals>
+                            <goal>one-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -89,6 +131,14 @@
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
+	
+	<pluginRepositories>
+        <pluginRepository>
+            <id>onejar-maven-plugin.googlecode.com</id>
+            <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+        </pluginRepository>
+    </pluginRepositories>
+    
 	<profiles>
 		<profile>
 			<id>build-stubs</id>
@@ -110,7 +160,7 @@
 										<wsdlFile>www.nationalarchives.gov.uk/pronom/service.wsdl</wsdlFile>
 									</wsdlFiles>
 									<packageName>uk.gov.nationalarchives.pronom</packageName>
-									<catalog>src/main/jaxws/catalog.xml</catalog>
+									<catalog>src/wsdl/catalog.xml</catalog>
 									<keep>true</keep>
 									<sourceDestDir>src/main/java</sourceDestDir>
 									<destDir></destDir>

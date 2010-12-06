@@ -48,9 +48,9 @@ import javax.xml.bind.annotation.XmlType;
 public class FileFormatType {
 
     @XmlElementRefs({
+        @XmlElementRef(name = "InternalSignatureID", namespace = "http://www.nationalarchives.gov.uk/pronom/SignatureFile", type = JAXBElement.class),
         @XmlElementRef(name = "HasPriorityOverFileFormatID", namespace = "http://www.nationalarchives.gov.uk/pronom/SignatureFile", type = JAXBElement.class),
-        @XmlElementRef(name = "Extension", namespace = "http://www.nationalarchives.gov.uk/pronom/SignatureFile", type = JAXBElement.class),
-        @XmlElementRef(name = "InternalSignatureID", namespace = "http://www.nationalarchives.gov.uk/pronom/SignatureFile", type = JAXBElement.class)
+        @XmlElementRef(name = "Extension", namespace = "http://www.nationalarchives.gov.uk/pronom/SignatureFile", type = JAXBElement.class)
     })
     protected List<JAXBElement<? extends Serializable>> internalSignatureIDOrExtensionOrHasPriorityOverFileFormatID;
     @XmlAttribute(name = "ID", required = true)

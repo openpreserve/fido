@@ -31,6 +31,7 @@ public class FidoCmd {
 	 * @throws FileNotFoundException 
 	 */
 	public static void main(String[] args)  {
+		pythonInvoker();
 		downloadSigFile();
 	}
 	
@@ -49,8 +50,11 @@ public class FidoCmd {
         System.out.println("x: " + x);
         // Attempt to load the formats script:"
         interp.execfile( FidoCmd.class.getResourceAsStream("formats.py"));
-        PyObject po = interp.get("all_formats");
-        System.out.println("FF:");
+        System.out.println("Hi");
+        interp.exec("item = all_formats.pop().Identifier");
+        PyObject po = interp.get("item");
+        System.out.println("Ho");
+        System.out.println("FF:"+po);
         /* PROBLEM: Can't integrate it as it is.
          * The barrier you are probably hitting is the method length limit in JVM
 			bytecode. It is 65535 bytes max. Long methods, really long python
