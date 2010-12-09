@@ -47,7 +47,9 @@ class FormatInfo:
     def save(self, dst):
         """Write the fido XML format definitions to @param dst
         """
-        tree = ET.ElementTree(ET.Element('formats', {'version':'0.1'}))
+        tree = ET.ElementTree(ET.Element('formats', {'version':'0.1',
+                                                     'xmlns:xsi' : "http://www.w3.org/2001/XMLSchema-instance",
+                                                     'xsi:noNamespaceSchemaLocation': "fido-formats.xsd"}))
         root = tree.getroot()
         for f in self.formats:
             if f.find('signature'):
@@ -186,8 +188,10 @@ def doByte(chars, i, littleendian):
     return (re.escape(val), 2)
 
 def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
-    """Convert @param chars, a pronom bytesequence, into a @return regular expression.
-       @param endianness is not used.
+    """Convert 
+       @param chars, a pronom bytesequence, into a 
+       @return regular expression.
+       Endianness is not used.
     """
     if 'Big' in endianness:
         littleendian = False
@@ -219,6 +223,8 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
         if state == 'start':
             if chars[i].isalnum():
                 state = 'bytes'
+            elif chars[i] == '[' and chars[i+1] == '!':
+                state = 'non-match'
             elif chars[i] == '[':
                 state = 'bracket'
             elif chars[i] == '{':
@@ -234,6 +240,22 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
             buf.write(byt)
             i += inc
             state = 'start'
+        elif state == 'non-match':
+            buf.write('(!')
+            i += 2
+            while True:
+                if chars[i].isalnum():
+                    (byt, inc) = doByte(chars, i, littleendian)
+                    buf.write(byt)
+                    i += inc
+                elif chars[i] == ']':
+                    break
+                else:
+                    raise Exception(_convert_err_msg('Illegal character in non-match', chars[i], i, chars))
+            buf.write(')')
+            i += 1
+            state = 'start'
+
         elif state == 'bracket':
             try:
                 buf.write('[')
