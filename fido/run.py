@@ -1,16 +1,15 @@
 #!python
 
 import sys, re, os, time
-from xml.etree.cElementTree import parse
 from xml.etree import cElementTree as ET
- 
-version = '0.9.1'
+config_dir = os.path.realpath(sys.path[0]) #os.path.dirname(__file__)
+version = '0.9.2'
 defaults = {'bufsize': 32 * 4096,
-            'regexcachesize' : 1024,
+            'regexcachesize' : 2084,
             'printmatch': "OK,{info.time},{info.puid},{info.formatname},{info.signaturename},{info.filesize},\"{info.filename}\"\n",
             'printnomatch' : "KO,{info.time},,,,{info.filesize},\"{info.filename}\"\n",
-            'format_files': [os.path.join(os.path.dirname(__file__), 'conf', 'formats.xml'),
-                             os.path.join(os.path.dirname(__file__), 'conf', 'format_extensions.xml')],
+            'format_files': [os.path.join(config_dir, 'conf', 'formats.xml'),
+                             os.path.join(config_dir, 'conf', 'format_extensions.xml')],
             'description' : """
     Format Identification for Digital Objects (fido).
     FIDO is a command-line tool to identify the file formats of digital objects.
@@ -25,6 +24,35 @@ defaults = {'bufsize': 32 * 4096,
     PRONOM is available from www.tna.gov.uk/pronom.
     """
 }
+
+class memoized(object):
+    """Decorator that caches a function's return value each time it is called.
+       If called later with the same arguments, the cached value is returned, and
+       not re-evaluated.
+       Usage: @memoize before def of thing.
+       function = memoized(function)
+       """
+    def __init__(self, func):
+        self.func = func
+        self.cache = {}
+    def __call__(self, *args):
+        try:
+            return self.cache[args]
+        except KeyError:
+            value = self.func(*args)
+            self.cache[args] = value
+            return value
+        except TypeError:
+        # uncachable -- for instance, passing a list as an argument.
+        # Better to not cache than to blow up entirely.
+            return self.func(*args)
+    def __repr__(self):
+        """Return the function's docstring."""
+        return self.func.__doc__
+    #    def __get__(self, obj, objtype):
+    #        """Support instance methods."""
+    #        return functools.partial(self.__call__, obj)
+
 
 class Fido:
     def __init__(self, quiet=False, bufsize=None, printnomatch=None, printmatch=None,
@@ -56,13 +84,18 @@ class Fido:
            As a side-effect, set self.formats
            @return list of ElementTree.Element, one for each format.
         """
-        tree = parse(file)
+        tree = ET.parse(file)
         root = tree.getroot()
         for element in root.getiterator():
-            if element.text != None:
-                element.text = element.text.strip()
-            if element.tag == 'regex':
-                element.text = element.text.decode('string_escape')
+            if element.text == None:
+                pass
+            else:
+                if element.tag == 'regex':
+                    #print element.text
+                    element.text = element.text.decode('string_escape')
+                    # but if the end char is a backslash, we lost the whitespace in the strip.
+                else:
+                    element.text = element.text.strip()
         #print "Loaded format specs in {0:>6.2f}ms".format((t1 - t0) * 1000)
         for element in root.findall('format'):
             puid = element.find('puid').text
@@ -77,9 +110,9 @@ class Fido:
             
     def print_matches(self, fullname, matches, delta_t):
         """The default match handler.  Prints out information for each match in the list.
-           @fullname is name of the file being matched
-           @matches is a list of (format, signature)
-           @delta_t is the time taken for the match.
+           @param fullname is name of the file being matched
+           @param matches is a list of (format, signature)
+           @param delta_t is the time taken for the match.
         """
         class Group:
             pass
@@ -112,7 +145,8 @@ class Fido:
             print >> sys.stderr, "FIDO: Processed {0:>6d} files in {1:>6.2f} msec, {2:d} files/sec".format(count, secs * 1000, rate)
                                          
     def identify_file(self, filename):
-        """Identify the type of @param filename.  Call self.handle_matches instead of returning a value.
+        """Identify the type of @param filename.  
+           Call self.handle_matches instead of returning a value.
         """
         self.current_file = filename
         try:
@@ -133,7 +167,7 @@ class Fido:
 
     def identify_contents(self, filename, fileobj=None, type=False):
         """Identify each item in a container (such as a zip or tar file).  Call self.handle_matches on each item.
-           The @param fileobj could be a file, or a stream.
+           @param fileobj could be a file, or a stream.
         """
         if type == False:
             return
@@ -173,7 +207,8 @@ class Fido:
             self.handle_matches(self.current_file, matches, time.clock() - t0)
                 
     def identify_stream(self, stream):
-        """Identify the type of @param stream.  Call self.handle_matches instead of returning a value.
+        """Identify the type of @param stream.  
+           Call self.handle_matches instead of returning a value.
            Does not close stream.
         """
         t0 = time.clock()
@@ -241,8 +276,10 @@ class Fido:
             return bofbuffer, eofbuffer
     
     def walk_zip(self, filename, fileobj=None):
-        """Identify the type of each item in the zip @param fileobj.  If @param fileobj is not provided, open @param filename.
-          Call self.handle_matches instead of returning a value.
+        """Identify the type of each item in the zip 
+           @param fileobj.  If fileobj is not provided, open 
+           @param filename.
+           Call self.handle_matches instead of returning a value.
         """
         # IN 2.7+: with zipfile.ZipFile((fileobj if fileobj != None else filename), 'r') as stream:
         import zipfile, tempfile
@@ -277,12 +314,17 @@ class Fido:
                             source.close()
         except IOError:
             print >> sys.stderr, "FIDO: Error: ZipError {0}".format(filename)
+        except zipfile.BadZipfile:
+            print >> sys.stderr, "FIDO: Error: ZipError {0}".format(filename)
+            
         finally:
             if zipstream != None: zipstream.close()
 
     def walk_tar(self, filename, fileobj):
-        """Identify the type of each item in the tar @param fileobj.  If @param fileobj is not provided, open @param filename.
-          Call self.handle_matches instead of returning a value.
+        """Identify the type of each item in the tar 
+           @param fileobj.  If fileobj is not provided, open 
+           @param filename.
+           Call self.handle_matches instead of returning a value.
         """
         import tarfile
         try:
@@ -309,7 +351,7 @@ class Fido:
 
     def as_good_as_any(self, f1, match_list):
         """Return True if the proposed format is as good as any in the match_list.
-        For example, if there is no format in the match_list that has priority over the proposed one"""
+           For example, if there is no format in the match_list that has priority over the proposed one"""
         f1_puid = f1.find('puid').text
         for (f2, unused) in match_list:
             if f1 == f2:
@@ -323,14 +365,24 @@ class Fido:
     
     def match_formats(self, bofbuffer, eofbuffer):
         """Apply the patterns for formats to the supplied buffers.
-           @return a match list of (format, signature) tuples. The list has inferior matches removed.
+           @return a match list of (format, signature) tuples. 
+           The list has inferior matches removed.
         """
+        cache = {}
+        def memo(*args):
+            try:
+                return cache[args]
+            except KeyError:
+                value = args[0](*args[1:])
+                cache[args] = value
+                return value
         self.current_count += 1
         result = []
         for format in self.formats:
             self.current_format = format
             if self.as_good_as_any(format, result):
                 for sig in format.findall('signature'):
+                    #t0 = time.clock()
                     self.current_sig = sig
                     success = True
                     for pat in sig.findall('pattern'):
@@ -339,20 +391,23 @@ class Fido:
                         regex = pat.find('regex').text
                         #print 'trying ', regex
                         if pos == 'BOF':
-                            if not re.match(regex, bofbuffer):
+                            if not memo(re.match, regex, bofbuffer):
                                 success = False
                                 break
                         elif pos == 'EOF':
-                            if not re.search(regex, eofbuffer):
+                            if not memo(re.search, regex, eofbuffer):
                                 success = False
                                 break
                         elif pos == 'VAR':
-                            if not re.search(regex, bofbuffer):
+                            if not memo(re.search, regex, bofbuffer):
                                 success = False 
                                 break
                     if success:
                         result.append((format, sig))
                         break
+                    #                t1 = time.clock()
+                    #                if t1 - t0 > 0.02:
+                    #                    print >> sys.stderr, "FIDO: Slow Signature", self.current_file, format.find('puid').text, format.find('name').text, sig.find('name').text
         result = [match for match in result if self.as_good_as_any(match[0], result)]
         return result
     
