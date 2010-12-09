@@ -14,6 +14,9 @@ import org.python.core.PyInteger;
 import org.python.core.PyObject;
 import org.python.util.PythonInterpreter;
 
+import eu.planets_project.ifr.core.techreg.formats.SigFileUtils;
+
+import uk.gov.nationalarchives.pronom.SigFile;
 import uk.gov.nationalarchives.pronom.SignatureFileType;
 
 /**
@@ -31,8 +34,8 @@ public class FidoCmd {
 	 * @throws FileNotFoundException 
 	 */
 	public static void main(String[] args)  {
-		pythonInvoker();
 		downloadSigFile();
+		pythonInvoker();
 	}
 	
 	/**
@@ -72,7 +75,7 @@ public class FidoCmd {
             		new ProxyAuth( proxyUser, System.getProperty("http.proxyPassword") ) );
 		}
 		
-		SignatureFileType sigFile = SigFileUtils.getLatestSigFile().getFFSignatureFile();
+		SigFile sigFile = SigFileUtils.getLatestSigFile();
 		try {
 			SigFileUtils.writeSigFileToOutputStream(sigFile, new FileOutputStream("signaturefile.xml"));
 		} catch (FileNotFoundException e) {
