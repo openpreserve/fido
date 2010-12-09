@@ -11,7 +11,7 @@ class Test(unittest.TestCase):
     def stash_ids(self, fido):
         self.results = []
         def stash(name, matches, delta_t):
-            self.results.append((name, [x[0].Identifier for x in matches]))
+            self.results.append((name, [x[0].find('puid').text for x in matches]))
         fido.handle_matches = stash
         
     def test_convert(self):

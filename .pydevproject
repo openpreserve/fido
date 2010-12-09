@@ -7,7 +7,6 @@
 <pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">
 <path>/fido/fido</path>
 </pydev_pathproperty>
-<pydev_pathproperty name="org.python.pydev.PROJECT_EXTERNAL_SOURCE_PATH">
-<path>/usr/lib/python2.7</path>
-</pydev_pathproperty>
+
+
 </pydev_project>

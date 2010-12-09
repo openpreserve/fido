@@ -3,7 +3,7 @@ python=python
 python26=/cygdrive/e/apps/python26/python
 python27=/cygdrive/e/apps/python27/python
 
-install: setup.py fido/*.py fido/fido.bat fido/fido.sh
+install: setup.py fido/*.py fido/*.bat fido/*.sh fido/conf/*.*
 	${python26} setup.py install
 	${python27} setup.py install
 
@@ -11,21 +11,22 @@ dist: formats
 	${python26} setup.py bdist_msi
 	${python27} setup.py sdist bdist_msi
 	
-formats: fido/formats.py
+formats: fido/conf/formats.xml fido/conf/format_extensions.xml
 
-formats.py: fido/prepare.py fido/format_fixup.py fido/conf/*.zip
+fido/conf/formats.xml: fido/prepare.py fido/conf/*.zip
 	${python} fido/prepare.py
+	
+all: clean install test dist
 
-# Need to remember how to error properly
-test: test/expected.csv test/test.txt
-	diff  test/expected.csv test/out-1.csv
-	diff  test/expected.csv test/out-2.csv
-	diff  test/expected.csv test/out-3.csv
+test: test/expected.csv testrun
+	(diff  test/expected.csv test/out-1.csv)
+	(diff  test/expected.csv test/out-2.csv)
+	(diff  test/expected.csv test/out-3.csv)
 
-ok="{info.name},{format.Identifier},{sig.SignatureName}\n"
-ko="{info.name},NONE,NONE\n"
+ok="{info.filename},{info.puid},{info.signaturename}\n"
+ko="{info.filename},NONE,NONE\n"
 
-test/test.txt:  test/files.txt
+testrun:  test/files.txt
 	# Regular run
 	${python} -u -m fido.run -r -z \
 		-matchprintf ${ok} -nomatchprintf ${ko} test/files | sort > test/out-1.csv
@@ -38,14 +39,11 @@ test/test.txt:  test/files.txt
 
 	# with input from stream
 	# with input from multi-stream
-	touch test/test.txt
-	
-test/multi.txt: 
 	
 test/files.txt: test/files/*.*
 	find test/files -type f > test/files.txt
 
 clean:
 	rm -rf build
-	rm fido/*.pyc
-	rm test/out*.csv test/test.txt
+	rm -f fido/*.pyc
+	rm -f test/out*.csv test/test.txt
