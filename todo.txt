@@ -1,12 +1,17 @@
 FIDO TODO LIST
-TODO: Make sure that the fixups get applied; at the moment, they are in formats.xml, but may be lost 
-TODO: I noted that some signatures share byte sequences.  Check how many there are any if more than a few, handle properly.
+TODO: Handle terminal backslash in a signature
 TODO: Change order of preference for extension matches!
 TODO: Review api against jhove/2
 TODO: Review format information against FITS
 TODO: Get the magic file and add signatures from it
 TODO: Move the fetch code from shell/wget to python
-done: Handle bigendian. x-fmt/392 JPEG2000 is the only one; consider reworking sig and dropping feature
+note: In 0.9.3 I tried memoizing the routines to get_puid/regex/etc.  This resulted in an overall slowdown.
+done: Fix fmt/40 - for word; it requires 'microsoft word', but my example has 'microsoft office word'
+note: As of 8-Dec, there are 52 identical regexes.
+done: Handle whitespace in xml - what is proper for regex?  Is there a good way to preserve it?
+done: No extra escaped backslashes in formats.xml
+done: Make sure that the fixups get applied; at the moment, they are in formats.xml, but may be lost 
+skip: Tried, but slowed things down. I noted that some signatures share byte sequences.  Check how many there are any if more than a few, handle properly.done: Handle bigendian. x-fmt/392 JPEG2000 is the only one; consider reworking sig and dropping feature
 skip: Use int ids, offsets, etc, not strings.
 skip: Consider using mmap instead of reading the buffer
 skip: Skip zero-len files
