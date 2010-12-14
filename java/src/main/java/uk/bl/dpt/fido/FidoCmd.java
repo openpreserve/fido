@@ -14,6 +14,9 @@ import org.python.core.PyInteger;
 import org.python.core.PyObject;
 import org.python.util.PythonInterpreter;
 
+import eu.planets_project.ifr.core.techreg.formats.SigFileUtils;
+
+import uk.gov.nationalarchives.pronom.SigFile;
 import uk.gov.nationalarchives.pronom.SignatureFileType;
 
 /**
@@ -32,6 +35,7 @@ public class FidoCmd {
 	 */
 	public static void main(String[] args)  {
 		downloadSigFile();
+		pythonInvoker();
 	}
 	
 	/**
@@ -49,8 +53,11 @@ public class FidoCmd {
         System.out.println("x: " + x);
         // Attempt to load the formats script:"
         interp.execfile( FidoCmd.class.getResourceAsStream("formats.py"));
-        PyObject po = interp.get("all_formats");
-        System.out.println("FF:");
+        System.out.println("Hi");
+        interp.exec("item = all_formats.pop().Identifier");
+        PyObject po = interp.get("item");
+        System.out.println("Ho");
+        System.out.println("FF:"+po);
         /* PROBLEM: Can't integrate it as it is.
          * The barrier you are probably hitting is the method length limit in JVM
 			bytecode. It is 65535 bytes max. Long methods, really long python
@@ -68,7 +75,7 @@ public class FidoCmd {
             		new ProxyAuth( proxyUser, System.getProperty("http.proxyPassword") ) );
 		}
 		
-		SignatureFileType sigFile = SigFileUtils.getLatestSigFile().getFFSignatureFile();
+		SigFile sigFile = SigFileUtils.getLatestSigFile();
 		try {
 			SigFileUtils.writeSigFileToOutputStream(sigFile, new FileOutputStream("signaturefile.xml"));
 		} catch (FileNotFoundException e) {
