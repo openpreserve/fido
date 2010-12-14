@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="formats">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="format"/>
+      </xs:sequence>
+      <xs:attribute name="version" type="xs:decimal" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="format">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="1" minOccurs="1" ref="puid"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="mime"/>
+        <xs:element minOccurs="0" ref="container"/>
+        <xs:element maxOccurs="1" minOccurs="1" ref="name"/>
+        <xs:element minOccurs="0" ref="note"/>
+        <xs:element maxOccurs="1" minOccurs="0" ref="pronom_id"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="extension"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="has_priority_over"/>
+        <xs:element maxOccurs="unbounded" ref="signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mime" type="xs:string"/>
+  <xs:element name="puid" type="xs:string"/>
+  <xs:element name="container" type="container_type"/>
+  <xs:element name="pronom_id" type="xs:integer"/>
+  <xs:element name="extension" type="xs:string"/>
+  <xs:element name="has_priority_over" type="xs:string"/>
+  <xs:element name="signature">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="name"/>
+        <xs:element ref="note" minOccurs="0"/>
+        <xs:element maxOccurs="unbounded" ref="pattern"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="note" type="xs:string"/>
+  <xs:element name="pattern">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="position"/>
+        <xs:element ref="pronom_pattern" minOccurs="0"/>
+        <xs:element ref="regex" minOccurs="1" maxOccurs="1" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="position" type="position_type"/>
+  <xs:element name="pronom_pattern" type="xs:string"/>
+  <xs:element name="regex" type="xs:string"/>
+  <xs:element name="name" type="xs:string"/>
+  <xs:simpleType name="position_type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="BOF"/>
+      <xs:enumeration value="EOF"/>
+      <xs:enumeration value="VAR"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="container_type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="zip"/>
+      <xs:enumeration value="tar"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
