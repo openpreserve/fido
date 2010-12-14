@@ -2,14 +2,13 @@
 
 import sys, re, os, time
 from xml.etree import cElementTree as ET
-config_dir = os.path.realpath(sys.path[0]) #os.path.dirname(__file__)
-version = '0.9.2'
+version = '0.9.3'
 defaults = {'bufsize': 32 * 4096,
             'regexcachesize' : 2084,
+            'conf_dir' : os.path.join(os.path.dirname(__file__),'conf'),
             'printmatch': "OK,{info.time},{info.puid},{info.formatname},{info.signaturename},{info.filesize},\"{info.filename}\"\n",
             'printnomatch' : "KO,{info.time},,,,{info.filesize},\"{info.filename}\"\n",
-            'format_files': [os.path.join(config_dir, 'conf', 'formats.xml'),
-                             os.path.join(config_dir, 'conf', 'format_extensions.xml')],
+            'format_files': ['formats.xml', 'format_extensions.xml'],
             'description' : """
     Format Identification for Digital Objects (fido).
     FIDO is a command-line tool to identify the file formats of digital objects.
@@ -25,38 +24,9 @@ defaults = {'bufsize': 32 * 4096,
     """
 }
 
-class memoized(object):
-    """Decorator that caches a function's return value each time it is called.
-       If called later with the same arguments, the cached value is returned, and
-       not re-evaluated.
-       Usage: @memoize before def of thing.
-       function = memoized(function)
-       """
-    def __init__(self, func):
-        self.func = func
-        self.cache = {}
-    def __call__(self, *args):
-        try:
-            return self.cache[args]
-        except KeyError:
-            value = self.func(*args)
-            self.cache[args] = value
-            return value
-        except TypeError:
-        # uncachable -- for instance, passing a list as an argument.
-        # Better to not cache than to blow up entirely.
-            return self.func(*args)
-    def __repr__(self):
-        """Return the function's docstring."""
-        return self.func.__doc__
-    #    def __get__(self, obj, objtype):
-    #        """Support instance methods."""
-    #        return functools.partial(self.__call__, obj)
-
-
 class Fido:
     def __init__(self, quiet=False, bufsize=None, printnomatch=None, printmatch=None,
-                 extension=False, zip=False, handle_matches=None, format_files=None):
+                 extension=False, zip=False, handle_matches=None, conf_dir=None, format_files=None):
         global defaults
         self.quiet = quiet
         self.bufsize = (defaults['bufsize'] if bufsize == None else bufsize)
@@ -65,11 +35,13 @@ class Fido:
         self.handle_matches = (self.print_matches if handle_matches == None else handle_matches)
         self.zip = zip
         self.extension = extension
+        self.conf_dir = defaults['conf_dir'] if conf_dir == None else conf_dir
         self.format_files = defaults['format_files'] if format_files == None else format_files
         self.formats = []
         self.puid_format_map = {}
+        self.puid_has_priority_over_map = {}
         for file in self.format_files:
-            self.load(file)
+            self.load(os.path.join(os.path.abspath(self.conf_dir),file))
         self.current_file = ''
         self.current_filesize = 0
         self.current_format = None
@@ -85,38 +57,50 @@ class Fido:
            @return list of ElementTree.Element, one for each format.
         """
         tree = ET.parse(file)
-        root = tree.getroot()
-        for element in root.getiterator():
-            if element.text == None:
-                pass
-            else:
-                if element.tag == 'regex':
-                    #print element.text
-                    element.text = element.text.decode('string_escape')
-                    # but if the end char is a backslash, we lost the whitespace in the strip.
-                else:
-                    element.text = element.text.strip()
         #print "Loaded format specs in {0:>6.2f}ms".format((t1 - t0) * 1000)
-        for element in root.findall('format'):
-            puid = element.find('puid').text
+        #TODO: Handle empty regexes properly; perhaps remove from the format list
+        for element in tree.getroot().findall('./format'):
+            puid = self.get_puid(element)
+            # Handle over-writes in multiple file loads
             existing = self.puid_format_map.get(puid, False) 
             if  existing:
-                # Already have one, so delete it!
+                # Already have one, so replace old with new!
                 self.formats[self.formats.index(existing)] = element
             else:
                 self.formats.append(element)
             self.puid_format_map[puid] = element
+            # Build some structures to speed things up
+            self.puid_has_priority_over_map[puid] = frozenset([puid_element.text for puid_element in element.findall('has_priority_over')])
         return self.formats
-            
+
+    # To delete a format: (1) remove from self.formats, (2) remove from puid_format_map, (3) remove from selt.puid_has_pri
+    def get_signatures(self, format):
+        return format.findall('signature')
+    
+    def has_priority_over(self, format, possibly_inferior):
+        return self.get_puid(possibly_inferior)in self.puid_has_priority_over_map[self.get_puid(format)]
+                
+    def get_puid(self, format):
+        return format.find('puid').text
+    
+    def get_patterns(self, signature):
+        return signature.findall('pattern')
+    
+    def get_pos(self, pat):        
+        return pat.find('position').text
+    
+    def get_regex(self, pat):
+        return pat.find('regex').text
+    
     def print_matches(self, fullname, matches, delta_t):
         """The default match handler.  Prints out information for each match in the list.
            @param fullname is name of the file being matched
            @param matches is a list of (format, signature)
            @param delta_t is the time taken for the match.
         """
-        class Group:
+        class Info:
             pass
-        obj = Group()
+        obj = Info()
         obj.count = self.current_count
         obj.group_size = len(matches)
         obj.filename = fullname
@@ -129,7 +113,7 @@ class Fido:
             for (f, s) in matches:
                 i += 1
                 obj.group_index = i
-                obj.puid = f.find('puid').text
+                obj.puid = self.get_puid(f)
                 obj.formatname = f.find('name').text
                 obj.signaturename = s.find('name').text
                 mime = s.find('mime')
@@ -352,14 +336,12 @@ class Fido:
     def as_good_as_any(self, f1, match_list):
         """Return True if the proposed format is as good as any in the match_list.
            For example, if there is no format in the match_list that has priority over the proposed one"""
-        f1_puid = f1.find('puid').text
-        for (f2, unused) in match_list:
-            if f1 == f2:
-                continue
-            for puid_element in f2.findall('has_priority_over'):
-                puid = puid_element.text
-                if puid == f1_puid:
-                    # f2 has priority over me, so we are not that good!
+        if match_list != []:
+            f1_puid = self.get_puid(f1)
+            for (f2, unused) in match_list:
+                if f1 == f2:
+                    continue
+                elif f1_puid in self.puid_has_priority_over_map[self.get_puid(f2)]:
                     return False
         return True
     
@@ -368,46 +350,42 @@ class Fido:
            @return a match list of (format, signature) tuples. 
            The list has inferior matches removed.
         """
-        cache = {}
-        def memo(*args):
-            try:
-                return cache[args]
-            except KeyError:
-                value = args[0](*args[1:])
-                cache[args] = value
-                return value
         self.current_count += 1
+        #t0 = time.clock()
         result = []
-        for format in self.formats:
-            self.current_format = format
-            if self.as_good_as_any(format, result):
-                for sig in format.findall('signature'):
-                    #t0 = time.clock()
-                    self.current_sig = sig
-                    success = True
-                    for pat in sig.findall('pattern'):
-                        self.current_pat = pat
-                        pos = pat.find('position').text
-                        regex = pat.find('regex').text
-                        #print 'trying ', regex
-                        if pos == 'BOF':
-                            if not memo(re.match, regex, bofbuffer):
-                                success = False
-                                break
-                        elif pos == 'EOF':
-                            if not memo(re.search, regex, eofbuffer):
-                                success = False
-                                break
-                        elif pos == 'VAR':
-                            if not memo(re.search, regex, bofbuffer):
-                                success = False 
-                                break
-                    if success:
-                        result.append((format, sig))
-                        break
-                    #                t1 = time.clock()
-                    #                if t1 - t0 > 0.02:
-                    #                    print >> sys.stderr, "FIDO: Slow Signature", self.current_file, format.find('puid').text, format.find('name').text, sig.find('name').text
+        try:
+            for format in self.formats:
+                self.current_format = format
+                if self.as_good_as_any(format, result):
+                    for sig in self.get_signatures(format):
+                        self.current_sig = sig
+                        success = True
+                        for pat in self.get_patterns(sig):
+                            self.current_pat = pat
+                            pos = self.get_pos(pat)
+                            regex = self.get_regex(pat)
+                            #print 'trying ', regex
+                            if pos == 'BOF':
+                                if not re.match(regex, bofbuffer):
+                                    success = False
+                                    break
+                            elif pos == 'EOF':
+                                if not re.search(regex, eofbuffer):
+                                    success = False
+                                    break
+                            elif pos == 'VAR':
+                                if not re.search(regex, bofbuffer):
+                                    success = False 
+                                    break
+                        if success:
+                            result.append((format, sig))
+                            break
+        except Exception:
+            print '***', self.get_puid(format), regex
+            
+        #        t1 = time.clock()
+        #        if t1 - t0 > 0.02:
+        #            print >> sys.stderr, "FIDO: Slow ID", self.current_file
         result = [match for match in result if self.as_good_as_any(match[0], result)]
         return result
     
@@ -429,14 +407,6 @@ class Fido:
             if len(buf) == 0:
                 break
             target.write(buf)
-
-def prettify(elem):
-    """Return a pretty-printed XML string for the Element.
-    """
-    from xml.dom import minidom
-    rough_string = ET.tostring(elem, 'UTF-8')
-    reparsed = minidom.parseString(rough_string)
-    return reparsed.toprettyxml(indent="  ")
              
 def list_files(roots, recurse=False):
     "Return the files one at a time.  Roots could be a fileobj or a list."
@@ -458,7 +428,7 @@ def main(arglist=None):
     if arglist == None:
         arglist = sys.argv[1:]
         
-    parser = ArgumentParser(description=defaults['description'], epilog=defaults['epilog'])
+    parser = ArgumentParser(description=defaults['description'], epilog=defaults['epilog'],fromfile_prefix_chars='@')
     parser.add_argument('-v', default=False, action='store_true', help='show version information')
     parser.add_argument('-q', default=False, action='store_true', help='run (more) quietly')
     parser.add_argument('-recurse', default=False, action='store_true', help='recurse into subdirectories')
@@ -473,30 +443,33 @@ def main(arglist=None):
     parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use if no match. See README.txt')
     parser.add_argument('-bufsize', type=int, default=None, help='size of the buffer to match against')
     parser.add_argument('-show', default=False, help='show "format" or "defaults"')
-    parser.add_argument('-xmlformats', default=None, metavar='XML1,...,XMLn', help='comma separated string of XML format specifications to add.')
+    parser.add_argument('-xmlformats', default=None, metavar='XML1,...,XMLn', help='comma separated string of XML format files to add.')
+    parser.add_argument('-confdir', default=None, help='configuration directory to load, for example, the format specifications from.')
         
     # PROCESS ARGUMENTS
     args = parser.parse_args(arglist)
     
     if args.v :
         print "fido/" + version
-        exit(1)
+        exit(0)
     if args.show == 'defaults':
         for (k, v) in defaults.iteritems():
             print k, '=', repr(v)
-        exit(1)
+        exit(0)
     if args.matchprintf != None:
         args.matchprintf = args.matchprintf.decode('string_escape')
     if args.nomatchprintf != None:
         args.nomatchprintf = args.nomatchprintf.decode('string_escape')
     t0 = time.clock()
     fido = Fido(quiet=args.q, bufsize=args.bufsize, extension=args.extension,
-                printmatch=args.matchprintf, printnomatch=args.nomatchprintf, zip=args.zip)
+                printmatch=args.matchprintf, printnomatch=args.nomatchprintf, zip=args.zip, conf_dir=args.confdir)
     
+    #TODO: Allow conf options to be dis-included
     if args.xmlformats:
         for file in args.xmlformats.split(','):
             fido.load(file)
         
+    #TODO: remove from maps
     if args.formats:
         args.formats = args.formats.split(',')
         fido.formats = [f for f in fido.formats if f.find('puid').text in args.formats]
@@ -506,8 +479,8 @@ def main(arglist=None):
     
     if args.show == 'formats':
         for format in fido.formats:
-            print prettify(format)
-        exit(1)
+            print ET.tostring(format, encoding='UTF-8')
+        exit(0)
         
     if args.input == '-':
         args.files = sys.stdin
@@ -536,6 +509,6 @@ def main(arglist=None):
         fido.print_summary(time.clock() - t0)
 
 if __name__ == '__main__':
-    #main(['-r', '-z', r'e:/Code/fidotests/corpus/nested1.zip', r'e:/Code/fidotests/corpus/test.tar'])
+    #main([ r'../test/files/f1.doc'])
     main()
     

@@ -2,7 +2,7 @@
 #
 # Format Identification for Digital Objects
 
-import re, cStringIO, zipfile, os
+import cStringIO, zipfile, os
 from xml.etree import ElementTree as ET
 
 class NS:
@@ -47,7 +47,7 @@ class FormatInfo:
     def save(self, dst):
         """Write the fido XML format definitions to @param dst
         """
-        tree = ET.ElementTree(ET.Element('formats', {'version':'0.1',
+        tree = ET.ElementTree(ET.Element('formats', {'version':'0.2',
                                                      'xmlns:xsi' : "http://www.w3.org/2001/XMLSchema-instance",
                                                      'xsi:noNamespaceSchemaLocation': "fido-formats.xsd"}))
         root = tree.getroot()
@@ -55,7 +55,7 @@ class FormatInfo:
             if f.find('signature'):
                 root.append(f)
         with open(dst, 'wb') as out:
-                tree.write(out, 'UTF-8')     
+                print >>out, ET.tostring(root,encoding='UTF-8')     
 
     def load_pronom_xml(self):
         """Load the pronom XML from self.pronom_files and convert it to fido XML.
@@ -96,11 +96,16 @@ class FormatInfo:
         # Get the base Format information
         for id in pronom_format.findall(TNA('FileFormatIdentifier')):
             type = get_text_tna(id, 'IdentifierType')
-            if type == 'MIME':
-                ET.SubElement(fido_format, 'mime').text = get_text_tna(id, 'Identifier')
-            elif type == 'PUID':
+            if type == 'PUID':
                 puid = get_text_tna(id, 'Identifier')
                 ET.SubElement(fido_format, 'puid').text = puid
+        # A bit clumsy.  I want to have puid first, then mime, then container.
+        for id in pronom_format.findall(TNA('FileFormatIdentifier')):
+            type = get_text_tna(id, 'IdentifierType')
+            if type == 'MIME':
+                ET.SubElement(fido_format, 'mime').text = get_text_tna(id, 'Identifier')  
+            elif type == 'PUID':
+                puid = get_text_tna(id, 'Identifier')
                 if puid == 'x-fmt/263':
                     ET.SubElement(fido_format, 'container').text = 'zip'
                 elif puid == 'x-fmt/265':
@@ -132,10 +137,9 @@ class FormatInfo:
                 regex = convert_to_regex(bytes, 'Little', pos, offset, max_offset)
                 ET.SubElement(fido_pat, 'position').text = pos
                 ET.SubElement(fido_pat, 'pronom_pattern').text = bytes
-                #FIXME: Perhaps there is a better approach to escaping the regex?
-                ET.SubElement(fido_pat, 'regex').text = regex.encode('string_escape')
+                ET.SubElement(fido_pat, 'regex').text = regex
         return fido_format  
-    
+        
     #FIXME: I don't think that this quite works yet!
     def _sort_formats(self, formatlist):
         """Sort the format list based on their priority relationships so higher priority
@@ -185,7 +189,26 @@ def doByte(chars, i, littleendian):
         val = chr(16 * c1 + c2)
     else:
         val = chr(c1 + 16 * c2)
-    return (re.escape(val), 2)
+    return (escape(val), 2)
+
+# \a\b\n\r\t\v
+_ordinary = frozenset(' !"#%&\',-/0123456789:;<=>@ABCDEFGHIJKLMNOPQRSTUVWXYZ_`abcdefghijklmnopqrstuvwxyz~')
+_special = '$()*+.?[]^\\{|}'
+_hex = '0123456789abcdef'
+def _escape_char(c):
+    if c in '\n':
+        return '\\n'
+    elif c == '\r':
+        return '\\r'
+    elif c in _special:
+        return '\\' + c
+    else:
+        (high, low) = divmod(ord(c), 16)
+        return '\\x' + _hex[high] + _hex[low]
+
+def escape(string):
+    "Escape characters in pattern that are non-printable, non-ascii, or special for regexes."
+    return ''.join(c if c in _ordinary else _escape_char(c) for c in string)
 
 def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
     """Convert 
@@ -223,7 +246,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
         if state == 'start':
             if chars[i].isalnum():
                 state = 'bytes'
-            elif chars[i] == '[' and chars[i+1] == '!':
+            elif chars[i] == '[' and chars[i + 1] == '!':
                 state = 'non-match'
             elif chars[i] == '[':
                 state = 'bracket'
@@ -353,8 +376,20 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
     return val
     
 if __name__ == '__main__':
-    info = FormatInfo(os.path.join(os.path.dirname(__file__), 'conf', 'pronom-xml.zip'))
+    import sys
+    from argparselocal import ArgumentParser  
+    arglist = sys.argv[1:]
+        
+    mydir = os.path.abspath(os.path.dirname(__file__))
+    parser = ArgumentParser(description='Produce the fido format xml that is loaded at run-time')
+    parser.add_argument('-input', default=os.path.join(mydir, 'conf', 'pronom-xml.zip'), help='input file, a zip containing Pronom xml files')
+    parser.add_argument('-output', default=os.path.join(mydir, 'conf', 'formats.xml'), help='output file')
+    
+    # PROCESS ARGUMENTS
+    args = parser.parse_args(arglist)
+    # print os.path.abspath(args.input), os.path.abspath(args.output)
+    info = FormatInfo(args.input)
     info.load_pronom_xml()
-    info.save(os.path.join(os.path.dirname(__file__), 'conf', 'formats.xml'))
-    print 'FIDO: {0} formats'.format(len(info.formats))
+    info.save(args.output)
+    print >> sys.stderr, 'FIDO: {0} formats'.format(len(info.formats))
     
