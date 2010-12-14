@@ -1,0 +1,45 @@
+test\files\AudioPartialTake2.mov,fido-x-fmt/384,QuickTime
+test\files\CB_TM432.jp2,x-fmt/392,JPEG2000
+test\files\CB_TM_QQ432.jp2,x-fmt/392,JPEG2000
+test\files\Otoe_OrthoImage8.jp2,x-fmt/392,JPEG2000
+test\files\Otoe_Relief8.jp2,x-fmt/392,JPEG2000
+test\files\c1.tar!f1.pdf,fmt/95,Acrobat PDF/A
+test\files\c1.tar,x-fmt/265,TAR (Tape Archive)
+test\files\c1.zip!f1.pdf,fmt/95,Acrobat PDF/A
+test\files\c1.zip,x-fmt/263,ZIP format
+test\files\c12.tar!c1.tar!f1.pdf,fmt/95,Acrobat PDF/A
+test\files\c12.tar!c1.tar,x-fmt/265,TAR (Tape Archive)
+test\files\c12.tar!c12.zip!c1.tar,x-fmt/265,TAR (Tape Archive)
+test\files\c12.tar!c12.zip!c1.zip!f1.pdf,fmt/95,Acrobat PDF/A
+test\files\c12.tar!c12.zip!c1.zip,x-fmt/263,ZIP format
+test\files\c12.tar!c12.zip!f1.pdf,fmt/95,Acrobat PDF/A
+test\files\c12.tar!c12.zip,x-fmt/263,ZIP format
+test\files\c12.tar!f1.pdf,fmt/95,Acrobat PDF/A
+test\files\c12.tar,x-fmt/265,TAR (Tape Archive)
+test\files\c12.tar.tgz,x-fmt/266,GZIP format
+test\files\c12.zip!c1.tar,x-fmt/265,TAR (Tape Archive)
+test\files\c12.zip!c1.zip!f1.pdf,fmt/95,Acrobat PDF/A
+test\files\c12.zip!c1.zip,x-fmt/263,ZIP format
+test\files\c12.zip!f1.pdf,fmt/95,Acrobat PDF/A
+test\files\c12.zip,x-fmt/263,ZIP format
+test\files\f1-broken.docx,x-fmt/263,ZIP format
+test\files\f1-broken.pdf,fmt/95,Acrobat PDF/A
+test\files\f1.doc,fmt/40,Microsoft Word for Windows 97 - 2002
+test\files\f1.docx,fido-fmt/189.word,Microsoft Office Open XML - Word
+test\files\f1.odt,fmt/290,ODF 1.1 text (without version number)
+test\files\f1.pdf,fmt/95,Acrobat PDF/A
+test\files\f1.rtf,fmt/45,RTF 1.0 - 1.4 (generic)
+test\files\f1.txt,NONE,NONE
+test\files\f1.v7.wps,fmt/111,OLE2 Compound Document Format
+test\files\f1.wps,fmt/111,OLE2 Compound Document Format
+test\files\f1.xml,fmt/101,XML 1.0
+test\files\f1.xps,fmt/189,Microsoft Office Open XML
+test\files\ms2007.pptx,fido-fmt/189.ppt,Microsoft Office Open XML - Powerpoint
+test\files\ms2007.xlsx,fido-fmt/189.xl,Microsoft Office Open XML - Excel
+test\files\multi.dat,NONE,NONE
+test\files\nc.wav,fmt/6,WAVE
+test\files\nc.wav.mp3,fmt/134,MPEG-1/2 Audio Layer 3
+test\files\oakland50.jp2,x-fmt/392,JPEG2000
+test\files\potholes2.jp2,x-fmt/392,JPEG2000
+test\files\simple.tex,fmt/280,LaTeX (Master document)
+test\files\www09_auer_tlwldp_01.pptx,fido-fmt/189.ppt,Microsoft Office Open XML - Powerpoint
