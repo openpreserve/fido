@@ -1973,7 +1973,9 @@ class ArgumentParser(_AttributeHolder, _ActionsContainer):
         for arg_string in arg_strings:
 
             # for regular arguments, just add them back into the list
-            if arg_string[0] not in self.fromfile_prefix_chars:
+            # AF PATCH: if there was an empty string value such as '', then arg_string[0] failed
+            # AF PATCH: so I added a len==0 option
+            if len(arg_string) == 0 or arg_string[0] not in self.fromfile_prefix_chars:
                 new_arg_strings.append(arg_string)
 
             # replace arguments referencing files with the file content
