@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
         (('4141*42', 'Little', 'Variable', '0', ''), r'(?s)AA.*B'),
         (('4141[42:43]', 'Little', 'Variable', '0', ''), r'(?s)AA[B-C]'),
         (('4141{0-30}41', 'Little', 'Variable', '0', ''), r'(?s)AA.{0,30}A'),
-        (('31[09:0B]36', 'Little', 'Variable', '', ''), '(?s)1[\\\t-\\\x0b]6'),
+        (('31[09:0B]36', 'Little', 'Variable', '', ''), '(?s)1[\\x09-\\x0b]6'),
         (('3132(3333|343434)35??36*{250-*}37{10-20}', 'Little', 'Variable', '', ''),
          '(?s)12(?:33|444)5.?6.*.{250,}7.{10,20}'),
         (('41??', 'Little', 'Variable', '0', ''), r'(?s)A.?'),
@@ -87,7 +87,7 @@ class Test(unittest.TestCase):
         self.assertEqual(len(self.results), len(tests))
         for ((unused_name, ids), (unused_string, expected)) in zip(self.results, tests):
             self.assertTrue(set(ids) == set(expected))
-
+ 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
