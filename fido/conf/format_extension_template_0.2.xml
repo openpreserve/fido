@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<formats xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.2" xsi:noNamespaceSchemaLocation="fido-formats.xsd">
+  <format>
+    <puid>fido-fmt/189.word</puid>
+    <name>Microsoft Office Open XML - Word</name>
+    <extension>docx</extension>
+    <has_priority_over>x-fmt/263</has_priority_over>
+    <has_priority_over>fmt/189</has_priority_over>
+    <signature>
+      <name>Microsoft Office Open XML - Word</name>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)\APK\x03\x04</regex>
+      </pattern>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)\A.{30}\[Content_Types\]\.xml \xa2</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <regex>(?s)\x00\x00word/.{1,20}\.xmlPK\x01\x02\x2d.{0,2000}\Z</regex>
+      </pattern>
+    </signature>
+  </format>
+</formats>
