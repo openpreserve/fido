@@ -1,54 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Looking at these for usage of DC:
-  http://dublincore.org/documents/usageguide/elements.shtml
-  http://dublincore.org/documents/usageguide/qualifiers.shtml
-  http://www.dublincore.org/documents/dc-xml-guidelines/
--->
-<formats 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  version="0.3" 
-  xsi:noNamespaceSchemaLocation="fido-formats.xsd" 
+<formats version="0.3" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="fido-formats-0.3.xsd"
   xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns:dcterms="http://purl.org/dc/terms/">
   <format>
+	<!-- Unique identifier for this record. If an identifier is re-used, 
+	the later record takes precedence. This allows existing records to be overridden if required. -->
     <puid>fido-fmt/189.word</puid>
     <name>Microsoft Office Open XML - Word</name>
     <version>1.0 Transitional</version>
     <alias>Word OOXML</alias>
-    <description></description>
-    <!-- release date -->
-    <dcterms:available/>
-    <content-type>raster|vector|image|spreadsheet|text|wordprocessed|page_description|audio|presentation|mark-up|database|video|email</content-type>
     <extension>docx</extension>
     <apple_uid/>
+    <!-- These are lower-priority signatures, identified by unique id. If a match is found, this record will be matched first, before those specified here. -->
     <has_priority_over>x-fmt/263</has_priority_over>
     <has_priority_over>fmt/189</has_priority_over>
-    <is_subtype_of/>
-    <dc:creator>Microsoft</dc:creator>
-    <reference type="information|specification|implementation|registry|related">
-      <dc:title/>
-      <dc:creator/>
-      <dc:publisher/>
-      <dc:created/>
-      <dc:modified/>
-      <dc:available/>
-      <note/>
-    </reference>
-    <record status="invalid|incomplete|stub|adequate|complete|superb|deprecated">
-      <dcterms:isReplacedBy/>
-      <dcterms:Replaces/>
-      <dc:creator/>
-      <dc:provenance/>
-      <dcterms:licence/>
-      <dc:date/> creation and update?
-      <dc:source/> re-use identifier from references.
-    </record>
-    <example_file>
-      <dc:identifier>./this.txt</dc:identifier>
-      <checksum type="md5"/>
-      <dc:rights>To the extent possible under law, Andrew Jackson has waived all copyright and related or neighboring rights to this example file.</dc:rights>
-      <dcterms:license>http://creativecommons.org/publicdomain/zero/1.0/</dcterms:license>
-    </example_file>
     <signature>
       <name>Microsoft Office Open XML - Word</name>
       <pattern>
@@ -64,5 +31,51 @@
         <regex>(?s)\x00\x00word/.{1,20}\.xmlPK\x01\x02\x2d.{0,2000}\Z</regex>
       </pattern>
     </signature>
+	<!-- These above information provide the core fido fields, i.e. those relating to identification. -->
+	<!-- More detailed information beyond that required for identification goes in the details section. -->
+	<details>
+	  <!-- A description of the format -->
+      <dc:description></dc:description>
+      <!-- The release date -->
+      <dcterms:available/>
+      <dc:creator>Microsoft</dc:creator>
+      <is_subtype_of/>
+	  <!-- Content Type, one of:
+	raster|vector|image|spreadsheet|text|word-processed|page-description|audio|presentation|mark-up|database|video|email|other
+	  -->
+      <content_type>word-processed</content_type>
+	  <!-- References to useful documentation or other resources. -->
+      <reference>
+      	<type>information|specification|implementation|registry|related</type>
+        <dc:title/>
+        <dc:creator/>
+        <dc:publisher/>
+		<dc:identifier/>
+        <dc:description/>
+        <dcterms:created/>
+        <dcterms:modified/>
+        <dcterms:available/>
+      </reference>
+	  <!-- Example files that should be successfully identified by the above signature. -->
+      <example_file>
+        <dc:identifier>./this.txt</dc:identifier>
+        <dc:rights>To the extent possible under law, Andrew Jackson has waived all copyright and related or neighbouring rights to this example file.</dc:rights>
+        <dcterms:license>http://creativecommons.org/publicdomain/zero/1.0/</dcterms:license>
+        <checksum type="md5">XXXXXX</checksum>
+      </example_file>
+	  <!-- Metadata about this format record -->
+      <record_metadata>
+      	<!-- invalid|incomplete|stub|adequate|complete|superb|deprecated -->
+      	<status>complete</status>
+        <dcterms:isReplacedBy/>
+        <dc:creator/>
+        <dc:description/>
+        <dcterms:license/>
+		<!-- creation and update? -->
+        <dc:date/>
+		<!-- re-use identifier from references. -->
+        <dc:source/>
+      </record_metadata>
+    </details>
   </format>
 </formats>

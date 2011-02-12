@@ -11,8 +11,8 @@
     <xs:documentation xml:lang="en">
       DCterms XML Schema
       XML Schema for http://purl.org/dc/terms/ namespace
-
-      Created 2003-04-02
+ 
+      Created 2008-02-11
 
       Created by 
 
@@ -32,11 +32,11 @@
       This complexType permits the derivation of other complexTypes
       which would permit child elements.
 
-      DC elements are declared as substitutable for the abstract element dc:any, and 
-      DC element refinements are defined as substitutable for the base elements 
+      XML elements corresponding to DC elements are declared as substitutable for the abstract element dc:any, and 
+      XML elements corresponding to DC element refinements are defined as substitutable for the base elements 
       which they refine.
 
-      This means that the default type for all XML elements (i.e. all DC elements and 
+      This means that the default type for all XML elements (i.e. corresponding to all DC elements and 
       element refinements) is dc:SimpleLiteral.
 
       Encoding schemes are defined as complexTypes which are restrictions
@@ -51,6 +51,12 @@
       applied to any of the elements or refinements.  There is no convenient way
       to restrict types to specific elements using this approach.
 
+      Changes in 2008-02-11 version:
+      
+      Add element declarations corresponding to 15 new dcterms URIs, and amend use of substitutionGroups.
+      
+      Add compexType definitions corresponding to ISO639-3, RFC4646.
+      
     </xs:documentation>
 
   </xs:annotation>
@@ -66,48 +72,71 @@
    <xs:import namespace="http://purl.org/dc/dcmitype/"
               schemaLocation="dcmitype.xsd"/>
 
-   <xs:element name="alternative" substitutionGroup="dc:title"/>
+   <xs:element name="title" substitutionGroup="dc:title"/>
+   <xs:element name="creator" substitutionGroup="dc:creator"/>
+   <xs:element name="subject" substitutionGroup="dc:subject"/>
+   <xs:element name="description" substitutionGroup="dc:description"/>
+   <xs:element name="publisher" substitutionGroup="dc:publisher"/>
+   <xs:element name="contributor" substitutionGroup="dc:contributor"/>
+   <xs:element name="date" substitutionGroup="dc:date"/>
+   <xs:element name="type" substitutionGroup="dc:type"/>
+   <xs:element name="format" substitutionGroup="dc:format"/>
+   <xs:element name="identifier" substitutionGroup="dc:identifier"/>
+   <xs:element name="source" substitutionGroup="dc:source"/>
+   <xs:element name="language" substitutionGroup="dc:language"/>
+   <xs:element name="relation" substitutionGroup="dc:relation"/>
+   <xs:element name="coverage" substitutionGroup="dc:coverage"/>
+   <xs:element name="rights" substitutionGroup="dc:rights"/>
 
-   <xs:element name="tableOfContents" substitutionGroup="dc:description"/>
-   <xs:element name="abstract" substitutionGroup="dc:description"/>
+   <xs:element name="alternative" substitutionGroup="title"/>
 
-   <xs:element name="created" substitutionGroup="dc:date"/>
-   <xs:element name="valid" substitutionGroup="dc:date"/>
-   <xs:element name="available" substitutionGroup="dc:date"/>
-   <xs:element name="issued" substitutionGroup="dc:date"/>
-   <xs:element name="modified" substitutionGroup="dc:date"/>
-   <xs:element name="dateAccepted" substitutionGroup="dc:date"/>
-   <xs:element name="dateCopyrighted" substitutionGroup="dc:date"/>
-   <xs:element name="dateSubmitted" substitutionGroup="dc:date"/>
+   <xs:element name="tableOfContents" substitutionGroup="description"/>
+   <xs:element name="abstract" substitutionGroup="description"/>
 
-   <xs:element name="extent" substitutionGroup="dc:format"/>
-   <xs:element name="medium" substitutionGroup="dc:format"/>
+   <xs:element name="created" substitutionGroup="date"/>
+   <xs:element name="valid" substitutionGroup="date"/>
+   <xs:element name="available" substitutionGroup="date"/>
+   <xs:element name="issued" substitutionGroup="date"/>
+   <xs:element name="modified" substitutionGroup="date"/>
+   <xs:element name="dateAccepted" substitutionGroup="date"/>
+   <xs:element name="dateCopyrighted" substitutionGroup="date"/>
+   <xs:element name="dateSubmitted" substitutionGroup="date"/>
 
-   <xs:element name="isVersionOf" substitutionGroup="dc:relation"/>
-   <xs:element name="hasVersion" substitutionGroup="dc:relation"/>
-   <xs:element name="isReplacedBy" substitutionGroup="dc:relation"/>
-   <xs:element name="replaces" substitutionGroup="dc:relation"/>
-   <xs:element name="isRequiredBy" substitutionGroup="dc:relation"/>
-   <xs:element name="requires" substitutionGroup="dc:relation"/>
-   <xs:element name="isPartOf" substitutionGroup="dc:relation"/>
-   <xs:element name="hasPart" substitutionGroup="dc:relation"/>
-   <xs:element name="isReferencedBy" substitutionGroup="dc:relation"/>
-   <xs:element name="references" substitutionGroup="dc:relation"/>
-   <xs:element name="isFormatOf" substitutionGroup="dc:relation"/>
-   <xs:element name="hasFormat" substitutionGroup="dc:relation"/>
-   <xs:element name="conformsTo" substitutionGroup="dc:relation"/>
+   <xs:element name="extent" substitutionGroup="format"/>
+   <xs:element name="medium" substitutionGroup="format"/>
 
-   <xs:element name="spatial" substitutionGroup="dc:coverage"/>
-   <xs:element name="temporal" substitutionGroup="dc:coverage"/>
+   <xs:element name="isVersionOf" substitutionGroup="relation"/>
+   <xs:element name="hasVersion" substitutionGroup="relation"/>
+   <xs:element name="isReplacedBy" substitutionGroup="relation"/>
+   <xs:element name="replaces" substitutionGroup="relation"/>
+   <xs:element name="isRequiredBy" substitutionGroup="relation"/>
+   <xs:element name="requires" substitutionGroup="relation"/>
+   <xs:element name="isPartOf" substitutionGroup="relation"/>
+   <xs:element name="hasPart" substitutionGroup="relation"/>
+   <xs:element name="isReferencedBy" substitutionGroup="relation"/>
+   <xs:element name="references" substitutionGroup="relation"/>
+   <xs:element name="isFormatOf" substitutionGroup="relation"/>
+   <xs:element name="hasFormat" substitutionGroup="relation"/>
+   <xs:element name="conformsTo" substitutionGroup="relation"/>
+
+   <xs:element name="spatial" substitutionGroup="coverage"/>
+   <xs:element name="temporal" substitutionGroup="coverage"/>
 
    <xs:element name="audience" substitutionGroup="dc:any"/>
+   <xs:element name="accrualMethod" substitutionGroup="dc:any"/>
+   <xs:element name="accrualPeriodicity" substitutionGroup="dc:any"/>
+   <xs:element name="accrualPolicy" substitutionGroup="dc:any"/>
+   <xs:element name="instructionalMethod" substitutionGroup="dc:any"/>
+   <xs:element name="provenance" substitutionGroup="dc:any"/>
+   <xs:element name="rightsHolder" substitutionGroup="dc:any"/>
 
    <xs:element name="mediator" substitutionGroup="audience"/>
    <xs:element name="educationLevel" substitutionGroup="audience"/>
 
-   <xs:element name="accessRights" substitutionGroup="dc:rights"/>
+   <xs:element name="accessRights" substitutionGroup="rights"/>
+   <xs:element name="license" substitutionGroup="rights"/>
 
-   <xs:element name="bibliographicCitation" substitutionGroup="dc:identifier"/>
+   <xs:element name="bibliographicCitation" substitutionGroup="identifier"/>
 
   <xs:complexType name="LCSH">
    <xs:simpleContent>
@@ -230,6 +259,17 @@
    </xs:simpleContent>
   </xs:complexType>
 
+  <xs:complexType name="ISO639-3">
+   <xs:simpleContent>
+    <xs:restriction base="dc:SimpleLiteral">
+        <xs:simpleType>
+          <xs:restriction base="xs:string"/>
+        </xs:simpleType>
+        <xs:attribute ref="xml:lang" use="prohibited"/>
+    </xs:restriction>
+   </xs:simpleContent>
+  </xs:complexType>
+
   <xs:complexType name="RFC1766">
    <xs:simpleContent>
     <xs:restriction base="dc:SimpleLiteral">
@@ -242,6 +282,17 @@
   </xs:complexType>
 
   <xs:complexType name="RFC3066">
+   <xs:simpleContent>
+    <xs:restriction base="dc:SimpleLiteral">
+        <xs:simpleType>
+          <xs:restriction base="xs:language"/>
+        </xs:simpleType>
+        <xs:attribute ref="xml:lang" use="prohibited"/>
+    </xs:restriction>
+   </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="RFC4646">
    <xs:simpleContent>
     <xs:restriction base="dc:SimpleLiteral">
         <xs:simpleType>
@@ -329,3 +380,4 @@
 
 
 </xs:schema>
+

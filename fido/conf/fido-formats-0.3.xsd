@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+Usage of DC has been based on these references:
+  http://dublincore.org/documents/usageguide/elements.shtml
+  http://dublincore.org/documents/usageguide/qualifiers.shtml
+  http://www.dublincore.org/documents/dc-xml-guidelines/
+-->
 <xs:schema elementFormDefault="qualified" 
   xmlns:xs="http://www.w3.org/2001/XMLSchema"  
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns:dcterms="http://purl.org/dc/terms/">
-  <xs:import namespace="http://purl.org/dc/terms/" schemaLocation="dcterms.xsd"/><!-- http://www.dublincore.org/schemas/xmls/qdc/2003/04/02/dcterms.xsd" -->
+  <xs:import namespace="http://purl.org/dc/elements/1.1/" schemaLocation="dc.xsd"/>
+  <xs:import namespace="http://purl.org/dc/terms/" schemaLocation="dcterms.xsd"/>
+<!-- http://www.dublincore.org/schemas/xmls/qdc/2003/04/02/dcterms.xsd" -->
   <xs:element name="formats">
     <xs:complexType>
       <xs:sequence>
@@ -16,8 +25,6 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element maxOccurs="1" minOccurs="1" ref="puid"/>
-        <xs:element maxOccurs="unbounded" minOccurs="0" ref="mime"/>
-        <xs:element minOccurs="0" ref="container"/>
         <xs:element maxOccurs="1" minOccurs="1" ref="name"/>
         <xs:element maxOccurs="1" minOccurs="0" name="version" type="xs:string"/>
         <xs:element maxOccurs="unbounded" minOccurs="0" name="alias"  type="xs:string"/>
@@ -25,10 +32,14 @@
         <xs:element maxOccurs="1" minOccurs="0" ref="dcterms:available"/>
         <xs:element maxOccurs="1" minOccurs="0" name="content-type" type="xs:string"/>
         <xs:element minOccurs="0" ref="note"/>
-        <xs:element maxOccurs="1" minOccurs="0" ref="pronom_id"/>
         <xs:element maxOccurs="unbounded" minOccurs="0" ref="extension"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="mime"/>
+        <xs:element maxOccurs="1" minOccurs="0" name="apple_uid" type="xs:string"/>
+        <xs:element maxOccurs="1" minOccurs="0" ref="pronom_id"/>
+        <xs:element minOccurs="0" ref="container"/>
         <xs:element maxOccurs="unbounded" minOccurs="0" ref="has_priority_over"/>
         <xs:element maxOccurs="unbounded" ref="signature"/>
+        <xs:element maxOccurs="1" ref="details"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -74,4 +85,89 @@
       <xs:enumeration value="tar"/>
     </xs:restriction>
   </xs:simpleType>
+  <xs:element name="details">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="1" minOccurs="0" ref="dc:description"/>
+        <xs:element maxOccurs="1" ref="dcterms:available"/>
+        <xs:element maxOccurs="unbounded" ref="dc:creator"/>
+        <xs:element maxOccurs="1" name="is_subtype_of" type="xs:string"/>
+        <xs:element maxOccurs="1" ref="content_type"/>
+        <xs:element maxOccurs="unbounded" ref="reference"/>
+        <xs:element maxOccurs="unbounded" ref="example_file"/>
+        <xs:element maxOccurs="1" ref="record_metadata"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="reference">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="1" minOccurs="1" name="type" type="xs:string"/>
+        <xs:element maxOccurs="unbounded" ref="dc:any"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="example_file">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="dc:any"/>
+        <xs:element maxOccurs="unbounded" minOccurs="1" ref="checksum"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="record_metadata">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="1" minOccurs="1" ref="status"/>
+        <xs:element maxOccurs="unbounded" ref="dc:any"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="checksum">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+      </xs:sequence>
+      <xs:attribute name="type" use="required">
+ 	   <xs:simpleType>
+    	<xs:restriction base="xs:string">
+      	  <xs:enumeration value="md5"/>
+      	  <xs:enumeration value="sha256"/>
+    	</xs:restriction>
+  	   </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="status">
+    <xs:simpleType>
+    	<xs:restriction base="xs:string">
+      	  <xs:enumeration value="invalid"/>
+      	  <xs:enumeration value="incomplete"/>
+      	  <xs:enumeration value="stub"/>
+      	  <xs:enumeration value="adequate"/>
+      	  <xs:enumeration value="complete"/>
+      	  <xs:enumeration value="superb"/>
+      	  <xs:enumeration value="deprecated"/>
+    	</xs:restriction>
+	</xs:simpleType>
+  </xs:element>
+  <xs:element name="content_type">
+    <xs:simpleType>
+    	<xs:restriction base="xs:string">
+      	  <xs:enumeration value="raster"/>
+      	  <xs:enumeration value="vector"/>
+      	  <xs:enumeration value="image"/>
+      	  <xs:enumeration value="spreadsheet"/>
+      	  <xs:enumeration value="text"/>
+      	  <xs:enumeration value="word-processed"/>
+      	  <xs:enumeration value="page-description"/>
+      	  <xs:enumeration value="audio"/>
+      	  <xs:enumeration value="presentation"/>
+      	  <xs:enumeration value="mark-up"/>
+      	  <xs:enumeration value="database"/>
+      	  <xs:enumeration value="video"/>
+      	  <xs:enumeration value="email"/>
+      	  <xs:enumeration value="other"/>
+    	</xs:restriction>
+	</xs:simpleType>
+  </xs:element>
 </xs:schema>

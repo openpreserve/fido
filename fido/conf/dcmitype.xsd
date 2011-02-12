@@ -10,7 +10,7 @@
       DCMI Type Vocabulary XML Schema
       XML Schema for http://purl.org/dc/dcmitype/ namespace
 
-      Created 2003-04-02
+      Created 2008-02-11
 
       Created by 
 
@@ -36,6 +36,8 @@
 		<xs:enumeration value="Dataset"/>
 		<xs:enumeration value="Event"/>
 		<xs:enumeration value="Image"/>
+		<xs:enumeration value="MovingImage"/>
+		<xs:enumeration value="StillImage"/>
 		<xs:enumeration value="InteractiveResource"/>
 		<xs:enumeration value="Service"/>
 		<xs:enumeration value="Software"/>
@@ -48,3 +50,4 @@
   </xs:simpleType>
 
 </xs:schema>
+
