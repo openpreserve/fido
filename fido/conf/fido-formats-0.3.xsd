@@ -25,20 +25,17 @@ Usage of DC has been based on these references:
     <xs:complexType>
       <xs:sequence>
         <xs:element maxOccurs="1" minOccurs="1" ref="puid"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="mime"/>
+        <xs:element minOccurs="0" ref="container"/>
         <xs:element maxOccurs="1" minOccurs="1" ref="name"/>
         <xs:element maxOccurs="1" minOccurs="0" name="version" type="xs:string"/>
-        <xs:element maxOccurs="unbounded" minOccurs="0" name="alias"  type="xs:string"/>
-        <xs:element maxOccurs="1" minOccurs="0" name="description" type="xs:string"/>
-        <xs:element maxOccurs="1" minOccurs="0" ref="dcterms:available"/>
-        <xs:element maxOccurs="1" minOccurs="0" name="content-type" type="xs:string"/>
-        <xs:element minOccurs="0" ref="note"/>
-        <xs:element maxOccurs="unbounded" minOccurs="0" ref="extension"/>
-        <xs:element maxOccurs="unbounded" minOccurs="0" ref="mime"/>
-        <xs:element maxOccurs="1" minOccurs="0" name="apple_uid" type="xs:string"/>
+        <xs:element minOccurs="0" name="alias"  type="xs:string"/>
         <xs:element maxOccurs="1" minOccurs="0" ref="pronom_id"/>
-        <xs:element minOccurs="0" ref="container"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="extension"/>
+        <xs:element maxOccurs="1" minOccurs="0" name="apple_uid" type="xs:string"/>
         <xs:element maxOccurs="unbounded" minOccurs="0" ref="has_priority_over"/>
         <xs:element maxOccurs="unbounded" ref="signature"/>
+        <xs:element minOccurs="0" ref="note"/>
         <xs:element maxOccurs="1" ref="details"/>
       </xs:sequence>
     </xs:complexType>
@@ -89,20 +86,22 @@ Usage of DC has been based on these references:
     <xs:complexType>
       <xs:sequence>
         <xs:element maxOccurs="1" minOccurs="0" ref="dc:description"/>
-        <xs:element maxOccurs="1" ref="dcterms:available"/>
-        <xs:element maxOccurs="unbounded" ref="dc:creator"/>
-        <xs:element maxOccurs="1" name="is_subtype_of" type="xs:string"/>
-        <xs:element maxOccurs="1" ref="content_type"/>
-        <xs:element maxOccurs="unbounded" ref="reference"/>
-        <xs:element maxOccurs="unbounded" ref="example_file"/>
-        <xs:element maxOccurs="1" ref="record_metadata"/>
+        <xs:element maxOccurs="1" minOccurs="0" ref="dcterms:available"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="dc:creator"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="dcterms:publisher"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" name="is_supertype_of" type="xs:string"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" name="is_subtype_of" type="xs:string"/>
+        <xs:element maxOccurs="1" minOccurs="0" name="content_type" type="xs:string"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="reference"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="example_file"/>
+        <xs:element maxOccurs="1" minOccurs="0" ref="record_metadata"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="reference">
     <xs:complexType>
       <xs:sequence>
-        <xs:element maxOccurs="1" minOccurs="1" name="type" type="xs:string"/>
+        <xs:element maxOccurs="1" minOccurs="0" name="type" type="xs:string"/>
         <xs:element maxOccurs="unbounded" ref="dc:any"/>
       </xs:sequence>
     </xs:complexType>
@@ -111,7 +110,7 @@ Usage of DC has been based on these references:
     <xs:complexType>
       <xs:sequence>
         <xs:element maxOccurs="unbounded" ref="dc:any"/>
-        <xs:element maxOccurs="unbounded" minOccurs="1" ref="checksum"/>
+        <xs:element minOccurs="1" ref="checksum"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -140,6 +139,7 @@ Usage of DC has been based on these references:
   <xs:element name="status">
     <xs:simpleType>
     	<xs:restriction base="xs:string">
+      	  <xs:enumeration value="unknown"/>
       	  <xs:enumeration value="invalid"/>
       	  <xs:enumeration value="incomplete"/>
       	  <xs:enumeration value="stub"/>
