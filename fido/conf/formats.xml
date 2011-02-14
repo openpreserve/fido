@@ -500,7 +500,7 @@
     <has_priority_over>fmt/101</has_priority_over>
     <signature>
       <name>DROID File Collection File</name>
-      <note>&lt;FileCollection&gt;â¦&lt;DROIDVersion&gt; elements. {0-50} &lt; F I l e C o l l e c t I o n  {0-100} &lt; D R O I D V e r s I o n &gt; {1-10} &lt; / D R O I D V e r s I o n &gt; - NB. The signature byte sequence is currently massaged to steer around the known PRONOM bug in the are of the left fragment matching when the longest fragment is not nearest BOF. The last fragment in the BOF byte sequence has been shortened by 2 bytes to ensure that the first fragment is the longest. This abbreviation does not reduce the overall signature strength too much and so will hopefully not result in any false positive identification. When the PRONOM bug has been fixed, "0D0A" should be appended to the BOF byte sequence and this note reduced.</note>
+      <note>&lt;FileCollection&gt;â€¦&lt;DROIDVersion&gt; elements. {0-50} &lt; F I l e C o l l e c t I o n  {0-100} &lt; D R O I D V e r s I o n &gt; {1-10} &lt; / D R O I D V e r s I o n &gt; - NB. The signature byte sequence is currently massaged to steer around the known PRONOM bug in the are of the left fragment matching when the longest fragment is not nearest BOF. The last fragment in the BOF byte sequence has been shortened by 2 bytes to ensure that the first fragment is the longest. This abbreviation does not reduce the overall signature strength too much and so will hopefully not result in any false positive identification. When the PRONOM bug has been fixed, "0D0A" should be appended to the BOF byte sequence and this note reduced.</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>{0-50}3C46696C65436F6C6C656374696F6E20{0-100}3C44524F494456657273696F6E3E{1-10}3C2F44524F494456657273696F6E3E</pronom_pattern>
@@ -640,7 +640,7 @@
     <has_priority_over>fmt/111</has_priority_over>
     <signature>
       <name>Powerpoint 95</name>
-      <note>Compound Document Header + PowerPoint Document user stream + âMicrosoft Â® PowerPoint Â® Windowsâ statement.</note>
+      <note>Compound Document Header + PowerPoint Document user stream + â€˜Microsoft Â® PowerPoint Â® Windowsâ€™ statement.</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>D0CF11E0A1B11AE1{20}FEFF</pronom_pattern>
@@ -1105,7 +1105,7 @@
     <has_priority_over>x-fmt/263</has_priority_over>
     <signature>
       <name>SIARD</name>
-      <note>Signature for SIARD, combining that of a standard ZIP file and the expected XMLNS string: xmlns=âhttp://www.bar.admin.ch/xmlns/siard/1.0/metadata.xsdâ - Offset currently set to 1024 bytes but it is expected that this could be improved given further test data.</note>
+      <note>Signature for SIARD, combining that of a standard ZIP file and the expected XMLNS string: xmlns=â€œhttp://www.bar.admin.ch/xmlns/siard/1.0/metadata.xsdâ€œ - Offset currently set to 1024 bytes but it is expected that this could be improved given further test data.</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>504B0304</pronom_pattern>
@@ -4162,7 +4162,7 @@ DATA: VERSION:160 SECURITY: ENCODING: CHARSET: COMPRESSION: OLDFILEUID: NEWFILEU
       <pattern>
         <position>BOF</position>
         <pronom_pattern>1991[!4001C80000000000]</pronom_pattern>
-        <regex>(?s)\A\x19\x91(!@\x01\xc8\x00\x00\x00\x00\x00)</regex>
+        <regex>(?s)\A\x19\x91(?:!@\x01\xc8\x00\x00\x00\x00\x00)</regex>
       </pattern>
     </signature>
   </format>
@@ -5908,7 +5908,7 @@ DATA: VERSION:160 SECURITY: ENCODING: CHARSET: COMPRESSION: OLDFILEUID: NEWFILEU
     <extension>psd</extension>
     <signature>
       <name>Adobe Photoshop (psd)</name>
-      <note>Primarily matches a character sequence of: 8BPSâ¦â¦â¦.</note>
+      <note>Primarily matches a character sequence of: 8BPSâ€¦â€¦â€¦.</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>38425053000100000000000000</pronom_pattern>

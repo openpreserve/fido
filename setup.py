@@ -1,15 +1,15 @@
 #!/bin/env -e python
 from distutils.core import setup
-import fido.run
+import fido.fido
 
 setup(name='fido',
-      version=fido.run.version,
+      version=fido.fido.version,
       scripts=['fido/fido.bat', 'fido/fido.sh'],
       url="http://github.com/openplanets/fido",
       packages=['fido'],
       #package_dir={'fido':'fido'},
       package_data={'fido':['conf/formats.xml', 'conf/format_extensions.xml']},
-      #py_modules=['fido.run','fido.testfido', 'fido.argparselocal'],
+      #py_modules=['fido.fido','fido.testfido', 'fido.argparselocal'],
       description='Format Identification for Digital Objects (FIDO).',
       author='Adam Farquhar',
       author_email='adam.farquhar@bl.uk',
