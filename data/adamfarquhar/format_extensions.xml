@@ -1,0 +1,224 @@
+<?xml version="1.0"?>
+<formats xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.2" xsi:noNamespaceSchemaLocation="fido-formats.xsd">
+  <format>
+    <puid>fido-fmt/189.word</puid>
+    <name>Microsoft Office Open XML - Word</name>
+    <extension>docx</extension>
+    <has_priority_over>x-fmt/263</has_priority_over>
+    <has_priority_over>fmt/189</has_priority_over>
+    <signature>
+      <name>Microsoft Office Open XML - Word</name>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)\APK\x03\x04</regex>
+      </pattern>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)\A.{30}\[Content_Types\]\.xml \xa2</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <regex>(?s)\x00\x00word/.{1,20}\.xmlPK\x01\x02\x2d.{0,2000}\Z</regex>
+      </pattern>
+    </signature>
+  </format>
+  <format>
+    <puid>fido-fmt/189.xl</puid>
+    <name>Microsoft Office Open XML - Excel</name>
+    <extension>xlsx</extension>
+    <has_priority_over>x-fmt/263</has_priority_over>
+    <has_priority_over>fmt/189</has_priority_over>
+    <signature>
+      <name>Microsoft Office Open XML - Excel</name>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)\APK\x03\x04</regex>
+      </pattern>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)\A.{30}\[Content_Types\]\.xml \xa2</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <regex>(?s)\x00xl/.{1,20}\.xmlPK\x01\x02\x2d.{0,2000}\Z</regex>
+      </pattern>
+    </signature>
+  </format>
+  <format>
+    <puid>fido-fmt/189.ppt</puid>
+    <name>Microsoft Office Open XML - Powerpoint</name>
+    <extension>pptx</extension>
+    <has_priority_over>x-fmt/263</has_priority_over>
+    <has_priority_over>fmt/189</has_priority_over>
+    <signature>
+      <name>Microsoft Office Open XML - Powerpoint</name>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)\APK\x03\x04</regex>
+      </pattern>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)\A.{30}\[Content_Types\]\.xml \xa2</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <!-- ppt/presentation.xml might be better, but it can be far from the end. -->
+        <regex>(?s)\x00ppt/.{1,20}\.xmlPK\x01\x02\x2d.{0,2000}\Z</regex>
+      </pattern>
+    </signature>
+  </format>
+  <format>
+    <mime>audio/mpeg</mime>
+    <puid>fmt/134</puid>
+    <name>MPEG 1/2 Audio Layer 3 - fido update</name>
+    <pronom_id>687</pronom_id>
+    <extension>mp3</extension>
+    <signature>
+      <name>MPEG-1/2 Audio Layer 3</name>
+      <note>The pronom signatures for fmt/134 were horrendous.  This is an attempt to consolidate several
+                  nearly identical patterns into one.  It is not clear if they should be BOF or EOF or both.
+                  Regularly-spaced frame headers should always be discoverable near EOF. An ID3v1
+                tag of up to 355 bytes may be present at EOF.</note>
+      <pattern>
+        <position>EOF</position>
+        <regex>(?s)\xff[\xfa\xfb\xf2\xf3][\x10-\xeb].{46,1439}\xff[\xfa\xfb\xf2\xf3][\x10-\xeb].{46,1439}\Z</regex>
+      </pattern>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>494433</pronom_pattern>
+        <regex>(?s)\AID3</regex>
+      </pattern>
+    </signature>
+  </format>
+  <format>
+    <mime>video/quicktime</mime>
+    <puid>fido-x-fmt/384</puid>
+    <name>Quicktime</name>
+    <extension>mov</extension>
+    <signature>
+      <name>QuickTime</name>
+      <note>Simple addition to cover the case in the fido test suite.  Needs research to correct and merge with x-fmt/384</note>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)\A\x00{3} ftypqt.{0,25}qt.{0,20}moov.{4}mvhd</regex>
+      </pattern>
+    </signature>
+  </format>
+  <format>
+    <puid>fmt/40</puid>
+    <mime>application/msword</mime>
+    <name>Microsoft Word for Windows Document</name>
+    <pronom_id>690</pronom_id>
+    <extension>doc</extension>
+    <has_priority_over>fmt/111</has_priority_over>
+    <signature>
+      <name>Microsoft Word for Windows 97 - 2002</name>
+      <note>2010.12 - AF: Some of my test files do not have 8.0, but 97-2003.</note>
+      <note>Compound document header + WordDocument user stream + version number</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>D0CF11E0A1B11AE1{20}FEFF</pronom_pattern>
+        <regex>(?s)\A\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1.{20}\xfe\xff</regex>
+      </pattern>
+      <pattern>
+        <position>VAR</position>
+        <pronom_pattern>57006F007200640044006F00630075006D0065006E007400{42}02(00|01)</pronom_pattern>
+        <regex>(?s)W\x00o\x00r\x00d\x00D\x00o\x00c\x00u\x00m\x00e\x00n\x00t\x00.{42}\x02(?:\x00|\x01)</regex>
+      </pattern>
+      <pattern>
+        <position>VAR</position>
+        <pronom_pattern>4D6963726F736F667420576F7264(20382E30|20392E30|2031302E30|2D446F6B756D656E74)</pronom_pattern>
+        <regex>(?s)Microsoft (?:Office Word|Word)(?: 8\.0| 9\.0| 10\.0|-Dokument| 97-2003)</regex>
+      </pattern>
+    </signature>
+  </format>
+  <!-- RTF -->
+  <format>
+    <puid>fmt/45</puid>
+    <mime>application/rtf</mime>
+    <mime>text/rtf</mime>
+    <name>Rich Text Format</name>
+    <pronom_id>626</pronom_id>
+    <extension>rtf</extension>
+    <signature>
+      <name>RTF 1.0 - 1.4 (generic)</name>
+      <note>Pronom has FIVE RTF formats (fmt/45-49) with identical patterns that don't match my sample.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>7B5C7274(66|6631)5C(616E7369|6D6163|7063|706361)</pronom_pattern>
+        <regex>(?s)\A\{\\rt(?:f|f1)\\(?:adeflang1025|ansi|mac|pc|pca)</regex>
+      </pattern>
+    </signature>
+  </format>
+  <format>
+    <puid>fmt/46</puid>
+    <mime>application/rtf</mime>
+    <mime>text/rtf</mime>
+    <name>Rich Text Format</name>
+    <pronom_id>627</pronom_id>
+    <extension>rtf</extension>
+    <signature>
+      <name>RTF 1.0 - 1.4 (generic)</name>
+      <note>\rtf control word</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>7B5C7274(66|6631)5C(616E7369|6D6163|7063|706361)</pronom_pattern>
+        <!-- HACK.  This should fail any non-empty buffer. All of the RTF signatures have the same pattern.
+             This version of fido does not have a 'delete' method.
+         -->
+        <regex>\A\Z</regex>
+      </pattern>
+    </signature>
+  </format>
+  <format>
+    <puid>fmt/47</puid>
+    <mime>application/rtf</mime>
+    <mime>text/rtf</mime>
+    <name>Rich Text Format</name>
+    <pronom_id>628</pronom_id>
+    <extension>rtf</extension>
+    <signature>
+      <name>RTF 1.0 - 1.4 (generic)</name>
+      <note>\rtf control word</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>7B5C7274(66|6631)5C(616E7369|6D6163|7063|706361)</pronom_pattern>
+        <regex>\A\Z</regex>
+      </pattern>
+    </signature>
+  </format>
+  <format>
+    <puid>fmt/48</puid>
+    <mime>application/rtf</mime>
+    <mime>text/rtf</mime>
+    <name>Rich Text Format</name>
+    <pronom_id>629</pronom_id>
+    <extension>rtf</extension>
+    <signature>
+      <name>RTF 1.0 - 1.4 (generic)</name>
+      <note>\rtf control word</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>7B5C7274(66|6631)5C(616E7369|6D6163|7063|706361)</pronom_pattern>
+        <regex>\A\Z</regex>
+      </pattern>
+    </signature>
+  </format>
+  <format>
+    <puid>fmt/49</puid>
+    <mime>application/rtf</mime>
+    <mime>text/rtf</mime>
+    <name>Rich Text Format</name>
+    <pronom_id>630</pronom_id>
+    <extension>rtf</extension>
+    <signature>
+      <name>RTF 1.0 - 1.4 (generic)</name>
+      <note>\rtf control word</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>7B5C7274(66|6631)5C(616E7369|6D6163|7063|706361)</pronom_pattern>
+        <regex>\A\Z</regex>
+      </pattern>
+    </signature>
+  </format>
+</formats>
