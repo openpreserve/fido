@@ -68,8 +68,8 @@
     </signature>
   </format>
   <format>
-    <mime>audio/mpeg</mime>
     <puid>fmt/134</puid>
+    <mime>audio/mpeg</mime>
     <name>MPEG 1/2 Audio Layer 3 - fido update</name>
     <pronom_id>687</pronom_id>
     <extension>mp3</extension>
@@ -91,8 +91,8 @@
     </signature>
   </format>
   <format>
-    <mime>video/quicktime</mime>
     <puid>fido-x-fmt/384</puid>
+    <mime>video/quicktime</mime>
     <name>Quicktime</name>
     <extension>mov</extension>
     <signature>

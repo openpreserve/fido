@@ -33,7 +33,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="name"/>
-        <xs:element ref="note" minOccurs="0"/>
+        <xs:element ref="note" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element maxOccurs="unbounded" ref="pattern"/>
       </xs:sequence>
     </xs:complexType>
