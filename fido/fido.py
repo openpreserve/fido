@@ -232,7 +232,7 @@ class FormatInfo:
                         sock.close()
                         checksum=m.hexdigest()
                     except IOError:
-                        print "WARNING! Could not downlaod and calculate checksum for test file."
+                        print "WARNING! Could not download and calculate checksum for test file."
                 else:
                     ET.SubElement(rf, 'dc:identifier').text = get_text_tna(id, 'IdentifierType')+":"+get_text_tna(id, 'Identifier')  
             ET.SubElement(rf, 'dcterms:license').text = ""
