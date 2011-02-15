@@ -1,6 +1,7 @@
 #!python
 
 import sys, re, os, time
+import hashlib, urllib
 from xml.etree import cElementTree as ET    
 version = '0.9.4'
 defaults = {'bufsize': 32 * 4096,
@@ -58,22 +59,43 @@ class FormatInfo:
     def save_fido_xml(self, dst):
         """Write the fido XML format definitions to @param dst
         """
-        tree = ET.ElementTree(ET.Element('useformats', {'version':'0.2',
+        print "Saving to "+dst+"..."
+        tree = ET.ElementTree(ET.Element('formats', {'version':'0.3',
                                                      'xmlns:xsi' : "http://www.w3.org/2001/XMLSchema-instance",
-                                                     'xsi:noNamespaceSchemaLocation': "fido-useformats.xsd"}))
+                                                     'xsi:noNamespaceSchemaLocation': "fido-formats.xsd",
+                                                     'xmlns:dc': "http://purl.org/dc/elements/1.1/",
+                                                     'xmlns:dcterms': "http://purl.org/dc/terms/"}))
         root = tree.getroot()
         for f in self.formats:
             if f.find('signature'):
                 root.append(f)
+        self.indent(root)
         with open(dst, 'wb') as out:
                 print >> out, ET.tostring(root, encoding='UTF-8')     
 
+    def indent(self, elem, level=0):
+        i = "\n" + level*"  "
+        if len(elem):
+            if not elem.text or not elem.text.strip():
+                elem.text = i + "  "
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+            for elem in elem:
+                self.indent(elem, level+1)
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+        else:
+            if level and (not elem.tail or not elem.tail.strip()):
+                elem.tail = i
+                
     def load_pronom_xml(self):
         """Load the pronom XML from self.pronom_files and convert it to fido XML.
            As a side-effect, set self.useformats to a list of ElementTree.Element
         """
+        print "Loading PRONOM data from "+self.pronom_files
         import zipfile
         formats = []
+        zip = None
         try:
             zip = zipfile.ZipFile(self.pronom_files, 'r')
             for item in zip.infolist():
@@ -84,7 +106,8 @@ class FormatInfo:
                 finally:
                     stream.close()
         finally:
-            zip.close()
+            if( zip != None ):
+                zip.close()
         # Replace the formatID with puids in has_priority_over
         id_map = {}
         for element in formats:
@@ -123,10 +146,17 @@ class FormatInfo:
                 elif puid == 'x-fmt/265':
                     ET.SubElement(fido_format, 'container').text = 'tar'
         ET.SubElement(fido_format, 'name').text = get_text_tna(pronom_format, 'FormatName')
+        ET.SubElement(fido_format, 'version').text = get_text_tna(pronom_format, 'FormatVersion')
+        ET.SubElement(fido_format, 'alias').text = get_text_tna(pronom_format, 'FormatAliases')
         ET.SubElement(fido_format, 'pronom_id').text = get_text_tna(pronom_format, 'FormatID')
         # Get the extensions from the ExternalSignature
         for x in pronom_format.findall(TNA('ExternalSignature')):
                 ET.SubElement(fido_format, 'extension').text = get_text_tna(x, 'Signature')
+        # Get the Apple format identifier
+        for id in pronom_format.findall(TNA('FileFormatIdentifier')):
+            type = get_text_tna(id, 'IdentifierType')
+            if type == 'Apple Uniform Type Identifier':
+                ET.SubElement(fido_format, 'apple_uti').text = get_text_tna(id, 'Identifier')  
         # Handle the relationships
         for x in pronom_format.findall(TNA('RelatedFormat')):
             rel = get_text_tna(x, 'RelationshipType')
@@ -148,7 +178,77 @@ class FormatInfo:
                 ET.SubElement(fido_pat, 'position').text = pos
                 ET.SubElement(fido_pat, 'pronom_pattern').text = bytes
                 ET.SubElement(fido_pat, 'regex').text = regex
-        return fido_format  
+
+        # Get the format details
+        fido_details = ET.SubElement(fido_format,'details')
+        ET.SubElement(fido_details, 'dc:description').text = get_text_tna(pronom_format, 'FormatDescription').encode('utf8')
+        ET.SubElement(fido_details, 'dcterms:available').text = get_text_tna(pronom_format, 'ReleaseDate')
+        ET.SubElement(fido_details, 'dc:creator').text = get_text_tna(pronom_format, 'Developers/DeveloperCompoundName')
+        ET.SubElement(fido_details, 'dcterms:publisher').text = get_text_tna(pronom_format, 'Developers/OrganisationName')
+        for x in pronom_format.findall(TNA('RelatedFormat')):
+            rel = get_text_tna(x, 'RelationshipType')
+            if rel == 'Is supertype of':
+                ET.SubElement(fido_details, 'is_supertype_of').text = get_text_tna(x, 'RelatedFormatID')
+        for x in pronom_format.findall(TNA('RelatedFormat')):
+            rel = get_text_tna(x, 'RelationshipType')
+            if rel == 'Is subtype of':
+                ET.SubElement(fido_details, 'is_subtype_of').text = get_text_tna(x, 'RelatedFormatID')
+        ET.SubElement(fido_details, 'content_type').text = get_text_tna(pronom_format, 'FormatTypes')
+        # References
+        for x in pronom_format.findall(TNA("Document")):
+            r = ET.SubElement(fido_details,'reference')
+            ET.SubElement(r, 'dc:title').text = get_text_tna(x, 'TitleText')
+            ET.SubElement(r, 'dc:creator').text = get_text_tna(x, 'Author/AuthorCompoundName')
+            ET.SubElement(r, 'dc:publisher').text = get_text_tna(x, 'Publisher/PublisherCompoundName')
+            ET.SubElement(r, 'dcterms:available').text = get_text_tna(x, 'PublicationDate')
+            for id in x.findall(TNA('DocumentIdentifier')):
+                type = get_text_tna(id, 'IdentifierType')
+                if type == 'URL':
+                    ET.SubElement(r, 'dc:identifier').text = "http://"+get_text_tna(id, 'Identifier')  
+                else:
+                    ET.SubElement(r, 'dc:identifier').text = get_text_tna(id, 'IdentifierType')+":"+get_text_tna(id, 'Identifier')  
+            ET.SubElement(r, 'dc:description').text = get_text_tna(x, 'DocumentNote')
+            ET.SubElement(r, 'dc:type').text = get_text_tna(x, 'DocumentType')
+            ET.SubElement(r, 'dcterms:license').text = get_text_tna(x, 'AvailabilityDescription')
+            if get_text_tna(x, 'AvailabilityNote') != "":
+                ET.SubElement(r, 'dcterms:license').text = get_text_tna(x, 'AvailabilityNote')
+            ET.SubElement(r, 'dc:rights').text = get_text_tna(x, 'DocumentIPR')
+        # Examples
+        for x in pronom_format.findall(TNA("ReferenceFile")):
+            rf = ET.SubElement(fido_details,'example_file')
+            ET.SubElement(rf, 'dc:title').text = get_text_tna(x, 'ReferenceFileName')
+            ET.SubElement(rf, 'dc:description').text = get_text_tna(x, 'ReferenceFileDescription')
+            checksum = ""
+            for id in x.findall(TNA('ReferenceFileIdentifier')):
+                type = get_text_tna(id, 'IdentifierType')
+                if type == 'URL':
+                    url = "http://"+get_text_tna(id, 'Identifier')
+                    ET.SubElement(rf, 'dc:identifier').text = url  
+                    try:
+                        # And calculate the checksum of this resource:
+                        m = hashlib.md5()
+                        sock = urllib.urlopen(url)
+                        m.update(sock.read())
+                        sock.close()
+                        checksum=m.hexdigest()
+                    except IOError:
+                        print "WARNING! Could not downlaod and calculate checksum for test file."
+                else:
+                    ET.SubElement(rf, 'dc:identifier').text = get_text_tna(id, 'IdentifierType')+":"+get_text_tna(id, 'Identifier')  
+            ET.SubElement(rf, 'dcterms:license').text = ""
+            ET.SubElement(rf, 'dc:rights').text = get_text_tna(x, 'ReferenceFileIPR')
+            checksumElement = ET.SubElement(rf, 'checksum')
+            checksumElement.text = checksum
+            checksumElement.attrib['type'] = "md5"
+        # Record Metadata
+        md = ET.SubElement(fido_details,'record_metadata')
+        ET.SubElement(md, 'status').text ='unknown'
+        ET.SubElement(md, 'dc:creator').text = get_text_tna(pronom_format, 'ProvenanceName')
+        ET.SubElement(md, 'dcterms:created').text = get_text_tna(pronom_format, 'ProvenanceSourceDate')
+        ET.SubElement(md, 'dcterms:modified').text = get_text_tna(pronom_format, 'LastUpdatedDate')
+        ET.SubElement(md, 'dc:description').text = get_text_tna(pronom_format, 'ProvenanceDescription').encode('utf8')
+
+        return fido_format
         
     #FIXME: I don't think that this quite works yet!
     def _sort_formats(self, formatlist):
@@ -701,18 +801,18 @@ def main(arglist=None):
    
     mydir = os.path.abspath(os.path.dirname(__file__))
     parser.add_argument('-convert', default=False, action='store_true', help='Convert pronom xml to fido xml')
-    parser.add_argument('-import', default=os.path.join(mydir, 'conf', 'pronom-xml.zip'),
+    parser.add_argument('-source', default=os.path.join(mydir, 'conf', 'pronom-xml.zip'),
                         help='import from a zip file containing only Pronom xml files')
-    parser.add_argument('-export', default=os.path.join(mydir, 'conf', 'useformats.xml'), help='export fido xml output file')
+    parser.add_argument('-target', default=os.path.join(mydir, 'conf', 'useformats.xml'), help='export fido xml output file')
          
     # PROCESS ARGUMENTS
     args = parser.parse_args(arglist)
     
     if args.convert:
         # print os.path.abspath(args.input), os.path.abspath(args.output)
-        info = FormatInfo(args.input)
+        info = FormatInfo(args.source)
         info.load_pronom_xml()
-        info.save_fido_xml(args.output)
+        info.save_fido_xml(args.target)
         delta_t = time.clock() - t0
         if not args.q:
             print >> sys.stderr, 'FIDO: Converted {0} useformats in {1}s'.format(len(info.formats), delta_t)

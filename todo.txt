@@ -1,9 +1,10 @@
 FIDO TODO LIST
+TODO: ANJ: Add a format data conversion option to filter a single PUID out.
 TODO: ANJ: Compare PNG-1.0 output against my template, and fill any gaps.
-TOFO: ANJ: Update all to use version 0.3 in place (not as '-0.3' files).
 TODO: ANJ: Write a format validator that checks formats against schema and rates them.
 TODO: ANJ: Run DROID, file, and others(?) against a fileset and normalised output for comparison?
 TODO: ANJ: Tidy up format record storage and extension. Allow source folders and overrides.
+TODO: ANJ: Add a format data conversion option to skip the <details> part.
 TODO: ANJ: Strip rich format records out for speed - keep data elsewhere.
 TODO: ANJ: Get usage of Dublin Core reviewed.
 TODO: Handle terminal backslash in a signature

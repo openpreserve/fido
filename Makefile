@@ -1,8 +1,8 @@
 # Fido Makefile
 
 python=python
-python26=/cygdrive/e/apps/python26/python
-python27=/cygdrive/e/apps/python27/python
+python26=python2.6 #/cygdrive/e/apps/python26/python
+python27=python #/cygdrive/e/apps/python27/python
 xmllint=/usr/bin/xmllint
 
 ok="{info.filename},{info.puid},{info.signaturename}\n"
@@ -42,7 +42,7 @@ make/dist: ${app_files} ${xml_files} ${doc_files}
 	touch make/dist
 
 fido/conf/formats.xml: fido/conf/pronom-xml.zip fido/fido.py fido/conf/fido-formats.xsd
-	${python} fido/fido.py
+	${python} fido/fido.py -convert -source fido/conf/pronom-xml.zip -target formats.xml
 	#${xmllint} -noout -schema fido/conf/fido-formats.xsd -valid fido/conf/formats.xml
 	${xmllint} -format fido/conf/formats.xml -o fido/conf/formats.xml
 
