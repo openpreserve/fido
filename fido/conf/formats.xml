@@ -653,7 +653,7 @@
         <dc:identifier>http://www.w3.org/Graphics/PNG/nurbcup2si.png</dc:identifier>
         <dcterms:license/>
         <dc:rights/>
-        <checksum type="md5"/>
+        <checksum type="md5">de63d66c9f2d8cdcee1f46a07c1aae14</checksum>
       </example_file>
       <example_file>
         <dc:title>666.png</dc:title>
@@ -661,7 +661,7 @@
         <dc:identifier>http://www.w3.org/Graphics/PNG/666.png</dc:identifier>
         <dcterms:license/>
         <dc:rights/>
-        <checksum type="md5"/>
+        <checksum type="md5">40e7e3a69be4582b6241f8542e3453c8</checksum>
       </example_file>
       <record_metadata>
         <status>unknown</status>
