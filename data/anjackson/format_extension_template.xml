@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <formats version="0.3" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="fido-formats-0.3.xsd"
+  xsi:noNamespaceSchemaLocation="fido-formats.xsd"
   xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns:dcterms="http://purl.org/dc/terms/">
   <format>
@@ -18,6 +18,8 @@
     <has_priority_over>fmt/189</has_priority_over>
     <signature>
       <name>Microsoft Office Open XML - Word</name>
+      <!-- Each signature is composed of one or more patterns, which must all match for an identification to be successful. 
+      BOF regex -->
       <pattern>
         <position>BOF</position>
         <regex>(?s)\APK\x03\x04</regex>
@@ -31,51 +33,73 @@
         <regex>(?s)\x00\x00word/.{1,20}\.xmlPK\x01\x02\x2d.{0,2000}\Z</regex>
       </pattern>
     </signature>
-	<!-- These above information provide the core fido fields, i.e. those relating to identification. -->
+      
+	<!-- These above information provide the core fido fields, i.e. those relating to identification. -->	
 	<!-- More detailed information beyond that required for identification goes in the details section. -->
 	<details>
 	  <!-- A description of the format -->
       <dc:description></dc:description>
       <!-- The release date -->
       <dcterms:available/>
+      <!-- Who created the format. -->
       <dc:creator>Microsoft</dc:creator>
+      <!-- Who published the format. -->
+      <dcterms:publisher />
+      <!-- Which formats (identified by puid) are super-types of this one.
+      e.g. all instances of the current type are also instances of this broader super-type. -->
       <is_subtype_of/>
-	  <!-- Content Type, one of:
+      <!-- Which formats are sub-types to this one. -->
+      <is_supertype_of/>
+	  <!-- Content Type, free text, but should be one of:
 	raster|vector|image|spreadsheet|text|word-processed|page-description|audio|presentation|mark-up|database|video|email|other
 	  -->
       <content_type>word-processed</content_type>
-	  <!-- References to useful documentation or other resources. -->
+      
+	  <!-- References to useful documentation or other resources. 
+	       You can use any Dublin Core or DCTerms elements here. -->
       <reference>
-      	<type>information|specification|implementation|registry|related</type>
+        <!-- The type of reference this is. Should be one of: 
+             information|specification|implementation|registry|related
+             -->
+      	<type>specification</type>
         <dc:title/>
         <dc:creator/>
         <dc:publisher/>
+        <!-- If the specifcation is available at a URL, this should be included as an identifier. -->
 		<dc:identifier/>
         <dc:description/>
         <dcterms:created/>
         <dcterms:modified/>
         <dcterms:available/>
+        <dc:type>Authoritative</dc:type>
+        <dcterms:license/>
       </reference>
-	  <!-- Example files that should be successfully identified by the above signature. -->
+      
+	  <!-- Example files that should be successfully identified by the above signature. 
+           You can use any Dublin Core or DCTerms elements here. -->
       <example_file>
         <dc:identifier>./this.txt</dc:identifier>
         <dc:rights>To the extent possible under law, Andrew Jackson has waived all copyright and related or neighbouring rights to this example file.</dc:rights>
         <dcterms:license>http://creativecommons.org/publicdomain/zero/1.0/</dcterms:license>
         <checksum type="md5">XXXXXX</checksum>
       </example_file>
-	  <!-- Metadata about this format record -->
+      
+	  <!-- Metadata about this format record.
+           You can use any Dublin Core or DCTerms elements here. -->
       <record_metadata>
       	<!-- invalid|incomplete|stub|adequate|complete|superb|deprecated -->
       	<status>complete</status>
-        <dcterms:isReplacedBy/>
-        <dc:creator/>
+        <dc:creator>Your name goes here.</dc:creator>
         <dc:description/>
         <dcterms:license/>
-		<!-- creation and update? -->
-        <dc:date/>
-		<!-- re-use identifier from references. -->
+        <dcterms:created>11 Mar 2005</dcterms:created>
+        <dcterms:modified>02 Aug 2005</dcterms:modified>
+		<!-- If drawn from a reference, re-use the identifier from the references section. -->
         <dc:source/>
+        <!-- Deprecated records should declare the new puid(s) here: -->
+        <dcterms:isReplacedBy/>
       </record_metadata>
     </details>
+    
   </format>
 </formats>
