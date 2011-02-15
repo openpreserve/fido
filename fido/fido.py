@@ -211,7 +211,7 @@ class FormatInfo:
             ET.SubElement(r, 'dc:type').text = get_text_tna(x, 'DocumentType')
             ET.SubElement(r, 'dcterms:license').text = get_text_tna(x, 'AvailabilityDescription')
             if get_text_tna(x, 'AvailabilityNote') != "":
-                ET.SubElement(r, 'dcterms:license').text = get_text_tna(x, 'AvailabilityNote')
+                ET.SubElement(r, 'dc:source').text = get_text_tna(x, 'AvailabilityNote')
             ET.SubElement(r, 'dc:rights').text = get_text_tna(x, 'DocumentIPR')
         # Examples
         for x in pronom_format.findall(TNA("ReferenceFile")):

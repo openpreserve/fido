@@ -8,7 +8,7 @@
     <alias>PNG (1.0)</alias>
     <pronom_id>664</pronom_id>
     <extension>png</extension>
-    <apple_uid>public.png</apple_uid>
+    <apple_uti>public.png</apple_uti>
     <signature>
       <name>PNG 1.0</name>
       <note>Signature + IHDR chunk at BOF, IEND chunk at EOF</note>
