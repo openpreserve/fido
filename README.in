@@ -32,7 +32,7 @@ Format Definitions
 
 By default, Fido loads format information from two files conf/formats.xml
 and conf/format_extensions.xml. Addition format files can be specified using
-the -xmlformats command line argument.  They should use the same syntax as 
+the -loadformats command line argument.  They should use the same syntax as 
 conf/format_extensions.xml. If more than one format file needs to be specified,
 then they should be comma separated as with the -formats argument.
 
