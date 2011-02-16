@@ -766,8 +766,12 @@ class Fido:
             
     def check_formats(self):
         print "Checking format signature files..."
+        # Scores:
+        scores = {'INCOMPLETE': 0,'STUB': 5,'ADEQUATE': 7,'COMPLETE': 10 }
+        # Accumulators:
         states = {}
         total = 0
+        print "STATUS: Status, PUID, Name, Version, Score"
         for f in self.formats:
             format_status = "UNKNOWN"
             if f.find('version') == None or f.find('version').text == None:
@@ -782,10 +786,9 @@ class Fido:
             states[format_status] += 1
             total += 1
             # Summary judgement:
-            print "STATUS: "+f.find('puid').text+","+format_status
+            print "STATUS: "+format_status+","+f.find('puid').text+","+f.findtext('name')+","+version+","+str(scores[format_status])
             print ""
         # Scoring and total:
-        scores = {'INCOMPLETE': 0,'STUB': 5,'ADEQUATE': 7,'COMPLETE': 10 }
         print "Overall state: Total",total,"records:"
         score = 0
         statelist = states.keys()
