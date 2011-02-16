@@ -1,7 +1,7 @@
 #!python
 
 import sys, re, os, time
-import hashlib, urllib
+import hashlib, urllib, csv
 from xml.etree import cElementTree as ET    
 version = '0.9.4'
 defaults = {'bufsize': 32 * 4096,
@@ -12,7 +12,7 @@ defaults = {'bufsize': 32 * 4096,
             'format_files': ['formats.xml', 'format_extensions.xml'],
             'description' : """
     Format Identification for Digital Objects (fido).
-    FIDO is a command-line tool to identify the file useformats of digital objects.
+    FIDO is a command-line tool to identify the file formats of digital objects.
     It is designed for simple integration into automated work-flows.
     """,
     'epilog' : """
@@ -95,7 +95,7 @@ class FormatInfo:
                 
     def load_pronom_xml(self):
         """Load the pronom XML from self.pronom_files and convert it to fido XML.
-           As a side-effect, set self.useformats to a list of ElementTree.Element
+           As a side-effect, set self.formats to a list of ElementTree.Element
         """
         print "Loading PRONOM data from "+self.pronom_files
         import zipfile
@@ -258,7 +258,7 @@ class FormatInfo:
     #FIXME: I don't think that this quite works yet!
     def _sort_formats(self, formatlist):
         """Sort the format list based on their priority relationships so higher priority
-           useformats appear earlier in the list.
+           formats appear earlier in the list.
         """
         def compare_formats(f1, f2):
             f1ID = f1.find('puid').text
@@ -409,7 +409,7 @@ class Fido:
 
     def load_fido_xml(self, file):
         """Load the fido format information from @param file.
-           As a side-effect, set self.useformats
+           As a side-effect, set self.formats
            @return list of ElementTree.Element, one for each format.
         """
         tree = ET.parse(file)
@@ -429,7 +429,7 @@ class Fido:
             self.puid_has_priority_over_map[puid] = frozenset([puid_element.text for puid_element in element.findall('has_priority_over')])
         return self.formats
 
-    # To delete a format: (1) remove from self.useformats, (2) remove from puid_format_map, (3) remove from selt.puid_has_pri
+    # To delete a format: (1) remove from self.formats, (2) remove from puid_format_map, (3) remove from selt.puid_has_pri
     def get_signatures(self, format):
         return format.findall('signature')
     
@@ -702,7 +702,7 @@ class Fido:
         return True
     
     def match_formats(self, bofbuffer, eofbuffer):
-        """Apply the patterns for useformats to the supplied buffers.
+        """Apply the patterns for formats to the supplied buffers.
            @return a match list of (format, signature) tuples. 
            The list has inferior matches removed.
         """
@@ -771,7 +771,9 @@ class Fido:
         # Accumulators:
         states = {}
         total = 0
-        print "STATUS: Status, PUID, Name, Version, Score"
+        # Output as CSV
+        scoreWriter = csv.writer(open('format_scores.csv','wb'))
+        scoreWriter.writerow(['Status', 'PUID', 'Name', 'Version', 'Score']);
         for f in self.formats:
             format_status = "UNKNOWN"
             if f.find('version') == None or f.find('version').text == None:
@@ -786,6 +788,7 @@ class Fido:
             states[format_status] += 1
             total += 1
             # Summary judgement:
+            scoreWriter.writerow([format_status, f.find('puid').text, f.findtext('name'), version, str(scores[format_status])])
             print "STATUS: "+format_status+","+f.find('puid').text+","+f.findtext('name')+","+version+","+str(scores[format_status])
             print ""
         # Scoring and total:
@@ -836,10 +839,7 @@ class Fido:
                         if p.find("regex") == None:
                             print "ERROR: No pattern regex(s) specified!"
                             error_found = True
-                        # TODO This should reject the regex if it's malformed or not consistent with the 'position' value
-
-# python fido/fido.py -convert -source fido/conf/pronom-xml.zip -target fido/conf/formats.xml
-# python fido/fido.py -checkformats -loadformats data/anjackson/format_extension_template.xml -useformats fido-fmt/189.word                      
+                        # TODO This should reject the regex if it's malformed or not consistent with the 'position' value                      
                             
         # Return?
         if error_found == True:
@@ -920,8 +920,8 @@ def main(arglist=None):
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-input', default=False, help='file containing a list of files to check, one per line. - means stdin')
     group.add_argument('files', nargs='*', default=[], metavar='FILE', help='files to check.  If the file is -, then read content from stdin. In this case, python must be invoked with -u or it may convert the line terminators.')
-    parser.add_argument('-useformats', metavar='INCLUDEPUIDS', default=None, help='comma separated string of useformats to use in identification')
-    parser.add_argument('-nouseformats', metavar='EXCLUDEPUIDS', default=None, help='comma separated string of useformats not to use in identification')
+    parser.add_argument('-useformats', metavar='INCLUDEPUIDS', default=None, help='comma separated string of formats to use in identification')
+    parser.add_argument('-nouseformats', metavar='EXCLUDEPUIDS', default=None, help='comma separated string of formats not to use in identification')
     parser.add_argument('-extension', default=False, action='store_true', help='use file extensions if the patterns fail.  May return many matches.')
     parser.add_argument('-matchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use on match. See nomatchprintf, README.txt.')
     parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use if no match. See README.txt')
@@ -937,7 +937,7 @@ def main(arglist=None):
     parser.add_argument('-convert', default=False, action='store_true', help='Convert pronom xml to fido xml')
     parser.add_argument('-source', default=os.path.join(mydir, 'conf', 'pronom-xml.zip'),
                         help='import from a zip file containing only Pronom xml files')
-    parser.add_argument('-target', default=os.path.join(mydir, 'conf', 'useformats.xml'), help='export fido xml output file')
+    parser.add_argument('-target', default=os.path.join(mydir, 'conf', 'formats.xml'), help='export fido xml output file')
          
     # PROCESS ARGUMENTS
     args = parser.parse_args(arglist)
@@ -949,7 +949,7 @@ def main(arglist=None):
         info.save_fido_xml(args.target)
         delta_t = time.clock() - t0
         if not args.q:
-            print >> sys.stderr, 'FIDO: Converted {0} useformats in {1}s'.format(len(info.formats), delta_t)
+            print >> sys.stderr, 'FIDO: Converted {0} formats in {1}s'.format(len(info.formats), delta_t)
     
     if args.v :
         print "fido/" + version
