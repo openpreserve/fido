@@ -1,7 +1,7 @@
 FIDO TODO LIST
-TODO: ANJ: Add a format data conversion option to filter a single PUID out.
-TODO: ANJ: Compare PNG-1.0 output against my template, and fill any gaps.
 TODO: ANJ: Write a format validator that checks formats against schema and rates them.
+TODO: ANJ: When in -checkformats mode, perform XSD validation of the supplied formats files.
+TODO: ANJ: Extend validator to check regexes are well formed, match EOF/BOF/VAR etc.
 TODO: ANJ: Run DROID, file, and others(?) against a fileset and normalised output for comparison?
 TODO: ANJ: Tidy up format record storage and extension. Allow source folders and overrides.
 TODO: ANJ: Add a format data conversion option to skip the <details> part.

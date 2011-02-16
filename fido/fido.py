@@ -41,6 +41,10 @@ class NS:
 XHTML = NS("{http://www.w3.org/1999/xhtml}")
 # TNA namespace
 TNA = NS("{http://pronom.nationalarchives.gov.uk}")
+# DC namespace
+DC = NS("{http://purl.org/dc/elements/1.1/}")
+# DCTERMS namespace
+DCTERMS = NS("{http://purl.org/dc/terms/}")
 
 def get_text_tna(element, tag, default=''):
     """Helper function to return the text for a tag or path using the TNA namespace.
@@ -67,7 +71,8 @@ class FormatInfo:
                                                      'xmlns:dcterms': "http://purl.org/dc/terms/"}))
         root = tree.getroot()
         for f in self.formats:
-            if f.find('signature'):
+            # This skips entries that have no signature:
+            #if f.find('signature'):
                 root.append(f)
         self.indent(root)
         with open(dst, 'wb') as out:
@@ -758,6 +763,130 @@ class Fido:
             if len(buf) == 0:
                 break
             target.write(buf)
+            
+    def check_formats(self):
+        print "Checking format signature files..."
+        states = {}
+        total = 0
+        for f in self.formats:
+            format_status = "UNKNOWN"
+            if f.find('version') == None or f.find('version').text == None:
+                version = "[?]"
+            else:
+                version = f.find('version').text
+            print "FORMAT: "+f.find('puid').text+" "+f.find('name').text+" "+version
+            format_status = self.check_format(f)
+            # Count up status profile:
+            if not states.has_key(format_status):
+                states[format_status] = 0
+            states[format_status] += 1
+            total += 1
+            # Summary judgement:
+            print "STATUS: "+f.find('puid').text+","+format_status
+            print ""
+        # Scoring and total:
+        scores = {'INCOMPLETE': 0,'STUB': 5,'ADEQUATE': 7,'COMPLETE': 10 }
+        print "Overall state: Total",total,"records:"
+        score = 0
+        statelist = states.keys()
+        statelist.sort()
+        for state in statelist:
+            print scores[state], state,states[state], states[state] * scores[state]
+            score += states[state] * scores[state]
+        print "Total format signature score: ",score
+            
+    def check_format(self, f):
+        error_found = False
+        # Basic details:
+        if f.find('version') == None or f.find('version').text == None:
+            print "INFO: No version specified."
+        if f.find('mime') == None:
+            print "INFO: No MIME Type specified."
+        if f.find('extension') == None:
+            print "INFO: No file extension specified."
+            
+        # Basic identification info, required to be considered STUB.
+        if f.find("signature") == None:
+            print "ERROR: No file signatures specified!"
+            error_found = True
+        else:
+            for s in f.findall("signature"):
+                if s.find("pattern") == None:
+                    print "ERROR: No signature pattern(s) specified!"
+                    error_found = True
+                else:
+                    for p in s.findall("pattern"):
+                        position = ""
+                        if p.find("position") == None:
+                            print "ERROR: No pattern position specified!"
+                            error_found = True
+                        else:
+                            position = p.find("position").text
+                        # Check value is sane
+                        if position != "BOF"  and position != "EOF" and position != "VAR":
+                            print "ERROR: Pattern position must be one of BOF, EOF, VAR"
+                            error_found = True
+                        # Warn about VAR patterns:
+                        if position == "VAR":
+                            print "WARNING: Variable-position signatures can be very slow to match."
+                        # And the regex
+                        if p.find("regex") == None:
+                            print "ERROR: No pattern regex(s) specified!"
+                            error_found = True
+                        # TODO This should reject the regex if it's malformed or not consistent with the 'position' value
+
+# python fido/fido.py -convert -source fido/conf/pronom-xml.zip -target fido/conf/formats.xml
+# python fido/fido.py -checkformats -loadformats data/anjackson/format_extension_template.xml -useformats fido-fmt/189.word                      
+                            
+        # Return?
+        if error_found == True:
+            return "INCOMPLETE"
+        
+        # Now check for basic descriptive data, required to be considered ADEQUATE.
+        d = f.find("details")
+        if d == None:
+            print "ERROR: No details section specified"
+            error_found = True
+        else:
+            desc = d.find(DC("description")) 
+            if desc == None or desc.text == None:
+                print "ERROR: No dc:description section specified."
+                error_found = True
+            else:
+                if re.match('^This is an outline record', desc.text, re.IGNORECASE):
+                    print "ERROR: The dc:description says 'This is an outline record'"
+                    error_found = True
+            # Other expected fields?
+            if d.find(DC("creator")) == None:
+                print "INFO: No dc:creator specified!"
+            # TODO Add other fields/warnings? dcterms:available dcterms:created?
+            # Now check for one or more references and metadata
+            if d.find("reference") == None:
+                print "ERROR: No reference elements found!"
+                error_found = True
+            # TODO Check the reference bits are well-formed.
+            if d.find("record_metadata") == None:
+                print "ERROR: No record_metadata elements found!"
+                error_found = True
+            # TODO Check the record_metadata bits are well-formed.
+        
+        # Return?
+        if error_found == True:
+            return "STUB"
+
+        # Look for example files, required to be considered COMPLETE.
+        if d.find("example_file") == None:
+            print "ERROR: No example_file elements found!"
+            error_found = True
+        # TODO Check the example_file bits are well-formed.
+        
+        # Return?
+        if error_found == True:
+            return "ADEQUATE"
+        
+        # All good
+        return "COMPLETE"
+    
              
 def list_files(roots, recurse=False):
     "Return the files one at a time.  Roots could be a fileobj or a list."
@@ -799,6 +928,8 @@ def main(arglist=None):
     parser.add_argument('-loadformats', default=None, metavar='XML1,...,XMLn', help='comma separated string of XML format files to add.')
     parser.add_argument('-confdir', default=None, help='configuration directory to load_fido_xml, for example, the format specifications from.')
    
+    parser.add_argument('-checkformats', default=False, action='store_true', help='Check the supplied format XML files for quality.')
+    
     mydir = os.path.abspath(os.path.dirname(__file__))
     parser.add_argument('-convert', default=False, action='store_true', help='Convert pronom xml to fido xml')
     parser.add_argument('-source', default=os.path.join(mydir, 'conf', 'pronom-xml.zip'),
@@ -848,7 +979,13 @@ def main(arglist=None):
         for format in fido.formats:
             print ET.tostring(format, encoding='UTF-8')
         exit(0)
-        
+    
+    # Test the format signature set
+    if args.checkformats:
+        fido.check_formats();
+        exit(0)
+    
+    # Set up to use stdin, or open input files:
     if args.input == '-':
         args.files = sys.stdin
     elif args.input:

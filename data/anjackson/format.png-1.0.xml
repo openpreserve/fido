@@ -24,8 +24,8 @@
       </pattern>
     </signature>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#226;&#128;&#152;Add an Entry&#226;&#128;&#153;.</dc:description>
-      <dcterms:created>07 March 1995</dcterms:created>
+      <dc:description>Portable Network Graphics (PNG, pronounced 'ping') is a bitmapped image format and video codec that employs lossless data compression.</dc:description>
+      <dcterms:available>07 March 1995</dcterms:available>
       <dc:creator>The PNG Development Group</dc:creator>
       <dcterms:publisher />
       <!-- These two refer to the family of PNG formats, and track the latest developments, so it's not clear where they belong.
