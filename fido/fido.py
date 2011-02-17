@@ -1,7 +1,7 @@
 #!python
 
 import sys, re, os, time
-import hashlib, urllib, csv
+import hashlib, urllib, urlparse, csv
 from xml.etree import cElementTree as ET    
 version = '0.9.4'
 defaults = {'bufsize': 32 * 4096,
@@ -231,11 +231,7 @@ class FormatInfo:
                     ET.SubElement(rf, 'dc:identifier').text = url  
                     try:
                         # And calculate the checksum of this resource:
-                        m = hashlib.md5()
-                        sock = urllib.urlopen(url)
-                        m.update(sock.read())
-                        sock.close()
-                        checksum=m.hexdigest()
+                        checksum=Fido.calc_md5(url)
                     except IOError:
                         print "WARNING! Could not download and calculate checksum for test file."
                 else:
@@ -254,7 +250,7 @@ class FormatInfo:
         ET.SubElement(md, 'dc:description').text = get_text_tna(pronom_format, 'ProvenanceDescription').encode('utf8')
 
         return fido_format
-        
+            
     #FIXME: I don't think that this quite works yet!
     def _sort_formats(self, formatlist):
         """Sort the format list based on their priority relationships so higher priority
@@ -966,9 +962,22 @@ class Fido:
                 if local_file == None:
                     print "INFO: example_file",efc,"- No local 'file://...' dc:identifier supplied for example file."
                 else:
-                    # FIXME Check the local file:// reference resolves okay.
+                    # Check the local file:// reference resolves okay.
                     # Should be relative to the formats xml file, and so fido will have to be invoked there.
-                    pass
+                    checksum = None
+                    local_file = "."+urlparse.urlparse(local_file).path
+                    try:
+                        # And calculate the checksum of this resource:
+                        checksum=self.calc_md5(local_file)
+                    except IOError:
+                        print "ERROR: example_file",efc,"- Could not calculate checksum for test file",local_file
+                        error_found = True
+                    if checksum != None:
+                        print "INFO: example_file",efc,"-",local_file,"md5 =",checksum
+                        if not self.none_or_empty(ef.findtext("checksum")):
+                            if checksum != ef.findtext("checksum"):
+                                print "ERROR: example_file",efc,"- Checksums do not match up!"
+                                error_found = True
                         
         # Return?
         if error_found == True:
@@ -984,6 +993,13 @@ class Fido:
             return True
         return False
     
+    def calc_md5(self,url):
+        m = hashlib.md5()
+        sock = urllib.urlopen(url)
+        m.update(sock.read())
+        sock.close()
+        return m.hexdigest()
+        
              
 def list_files(roots, recurse=False):
     "Return the files one at a time.  Roots could be a fileobj or a list."

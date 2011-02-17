@@ -1,7 +1,7 @@
 FIDO TODO LIST
 TODO: ANJ: Complete validator to check refs, files, metadata and regexes are well formed, match EOF/BOF/VAR etc.
 TODO: ANJ: Report inconsistency of STATUS flag?
-TODO: ANJ: When in -checkformats mode, perform XSD validation of the supplied formats files?
+TODO: ANJ: When in -checkformats mode, use levels of XSD validation instead of much of the logic in code.
 TODO: ANJ: Run DROID, file, and others(?) against a fileset and normalised output for comparison?
 TODO: ANJ: Add a format data conversion option to skip the <details> part.
 TODO: ANJ: Strip rich format records out for speed - keep data elsewhere.

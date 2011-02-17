@@ -78,7 +78,7 @@
 	  <!-- Example files that should be successfully identified by the above signature. 
            You can use any Dublin Core or DCTerms elements here. -->
       <example_file>
-        <dc:identifier>./this.txt</dc:identifier>
+        <dc:identifier>file:///./this.txt</dc:identifier>
         <dc:rights>To the extent possible under law, Andrew Jackson has waived all copyright and related or neighbouring rights to this example file.</dc:rights>
         <dcterms:license>http://creativecommons.org/publicdomain/zero/1.0/</dcterms:license>
         <checksum type="md5">XXXXXX</checksum>
