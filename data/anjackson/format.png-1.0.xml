@@ -68,6 +68,12 @@
         <dc:rightsHolder>W3C World Wide Web Consortium</dc:rightsHolder>
         <checksum type="md5">40e7e3a69be4582b6241f8542e3453c8</checksum>
       </example_file>
+      <example_file>
+        <dc:identifier>file://./this.txt</dc:identifier>
+        <dc:rights>To the extent possible under law, Andrew Jackson has waived all copyright and related or neighbouring rights to this example file.</dc:rights>
+        <dcterms:license>http://creativecommons.org/publicdomain/zero/1.0/</dcterms:license>
+        <checksum type="md5">XXXXXX</checksum>
+      </example_file>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>

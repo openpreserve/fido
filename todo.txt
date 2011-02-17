@@ -1,9 +1,8 @@
 FIDO TODO LIST
-TODO: ANJ: Write a format validator that checks formats against schema and rates them.
-TODO: ANJ: When in -checkformats mode, perform XSD validation of the supplied formats files.
-TODO: ANJ: Extend validator to check regexes are well formed, match EOF/BOF/VAR etc.
+TODO: ANJ: Complete validator to check refs, files, metadata and regexes are well formed, match EOF/BOF/VAR etc.
+TODO: ANJ: Report inconsistency of STATUS flag?
+TODO: ANJ: When in -checkformats mode, perform XSD validation of the supplied formats files?
 TODO: ANJ: Run DROID, file, and others(?) against a fileset and normalised output for comparison?
-TODO: ANJ: Tidy up format record storage and extension. Allow source folders and overrides.
 TODO: ANJ: Add a format data conversion option to skip the <details> part.
 TODO: ANJ: Strip rich format records out for speed - keep data elsewhere.
 TODO: ANJ: Get usage of Dublin Core reviewed.

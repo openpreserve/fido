@@ -851,27 +851,69 @@ class Fido:
             print "ERROR: No details section specified"
             error_found = True
         else:
-            desc = d.find(DC("description")) 
-            if desc == None or desc.text == None:
+            desc = d.findtext(DC("description")) 
+            if self.none_or_empty(desc):
                 print "ERROR: No dc:description section specified."
                 error_found = True
             else:
-                if re.match('^This is an outline record', desc.text, re.IGNORECASE):
+                if re.match('^This is an outline record', desc, re.IGNORECASE):
                     print "ERROR: The dc:description says 'This is an outline record'"
                     error_found = True
             # Other expected fields?
-            if d.find(DC("creator")) == None:
+            if self.none_or_empty(d.findtext(DC("creator"))):
                 print "INFO: No dc:creator specified!"
-            # TODO Add other fields/warnings? dcterms:available dcterms:created?
-            # Now check for one or more references and metadata
+            # Publication date: dcterms:available
+            if self.none_or_empty(d.findtext(DCTERMS("available"))):
+                print "INFO: No dcterms:available publication date specified!"
+            # Now check for one or more references:
             if d.find("reference") == None:
                 print "ERROR: No reference elements found!"
                 error_found = True
-            # TODO Check the reference bits are well-formed.
+            else:
+                for ref in d.findall("reference"):
+                    if self.none_or_empty(ref.findtext("type")):
+                        print "ERROR: No reference type specified!"
+                        error_found = True
+                    if self.none_or_empty(ref.findtext(DC("title"))):
+                        print "ERROR: Reference has no dc:title!"
+                        error_found = True
+                    if self.none_or_empty(ref.findtext(DC("creator"))):
+                        print "ERROR: Reference has no dc:creator!"
+                        error_found = True
+                    if self.none_or_empty(ref.findtext(DC("identifier"))):
+                        print "ERROR: Reference has no dc:identifier!"
+                        error_found = True
+                    if self.none_or_empty(ref.findtext(DC("description"))):
+                        print "ERROR: Reference has no dc:description!"
+                        error_found = True
+                    if self.none_or_empty(ref.findtext(DC("type"))):
+                        print "INFO: Reference has no dc:type."
+                    if self.none_or_empty(ref.findtext(DC("type"))):
+                        print "INFO: Reference has no dc:type."
+                    if self.none_or_empty(ref.findtext(DCTERMS("created"))) and  self.none_or_empty(ref.findtext(DCTERMS("available"))):
+                        print "INFO: Reference has no dcterms:created or dcterms:available."
+                    if self.none_or_empty(ref.findtext(DCTERMS("license"))):
+                        print "INFO: Reference has no dcterms:license."
+                    if self.none_or_empty(ref.findtext(DCTERMS("rightsHolder"))):
+                        print "INFO: Reference has no dcterms:rightsHolder."
+            # Record metadata:
             if d.find("record_metadata") == None:
                 print "ERROR: No record_metadata elements found!"
                 error_found = True
-            # TODO Check the record_metadata bits are well-formed.
+            else:
+                for md in d.findall("record_metadata"):
+                    if self.none_or_empty(md.findtext(DC("creator"))):
+                        print "ERROR: No record dc:creator specified!"
+                        error_found = True
+                    if self.none_or_empty(md.findtext("status")):
+                        print "ERROR: No record status specified!"
+                        error_found = True
+                    if self.none_or_empty(md.findtext(DCTERMS("created"))):
+                        print "ERROR: No record dcterms:created date specified!"
+                        error_found = True
+                    if self.none_or_empty(md.findtext(DCTERMS("modified"))):
+                        print "ERROR: No record dcterms:modified date specified!"
+                        error_found = True
         
         # Return?
         if error_found == True:
@@ -881,14 +923,62 @@ class Fido:
         if d.find("example_file") == None:
             print "ERROR: No example_file elements found!"
             error_found = True
-        # TODO Check the example_file bits are well-formed.
-        
+        else:
+            efc = 0
+            for ef in d.findall("example_file"):
+                efc+=1
+                if self.none_or_empty(ef.findtext(DC("title"))):
+                    print "ERROR: example_file",efc,"- No example file dc:title specified!"
+                    error_found = True
+                if self.none_or_empty(ef.findtext(DC("description"))):
+                    print "ERROR: example_file",efc,"- No example file dc:decription specified!"
+                    error_found = True
+                if self.none_or_empty(ef.findtext(DC("title"))):
+                    print "ERROR: example_file",efc,"- No example file dc:title specified!"
+                    error_found = True
+                if self.none_or_empty(ef.findtext(DCTERMS("license"))):
+                    print "ERROR: example_file",efc,"- No example file dcterms:license specified!"
+                    error_found = True
+                if self.none_or_empty(ef.findtext("checksum")):
+                    print "ERROR: example_file",efc,"- No example file checksum specified!"
+                    error_found = True
+                if self.none_or_empty(ef.findtext(DC("source"))):
+                    print "INFO: example_file",efc,"- No example file dc:source specified!"
+                if self.none_or_empty(ef.findtext(DC("rightsHolder"))):
+                    print "INFO: example_file",efc,"- No example file dc:rightsHolder specified!"
+                # Check the identifiers
+                local_file = None
+                http_file = None
+                for efi in ef.findall(DC("identifier")):
+                    if re.match('^file:', efi.text, re.IGNORECASE) and local_file == None:
+                        local_file = efi.text
+                    if re.match('^http:', efi.text, re.IGNORECASE) and http_file == None:
+                        http_file = efi.text
+                    if re.match('^https:', efi.text, re.IGNORECASE) and http_file == None:
+                        http_file = efi.text
+                if local_file == None and http_file == None:
+                    print "ERROR: example_file",efc,"- No local or http/https dc:identifier supplied for example file."
+                    error_found = True
+                if local_file == None:
+                    print "INFO: example_file",efc,"- No local 'file://...' dc:identifier supplied for example file."
+                else:
+                    # FIXME Check the local file:// reference resolves okay.
+                    # Should be relative to the formats xml file, and so fido will have to be invoked there.
+                    pass
+                        
         # Return?
         if error_found == True:
             return "ADEQUATE"
         
         # All good
         return "COMPLETE"
+    
+    def none_or_empty(self,var):
+        if var == None:
+            return True
+        if var.strip() == "":
+            return True
+        return False
     
              
 def list_files(roots, recurse=False):

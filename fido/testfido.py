@@ -3,7 +3,7 @@ Created on 28 Oct 2010
 
 @author: AFarquha
 '''
-import unittest, run
+import unittest
 import cStringIO
 
  
@@ -48,8 +48,8 @@ class Test(unittest.TestCase):
             i += 1
 
     def test_identify_stream(self):
-        import run
-        fido = run.Fido()
+        import fido
+        fido = fido.Fido()
         self.stash_ids(fido)
         tests = [("%PDF-1.0\n\n some stuff %%EOF\n", 14, ["fmt/14"]),
                  ("%PDF-1.0\n\n some stuff %%EOF\n", 10, ["fmt/14"]),
@@ -65,8 +65,8 @@ class Test(unittest.TestCase):
             self.assertTrue(set(self.results[0][1]) == set(expected))
         
     def test_identify_stream_with_header(self):
-        import run
-        fido = run.Fido()
+        import fido
+        fido = fido.Fido()
         self.stash_ids(fido)
         self.results = []
         fido.bufsize = 25
