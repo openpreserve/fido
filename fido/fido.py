@@ -816,28 +816,30 @@ class Fido:
             print "ERROR: No file signatures specified!"
             error_found = True
         else:
+            sc = 0
             for s in f.findall("signature"):
+                sc += 1
                 if s.find("pattern") == None:
-                    print "ERROR: No signature pattern(s) specified!"
+                    print "ERROR: signature",sc,"- No signature pattern(s) specified!"
                     error_found = True
                 else:
                     for p in s.findall("pattern"):
                         position = ""
                         if p.find("position") == None:
-                            print "ERROR: No pattern position specified!"
+                            print "ERROR: signature",sc,"- No pattern position specified!"
                             error_found = True
                         else:
                             position = p.find("position").text
                         # Check value is sane
                         if position != "BOF"  and position != "EOF" and position != "VAR":
-                            print "ERROR: Pattern position must be one of BOF, EOF, VAR"
+                            print "ERROR: signature",sc,"- Pattern position must be one of BOF, EOF, VAR"
                             error_found = True
                         # Warn about VAR patterns:
                         if position == "VAR":
-                            print "WARNING: Variable-position signatures can be very slow to match."
+                            print "WARNING: signature",sc,"- Variable-position signatures can be very slow to match."
                         # And the regex
                         if p.find("regex") == None:
-                            print "ERROR: No pattern regex(s) specified!"
+                            print "ERROR: signature",sc,"- No pattern regex(s) specified!"
                             error_found = True
                         # TODO This should reject the regex if it's malformed or not consistent with the 'position' value                      
                             
@@ -870,32 +872,34 @@ class Fido:
                 print "ERROR: No reference elements found!"
                 error_found = True
             else:
+                refc = 0
                 for ref in d.findall("reference"):
+                    refc += 1
                     if self.none_or_empty(ref.findtext("type")):
-                        print "ERROR: No reference type specified!"
+                        print "ERROR: reference",refc,"- No reference type specified!"
                         error_found = True
                     if self.none_or_empty(ref.findtext(DC("title"))):
-                        print "ERROR: Reference has no dc:title!"
+                        print "ERROR: reference",refc,"- Reference has no dc:title!"
                         error_found = True
                     if self.none_or_empty(ref.findtext(DC("creator"))):
-                        print "ERROR: Reference has no dc:creator!"
+                        print "ERROR: reference",refc,"- Reference has no dc:creator!"
                         error_found = True
                     if self.none_or_empty(ref.findtext(DC("identifier"))):
-                        print "ERROR: Reference has no dc:identifier!"
+                        print "ERROR: reference",refc,"- Reference has no dc:identifier!"
                         error_found = True
                     if self.none_or_empty(ref.findtext(DC("description"))):
-                        print "ERROR: Reference has no dc:description!"
+                        print "ERROR: reference",refc,"- Reference has no dc:description!"
                         error_found = True
                     if self.none_or_empty(ref.findtext(DC("type"))):
-                        print "INFO: Reference has no dc:type."
+                        print "INFO: reference",refc,"- Reference has no dc:type."
                     if self.none_or_empty(ref.findtext(DC("type"))):
-                        print "INFO: Reference has no dc:type."
+                        print "INFO: reference",refc,"- Reference has no dc:type."
                     if self.none_or_empty(ref.findtext(DCTERMS("created"))) and  self.none_or_empty(ref.findtext(DCTERMS("available"))):
-                        print "INFO: Reference has no dcterms:created or dcterms:available."
+                        print "INFO: reference",refc,"- Reference has no dcterms:created or dcterms:available."
                     if self.none_or_empty(ref.findtext(DCTERMS("license"))):
-                        print "INFO: Reference has no dcterms:license."
+                        print "INFO: reference",refc,"- Reference has no dcterms:license."
                     if self.none_or_empty(ref.findtext(DCTERMS("rightsHolder"))):
-                        print "INFO: Reference has no dcterms:rightsHolder."
+                        print "INFO: reference",refc,"- Reference has no dcterms:rightsHolder."
             # Record metadata:
             if d.find("record_metadata") == None:
                 print "ERROR: No record_metadata elements found!"
