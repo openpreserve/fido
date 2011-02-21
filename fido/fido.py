@@ -4,7 +4,7 @@ import sys, re, os, time
 import hashlib, urllib, urlparse, csv
 from xml.etree import cElementTree as ET    
 version = '0.9.4'
-defaults = {'bufsize': 32 * 4096,
+defaults = {'bufsize': 128 * 1024,
             'regexcachesize' : 2084,
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
             'printmatch': "OK,{info.time},{info.puid},{info.formatname},{info.signaturename},{info.filesize},\"{info.filename}\"\n",
@@ -563,6 +563,19 @@ class Fido:
             if container != None:
                 return container.text
         return False
+    
+    def blocking_read(self, file, bytes_to_read):
+        bytes_read = 0
+        buffer = ''
+        while bytes_read < bytes_to_read:
+            readbuffer = file.read(bytes_to_read - bytes_read)
+            buffer += readbuffer
+            bytes_read = len(buffer)
+            # break out if EOF is reached.
+            if readbuffer == '':
+                break
+        return buffer
+        
                             
     def get_buffers(self, stream, length=None, seekable=False):
         """Return buffers from the beginning and end of stream and the number of bytes read
@@ -571,14 +584,14 @@ class Fido:
            If length is None, return the length as found. 
            If seekable is False, the steam does not support a seek operation.
         """
-        
-        bofbuffer = stream.read(self.bufsize if length == None else min(length, self.bufsize))
+        bytes_to_read = self.bufsize if length == None else min(length, self.bufsize)
+        bofbuffer = self.blocking_read(stream, bytes_to_read)
         bytes_read = len(bofbuffer)
         if length == None:
             # A stream with unknown length; have to keep two buffers around
             prevbuffer = bofbuffer
             while True:
-                buffer = stream.read(self.bufsize)
+                buffer = self.blocking_read(stream, self.bufsize)
                 bytes_read += len(buffer)
                 if len(buffer) == self.bufsize:
                     prevbuffer = buffer
@@ -592,23 +605,23 @@ class Fido:
                 eofbuffer = bofbuffer
             elif bytes_unread < self.bufsize:
                 # The buffs overlap
-                eofbuffer = bofbuffer[bytes_unread:] + stream.read(bytes_unread)
+                eofbuffer = bofbuffer[bytes_unread:] + self.blocking_read(stream, bytes_unread)
             elif bytes_unread == self.bufsize:
-                eofbuffer = stream.read(self.bufsize)
+                eofbuffer = self.blocking_read(stream, self.bufsize)
             elif seekable:  # easy case when we can just seek!
                 stream.seek(length - self.bufsize)
-                eofbuffer = stream.read(self.bufsize)
+                eofbuffer = self.blocking_read(stream, self.bufsize)
             else:
                 # We have more to read and know how much.    
                 # n*bufsize + r = length
                 (n, r) = divmod(bytes_unread, self.bufsize)
                 # skip n-1*bufsize bytes
                 for unused_i in xrange(1, n):
-                    stream.read(self.bufsize)
+                    self.blocking_read(stream, self.bufsize)
                 # skip r bytes
-                stream.read(r)
+                self.blocking_read(stream, r)
                 # and read the remaining bufsize bytes into the eofbuffer
-                eofbuffer = stream.read(self.bufsize)
+                eofbuffer = self.blocking_read(stream, self.bufsize)
             return bofbuffer, eofbuffer
     
     def walk_zip(self, filename, fileobj=None):
@@ -621,7 +634,7 @@ class Fido:
         import zipfile, tempfile
         try:
             zipstream = None
-            zipstream = zipfile.ZipFile((fileobj if fileobj != None else filename))    
+            zipstream = zipfile.ZipFile((fileobj if fileobj != None else filename), 'r')    
             for item in zipstream.infolist():
                 if item.file_size == 0:
                     continue           #TODO: Find a better test for isdir
@@ -994,7 +1007,7 @@ class Fido:
         return False
     
     def calc_md5(self,url):
-        m = hashlib.md5()
+        m = hashlib.md5() #@UndefinedVariable
         sock = urllib.urlopen(url)
         m.update(sock.read())
         sock.close()
