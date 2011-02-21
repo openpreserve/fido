@@ -231,7 +231,8 @@ class FormatInfo:
                     ET.SubElement(rf, 'dc:identifier').text = url  
                     try:
                         # And calculate the checksum of this resource:
-                        checksum=Fido.calc_md5(url)
+                        fido = Fido()
+                        checksum=fido.calc_md5(url)
                     except IOError:
                         print "WARNING! Could not download and calculate checksum for test file."
                 else:
