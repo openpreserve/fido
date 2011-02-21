@@ -2,12 +2,12 @@ usage: fido.py [-h] [-v] [-q] [-recurse] [-zip] [-input INPUT]
                [-useformats INCLUDEPUIDS] [-nouseformats EXCLUDEPUIDS]
                [-extension] [-matchprintf FORMATSTRING]
                [-nomatchprintf FORMATSTRING] [-bufsize BUFSIZE] [-show SHOW]
-               [-loadformats XML1,...,XMLn] [-confdir CONFDIR] [-convert]
-               [-source SOURCE] [-target TARGET]
+               [-loadformats XML1,...,XMLn] [-confdir CONFDIR] [-checkformats]
+               [-convert] [-source SOURCE] [-target TARGET]
                [FILE [FILE ...]]
 
 Format Identification for Digital Objects (fido). FIDO is a command-line tool
-to identify the file useformats of digital objects. It is designed for simple
+to identify the file formats of digital objects. It is designed for simple
 integration into automated work-flows.
 
 positional arguments:
@@ -24,10 +24,10 @@ optional arguments:
   -input INPUT          file containing a list of files to check, one per
                         line. - means stdin
   -useformats INCLUDEPUIDS
-                        comma separated string of useformats to use in
+                        comma separated string of formats to use in
                         identification
   -nouseformats EXCLUDEPUIDS
-                        comma separated string of useformats not to use in
+                        comma separated string of formats not to use in
                         identification
   -extension            use file extensions if the patterns fail. May return
                         many matches.
@@ -43,6 +43,7 @@ optional arguments:
                         comma separated string of XML format files to add.
   -confdir CONFDIR      configuration directory to load_fido_xml, for example,
                         the format specifications from.
+  -checkformats         Check the supplied format XML files for quality.
   -convert              Convert pronom xml to fido xml
   -source SOURCE        import from a zip file containing only Pronom xml
                         files
@@ -87,7 +88,7 @@ Format Definitions
 
 By default, Fido loads format information from two files conf/formats.xml
 and conf/format_extensions.xml. Addition format files can be specified using
-the -xmlformats command line argument.  They should use the same syntax as 
+the -loadformats command line argument.  They should use the same syntax as 
 conf/format_extensions.xml. If more than one format file needs to be specified,
 then they should be comma separated as with the -formats argument.
 
