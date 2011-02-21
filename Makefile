@@ -41,7 +41,7 @@ make/dist: ${app_files} ${xml_files} ${doc_files}
 	${python27} setup.py sdist bdist_msi
 	touch make/dist
 
-fido/conf/formats.xml: fido/conf/pronom-xml.zip fido/fido.py fido/conf/fido-formats.xsd
+convert: fido/conf/pronom-xml.zip fido/fido.py fido/conf/fido-formats.xsd
 	${python} fido/fido.py -convert -source fido/conf/pronom-xml.zip -target fido/conf/formats.xml
 	#${xmllint} -noout -schema fido/conf/fido-formats.xsd -valid fido/conf/formats.xml
 	${xmllint} -format fido/conf/formats.xml -o fido/conf/formats.xml
