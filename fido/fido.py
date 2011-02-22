@@ -7,8 +7,8 @@ version = '0.9.4'
 defaults = {'bufsize': 128 * 1024,
             'regexcachesize' : 2084,
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
-            'printmatch': "OK,{info.time},{info.puid},{info.formatname},{info.signaturename},{info.filesize},\"{info.filename}\"\n",
-            'printnomatch' : "KO,{info.time},,,,{info.filesize},\"{info.filename}\"\n",
+            'printmatch': "OK,%(info.time)s,%(info.puid)s,%(info.formatname)s,%(info.signaturename)s,%(info.filesize)s,\"%(info.filename)s\"\n",
+            'printnomatch' : "KO,%(info.time)s,,,,%(info.filesize)s,\"%(info.filename)s\"\n",
             'format_files': ['formats.xml', 'format_extensions.xml'],
             'description' : """
     Format Identification for Digital Objects (fido).
@@ -75,8 +75,8 @@ class FormatInfo:
             #if f.find('signature'):
                 root.append(f)
         self.indent(root)
-        with open(dst, 'wb') as out:
-                print >> out, ET.tostring(root, encoding='UTF-8')     
+        out = open(dst, 'wb')
+        print >> out, ET.tostring(root, encoding='UTF-8')     
 
     def indent(self, elem, level=0):
         i = "\n" + level*"  "
@@ -460,7 +460,7 @@ class Fido:
         obj.time = int(delta_t * 1000)
         obj.filesize = self.current_filesize
         if len(matches) == 0:
-            sys.stdout.write(self.printnomatch.format(info=obj))
+            sys.stdout.write(self.printnomatch % { "info.time" : obj.time, "info.filesize" : obj.filesize, "info.filename" : obj.filename } )
         else:
             i = 0
             for (f, s) in matches:
@@ -471,15 +471,15 @@ class Fido:
                 obj.signaturename = s.find('name').text
                 mime = s.find('mime')
                 obj.mimetype = mime.text if mime != None else None
-                sys.stdout.write(self.printmatch.format(info=obj))
+                sys.stdout.write(self.printmatch % { "info.time" : obj.time, "info.puid" : obj.puid, "info.formatname" : obj.formatname, "info.signaturename" : obj.signaturename, "info.filesize" : obj.filesize, "info.filename" : obj.filename })
         
     def print_summary(self, secs):
         """Print summary information on the number of matches and time taken.
         """
         count = self.current_count
         if not self.quiet:
-            rate = (int(count / secs) if secs != 0 else 9999)
-            print >> sys.stderr, "FIDO: Processed {0:>6d} files in {1:>6.2f} msec, {2:d} files/sec".format(count, secs * 1000, rate)
+            rate = (int(round(count / secs)) if secs != 0 else 9999)
+            print >> sys.stderr, 'FIDO: Processed %6d files in %6.2f msec, %2d files/sec' %  (count, secs * 1000, rate)
                                          
     def identify_file(self, filename):
         """Identify the type of @param filename.  
@@ -488,10 +488,10 @@ class Fido:
         self.current_file = filename
         try:
             t0 = time.clock()
-            with open(filename, 'rb') as f:
-                size = os.stat(filename)[6]
-                self.current_filesize = size
-                bofbuffer, eofbuffer = self.get_buffers(f, size, seekable=True)
+            f = open(filename, 'rb')
+            size = os.stat(filename)[6]
+            self.current_filesize = size
+            bofbuffer, eofbuffer = self.get_buffers(f, size, seekable=True)
             matches = self.match_formats(bofbuffer, eofbuffer)
             self.handle_matches(filename, matches, time.clock() - t0)
             if self.extension and len(matches) == 0:
@@ -653,7 +653,7 @@ class Fido:
                 matches = self.match_formats(bofbuffer, eofbuffer)
                 self.handle_matches(item_name, matches, time.clock() - t0)
                 if self.container_type(matches):
-                    with tempfile.SpooledTemporaryFile(prefix='Fido') as target:
+                        target = tempfile.SpooledTemporaryFile(prefix='Fido')
                         #with zipstream.open(item) as source:
                         try:
                             source = zipstream.open(item)
@@ -1131,6 +1131,7 @@ def main(arglist=None):
             for file in list_files(args.files, args.recurse):
                 fido.identify_file(file)
     except KeyboardInterrupt:
+        # MdR: this seems to be broken?
         msg = "FIDO: Interrupt during:\n  File: {0}\n  Format: Puid={1.Identifier} [{1.FormatName}]\n  Sig: ID={2.SignatureID} [{2.SignatureName}]\n  Pat={3.ByteSequenceID} {3.regexstring!r}"
         print >> sys.stderr, msg.format(fido.current_file, fido.current_format, fido.current_sig, fido.current_pat)
         exit(1)
