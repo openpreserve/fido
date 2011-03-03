@@ -1,12 +1,17 @@
 #!python
+# -*- coding: utf-8 -*-
 
 import sys, re, os, time
-import hashlib, urllib, urlparse, csv
+import hashlib, urllib, urlparse, csv, getopt
 from xml.etree import cElementTree as ET    
-version = '0.9.4'
+# needed for jarring
+import __builtin__
+
+version = '0.9.5'
 defaults = {'bufsize': 128 * 1024,
             'regexcachesize' : 2084,
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
+            'jar_conf_dir' : './conf', 
             'printmatch': "OK,%(info.time)s,%(info.puid)s,%(info.formatname)s,%(info.signaturename)s,%(info.filesize)s,\"%(info.filename)s\"\n",
             'printnomatch' : "KO,%(info.time)s,,,,%(info.filesize)s,\"%(info.filename)s\"\n",
             'format_files': ['formats.xml', 'format_extensions.xml'],
@@ -379,7 +384,7 @@ def convert_pronom_pattern_to_regex(pronom_pat, pos=None, offset=None, maxoffset
 
 class Fido:
     def __init__(self, quiet=False, bufsize=None, printnomatch=None, printmatch=None,
-                 extension=False, zip=False, handle_matches=None, conf_dir=None, format_files=None):
+                 extension=False, zip=False, handle_matches=None, conf_dir=None, jar_conf_dir=None, format_files=None):
         global defaults
         self.quiet = quiet
         self.bufsize = (defaults['bufsize'] if bufsize == None else bufsize)
@@ -389,12 +394,16 @@ class Fido:
         self.zip = zip
         self.extension = extension
         self.conf_dir = defaults['conf_dir'] if conf_dir == None else conf_dir
+        self.jar_conf_dir = defaults['jar_conf_dir'] #if jar_conf_dir == None else jar_conf_dir
         self.format_files = defaults['format_files'] if format_files == None else format_files
         self.formats = []
         self.puid_format_map = {}
         self.puid_has_priority_over_map = {}
         for file in self.format_files:
-            self.load_fido_xml(os.path.join(os.path.abspath(self.conf_dir), file))
+            if 'jar_argv' in vars(__builtin__):
+                self.load_fido_xml(os.path.join(self.jar_conf_dir, file))
+            else:
+                self.load_fido_xml(os.path.join(os.path.abspath(self.conf_dir), file))
         self.current_file = ''
         self.current_filesize = 0
         self.current_format = None
@@ -1032,10 +1041,13 @@ def list_files(roots, recurse=False):
 def main(arglist=None):
     # The argparse package was introduced in 2.7
     t0 = time.clock() 
-    from argparselocal import ArgumentParser  
+    from argparselocal import ArgumentParser
     if arglist == None:
-        arglist = sys.argv[1:]
-        
+        # jar_argv is only present when jarred
+        if 'jar_argv' in vars(__builtin__):
+            arglist = jar_argv
+        else:
+            arglist = sys.argv[1:]
     parser = ArgumentParser(description=defaults['description'], epilog=defaults['epilog'], fromfile_prefix_chars='@')
     parser.add_argument('-v', default=False, action='store_true', help='show version information')
     parser.add_argument('-q', default=False, action='store_true', help='run (more) quietly')
@@ -1077,11 +1089,11 @@ def main(arglist=None):
     
     if args.v :
         print "fido/" + version
-        exit(0)
+        sys.exit(0)
     if args.show == 'defaults':
         for (k, v) in defaults.iteritems():
             print k, '=', repr(v)
-        exit(0)
+        sys.exit(0)
     if args.matchprintf != None:
         args.matchprintf = args.matchprintf.decode('string_escape')
     if args.nomatchprintf != None:
@@ -1105,12 +1117,12 @@ def main(arglist=None):
     if args.show == 'useformats':
         for format in fido.formats:
             print ET.tostring(format, encoding='UTF-8')
-        exit(0)
+        sys.exit(0)
     
     # Test the format signature set
     if args.checkformats:
         fido.check_formats();
-        exit(0)
+        sys.exit(0)
     
     # Set up to use stdin, or open input files:
     if args.input == '-':
@@ -1123,7 +1135,7 @@ def main(arglist=None):
         if (not args.input) and len(args.files) == 1 and args.files[0] == '-':
             if fido.zip == True:
                 raise RuntimeError("Multiple content read from stdin not yet supported.")
-                exit(1)
+                sys.exit(1)
                 fido.identify_multi_object_stream(sys.stdin)
             else:
                 fido.identify_stream(sys.stdin)
@@ -1134,12 +1146,12 @@ def main(arglist=None):
         # MdR: this seems to be broken?
         msg = "FIDO: Interrupt during:\n  File: {0}\n  Format: Puid={1.Identifier} [{1.FormatName}]\n  Sig: ID={2.SignatureID} [{2.SignatureName}]\n  Pat={3.ByteSequenceID} {3.regexstring!r}"
         print >> sys.stderr, msg.format(fido.current_file, fido.current_format, fido.current_sig, fido.current_pat)
-        exit(1)
+        sys.exit(1)
         
     if not args.q:
         sys.stdout.flush()
         fido.print_summary(time.clock() - t0)
 
-if __name__ == '__main__':
+# 'jar_argv' is in vars(__builtin__) when jarred
+if __name__ == '__main__' or 'jar_argv' in vars(__builtin__):
     main()
-    
