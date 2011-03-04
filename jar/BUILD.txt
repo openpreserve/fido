@@ -1,0 +1,1 @@
+To build a new jar, run build.sh in Package folder.
