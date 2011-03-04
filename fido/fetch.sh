@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 base="http://www.nationalarchives.gov.uk/pronom/"
 re='PUID=\"(fmt|x-fmt)/([0-9]+)\"'
 
