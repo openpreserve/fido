@@ -11,7 +11,7 @@ Any platform
    On the Mac, this places the fido.sh executable somewhere useful:
    sudo python setup.py install --install-scripts=/usr/local/bin
 5. You should now be able to see the help text: 
-   python -m fido.run -h
+   python -m fido.fido -h
    If you are lucky, you may also be able to run with 
    fido.sh -h
 
@@ -20,7 +20,7 @@ Windows
    (or use the big Downloads button on http://github.com/openplanets/fido)
 2. Double click
 3. Open a comnand shell.  You should now be able to run fido:
-   python -m fido.run -h
+   python -m fido.fido -h
 
 Dependencies
 ------------
@@ -71,27 +71,27 @@ Examples
 
 Identify all files in the current directory and below, sending output
 into file-info.csv
-   python -m fido.run -r . > file-info.csv
+   python -m fido.fido -r . > file-info.csv
 
 Do the same as above, but also look inside of zip or tar files:
-   python -m fido.run -r -z . > file-info.csv
+   python -m fido.fido -r -z . > file-info.csv
 
 Do the same as above, but also use file extensions, if a file cannot
 be identified through patterns
-   python -m fido.run -r -z -ext . > file-info.csv
+   python -m fido.fido -r -z -ext . > file-info.csv
 
 Take input from a list of files:
    ls > files.txt
-   python -m fido.run -f files.txt
+   python -m fido.fido -f files.txt
 
 Take input from a pipe:
-   find . -type f | python -m fido.run -f -
+   find . -type f | python -m fido.fido -f -
      
 Only show files that could not be identified.
-	python -m fido.run -r -matchprintf "" .
+	python -m fido.fido -r -matchprintf "" .
 
 Exclude a specific format from consideration:
-   python -m fido.run -r -z -ext -exclude "fmt/134" . > file-info.csv
+   python -m fido.fido -r -z -ext -exclude "fmt/134" . > file-info.csv
 
 License information
 -------------------
