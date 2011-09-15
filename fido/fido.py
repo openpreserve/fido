@@ -478,9 +478,9 @@ class Fido:
                 obj.puid = self.get_puid(f)
                 obj.formatname = f.find('name').text
                 obj.signaturename = s.find('name').text
-                mime = s.find('mime')
-                obj.mimetype = mime.text if mime != None else None
-                sys.stdout.write(self.printmatch % { "info.time" : obj.time, "info.puid" : obj.puid, "info.formatname" : obj.formatname, "info.signaturename" : obj.signaturename, "info.filesize" : obj.filesize, "info.filename" : obj.filename })
+                mime = f.find('mime')
+                obj.mimetype = mime.text if mime != None else ""
+                sys.stdout.write(self.printmatch % { "info.time" : obj.time, "info.puid" : obj.puid, "info.formatname" : obj.formatname, "info.signaturename" : obj.signaturename, "info.filesize" : obj.filesize, "info.filename" : obj.filename, "info.mimetype":obj.mimetype })
         
     def print_summary(self, secs):
         """Print summary information on the number of matches and time taken.
