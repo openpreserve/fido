@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
-    <system systemId="http://www.nationalarchives.gov.uk/pronom/service.asmx?WSDL" uri="www.nationalarchives.gov.uk/pronom/service.wsdl"/>
-    <system systemId="http://www.nationalarchives.gov.uk/pronom/Services/Contract/PRONOM.wsdl" uri="www.nationalarchives.gov.uk/pronom/Services/Contract/PRONOM.wsdl"/>
-</catalog>

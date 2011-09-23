@@ -1,3 +1,58 @@
+usage: fido.py [-h] [-v] [-q] [-recurse] [-zip] [-input INPUT]
+               [-useformats INCLUDEPUIDS] [-nouseformats EXCLUDEPUIDS]
+               [-matchprintf FORMATSTRING]
+               [-nomatchprintf FORMATSTRING] [-bufsize BUFSIZE] [-show SHOW]
+               [-loadformats XML1,...,XMLn] [-confdir CONFDIR] [-checkformats]
+               [-convert] [-source SOURCE] [-target TARGET]
+               [FILE [FILE ...]]
+
+Format Identification for Digital Objects (fido). FIDO is a command-line tool
+to identify the file formats of digital objects. It is designed for simple
+integration into automated work-flows.
+
+positional arguments:
+  FILE                  files to check. If the file is -, then read content
+                        from stdin. In this case, python must be invoked with
+                        -u or it may convert the line terminators.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v                    show version information
+  -q                    run (more) quietly
+  -recurse              recurse into subdirectories
+  -zip                  recurse into zip and tar files
+  -input INPUT          file containing a list of files to check, one per
+                        line. - means stdin
+  -useformats INCLUDEPUIDS
+                        comma separated string of formats to use in
+                        identification
+  -nouseformats EXCLUDEPUIDS
+                        comma separated string of formats not to use in
+                        identification
+  -matchprintf FORMATSTRING
+                        format string (Python style) to use on match. See
+                        nomatchprintf, README.txt.
+  -nomatchprintf FORMATSTRING
+                        format string (Python style) to use if no match. See
+                        README.txt
+  -bufsize BUFSIZE      size of the buffer to match against
+  -show SHOW            show "format" or "defaults"
+  -loadformats XML1,...,XMLn
+                        comma separated string of XML format files to add.
+  -confdir CONFDIR      configuration directory to load_fido_xml, for example,
+                        the format specifications from.
+  -checkformats         Check the supplied format XML files for quality.
+  -convert              Convert pronom xml to fido xml
+  -source SOURCE        import from a zip file containing only Pronom xml
+                        files
+  -target TARGET        export fido xml output file
+
+Open Planets Foundation (http://www.openplanetsfoundation.org)
+See License.txt for license information.
+Download from: http://github.com/openplanets/fido/downloads
+Author: Adam Farquhar, 2010
+Maintainer: Maurice de Rooij, 2011
+FIDO uses the UK National Archives (TNA) PRONOM File Format descriptions. PRONOM is available from www.tna.gov.uk/pronom.
 
 Installation
 ------------
@@ -7,25 +62,15 @@ Any platform
    (or use the big Downloads button on http://github.com/openplanets/fido)
 2. Unzip into some directory
 3. Open a command shell, cd to the directory that you placed the zip contents into
-4. python setup.py install
-   On the Mac, this places the fido.sh executable somewhere useful:
-   sudo python setup.py install --install-scripts=/usr/local/bin
-5. You should now be able to see the help text: 
+4. You should now be able to see the help text: 
    python -m fido.fido -h
    If you are lucky, you may also be able to run with 
    fido.sh -h
 
-Windows
-1. Download the latest msi release from http://github.com/openplanets/fido/downloads
-   (or use the big Downloads button on http://github.com/openplanets/fido)
-2. Double click
-3. Open a comnand shell.  You should now be able to run fido:
-   python -m fido.fido -h
-
 Dependencies
 ------------
 
-Fido 0.7 and later will run on Python 2.6 or Python 2.7 with no other dependencies.
+Fido 0.9.6 and later will run on Python 2.6 or Python 2.7 with no other dependencies.
 
 Format Definitions
 ------------------

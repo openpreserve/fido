@@ -1,11 +1,21 @@
 #!python
-#
+# -*- coding: utf-8 -*-
 # Format Identification for Digital Objects
 
+# MdR: 'reload(sys)' and 'setdefaultencoding("utf-8")' needed to fix utf-8 encoding errors
+# when converting from PRONOM to FIDO format
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 import cStringIO, zipfile, os
 import hashlib
 import urllib
 from xml.etree import ElementTree as ET
+# needed for debug
+# print_r: https://github.com/marcbelmont/python-print_r
+#from print_r import print_r
+# NOTE: this script is still heavily "under construction"
+
 
 class NS:
     """Helper class for XML name spaces in ElementTree.
@@ -56,11 +66,13 @@ class FormatInfo:
                                                      'xmlns:dcterms': "http://purl.org/dc/terms/"}))
         root = tree.getroot()
         for f in self.formats:
-            if f.find('signature'):
-                root.append(f)
+            # MdR: this skipped puids without sig, but we want them ALL
+            #if f.find('signature'):
+            root.append(f)
         self.indent(root)
         with open(dst, 'wb') as out:
-                print >>out, ET.tostring(root,encoding='UTF-8')     
+                #print >>out, ET.tostring(root,encoding='utf-8')     
+                print >>out, ET.tostring(root)     
 
     def indent(self, elem, level=0):
         i = "\n" + level*"  "
@@ -85,26 +97,65 @@ class FormatInfo:
         formats = []
         try:
             zip = zipfile.ZipFile(self.pronom_files, 'r')
+            #for name in zip.namelist():
+                #print "working on:", name
+            #countformathits = 0
             for item in zip.infolist():
                 try:
                     stream = zip.open(item)
                     # Work is done here!
                     format = self.parse_pronom_xml(stream, puid_filter)
+                    #print_r(format)
                     if format != None:
+                        #countformathits += 1
                         formats.append(format) 
                 finally:
                     stream.close()
         finally:
             zip.close()
+        #print "countformathits:", countformathits
+        #print_r(formats)
         # Replace the formatID with puids in has_priority_over
         id_map = {}
         for element in formats:
             puid = element.find('puid').text
+            #print "working on puid:",puid
             pronom_id = element.find('pronom_id').text
             id_map[pronom_id] = puid
+        #print_r(id_map)
+#        aantal = len(id_map)
+#        for meuk in range(1, aantal):
+#            try:
+#                if meuk not in id_map[meuk]:
+#                    print "missing:",meuk
+#            except:
+#                print "ok:",meuk
+#        exit()
+        #print_r(id_map)
+        #exit()
+        #id_map["1073"] = "fmt/9999"
         for element in formats:
             for rel in element.findall('has_priority_over'):
                 rel.text = id_map[rel.text]
+#        for element in formats:
+#            for rel in element.findall('has_priority_over'):
+#                if rel.text not in id_map:
+#                    id_map[rel.text] = "fmt/9999"
+#                    print "Warning: ", rel.text
+#                    rel.text = "fmt/unknown"
+#                    rel.text = id_map[rel.text]
+#                    print "rel.text=", rel.text
+#                    print "rel.text=",rel.text," & id_map[rel.text] = ", id_map[rel.text]
+#                        "fmt/unknown" = id_map[rel.text]
+#                else:
+#                    rel.text = id_map[rel.text]
+#            except Exception, e:
+#                print_r(e)
+#                print_r(rel.text)
+#                print_r(id_map[rel.text])
+#                exit()
+        #print(id_map.count())
+        #print_r(id_map)
         self._sort_formats(formats)
         self.formats = formats
                     
@@ -153,6 +204,7 @@ class FormatInfo:
             if rel == 'Has priority over':
                 ET.SubElement(fido_format, 'has_priority_over').text = get_text_tna(x, 'RelatedFormatID')
         # Get the InternalSignature information
+        #print "working on puid:", puid
         for pronom_sig in pronom_format.findall(TNA('InternalSignature')):
             fido_sig = ET.SubElement(fido_format, 'signature')
             ET.SubElement(fido_sig, 'name').text = get_text_tna(pronom_sig, 'SignatureName')

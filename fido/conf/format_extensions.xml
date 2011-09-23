@@ -221,4 +221,26 @@
       </pattern>
     </signature>
   </format>
+  <format>
+  <!-- .cayra format added by <maurice.de.rooij@nationaalarchief.nl> -->
+    <puid>fido-fmt/666.cayra</puid>
+    <name>Intalev Cayra Mindmap file</name>
+    <extension>cayra</extension>
+    <has_priority_over>x-fmt/263</has_priority_over>
+    <signature>
+      <name>Intalev Cayra Mindmap file</name>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)\APK\x03\x04</regex>
+      </pattern>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)\A.{30}bin\/[a-z0-9]{8}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{12}\x20\xa2</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <regex>(?s)\[Content_Types\]\.xmlPK\x05\x06\x00.{17}\Z</regex>
+      </pattern>
+    </signature>
+  </format>
 </formats>
