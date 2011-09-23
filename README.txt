@@ -1,6 +1,6 @@
 usage: fido.py [-h] [-v] [-q] [-recurse] [-zip] [-input INPUT]
                [-useformats INCLUDEPUIDS] [-nouseformats EXCLUDEPUIDS]
-               [-extension] [-matchprintf FORMATSTRING]
+               [-matchprintf FORMATSTRING]
                [-nomatchprintf FORMATSTRING] [-bufsize BUFSIZE] [-show SHOW]
                [-loadformats XML1,...,XMLn] [-confdir CONFDIR] [-checkformats]
                [-convert] [-source SOURCE] [-target TARGET]
@@ -29,8 +29,6 @@ optional arguments:
   -nouseformats EXCLUDEPUIDS
                         comma separated string of formats not to use in
                         identification
-  -extension            use file extensions if the patterns fail. May return
-                        many matches.
   -matchprintf FORMATSTRING
                         format string (Python style) to use on match. See
                         nomatchprintf, README.txt.
@@ -49,11 +47,12 @@ optional arguments:
                         files
   -target TARGET        export fido xml output file
 
-Open Planets Foundation (http://www.openplanetsfoundation.org) See License.txt
-for license information. Download from:
-http://github.com/openplanets/fido/downloads Author: Adam Farquhar, 2010 FIDO
-uses the UK National Archives (TNA) PRONOM File Format descriptions. PRONOM is
-available from www.tna.gov.uk/pronom.
+Open Planets Foundation (http://www.openplanetsfoundation.org)
+See License.txt for license information.
+Download from: http://github.com/openplanets/fido/downloads
+Author: Adam Farquhar, 2010
+Maintainer: Maurice de Rooij, 2011
+FIDO uses the UK National Archives (TNA) PRONOM File Format descriptions. PRONOM is available from www.tna.gov.uk/pronom.
 
 Installation
 ------------
@@ -63,25 +62,15 @@ Any platform
    (or use the big Downloads button on http://github.com/openplanets/fido)
 2. Unzip into some directory
 3. Open a command shell, cd to the directory that you placed the zip contents into
-4. python setup.py install
-   On the Mac, this places the fido.sh executable somewhere useful:
-   sudo python setup.py install --install-scripts=/usr/local/bin
-5. You should now be able to see the help text: 
+4. You should now be able to see the help text: 
    python -m fido.fido -h
    If you are lucky, you may also be able to run with 
    fido.sh -h
 
-Windows
-1. Download the latest msi release from http://github.com/openplanets/fido/downloads
-   (or use the big Downloads button on http://github.com/openplanets/fido)
-2. Double click
-3. Open a comnand shell.  You should now be able to run fido:
-   python -m fido.fido -h
-
 Dependencies
 ------------
 
-Fido 0.7 and later will run on Python 2.6 or Python 2.7 with no other dependencies.
+Fido 0.9.6 and later will run on Python 2.6 or Python 2.7 with no other dependencies.
 
 Format Definitions
 ------------------

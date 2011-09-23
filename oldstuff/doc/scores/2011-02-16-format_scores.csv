@@ -1,0 +1,771 @@
+Status,PUID,Name,Version,Score
+ADEQUATE,fmt/1,Broadcast WAVE,0,7
+ADEQUATE,fmt/10,Tagged Image File Format,6,7
+ADEQUATE,fmt/100,Hypertext Markup Language,4.01,7
+ADEQUATE,fmt/101,Extensible Markup Language,1.0,7
+ADEQUATE,fmt/102,Extensible Hypertext Markup Language,1.0,7
+ADEQUATE,fmt/103,Extensible Hypertext Markup Language,1.1,7
+STUB,fmt/104,Macromedia Flash,1,5
+STUB,fmt/105,Macromedia Flash,2,5
+STUB,fmt/106,Macromedia Flash,3,5
+STUB,fmt/107,Macromedia Flash,4,5
+STUB,fmt/108,Macromedia Flash,5,5
+STUB,fmt/109,Macromedia Flash,6,5
+STUB,fmt/11,Portable Network Graphics,1.0,5
+STUB,fmt/110,Macromedia Flash,7,5
+ADEQUATE,fmt/111,OLE2 Compound Document Format,[?],7
+STUB,fmt/112,Still Picture Interchange File Format,1.0,5
+INCOMPLETE,fmt/113,Still Picture Interchange File Format,2.0,0
+STUB,fmt/114,Windows Bitmap,1.0,5
+STUB,fmt/115,Windows Bitmap,2.0,5
+STUB,fmt/116,Windows Bitmap,3.0,5
+STUB,fmt/117,Windows Bitmap,3.0 NT,5
+STUB,fmt/118,Windows Bitmap,4.0,5
+STUB,fmt/119,Windows Bitmap,5.0,5
+STUB,fmt/12,Portable Network Graphics,1.1,5
+ADEQUATE,fmt/120,DROID File Collection File Format,1.0,7
+ADEQUATE,fmt/121,DROID Signature File Format,1.0,7
+ADEQUATE,fmt/122,Encapsulated PostScript File Format,1.2,7
+ADEQUATE,fmt/123,Encapsulated PostScript File Format,2.0,7
+ADEQUATE,fmt/124,Encapsulated PostScript File Format,3.0,7
+ADEQUATE,fmt/125,Microsoft Powerpoint Presentation,95,7
+ADEQUATE,fmt/126,Microsoft Powerpoint Presentation,97-2002,7
+STUB,fmt/127,OpenOffice Draw,1.0,5
+STUB,fmt/128,OpenOffice Writer,1.0,5
+STUB,fmt/129,OpenOffice Calc,1.0,5
+STUB,fmt/13,Portable Network Graphics,1.2,5
+STUB,fmt/130,OpenOffice Impress,1.0,5
+ADEQUATE,fmt/131,Advanced Systems Format,[?],7
+ADEQUATE,fmt/132,Windows Media Audio,[?],7
+ADEQUATE,fmt/133,Windows Media Video,[?],7
+STUB,fmt/134,MPEG 1/2 Audio Layer 3 - fido update,[?],5
+ADEQUATE,fmt/135,OpenDocument Format,1.0,7
+ADEQUATE,fmt/136,OpenDocument Text,1.0,7
+ADEQUATE,fmt/137,OpenDocument Spreadsheet,1.0,7
+ADEQUATE,fmt/138,OpenDocument Presentation,1.0,7
+ADEQUATE,fmt/139,OpenDocument Graphics,1.0,7
+STUB,fmt/14,Acrobat PDF 1.0 - Portable Document Format,1.0,5
+STUB,fmt/140,OpenDocument Database Format,1.0,5
+INCOMPLETE,fmt/141,Waveform Audio (PCMWAVEFORMAT),[?],0
+INCOMPLETE,fmt/142,Waveform Audio (WAVEFORMATEX),[?],0
+INCOMPLETE,fmt/143,Waveform Audio (WAVEFORMATEXTENSIBLE),[?],0
+INCOMPLETE,fmt/144,Acrobat PDF/X - Portable Document Format - Exchange 1:1999,[?],0
+INCOMPLETE,fmt/145,Acrobat PDF/X - Portable Document Format - Exchange 1:2001,[?],0
+INCOMPLETE,fmt/146,Acrobat PDF/X - Portable Document Format - Exchange 1a:2003,[?],0
+INCOMPLETE,fmt/147,Acrobat PDF/X - Portable Document Format - Exchange 2:2003,[?],0
+INCOMPLETE,fmt/148,Acrobat PDF/X - Portable Document Format - Exchange 3:2003,[?],0
+INCOMPLETE,fmt/149,JTIP (JPEG Tiled Image Pyramid),[?],0
+STUB,fmt/15,Acrobat PDF 1.1 - Portable Document Format,1.1,5
+INCOMPLETE,fmt/150,JPEG-LS,[?],0
+INCOMPLETE,fmt/151,JPX (JPEG 2000 Extended),[?],0
+INCOMPLETE,fmt/152,Digital Negative Format (DNG),1.1,0
+INCOMPLETE,fmt/153,Tagged Image File Format for Image Technology (TIFF/IT),[?],0
+INCOMPLETE,fmt/154,Tagged Image File Format for Electronic Still Picture Imaging (TIFF/EP),[?],0
+INCOMPLETE,fmt/155,GeoTIFF,[?],0
+INCOMPLETE,fmt/156,Tagged Image File Format for Internet Fax (TIFF-FX),[?],0
+INCOMPLETE,fmt/157,Acrobat PDF/X - Portable Document Format - Exchange 1a:2001,[?],0
+INCOMPLETE,fmt/158,Acrobat PDF/X - Portable Document Format - Exchange 3:2002,[?],0
+INCOMPLETE,fmt/159,EBCDIC-US,[?],0
+STUB,fmt/16,Acrobat PDF 1.2 - Portable Document Format,1.2,5
+INCOMPLETE,fmt/160,Device Independent File Format,[?],0
+ADEQUATE,fmt/161,SIARD (Software-Independent Archiving of Relational Databases),2.0,7
+INCOMPLETE,fmt/162,Microsoft Multiplan,4.0,0
+INCOMPLETE,fmt/163,Microsoft Works Word Processor for DOS,1.05,0
+INCOMPLETE,fmt/164,Microsoft Works Word Processor for DOS,1.12,0
+INCOMPLETE,fmt/165,Microsoft Works Word Processor for DOS,2.0,0
+INCOMPLETE,fmt/166,Microsoft Works Spreadsheet for DOS,1.05,0
+INCOMPLETE,fmt/167,Microsoft Works Spreadsheet for DOS,1.12,0
+INCOMPLETE,fmt/168,Microsoft Works Spreadsheet for DOS,2.0,0
+INCOMPLETE,fmt/169,Microsoft Works Database for DOS,1.05,0
+ADEQUATE,fmt/17,Acrobat PDF 1.3 - Portable Document Format,1.3,7
+INCOMPLETE,fmt/170,Microsoft Works Database for DOS,1.12,0
+INCOMPLETE,fmt/171,Microsoft Works Database for DOS,2.0,0
+INCOMPLETE,fmt/172,Microsoft Excel for Macintosh,3.0,0
+INCOMPLETE,fmt/173,Microsoft Excel for Macintosh,4.0,0
+INCOMPLETE,fmt/174,Microsoft Excel for Macintosh,98,0
+INCOMPLETE,fmt/175,Microsoft Excel for Macintosh,2001,0
+INCOMPLETE,fmt/176,Microsoft Excel for Macintosh,2002,0
+INCOMPLETE,fmt/177,Microsoft Excel for Macintosh,2004,0
+INCOMPLETE,fmt/178,Microsoft Excel for Macintosh,v.X,0
+INCOMPLETE,fmt/179,Microsoft PowerPoint for Macintosh,4.0,0
+ADEQUATE,fmt/18,Acrobat PDF 1.4 - Portable Document Format,1.4,7
+INCOMPLETE,fmt/180,Microsoft PowerPoint for Macintosh,98,0
+INCOMPLETE,fmt/181,Microsoft PowerPoint for Macintosh,2001,0
+INCOMPLETE,fmt/182,Microsoft PowerPoint for Macintosh,v.X,0
+STUB,fmt/183,PrimeOCR,3.0,5
+STUB,fmt/184,PrimeOCR,3.8,5
+STUB,fmt/185,Prime OCR,3.9,5
+STUB,fmt/186,PrimeOCR,4.0,5
+STUB,fmt/187,PrimeOCR,4.2,5
+STUB,fmt/188,PrimeOCR,4.3,5
+STUB,fmt/189,Microsoft Office Open XML,2007,5
+ADEQUATE,fmt/19,Acrobat PDF 1.5 - Portable Document Format,1.5,7
+INCOMPLETE,fmt/190,Adobe FrameMaker,5.0,0
+INCOMPLETE,fmt/191,Sony RAW Image File,[?],0
+INCOMPLETE,fmt/192,Kodak Digital Camera Raw Image File,[?],0
+INCOMPLETE,fmt/193,Digital Moving Picture Exchange Bitmap,[?],0
+INCOMPLETE,fmt/194,FileMaker Pro Ver. 7+ Database Document,[?],0
+INCOMPLETE,fmt/195,ERDAS IMAGINE Gray-scale Bitmap Image,[?],0
+INCOMPLETE,fmt/196,InDesign Document,[?],0
+INCOMPLETE,fmt/197,InstallShield Compiled Rules File,[?],0
+INCOMPLETE,fmt/198,"MPEG Audio Stream, Layer II",[?],0
+STUB,fmt/199,MPEG-4 Media File,[?],5
+ADEQUATE,fmt/2,Broadcast WAVE,1,7
+ADEQUATE,fmt/20,Acrobat PDF 1.6 - Portable Document Format,1.6,7
+INCOMPLETE,fmt/200,Material Exchange Format,[?],0
+INCOMPLETE,fmt/201,Mathematica Notebook,[?],0
+INCOMPLETE,fmt/202,Nikon Digital SLR Camera Raw Image File,[?],0
+INCOMPLETE,fmt/203,Ogg Vorbis Codec Compressed Multimedia File,[?],0
+INCOMPLETE,fmt/204,RealVideo Clip,[?],0
+INCOMPLETE,fmt/205,Synchronized Multimedia Integration Language,[?],0
+INCOMPLETE,fmt/206,Structured Query Language Data,[?],0
+INCOMPLETE,fmt/207,Obsidium Project File,[?],0
+INCOMPLETE,fmt/208,Binary File,[?],0
+INCOMPLETE,fmt/209,Sound Designer II Audio File,[?],0
+STUB,fmt/21,AutoCAD Drawing,1.0,5
+INCOMPLETE,fmt/210,Statistica Report File,[?],0
+INCOMPLETE,fmt/211,Kodak Photo-CD,[?],0
+INCOMPLETE,fmt/212,Information or Setup File,[?],0
+INCOMPLETE,fmt/213,ScanIt Document,[?],0
+INCOMPLETE,fmt/214,Microsoft Excel for Windows,2007,0
+INCOMPLETE,fmt/215,Microsoft Powerpoint for Windows,2007,0
+INCOMPLETE,fmt/216,Microsoft Visio for Windows,2007,0
+INCOMPLETE,fmt/217,PaintShopPro Browser Cache File,[?],0
+INCOMPLETE,fmt/218,Microsoft FrontPage,[?],0
+INCOMPLETE,fmt/219,Microsoft Works  Database for Windows,2.0,0
+STUB,fmt/22,AutoCAD Drawing,1.2,5
+INCOMPLETE,fmt/220,Microsoft Works Spreadsheet for Windows,2.0,0
+INCOMPLETE,fmt/221,Microsoft Works Word Processor for Windows,2.0,0
+INCOMPLETE,fmt/222,Microsoft Works  Database for Windows,2.0a,0
+INCOMPLETE,fmt/223,Microsoft Works  Database for Windows,3.0,0
+INCOMPLETE,fmt/224,Microsoft Works  Database for Windows,3.0a,0
+INCOMPLETE,fmt/225,Microsoft Works  Database for Windows,3.0b,0
+INCOMPLETE,fmt/226,Microsoft Works  Database for Windows,4.0,0
+INCOMPLETE,fmt/227,Microsoft Works Spreadsheet for Windows,2.0a,0
+INCOMPLETE,fmt/228,Microsoft Works Spreadsheet for Windows,3.0,0
+INCOMPLETE,fmt/229,Microsoft Works Spreadsheet for Windows,3.0a,0
+STUB,fmt/23,AutoCAD Drawing,1.3,5
+INCOMPLETE,fmt/230,Microsoft Works Spreadsheet for Windows,3.0b,0
+INCOMPLETE,fmt/231,Microsoft Works Spreadsheet for Windows,4.0,0
+INCOMPLETE,fmt/232,Microsoft Works Word Processor for Windows,2.0a,0
+INCOMPLETE,fmt/233,Microsoft Works Word Processor for Windows,3.0,0
+INCOMPLETE,fmt/234,Microsoft Works Word Processor for Windows,3.0a,0
+INCOMPLETE,fmt/235,Microsoft Works Word Processor for Windows,3.0b,0
+INCOMPLETE,fmt/236,Microsoft Works Word Processor for Windows,4.0,0
+INCOMPLETE,fmt/237,Microsoft Office Binder File for Windows,95,0
+INCOMPLETE,fmt/238,Microsoft Office Binder Template for Windows,95,0
+INCOMPLETE,fmt/239,Microsoft Office Binder Wizard for Windows,95,0
+STUB,fmt/24,AutoCAD Drawing,1.4,5
+INCOMPLETE,fmt/240,Microsoft Office Binder File for Windows,97-2003,0
+INCOMPLETE,fmt/241,Microsoft Office Binder Template for Windows,97-2003,0
+INCOMPLETE,fmt/242,Microsoft Office Binder Wizard for Windows,97-2003,0
+INCOMPLETE,fmt/243,GPS eXchange Format,[?],0
+INCOMPLETE,fmt/244,Keyhole Markup Language,[?],0
+INCOMPLETE,fmt/245,Structured Data Exchange Format,[?],0
+INCOMPLETE,fmt/246,Microsoft Works Database for Windows,4.0a,0
+INCOMPLETE,fmt/247,Microsoft Works Spreadsheet for Windows,4.0a,0
+INCOMPLETE,fmt/248,Microsoft Works Word Processor Windows,4.0a,0
+INCOMPLETE,fmt/249,Microsoft Works Database for Windows,4.5,0
+STUB,fmt/25,AutoCAD Drawing,2.0,5
+INCOMPLETE,fmt/250,Microsoft Works Spreadsheet for Windows,4.5,0
+INCOMPLETE,fmt/251,Microsoft Works Word Processor Windows,4.5,0
+INCOMPLETE,fmt/252,Microsoft Works Database for Windows,4.5a,0
+INCOMPLETE,fmt/253,Microsoft Works Spreadsheet for Windows,4.5a,0
+INCOMPLETE,fmt/254,Microsoft Works Word Processor Windows,4.5a,0
+INCOMPLETE,fmt/255,Document Express with DjVu Professional Edition,6.5,0
+INCOMPLETE,fmt/256,Microsoft Works Database for Windows,2000,0
+INCOMPLETE,fmt/257,Microsoft Works Spreadsheet for Windows,2000,0
+INCOMPLETE,fmt/258,Microsoft Works Word Processor Windows,2000,0
+INCOMPLETE,fmt/259,Microsoft Works Database for DOS,3,0
+STUB,fmt/26,AutoCAD Drawing,2.1,5
+INCOMPLETE,fmt/260,Microsoft Works Database for DOS,3a,0
+INCOMPLETE,fmt/261,Microsoft Works Database for DOS,3b,0
+INCOMPLETE,fmt/262,Microsoft Works Spreadsheet for DOS,3,0
+INCOMPLETE,fmt/263,Microsoft Works Spreadsheet for DOS,3a,0
+INCOMPLETE,fmt/264,Microsoft Works Spreadsheet for DOS,3b,0
+INCOMPLETE,fmt/265,Microsoft Works Word Processor DOS,3,0
+INCOMPLETE,fmt/266,Microsoft Works Word Processor DOS,3a,0
+INCOMPLETE,fmt/267,Microsoft Works Word Processor DOS,3b,0
+INCOMPLETE,fmt/268,Microsoft Works Database for Macintosh,3,0
+INCOMPLETE,fmt/269,Microsoft Works Database for Macintosh,4,0
+STUB,fmt/27,AutoCAD Drawing,2.2,5
+INCOMPLETE,fmt/270,Microsoft Works Spreadsheet for Macintosh,3,0
+INCOMPLETE,fmt/271,Microsoft Works Spreadsheet for Macintosh,4,0
+INCOMPLETE,fmt/272,Microsoft Works Word Processor Macintosh,3,0
+INCOMPLETE,fmt/273,Microsoft Works Word Processor Macintosh,4,0
+INCOMPLETE,fmt/274,SPSS Output File (spv),[?],0
+STUB,fmt/275,Microsoft Access Database,2007,5
+STUB,fmt/276,Acrobat PDF 1.7 - Portable Document Format,1.7,5
+STUB,fmt/277,ESRI Arc/View Shapefile Index,[?],5
+STUB,fmt/278,Internet Message Format,[?],5
+STUB,fmt/279,FLAC (Free Lossless Audio Codec),[?],5
+STUB,fmt/28,AutoCAD Drawing,2.5,5
+STUB,fmt/280,LaTeX (Master document),[?],5
+STUB,fmt/281,LaTeX (Subdocument),[?],5
+STUB,fmt/282,netCDF-3 Classic,[?],5
+STUB,fmt/283,netCDF-3 64-bit,[?],5
+STUB,fmt/284,Gridded Binary,1.0,5
+STUB,fmt/285,Gridded Binary,2.0,5
+STUB,fmt/286,HDF5,1.0,5
+STUB,fmt/287,HDF5,2.0,5
+STUB,fmt/288,Microsoft Front Page Server Extension Configuration,[?],5
+STUB,fmt/289,WARC,[?],5
+STUB,fmt/29,AutoCAD Drawing,2.6,5
+STUB,fmt/290,OpenDocument Text,1.1,5
+STUB,fmt/291,OpenDocument Text,1.2,5
+STUB,fmt/292,OpenDocument Presentation,1.1,5
+STUB,fmt/293,OpenDocument Presentation,1.2,5
+STUB,fmt/294,OpenDocument Spreadsheet,1.1,5
+STUB,fmt/295,OpenDocument Spreadsheet,1.2,5
+STUB,fmt/296,OpenDocument Graphics,1.1,5
+STUB,fmt/297,OpenDocument Graphics,1.2,5
+STUB,fmt/298,Autodesk Animator Pro FLIC,[?],5
+STUB,fmt/299,Autodesk Animator (FlicLib),[?],5
+ADEQUATE,fmt/3,Graphics Interchange Format,1987a,7
+STUB,fmt/30,AutoCAD Drawing,R9,5
+STUB,fmt/300,ChiWriter Document,4,5
+STUB,fmt/301,Computer Graphics Metafile ASCII,3,5
+STUB,fmt/302,Computer Graphics Metafile ASCII,4,5
+STUB,fmt/303,Computer Graphics Metafile (Binary),1,5
+STUB,fmt/304,Computer Graphics Metafile (Binary),2,5
+STUB,fmt/305,Computer Graphics Metafile (Binary),3,5
+STUB,fmt/306,Computer Graphics Metafile (Binary),4,5
+STUB,fmt/307,Quicken Interchange Format,[?],5
+STUB,fmt/308,Quicken Data Format,[?],5
+STUB,fmt/309,Open Financial Exchange,1.02,5
+STUB,fmt/31,AutoCAD Drawing,R10,5
+STUB,fmt/310,Open Financial Exchange,1.03,5
+STUB,fmt/311,Open Financial Exchange,1.6,5
+STUB,fmt/312,Open Financial Exchange,2.0.3,5
+STUB,fmt/313,Open Financial Exchange,2.1.1,5
+STUB,fmt/32,AutoCAD Drawing,R11/12,5
+ADEQUATE,fmt/33,AutoCAD Drawing,R13,7
+ADEQUATE,fmt/34,AutoCAD Drawing,R14,7
+ADEQUATE,fmt/35,AutoCAD Drawing,2000-2002,7
+STUB,fmt/36,AutoCAD Drawing,2004-2005,5
+STUB,fmt/37,Microsoft Word for Windows Document,1.0,5
+STUB,fmt/38,Microsoft Word for Windows Document,2.0,5
+ADEQUATE,fmt/39,Microsoft Word for Windows Document,6.0/95,7
+ADEQUATE,fmt/4,Graphics Interchange Format,1989a,7
+STUB,fmt/40,Microsoft Word for Windows Document,[?],5
+STUB,fmt/41,Raw JPEG Stream,[?],5
+STUB,fmt/42,JPEG File Interchange Format,1.00,5
+STUB,fmt/43,JPEG File Interchange Format,1.01,5
+ADEQUATE,fmt/44,JPEG File Interchange Format,1.02,7
+STUB,fmt/45,Rich Text Format,[?],5
+STUB,fmt/46,Rich Text Format,[?],5
+STUB,fmt/47,Rich Text Format,[?],5
+STUB,fmt/48,Rich Text Format,[?],5
+STUB,fmt/49,Rich Text Format,[?],5
+ADEQUATE,fmt/5,Audio/Video Interleaved Format,[?],7
+ADEQUATE,fmt/50,Rich Text Format,1.5,7
+STUB,fmt/51,Rich Text Format,1.6,5
+ADEQUATE,fmt/52,Rich Text Format,1.7,7
+ADEQUATE,fmt/53,Rich Text Format,1.8,7
+ADEQUATE,fmt/54,Drawing Interchange Binary Format,1.0,7
+ADEQUATE,fmt/55,Microsoft Excel 2.1 Worksheet (xls),2,7
+ADEQUATE,fmt/56,Microsoft Excel 3.0 Worlsheet (xls),3,7
+ADEQUATE,fmt/57,Microsoft Excel 4.0 Worksheet (xls),4S,7
+ADEQUATE,fmt/58,Microsoft Excel 4.0 Workbook (xls),4W,7
+ADEQUATE,fmt/59,Microsoft Excel 5.0 Workbook (xls),5,7
+STUB,fmt/6,Waveform Audio,[?],5
+ADEQUATE,fmt/60,Microsoft Excel 95 Workbook (xls),7,7
+ADEQUATE,fmt/61,Microsoft Excel 97 Workbook (xls),8,7
+ADEQUATE,fmt/62,Microsoft Excel 2000-2003 Workbook (xls),8X,7
+STUB,fmt/63,Drawing Interchange File Format (ASCII),Generic,5
+STUB,fmt/64,Drawing Interchange File Format (ASCII),1.0,5
+STUB,fmt/65,Drawing Interchange File Format (ASCII),1.2,5
+STUB,fmt/66,Drawing Interchange File Format (ASCII),1.3,5
+STUB,fmt/67,Drawing Interchange File Format (ASCII),1.4,5
+STUB,fmt/68,Drawing Interchange File Format (ASCII),2.0,5
+STUB,fmt/69,Drawing Interchange File Format (ASCII),2.1,5
+STUB,fmt/7,Tagged Image File Format,3,5
+STUB,fmt/70,Drawing Interchange File Format (ASCII),2.2,5
+STUB,fmt/71,Drawing Interchange File Format (ASCII),2.5,5
+STUB,fmt/72,Drawing Interchange File Format (ASCII),2.6,5
+STUB,fmt/73,Drawing Interchange File Format (ASCII),R9,5
+ADEQUATE,fmt/74,Drawing Interchange File Format (ASCII),R10,7
+ADEQUATE,fmt/75,Drawing Interchange File Format (ASCII),R11/12,7
+ADEQUATE,fmt/76,Drawing Interchange File Format (ASCII),R13,7
+ADEQUATE,fmt/77,Drawing Interchange File Format (ASCII),R14,7
+ADEQUATE,fmt/78,Drawing Interchange File Format (ASCII),2000-2002,7
+ADEQUATE,fmt/79,Drawing Interchange File Format (ASCII),2004-2005,7
+ADEQUATE,fmt/8,Tagged Image File Format,4,7
+ADEQUATE,fmt/80,Drawing Interchange File Format (Binary),R10,7
+ADEQUATE,fmt/81,Drawing Interchange File Format (Binary),R11/12,7
+ADEQUATE,fmt/82,Drawing Interchange File Format (Binary),R13,7
+ADEQUATE,fmt/83,Drawing Interchange File Format (Binary),R14,7
+ADEQUATE,fmt/84,Drawing Interchange File Format (Binary),2000-2002,7
+ADEQUATE,fmt/85,Drawing Interchange File Format (Binary),2004-2005,7
+STUB,fmt/86,PCX,0,5
+STUB,fmt/87,PCX,2,5
+STUB,fmt/88,PCX,3,5
+STUB,fmt/89,PCX,4,5
+ADEQUATE,fmt/9,Tagged Image File Format,5,7
+STUB,fmt/90,PCX,5,5
+STUB,fmt/91,Scalable Vector Graphics,1.0,5
+STUB,fmt/92,Scalable Vector Graphics,1.1,5
+STUB,fmt/93,Virtual Reality Modeling Language,1.0,5
+STUB,fmt/94,Virtual Reality Modeling Language,97,5
+ADEQUATE,fmt/95,Acrobat PDF/A - Portable Document Format,1,7
+STUB,fmt/96,Hypertext Markup Language,[?],5
+ADEQUATE,fmt/97,Hypertext Markup Language,2.0,7
+ADEQUATE,fmt/98,Hypertext Markup Language,3.2,7
+ADEQUATE,fmt/99,Hypertext Markup Language,4.0,7
+INCOMPLETE,x-fmt/1,Microsoft Word for  Macintosh Document,3.0,0
+INCOMPLETE,x-fmt/10,dBASE Database,IV,0
+INCOMPLETE,x-fmt/100,AutoCAD Script,[?],0
+INCOMPLETE,x-fmt/101,Harvard Graphics Show,3.0,0
+INCOMPLETE,x-fmt/102,3D Studio Shapes,[?],0
+STUB,x-fmt/103,AutoCAD Compiled Shape/Font File,[?],5
+STUB,x-fmt/104,AutoCAD Slide Library,[?],5
+STUB,x-fmt/105,AutoCAD Slide,[?],5
+INCOMPLETE,x-fmt/106,Microsoft Symbolic Link File,[?],0
+STUB,x-fmt/107,AutoCAD Named Plot Style Table,[?],5
+INCOMPLETE,x-fmt/108,Lithograph Export File,[?],0
+INCOMPLETE,x-fmt/109,Scalable Vector Graphics Compressed,[?],0
+INCOMPLETE,x-fmt/11,Revisable-Form-Text Document Content Architecture,[?],0
+INCOMPLETE,x-fmt/110,Fixed Width Values Text File,[?],0
+INCOMPLETE,x-fmt/111,Plain Text File,[?],0
+INCOMPLETE,x-fmt/112,AutoCAD External Database Configuration File,[?],0
+INCOMPLETE,x-fmt/113,Microsoft Visio Drawing,5.0,0
+INCOMPLETE,x-fmt/114,Lotus 1-2-3 Worksheet,2.0,0
+INCOMPLETE,x-fmt/115,Lotus 1-2-3 Worksheet,3.0,0
+INCOMPLETE,x-fmt/116,Lotus 1-2-3 Worksheet,4.0,0
+INCOMPLETE,x-fmt/117,Lotus 1-2-3 Worksheet,1.0,0
+INCOMPLETE,x-fmt/118,Microsoft Works Spreadsheet,2.0,0
+INCOMPLETE,x-fmt/119,Windows Metafile,[?],0
+INCOMPLETE,x-fmt/12,Write for Windows Document,3.0,0
+INCOMPLETE,x-fmt/120,Microsoft Works for Windows,4.0,0
+INCOMPLETE,x-fmt/121,Quattro Pro Spreadsheet,[?],0
+INCOMPLETE,x-fmt/122,Quattro Pro Spreadsheet,5,0
+INCOMPLETE,x-fmt/123,Microsoft Excel Macro,4.0,0
+INCOMPLETE,x-fmt/124,Microsoft Excel Add-In,[?],0
+INCOMPLETE,x-fmt/125,Microsoft Excel Toolbar,[?],0
+INCOMPLETE,x-fmt/126,Microsoft Excel Chart,4.0,0
+INCOMPLETE,x-fmt/127,AutoCAD Xref Log,[?],0
+INCOMPLETE,x-fmt/128,Microsoft Excel Workspace,[?],0
+INCOMPLETE,x-fmt/129,Microsoft Word for Macintosh Document,X,0
+INCOMPLETE,x-fmt/13,Tab-separated values,[?],0
+INCOMPLETE,x-fmt/130,MS-DOS Text File with line breaks,[?],0
+INCOMPLETE,x-fmt/131,Stationary  for Mac OS X,[?],0
+INCOMPLETE,x-fmt/132,Speller Custom Dictionary,[?],0
+INCOMPLETE,x-fmt/133,Speller Exclude Dictionary,[?],0
+INCOMPLETE,x-fmt/134,AutoCAD Device-Independent Binary Plotter File,[?],0
+STUB,x-fmt/135,Audio Interchange File Format,[?],5
+STUB,x-fmt/136,Audio Interchange File Format (compressed),[?],5
+INCOMPLETE,x-fmt/137,Electronic Arts Music,[?],0
+INCOMPLETE,x-fmt/138,Active Server Page,[?],0
+INCOMPLETE,x-fmt/139,Unix Sound File,[?],0
+INCOMPLETE,x-fmt/14,Macintosh Text File,[?],0
+INCOMPLETE,x-fmt/140,SGI Monochrome Image,[?],0
+INCOMPLETE,x-fmt/141,Calendar Creator Plus Data File,[?],0
+STUB,x-fmt/142,Computer Graphics Metafile ASCII,1,5
+INCOMPLETE,x-fmt/143,OS/2 Change Control File,[?],0
+INCOMPLETE,x-fmt/144,Corel Photo-Paint Image,[?],0
+INCOMPLETE,x-fmt/145,Stats+ Data File,[?],0
+INCOMPLETE,x-fmt/146,Scitex CT Bitmap,[?],0
+INCOMPLETE,x-fmt/147,Paradox Database Table,7,0
+INCOMPLETE,x-fmt/148,IBM DisplayWrite DCA Text File,[?],0
+INCOMPLETE,x-fmt/149,Desktop Color Separation File,[?],0
+INCOMPLETE,x-fmt/15,MS-DOS Text File,[?],0
+INCOMPLETE,x-fmt/150,Visual FoxPro Database Container File,[?],0
+INCOMPLETE,x-fmt/151,Micrografx Designer,7.0,0
+INCOMPLETE,x-fmt/152,Digital Video,[?],0
+INCOMPLETE,x-fmt/153,Windows Enhanced Metafile,[?],0
+STUB,x-fmt/154,AutoDesk FLIC Animation,[?],5
+INCOMPLETE,x-fmt/155,AutoCAD Film Roll,[?],0
+INCOMPLETE,x-fmt/156,Ventura Publisher,[?],0
+INCOMPLETE,x-fmt/157,Interchange File,[?],0
+INCOMPLETE,x-fmt/158,Initial Graphics Exchange Specification,[?],0
+STUB,x-fmt/159,GEM Image,[?],5
+INCOMPLETE,x-fmt/16,Unicode Text File,[?],0
+INCOMPLETE,x-fmt/160,Java Servlet Page,[?],0
+INCOMPLETE,x-fmt/161,MacPaint Image,[?],0
+STUB,x-fmt/162,Adobe FrameMaker Interchange Format,[?],5
+INCOMPLETE,x-fmt/163,NAP Metafile,[?],0
+INCOMPLETE,x-fmt/164,Portable Bitmap Graphic,[?],0
+INCOMPLETE,x-fmt/165,Kodak PhotoCD Image,1.0,0
+INCOMPLETE,x-fmt/166,PICS Animation,[?],0
+INCOMPLETE,x-fmt/167,Adobe PhotoDeluxe,[?],0
+INCOMPLETE,x-fmt/168,Broderbund Print Shop Deluxe,[?],0
+INCOMPLETE,x-fmt/169,PHP Script Page,[?],0
+INCOMPLETE,x-fmt/17,Microsoft Excel Template,2000,0
+INCOMPLETE,x-fmt/170,PC Paint Bitmap,[?],0
+INCOMPLETE,x-fmt/171,Inset Systems Bitmap,[?],0
+INCOMPLETE,x-fmt/172,Microsoft FoxPro Library,[?],0
+INCOMPLETE,x-fmt/173,PageMaker Document,5.0,0
+INCOMPLETE,x-fmt/174,PageMaker Document,6.0,0
+INCOMPLETE,x-fmt/175,MacPaint Graphics,[?],0
+INCOMPLETE,x-fmt/176,Picture Publisher Bitmap,4,0
+INCOMPLETE,x-fmt/177,Microsoft PowerPoint Graphics File,[?],0
+INCOMPLETE,x-fmt/178,Portable Pixelmap Bitmap,[?],0
+INCOMPLETE,x-fmt/179,Microsoft Visual Modeller Petal file (ASCII),[?],0
+INCOMPLETE,x-fmt/18,Comma Separated Values,[?],0
+INCOMPLETE,x-fmt/180,Instalit Script,[?],0
+INCOMPLETE,x-fmt/181,PageMaker Document,6.5,0
+INCOMPLETE,x-fmt/182,Quark Xpress Data File,[?],0
+STUB,x-fmt/183,RealAudio Metafile,[?],5
+INCOMPLETE,x-fmt/184,Sun Raster Image,[?],0
+INCOMPLETE,x-fmt/185,Raw Bitmap,[?],0
+INCOMPLETE,x-fmt/186,Silicon Graphics RGB File,[?],0
+INCOMPLETE,x-fmt/187,Fractal Design Painter RIFF Bitmap Graphics,[?],0
+INCOMPLETE,x-fmt/188,SDSC Image Tool Wavefront Raster Image,[?],0
+INCOMPLETE,x-fmt/189,SDSC Image Tool Run-Length Encoded Bitmap,[?],0
+STUB,x-fmt/19,3D Studio,[?],5
+INCOMPLETE,x-fmt/190,RealAudio Video,[?],0
+STUB,x-fmt/191,AMI Professional Document,[?],5
+INCOMPLETE,x-fmt/192,SAS for MS-DOS Catalog,[?],0
+INCOMPLETE,x-fmt/193,Unisys (Sperry) System Data File,[?],0
+INCOMPLETE,x-fmt/194,IRIS Graphics,[?],0
+INCOMPLETE,x-fmt/195,Standard Generalized Markup Language,[?],0
+INCOMPLETE,x-fmt/196,NeXt Sound,[?],0
+INCOMPLETE,x-fmt/197,DataFlex Query Tag Name,[?],0
+INCOMPLETE,x-fmt/198,Pagemaker TableEditor Graphics,[?],0
+INCOMPLETE,x-fmt/199,Turbo Debugger Keystroke Recording File,[?],0
+INCOMPLETE,x-fmt/2,Microsoft Word for  Macintosh Document,6.0,0
+INCOMPLETE,x-fmt/20,Adobe Illustrator,[?],0
+INCOMPLETE,x-fmt/200,PageMaker Time Stamp File,4.0,0
+INCOMPLETE,x-fmt/201,CCITT G.711 Audio,[?],0
+INCOMPLETE,x-fmt/202,Corel Wavelet Compressed Bitmap,[?],0
+INCOMPLETE,x-fmt/203,WordPerfect for Windows Document,5.2,0
+INCOMPLETE,x-fmt/204,Microsoft Word for Windows Macro,[?],0
+INCOMPLETE,x-fmt/205,WordStar for MS-DOS Document,5.0,0
+INCOMPLETE,x-fmt/206,WordStar for Windows Document,1.0,0
+INCOMPLETE,x-fmt/207,X-Windows Bitmap,X11,0
+INCOMPLETE,x-fmt/208,X-Windows Pixmap,X10,0
+INCOMPLETE,x-fmt/209,SDSC Image Tool X Window Dump Format,[?],0
+INCOMPLETE,x-fmt/21,7-bit ANSI Text,[?],0
+INCOMPLETE,x-fmt/210,XYWrite Document,[?],0
+INCOMPLETE,x-fmt/211,XYWrite Document,III,0
+INCOMPLETE,x-fmt/212,Lotus 1-2-3 Worksheet,5.0,0
+INCOMPLETE,x-fmt/213,Quicken Data File,[?],0
+INCOMPLETE,x-fmt/214,Windows Paint,3.x,0
+INCOMPLETE,x-fmt/215,GEM Metafile Format,[?],0
+INCOMPLETE,x-fmt/216,Microsoft Powerpoint Packaged Presentation,[?],0
+INCOMPLETE,x-fmt/217,Adobe ACD,[?],0
+STUB,x-fmt/218,ESRI Arc/Info Binary Grid,[?],5
+INCOMPLETE,x-fmt/219,Alexa Archive File,[?],0
+INCOMPLETE,x-fmt/22,7-bit ASCII Text,[?],0
+STUB,x-fmt/220,Applixware Spreadsheet,[?],5
+INCOMPLETE,x-fmt/221,MapBrowser/MapWriter Vector Map Data,[?],0
+INCOMPLETE,x-fmt/222,CD Audio,[?],0
+STUB,x-fmt/223,Autodesk Animator CEL File Format,[?],5
+INCOMPLETE,x-fmt/224,Cascading Style Sheet,[?],0
+INCOMPLETE,x-fmt/225,ESRI MapInfo Data File,[?],0
+STUB,x-fmt/226,ESRI Arc/Info Export File,[?],5
+INCOMPLETE,x-fmt/227,Geography Markup Language,[?],0
+STUB,x-fmt/228,Applixware Bitmap,[?],5
+INCOMPLETE,x-fmt/229,Intergraph Raster Image,[?],0
+INCOMPLETE,x-fmt/23,Microsoft Excel Backup,[?],0
+STUB,x-fmt/230,MIDI Audio,[?],5
+STUB,x-fmt/231,ESRI MapInfo Export File,[?],5
+INCOMPLETE,x-fmt/232,Microsoft Project Export File,[?],0
+INCOMPLETE,x-fmt/233,Paint Shop Pro Image,3,0
+INCOMPLETE,x-fmt/234,Paint Shop Pro Image,5,0
+STUB,x-fmt/235,ESRI Arc/View ShapeFile,[?],5
+INCOMPLETE,x-fmt/236,WordStar for MS-DOS Document,5.5,0
+INCOMPLETE,x-fmt/237,WordStar for MS-DOS Document,6.0,0
+STUB,x-fmt/238,Microsoft Access Database,95,5
+STUB,x-fmt/239,Microsoft Access Database,97,5
+INCOMPLETE,x-fmt/24,AutoCAD Block Attribute Template,[?],0
+STUB,x-fmt/240,Microsoft Access Database,2000,5
+STUB,x-fmt/241,Microsoft Access Database,2002,5
+INCOMPLETE,x-fmt/242,Microsoft FoxPro Database,2.6,0
+INCOMPLETE,x-fmt/243,Microsoft Project,4.0,0
+INCOMPLETE,x-fmt/244,Microsoft Project,95,0
+INCOMPLETE,x-fmt/245,Microsoft Project,98,0
+INCOMPLETE,x-fmt/246,Microsoft Project,2000,0
+INCOMPLETE,x-fmt/247,Microsoft Project file,2002,0
+STUB,x-fmt/248,Microsoft Outlook Personal Folders (ANSI),1997-2002,5
+STUB,x-fmt/249,Microsoft Outlook Personal Folders (Unicode),2003-2007,5
+INCOMPLETE,x-fmt/25,OS/2 Bitmap,1.0,0
+INCOMPLETE,x-fmt/250,Microsoft Outlook Personal Folders,[?],0
+INCOMPLETE,x-fmt/251,Microsoft Outlook Personal Folders,[?],0
+INCOMPLETE,x-fmt/252,Microsoft Publisher,2.0,0
+INCOMPLETE,x-fmt/253,Microsoft Publisher,95,0
+INCOMPLETE,x-fmt/254,Microsoft Publisher,97,0
+INCOMPLETE,x-fmt/255,Microsoft Publisher,98,0
+INCOMPLETE,x-fmt/256,Microsoft Publisher,2000,0
+INCOMPLETE,x-fmt/257,Microsoft Publisher,2002,0
+INCOMPLETE,x-fmt/258,Microsoft Visio Drawing,2000,0
+INCOMPLETE,x-fmt/259,Microsoft Visio Drawing,2002,0
+INCOMPLETE,x-fmt/26,AutoCAD Batch Plot File,1.0-R14,0
+INCOMPLETE,x-fmt/260,WordStar for MS-DOS Document,4.0,0
+INCOMPLETE,x-fmt/261,WordStar for MS-DOS Document,7.0,0
+INCOMPLETE,x-fmt/262,WordStar for Windows Document,2.0,0
+STUB,x-fmt/263,ZIP Format,[?],5
+INCOMPLETE,x-fmt/264,RAR Format,[?],0
+STUB,x-fmt/265,Tape Archive Format,[?],5
+STUB,x-fmt/266,GZIP Format,[?],5
+STUB,x-fmt/267,BZIP Compressed Archive,[?],5
+STUB,x-fmt/268,BZIP2 Compressed Archive,[?],5
+INCOMPLETE,x-fmt/269,ZOO Compressed Archive,[?],0
+INCOMPLETE,x-fmt/27,AutoCAD Batch Plot File,2000-2005,0
+INCOMPLETE,x-fmt/270,OS/2 Bitmap,2.0,0
+STUB,x-fmt/271,dBASE Database,III+,5
+INCOMPLETE,x-fmt/272,dBASE Database,V,0
+INCOMPLETE,x-fmt/273,Microsoft Word for MS-DOS Document,3.0,0
+INCOMPLETE,x-fmt/274,Microsoft Word for MS-DOS Document,4.0,0
+INCOMPLETE,x-fmt/275,Microsoft Word for MS-DOS Document,5.0,0
+INCOMPLETE,x-fmt/276,Microsoft Word for MS-DOS Document,5.5,0
+INCOMPLETE,x-fmt/277,Real Video,[?],0
+INCOMPLETE,x-fmt/278,Real Audio,[?],0
+INCOMPLETE,x-fmt/279,MPEG 1/2 Audio Layer 3 Streaming,[?],0
+STUB,x-fmt/28,CALS Compressed Bitmap,[?],5
+INCOMPLETE,x-fmt/280,XML Schema Definition,[?],0
+INCOMPLETE,x-fmt/281,Extensible Stylesheet Language,[?],0
+INCOMPLETE,x-fmt/282,8-bit ANSI Text,[?],0
+INCOMPLETE,x-fmt/283,8-bit ASCII Text,[?],0
+INCOMPLETE,x-fmt/284,IBM DisplayWrite Final Form Text File,[?],0
+INCOMPLETE,x-fmt/285,IBM DisplayWrite Revisable Form Text File,[?],0
+INCOMPLETE,x-fmt/286,DEC Data Exchange File,[?],0
+INCOMPLETE,x-fmt/287,DEC WPS Plus Document,[?],0
+INCOMPLETE,x-fmt/288,IBM DisplayWrite Document,2,0
+INCOMPLETE,x-fmt/289,IBM DisplayWrite Document,3,0
+STUB,x-fmt/29,CorelDraw Drawing,6.0,5
+STUB,x-fmt/290,AMI Draw Vector Image,[?],5
+STUB,x-fmt/291,CorelDraw Drawing,7.0,5
+STUB,x-fmt/292,CorelDraw Drawing,8.0,5
+INCOMPLETE,x-fmt/293,Hewlett Packard Graphics Language,[?],0
+INCOMPLETE,x-fmt/294,Micrografx Draw,3.0,0
+INCOMPLETE,x-fmt/295,Micrografx Draw,4.0,0
+INCOMPLETE,x-fmt/296,Micrografx Designer,3.1,0
+INCOMPLETE,x-fmt/297,Paint Shop Pro Image,6,0
+INCOMPLETE,x-fmt/298,Paint Shop Pro Image,7,0
+INCOMPLETE,x-fmt/299,X-Windows Bitmap,X10,0
+INCOMPLETE,x-fmt/3,Online Description Tool Format,[?],0
+INCOMPLETE,x-fmt/30,CorelDraw Template,[?],0
+INCOMPLETE,x-fmt/300,X-Windows Dump File,X10,0
+INCOMPLETE,x-fmt/301,ACBM Graphics,[?],0
+STUB,x-fmt/302,Adobe FrameMaker Document,8.0,5
+STUB,x-fmt/303,Aldus Freehand Drawing,3,5
+INCOMPLETE,x-fmt/304,Aldus Freehand Drawing,4,0
+INCOMPLETE,x-fmt/305,Apple Sound,[?],0
+INCOMPLETE,x-fmt/306,AutoSketch Drawing,[?],0
+INCOMPLETE,x-fmt/307,Paradox Database Memo Field,[?],0
+INCOMPLETE,x-fmt/308,Btrieve Database,5.1,0
+STUB,x-fmt/309,ChiWriter Document,3,5
+INCOMPLETE,x-fmt/31,CorelDraw Compressed Drawing,[?],0
+INCOMPLETE,x-fmt/310,Corel Chart,[?],0
+INCOMPLETE,x-fmt/311,dBASE Text Memo,[?],0
+INCOMPLETE,x-fmt/312,DesignCAD Drawing,[?],0
+INCOMPLETE,x-fmt/313,DesignCAD for Windows Drawing,[?],0
+STUB,x-fmt/314,Digital Terrain Elevation Data,[?],5
+INCOMPLETE,x-fmt/315,Document Type Definition,[?],0
+INCOMPLETE,x-fmt/316,Dr Halo Bitmap,[?],0
+INCOMPLETE,x-fmt/317,ESRI Arc/View Project,[?],0
+INCOMPLETE,x-fmt/318,FileMaker Pro Database,3,0
+INCOMPLETE,x-fmt/319,FileMaker Pro Database,5,0
+INCOMPLETE,x-fmt/32,Harvard Graphics Chart,3.0,0
+STUB,x-fmt/320,Fractal Image,[?],5
+INCOMPLETE,x-fmt/321,Framework Database,II,0
+INCOMPLETE,x-fmt/322,Framework Database,III,0
+INCOMPLETE,x-fmt/323,Framework Database,IV,0
+INCOMPLETE,x-fmt/324,Harvard Graphics Presentation,2.0,0
+INCOMPLETE,x-fmt/325,Harvard Graphics Vector Graphics,[?],0
+INCOMPLETE,x-fmt/326,Hewlett Packard AdvanceWrite Text File,[?],0
+INCOMPLETE,x-fmt/327,IntelliDraw Vector Graphics,[?],0
+INCOMPLETE,x-fmt/328,InterBase Database,[?],0
+INCOMPLETE,x-fmt/329,Interleaf Document,[?],0
+INCOMPLETE,x-fmt/33,Corel R.A.V.E. File,[?],0
+INCOMPLETE,x-fmt/330,JustWrite Text Document,[?],0
+INCOMPLETE,x-fmt/331,Lotus 1-2-3 Spreadsheet Formatting File,2.0,0
+INCOMPLETE,x-fmt/332,Lotus 1-2-3 Spreadsheet Formatting File,3.0,0
+INCOMPLETE,x-fmt/333,Lotus Approach View File,97,0
+INCOMPLETE,x-fmt/334,Lotus Approach View File,[?],0
+INCOMPLETE,x-fmt/335,Lotus Freelance Smartmaster Graphics,[?],0
+INCOMPLETE,x-fmt/336,Lotus Notes Database,2,0
+INCOMPLETE,x-fmt/337,Lotus Notes Database,3,0
+INCOMPLETE,x-fmt/338,Lotus Notes Database,4,0
+INCOMPLETE,x-fmt/339,Lotus Notes File,[?],0
+STUB,x-fmt/34,Corel Presentation Exchange File,5.0,5
+INCOMPLETE,x-fmt/340,Lotus WordPro Document,96/97,0
+INCOMPLETE,x-fmt/341,Macromedia Director,[?],0
+INCOMPLETE,x-fmt/342,Microsoft FoxPro Memo,[?],0
+INCOMPLETE,x-fmt/343,Microsoft Visual FoxPro Table,[?],0
+INCOMPLETE,x-fmt/344,Microsoft Works Database,[?],0
+INCOMPLETE,x-fmt/345,Microsoft Works Document,[?],0
+INCOMPLETE,x-fmt/346,Microstation CAD Drawing,95,0
+INCOMPLETE,x-fmt/347,MultiMate Text File,4.x,0
+INCOMPLETE,x-fmt/348,Multipage Zsoft Paintbrush Bitmap Graphics,[?],0
+INCOMPLETE,x-fmt/349,Nota Bene Text File,[?],0
+STUB,x-fmt/35,Corel Presentation Exchange File,6/7,5
+INCOMPLETE,x-fmt/350,OmniPage Pro Document,[?],0
+INCOMPLETE,x-fmt/351,PageMaker Document,3.0,0
+INCOMPLETE,x-fmt/352,PageMaker Document,4.0,0
+INCOMPLETE,x-fmt/353,Professional Write Text File,[?],0
+INCOMPLETE,x-fmt/354,SAP Document,[?],0
+INCOMPLETE,x-fmt/355,SAS Data File,[?],0
+INCOMPLETE,x-fmt/356,SAS for MS-DOS Database,[?],0
+INCOMPLETE,x-fmt/357,Scanstudio 16-Colour Bitmap,[?],0
+INCOMPLETE,x-fmt/358,Silicon Graphics Graphics File,[?],0
+INCOMPLETE,x-fmt/359,StarOffice Calc,5.1,0
+INCOMPLETE,x-fmt/36,Corel CMX Compressed,[?],0
+INCOMPLETE,x-fmt/360,StarOffice Impress,5.1,0
+INCOMPLETE,x-fmt/361,StatGraphics Data File,[?],0
+INCOMPLETE,x-fmt/362,StratGraphics Data File,[?],0
+INCOMPLETE,x-fmt/363,SuperCalc Spreadsheet,4,0
+INCOMPLETE,x-fmt/364,SuperCalc Spreadsheet,5,0
+INCOMPLETE,x-fmt/365,TeX Binary File,[?],0
+INCOMPLETE,x-fmt/367,Truevision Graphics Adapter,[?],0
+INCOMPLETE,x-fmt/368,VisiCalc Database,[?],0
+INCOMPLETE,x-fmt/369,Vista Pro Graphics,[?],0
+STUB,x-fmt/37,AutoCAD Colour-Dependant Plot Style Table,[?],5
+INCOMPLETE,x-fmt/370,WordStar for MS-DOS Document,3.0,0
+INCOMPLETE,x-fmt/371,XYWrite for Windows Document,4.0,0
+INCOMPLETE,x-fmt/372,XYWrite Document,III+,0
+INCOMPLETE,x-fmt/373,XYWrite Document,IV,0
+STUB,x-fmt/374,CorelDraw Drawing,9.0,5
+STUB,x-fmt/375,CorelDraw Drawing,10.0,5
+INCOMPLETE,x-fmt/376,Paint Shop Pro Image,8,0
+INCOMPLETE,x-fmt/377,Paint Shop Pro Image,4,0
+STUB,x-fmt/378,CorelDraw Drawing,11.0,5
+INCOMPLETE,x-fmt/379,CorelDraw Drawing,3.0,0
+INCOMPLETE,x-fmt/38,AutoCAD Custom Dictionary,[?],0
+INCOMPLETE,x-fmt/380,dBASE for Windows database,5.0,0
+INCOMPLETE,x-fmt/381,Dia Graphics Format,[?],0
+STUB,x-fmt/382,Macromedia FLV,1,5
+STUB,x-fmt/383,Flexible Image Transport System,[?],5
+ADEQUATE,x-fmt/384,Quicktime,[?],7
+STUB,x-fmt/385,MPEG-1 Video Format,[?],5
+STUB,x-fmt/386,MPEG-2 Video Format,[?],5
+STUB,x-fmt/387,Exchangeable Image File Format (Uncompressed),2.2,5
+STUB,x-fmt/388,Exchangeable Image File Format (Uncompressed),2.1,5
+STUB,x-fmt/389,Exchangeable Image File Format (Audio),2.1,5
+INCOMPLETE,x-fmt/39,AutoCAD dbConnect Query Set,[?],0
+STUB,x-fmt/390,Exchangeable Image File Format (Compressed),2.1,5
+STUB,x-fmt/391,Exchangeable Image File Format (Compressed),2.2,5
+STUB,x-fmt/392,JPEG2000,[?],5
+STUB,x-fmt/393,WordPerfect for MS-DOS Document,5.0,5
+STUB,x-fmt/394,WordPerfect for MS-DOS/Windows Document,5.1,5
+STUB,x-fmt/395,WordPerfect Graphics Metafile,1.0,5
+STUB,x-fmt/396,Exchangeable Image File Format (Audio),2.2,5
+STUB,x-fmt/397,Exchangeable Image File Format (Audio),2.0,5
+STUB,x-fmt/398,Exchangeable Image File Format (Compressed),2.0,5
+STUB,x-fmt/399,Exchangeable Image File Format (Uncompressed),2.0,5
+INCOMPLETE,x-fmt/4,Write for Windows Document,3.1,0
+INCOMPLETE,x-fmt/40,AutoCAD dbConnect Template Set,[?],0
+INCOMPLETE,x-fmt/400,StarOffice Write,5.1,0
+INCOMPLETE,x-fmt/401,StarOffice Draw,5.1,0
+INCOMPLETE,x-fmt/402,StarOffice Draw,5.2,0
+INCOMPLETE,x-fmt/403,StarOffice Write,5.2,0
+INCOMPLETE,x-fmt/404,StarOffice Calc,5.2,0
+INCOMPLETE,x-fmt/405,StarOffice Impress,5.2,0
+STUB,x-fmt/406,PostScript,2.0,5
+STUB,x-fmt/407,PostScript,2.1,5
+STUB,x-fmt/408,PostScript,3.0,5
+STUB,x-fmt/409,MS-DOS Executable,[?],5
+STUB,x-fmt/41,Data Interchange Format,[?],5
+STUB,x-fmt/410,Windows New Executable,[?],5
+STUB,x-fmt/411,Windows Portable Executable,[?],5
+STUB,x-fmt/412,Java Archive Format,[?],5
+INCOMPLETE,x-fmt/413,Batch file (executable),[?],0
+INCOMPLETE,x-fmt/414,Windows Cabinet File,[?],0
+STUB,x-fmt/415,Java Compiled Object Code,[?],5
+STUB,x-fmt/416,BinHex Binary Text,[?],5
+INCOMPLETE,x-fmt/417,HTML Extension File,[?],0
+INCOMPLETE,x-fmt/418,Icon file format,[?],0
+INCOMPLETE,x-fmt/419,DVD data file,[?],0
+INCOMPLETE,x-fmt/42,Wordperfect Secondary File,5.0,0
+INCOMPLETE,x-fmt/420,Windows Setup File,[?],0
+INCOMPLETE,x-fmt/421,Text Configuration file,[?],0
+INCOMPLETE,x-fmt/422,Java language source code file,[?],0
+INCOMPLETE,x-fmt/423,JavaScript file,[?],0
+INCOMPLETE,x-fmt/424,Deluxe Paint bitmap,[?],0
+INCOMPLETE,x-fmt/425,generic library file,[?],0
+INCOMPLETE,x-fmt/426,License file,[?],0
+INCOMPLETE,x-fmt/427,Acrobat Language definition file,[?],0
+STUB,x-fmt/428,Microsoft Windows Shortcut,[?],5
+INCOMPLETE,x-fmt/429,Microsoft Web Archive,[?],0
+INCOMPLETE,x-fmt/43,Wordperfect Secondary File,5.1/5.2,0
+STUB,x-fmt/430,Microsoft Outlook Email Message,97-2003,5
+ADEQUATE,x-fmt/432,3DM,4,7
+ADEQUATE,x-fmt/433,3DM,1,7
+ADEQUATE,x-fmt/434,3DM,2,7
+ADEQUATE,x-fmt/435,3DM,3,7
+STUB,x-fmt/436,CATIA Model,4,5
+INCOMPLETE,x-fmt/437,CATIA Project,4,0
+STUB,x-fmt/438,CATIA Material Description,5,5
+STUB,x-fmt/439,CATIA Model (Part Description),5,5
+STUB,x-fmt/44,WordPerfect for MS-DOS/Windows Document,6.0,5
+STUB,x-fmt/440,CATIA Product Description,5,5
+INCOMPLETE,x-fmt/441,AutoCAD Database File Locking Information,n/a,0
+INCOMPLETE,x-fmt/442,form*Z Project File,n/a,0
+INCOMPLETE,x-fmt/443,Revit Family File,n/a,0
+INCOMPLETE,x-fmt/444,Revit Family Template,n/a,0
+INCOMPLETE,x-fmt/445,Revit Template,n/a,0
+INCOMPLETE,x-fmt/446,Revit External Group,n/a,0
+INCOMPLETE,x-fmt/447,Revit Project,n/a,0
+INCOMPLETE,x-fmt/448,Revit Workspace,n/a,0
+INCOMPLETE,x-fmt/449,Steel Detailing Neutral Format,[?],0
+INCOMPLETE,x-fmt/45,Microsoft Word Template,[?],0
+STUB,x-fmt/450,Adobe InDesign Document,n/a,5
+STUB,x-fmt/451,SketchUp Document Backup,n/a,5
+STUB,x-fmt/452,SketchUp Document,n/a,5
+STUB,x-fmt/453,TrueType Font,n/a,5
+STUB,x-fmt/454,Microsoft Internet Shortcut,n/a,5
+STUB,x-fmt/455,AutoCAD Drawing,2007-2008,5
+INCOMPLETE,x-fmt/46,Microsoft Excel ODBC Query,[?],0
+INCOMPLETE,x-fmt/47,Micrografx Draw,2.0,0
+INCOMPLETE,x-fmt/48,Visual Basic Macro,[?],0
+STUB,x-fmt/49,AutoCAD Design Web Format,[?],5
+INCOMPLETE,x-fmt/5,Works for Macintosh Document,4.0,0
+INCOMPLETE,x-fmt/50,AutoCAD Drawing Standards File,[?],0
+INCOMPLETE,x-fmt/51,AutoCAD Drawing Template,[?],0
+INCOMPLETE,x-fmt/52,Drawing Interchange Format Style Extract,[?],0
+INCOMPLETE,x-fmt/53,Macromedia Freehand,[?],0
+INCOMPLETE,x-fmt/54,AutoCAD Font Mapping Table,[?],0
+INCOMPLETE,x-fmt/55,Frame Vector Metafile,[?],0
+INCOMPLETE,x-fmt/56,Kodak FlashPix Image,[?],0
+INCOMPLETE,x-fmt/57,Ventura Publisher Vector Graphics,[?],0
+INCOMPLETE,x-fmt/58,Microsoft Excel Web Query,[?],0
+INCOMPLETE,x-fmt/59,AutoCAD Last Saved Layer State,[?],0
+INCOMPLETE,x-fmt/6,FoxPro Database,2.0,0
+INCOMPLETE,x-fmt/60,AutoCAD Linetype Definition File,[?],0
+INCOMPLETE,x-fmt/61,AutoCAD Landscape Library,[?],0
+INCOMPLETE,x-fmt/62,Log File,[?],0
+INCOMPLETE,x-fmt/63,AutoLISP File,[?],0
+INCOMPLETE,x-fmt/64,Microsoft Word for  Macintosh Document,4.0,0
+INCOMPLETE,x-fmt/65,Microsoft Word for  Macintosh Document,5.0,0
+STUB,x-fmt/66,Microsoft Access Database,2.0,5
+INCOMPLETE,x-fmt/67,Met Metafile,[?],0
+INCOMPLETE,x-fmt/68,AutoCAD Compiled Menu,[?],0
+INCOMPLETE,x-fmt/69,AutoLISP Menu Source File,[?],0
+INCOMPLETE,x-fmt/7,FoxPro Database,2.5,0
+INCOMPLETE,x-fmt/70,AutoCAD Menu Resource File,[?],0
+INCOMPLETE,x-fmt/71,AutoCAD Source Menu File,[?],0
+INCOMPLETE,x-fmt/72,AutoCAD Template Menu File,[?],0
+INCOMPLETE,x-fmt/73,Microsoft Outlook Address Book,[?],0
+INCOMPLETE,x-fmt/74,Microsoft Excel OLAP Query,[?],0
+INCOMPLETE,x-fmt/75,Microsoft Outlook Personal Address Book,[?],0
+INCOMPLETE,x-fmt/76,CorelDraw Pattern,[?],0
+INCOMPLETE,x-fmt/77,AutoCAD Plot Configuration File,R14,0
+STUB,x-fmt/78,AutoCAD Plot Configuration File,2000,5
+INCOMPLETE,x-fmt/79,AutoCAD Plot Configuration File,1.0-R13,0
+STUB,x-fmt/8,dBASE Database,II,5
+INCOMPLETE,x-fmt/80,Macintosh PICT Image,[?],0
+INCOMPLETE,x-fmt/81,Inkwriter/Notetaker Template,[?],0
+INCOMPLETE,x-fmt/82,Lotus 1-2-3 Chart,[?],0
+INCOMPLETE,x-fmt/83,Hewlett Packard Vector Graphic Plotter File,[?],0
+INCOMPLETE,x-fmt/84,Microsoft Powerpoint Design Template,[?],0
+INCOMPLETE,x-fmt/85,Picture Publisher Bitmap,5.0,0
+INCOMPLETE,x-fmt/86,Microsoft Powerpoint Add-In,[?],0
+INCOMPLETE,x-fmt/87,Microsoft Powerpoint Show,[?],0
+STUB,x-fmt/88,Microsoft Powerpoint Presentation,4.0,5
+INCOMPLETE,x-fmt/89,Freelance File,1.0-2.1,0
+STUB,x-fmt/9,dBASE Database,III,5
+INCOMPLETE,x-fmt/90,Microsoft Print File,[?],0
+STUB,x-fmt/91,Postscript,1.0,5
+STUB,x-fmt/92,Adobe Photoshop,[?],5
+INCOMPLETE,x-fmt/93,Postscript Support File,[?],0
+INCOMPLETE,x-fmt/94,Pocket Word Document,[?],0
+INCOMPLETE,x-fmt/95,Inkwriter/Notetaker Document,[?],0
+INCOMPLETE,x-fmt/96,Pocket Word Template,[?],0
+INCOMPLETE,x-fmt/97,Microsoft Excel OLE DB Query,[?],0
+INCOMPLETE,x-fmt/98,AutoCAD ACIS Export File,[?],0
+INCOMPLETE,x-fmt/99,Schedule+ Contacts,[?],0
+STUB,fido-fmt/189.word,Microsoft Office Open XML - Word,[?],5
+STUB,fido-fmt/189.xl,Microsoft Office Open XML - Excel,[?],5
+STUB,fido-fmt/189.ppt,Microsoft Office Open XML - Powerpoint,[?],5
+STUB,fido-x-fmt/384,Quicktime,[?],5
