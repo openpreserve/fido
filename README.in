@@ -61,11 +61,9 @@ Any platform
 1. Download the latest zip release from http://github.com/openplanets/fido/downloads
    (or use the big Downloads button on http://github.com/openplanets/fido)
 2. Unzip into some directory
-3. Open a command shell, cd to the directory that you placed the zip contents into
+3. Open a command shell, cd to the directory that you placed the zip contents into and cd into folder 'fido'
 4. You should now be able to see the help text: 
-   python -m fido.fido -h
-   If you are lucky, you may also be able to run with 
-   fido.sh -h
+   python fido.py -h
 
 Dependencies
 ------------
@@ -86,29 +84,20 @@ Output
 
 Output is controlled with the two parameters matchprintf and nomatchprintf.
 Each is a string that may contain formating information.  They have access to
-an object called info.  
+an object called info with the following fields:
 
-When there is no match, info has fields: 
-  count 		- This is the nth item matched.
-  group_size	- And there are match_count matches in this group.
-  filename, filesize, time (in msecs).
-When there is a match, info has additional fields:
-  group_index	- This is the nth match for this item 
-  puid, formatname, signaturename, 
-  mimetype (the first one).
+printmatch: info.version (file format version X), info.alias (format also called X), info.apple_uti (Apple Uniform Type Identifier), info.group_size (if a file has multiple (tentative) hits), info.count (file N)
 
-Note that the reported time is in milliseconds for an entire group.  If you sum the times and
-there is only one match per group, then the total is correct.
+printnomatch: info.count (file N)
 
-The defaults for Fido 0.8.3 are:
+The defaults for Fido 0.9.6 are:
   printmatch: 
-  "OK,{info.time},{info.puid},{info.formatname},{info.signaturename},{info.filesize},\"{info.filename}\"\n"
-  printnomatch:
-  "KO,{info.time},,,,{info.filesize},\"{info.filename}\"\n"
+    "OK,%(info.time)s,%(info.puid)s,%(info.formatname)s,%(info.signaturename)s,%(info.filesize)s,\"%(info.filename)s\",\"%(info.mimetype)s\",\"%(info.matchtype)s\"\n"
 
-It can be useful to provide an empty string for either, for example to ignore all failed matches,
-or all successful ones.
-     
+  printnomatch:
+    "KO,%(info.time)s,,,,%(info.filesize)s,\"%(info.filename)s\",,\"%(info.matchtype)s\"\n"
+
+It can be useful to provide an empty string for either, for example to ignore all failed matches, or all successful ones (see examples below). 
 Note that a newline needs to be added to the end of the string using \n.
 
 Examples
@@ -116,31 +105,34 @@ Examples
 
 Identify all files in the current directory and below, sending output
 into file-info.csv
-   python -m fido.fido -r . > file-info.csv
+   python fido.py -recurse . > file-info.csv
 
 Do the same as above, but also look inside of zip or tar files:
-   python -m fido.fido -r -z . > file-info.csv
-
-Do the same as above, but also use file extensions, if a file cannot
-be identified through patterns
-   python -m fido.fido -r -z -ext . > file-info.csv
+   python fido.py -recurse -zip . > file-info.csv
 
 Take input from a list of files:
+Linux:
    ls > files.txt
-   python -m fido.fido -f files.txt
+   python fido.py -input files.txt
+Windows:
+   dir /b > files.txt
+   python fido.py -input files.txt
 
 Take input from a pipe:
-   find . -type f | python -m fido.fido -f -
-     
-Only show files that could not be identified.
-	python -m fido.fido -r -matchprintf "" .
+Linux:
+   find . -type f | python fido.py -input -
+Windows:
+   dir /b | python fido.py -input -
 
-Exclude a specific format from consideration:
-   python -m fido.fido -r -z -ext -exclude "fmt/134" . > file-info.csv
+Only show files that could not be identified.
+   python fido.py -matchprintf "" .
+
+Only show files that could be identified.
+   python fido.py -nomatchprintf "" .
 
 License information
 -------------------
 
 See the file "LICENSE.txt" for information on the history of this
 software, terms & conditions for usage, and a DISCLAIMER OF ALL
-WARRANTIES.
+WARRANTIES...
