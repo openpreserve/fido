@@ -9,7 +9,7 @@
 # Linux: fido.py [ARGS] | toxml.py > output.xml
 #
 # Usage afterwards:
-# Windows: type output.csv | toxml.py > output.xml
+# Windows: type output.csv | python toxml.py > output.xml
 # Linux: cat output.csv | toxml.py > output.xml
 #
 # for difference in usage, see:
@@ -23,7 +23,7 @@ import string
 import datetime
 
 # define FIDO version
-fidoVersion = '0.96'
+fidoVersion = '0.9.6'
 # define PRONOM signature version
 signatureVersion = '52'
 # get date and time

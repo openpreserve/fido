@@ -1,0 +1,1 @@
+"OK,%(info.time)s,%(info.puid)s,%(info.formatname)s,%(info.signaturename)s,\"%(info.filename)s\",\"%(info.version)s\",%(info.apple_uid)s,%(info.alias)s\n"

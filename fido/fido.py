@@ -1,16 +1,13 @@
 #!python
 # -*- coding: utf-8 -*-
-
 import sys, re, os, time
 import hashlib, urllib, urlparse, csv, getopt
 from xml.etree import cElementTree as ET    
-# needed for jarring
-import __builtin__
 # needed for debugging
 # print_r: https://github.com/marcbelmont/python-print_r
 #from print_r import print_r
 
-version = '0.9.5'
+version = '0.9.6'
 defaults = {'bufsize': 128 * 1024,
             'regexcachesize' : 2084,
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
@@ -477,7 +474,8 @@ class Fido:
         obj.filesize = self.current_filesize
         obj.matchtype = matchtype
         if len(matches) == 0:
-            sys.stdout.write(self.printnomatch % { "info.time" : obj.time, "info.filesize" : obj.filesize, "info.filename" : obj.filename, "info.matchtype" : "fail" } )
+            sys.stdout.write(self.printnomatch % { "info.time" : obj.time, "info.filesize" : obj.filesize, "info.filename" : obj.filename, "info.count"
+            : obj.count, "info.matchtype" : "fail" } )
         else:
             i = 0
             for (f, s) in matches:
@@ -488,7 +486,13 @@ class Fido:
                 obj.signaturename = s.find('name').text
                 mime = f.find('mime')
                 obj.mimetype = mime.text if mime != None else None
-                sys.stdout.write(self.printmatch % { "info.time" : obj.time, "info.puid" : obj.puid, "info.formatname" : obj.formatname, "info.signaturename" : obj.signaturename, "info.filesize" : obj.filesize, "info.filename" : obj.filename, "info.mimetype" : obj.mimetype, "info.matchtype" : obj.matchtype })
+                version = f.find('version')
+                obj.version = version.text if version != None else None
+                alias = f.find('alias')
+                obj.alias = alias.text if alias != None else None
+                apple_uti = f.find('apple_uid')
+                obj.apple_uti = apple_uti.text if apple_uti != None else None
+                sys.stdout.write(self.printmatch % { "info.time" : obj.time, "info.puid" : obj.puid, "info.formatname" : obj.formatname, "info.signaturename" : obj.signaturename, "info.filesize" : obj.filesize, "info.filename" : obj.filename, "info.mimetype" : obj.mimetype, "info.matchtype" : obj.matchtype, "info.version" : obj.version, "info.alias" : obj.alias, "info.apple_uti" : obj.apple_uti, "info.group_size" : obj.group_size, "info.count" : obj.count })
         
     def print_summary(self, secs):
         """Print summary information on the number of matches and time taken.
@@ -1096,22 +1100,23 @@ def main(arglist=None):
     parser.add_argument('-checkformats', default=False, action='store_true', help='Check the supplied format XML files for quality.')
     
     mydir = os.path.abspath(os.path.dirname(__file__))
-    parser.add_argument('-convert', default=False, action='store_true', help='Convert pronom xml to fido xml')
-    parser.add_argument('-source', default=os.path.join(mydir, 'conf', 'pronom-xml.zip'),
-                        help='import from a zip file containing only Pronom xml files')
-    parser.add_argument('-target', default=os.path.join(mydir, 'conf', 'formats.xml'), help='export fido xml output file')
+    # MdR: we need to take these out, because we use prepare.py
+    #parser.add_argument('-convert', default=False, action='store_true', help='Convert pronom xml to fido xml')
+    #parser.add_argument('-source', default=os.path.join(mydir, 'conf', 'pronom-xml.zip'),                         help='import from a zip file containing only Pronom xml files')
+    #parser.add_argument('-target', default=os.path.join(mydir, 'conf', 'formats.xml'), help='export fido xml output file')
          
     # PROCESS ARGUMENTS
     args = parser.parse_args(arglist)
     
-    if args.convert:
+    # MdR: we need to take these out, because we use prepare.py 
+    #if args.convert:
         # print os.path.abspath(args.input), os.path.abspath(args.output)
-        info = FormatInfo(args.source)
-        info.load_pronom_xml()
-        info.save_fido_xml(args.target)
-        delta_t = time.clock() - t0
-        if not args.q:
-            sys.stderr.write('FIDO: Converted {0} formats in {1}s\n'.format(len(info.formats), delta_t))
+        #info = FormatInfo(args.source)
+        #info.load_pronom_xml()
+        #info.save_fido_xml(args.target)
+        #delta_t = time.clock() - t0
+        #if not args.q:
+            #sys.stderr.write('FIDO: Converted {0} formats in {1}s\n'.format(len(info.formats), delta_t))
     
     if args.v :
         sys.stdout.write("fido/" + version + "\n")
