@@ -492,7 +492,7 @@ class Fido:
                 obj.alias = alias.text if alias != None else None
                 apple_uti = f.find('apple_uid')
                 obj.apple_uti = apple_uti.text if apple_uti != None else None
-                sys.stdout.write(self.printmatch % { "info.time" : obj.time, "info.puid" : obj.puid, "info.formatname" : obj.formatname, "info.signaturename" : obj.signaturename, "info.filesize" : obj.filesize, "info.filename" : obj.filename, "info.mimetype" : obj.mimetype, "info.matchtype" : obj.matchtype, "info.version" : obj.version, "info.alias" : obj.alias, "info.apple_uti" : obj.apple_uti, "info.group_size" : obj.group_size, "info.count" : obj.count })
+                sys.stdout.write(self.printmatch % { "info.time" : obj.time, "info.puid" : obj.puid, "info.formatname" : obj.formatname, "info.signaturename" : obj.signaturename, "info.filesize" : obj.filesize, "info.filename" : obj.filename, "info.mimetype" : obj.mimetype, "info.matchtype" : obj.matchtype, "info.version" : obj.version, "info.alias" : obj.alias, "info.apple_uti" : obj.apple_uti, "info.group_size" : obj.group_size, "info.group_index" : obj.group_index, "info.count" : obj.count })
         
     def print_summary(self, secs):
         """Print summary information on the number of matches and time taken.
@@ -1143,7 +1143,7 @@ def main(arglist=None):
         fido.formats = [f for f in fido.formats if f.find('puid').text in args.useformats]
     elif args.nouseformats:
         args.nouseformats = args.nouseformats.split(',')
-        fido.formats = [f for f in fido.formats if f.find('puid') not in args.nouseformats]
+        fido.formats = [f for f in fido.formats if f.find('puid').text not in args.nouseformats]
     
     if args.show == 'useformats':
         for format in fido.formats:

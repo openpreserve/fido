@@ -86,7 +86,7 @@ Output is controlled with the two parameters matchprintf and nomatchprintf.
 Each is a string that may contain formating information.  They have access to
 an object called info with the following fields:
 
-printmatch: info.version (file format version X), info.alias (format also called X), info.apple_uti (Apple Uniform Type Identifier), info.group_size (if a file has multiple (tentative) hits), info.count (file N)
+printmatch: info.version (file format version X), info.alias (format also called X), info.apple_uti (Apple Uniform Type Identifier), info.group_size and info.group_index (if a file has multiple (tentative) hits), info.count (file N)
 
 printnomatch: info.count (file N)
 
