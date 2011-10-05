@@ -42,10 +42,6 @@ optional arguments:
   -confdir CONFDIR      configuration directory to load_fido_xml, for example,
                         the format specifications from.
   -checkformats         Check the supplied format XML files for quality.
-  -convert              Convert pronom xml to fido xml
-  -source SOURCE        import from a zip file containing only Pronom xml
-                        files
-  -target TARGET        export fido xml output file
 
 Open Planets Foundation (http://www.openplanetsfoundation.org)
 See License.txt for license information.
