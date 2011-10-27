@@ -1,4 +1,5 @@
 FIDO TODO LIST
+TODO: MDR: Use SPARQL endpoint to query available PUID's, then fetch them (URL:http://test.linkeddatapronom.nationalarchives.gov.uk/sparql/endpoint.php?query=select+distinct+%3Fname+%3Fext+%3Fpuid+%3Fxpuid+where+{%0D%0A+%0D%0A+%3Fs+<http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23label>+%3Fname+.%0D%0A+%3Fs+<http%3A%2F%2Freference.data.gov.uk%2Ftechnical-registry%2Fextension>+%3Fext+.%0D%0A+OPTIONAL+{+%3Fs+<http%3A%2F%2Freference.data.gov.uk%2Ftechnical-registry%2FPUID>+%3Fpuid+.+}%0D%0A+OPTIONAL+{+%3Fs+<http%3A%2F%2Freference.data.gov.uk%2Ftechnical-registry%2FXPUID>+%3Fxpuid+.+}%0D%0A+%0D%0A%0D%0A}&output=xml&jsonp=&key=)
 TODO: ANJ: Complete validator to check refs, files, metadata and regexes are well formed, match EOF/BOF/VAR etc.
 TODO: ANJ: Report inconsistency of STATUS flag?
 TODO: ANJ: When in -checkformats mode, use levels of XSD validation instead of much of the logic in code.
