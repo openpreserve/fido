@@ -5,7 +5,7 @@ import hashlib, urllib, urlparse, csv, getopt
 from xml.etree import cElementTree as ET    
 # needed for debugging
 # print_r: https://github.com/marcbelmont/python-print_r
-#from print_r import print_r
+# from print_r import print_r
 
 version = '0.9.6'
 defaults = {'bufsize': 128 * 1024,
@@ -706,9 +706,9 @@ class Fido:
                         finally:
                             source.close()
         except IOError:
-            sys.stderr.write("FIDO: Error: ZipError {0}\n".format(filename))
+            sys.stderr.write("FIDO: ZipError {0}\n".format(filename))
         except zipfile.BadZipfile:
-            sys.stderr.write("FIDO: Error: ZipError {0}\n".format(filename))
+            sys.stderr.write("FIDO: ZipError {0}\n".format(filename))
             
         finally:
             if zipstream != None: zipstream.close()
@@ -783,6 +783,10 @@ class Fido:
                                     success = False
                                     break
                             elif pos == 'VAR':
+                                if not re.search(regex, bofbuffer):
+                                    success = False 
+                                    break
+                            elif pos == 'IFB':
                                 if not re.search(regex, bofbuffer):
                                     success = False 
                                     break

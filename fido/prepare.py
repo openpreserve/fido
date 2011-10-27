@@ -13,9 +13,7 @@ import urllib
 from xml.etree import ElementTree as ET
 # needed for debug
 # print_r: https://github.com/marcbelmont/python-print_r
-#from print_r import print_r
-# NOTE: this script is still heavily "under construction"
-
+# from print_r import print_r
 
 class NS:
     """Helper class for XML name spaces in ElementTree.
@@ -67,6 +65,7 @@ class FormatInfo:
         root = tree.getroot()
         for f in self.formats:
             # MdR: this skipped puids without sig, but we want them ALL
+            # because puid might be matched on extension
             #if f.find('signature'):
             root.append(f)
         self.indent(root)
@@ -97,24 +96,17 @@ class FormatInfo:
         formats = []
         try:
             zip = zipfile.ZipFile(self.pronom_files, 'r')
-            #for name in zip.namelist():
-                #print "working on:", name
-            #countformathits = 0
             for item in zip.infolist():
                 try:
                     stream = zip.open(item)
                     # Work is done here!
                     format = self.parse_pronom_xml(stream, puid_filter)
-                    #print_r(format)
                     if format != None:
-                        #countformathits += 1
                         formats.append(format) 
                 finally:
                     stream.close()
         finally:
             zip.close()
-        #print "countformathits:", countformathits
-        #print_r(formats)
         # Replace the formatID with puids in has_priority_over
         id_map = {}
         for element in formats:
@@ -122,40 +114,10 @@ class FormatInfo:
             #print "working on puid:",puid
             pronom_id = element.find('pronom_id').text
             id_map[pronom_id] = puid
-        #print_r(id_map)
-#        aantal = len(id_map)
-#        for meuk in range(1, aantal):
-#            try:
-#                if meuk not in id_map[meuk]:
-#                    print "missing:",meuk
-#            except:
-#                print "ok:",meuk
-#        exit()
-        #print_r(id_map)
-        #exit()
-        #id_map["1073"] = "fmt/9999"
         for element in formats:
             for rel in element.findall('has_priority_over'):
                 rel.text = id_map[rel.text]
-#        for element in formats:
-#            for rel in element.findall('has_priority_over'):
-#                if rel.text not in id_map:
-#                    id_map[rel.text] = "fmt/9999"
-#                    print "Warning: ", rel.text
-#                    rel.text = "fmt/unknown"
-#                    rel.text = id_map[rel.text]
-#                    print "rel.text=", rel.text
-#                    print "rel.text=",rel.text," & id_map[rel.text] = ", id_map[rel.text]
-#                        "fmt/unknown" = id_map[rel.text]
-#                else:
-#                    rel.text = id_map[rel.text]
-#            except Exception, e:
-#                print_r(e)
-#                print_r(rel.text)
-#                print_r(id_map[rel.text])
-#                exit()
-        #print(id_map.count())
-        #print_r(id_map)
+
         self._sort_formats(formats)
         self.formats = formats
                     
@@ -318,11 +280,13 @@ def fido_position(pronom_position):
         return 'EOF'
     elif pronom_position == 'Variable':
         return 'VAR'
+    elif pronom_position == 'Indirect From BOF':
+        return 'IFB'
     else:
         raise Exception("Unknown pronom PositionType=" + pronom_position)    
 
 def _convert_err_msg(msg, c, i, chars):
-    return "Conversion: {0}: char='{1}', at pos {2} in \n  {3}\n  {4}^".format(msg, c, i, chars, i * ' ')
+    return "Conversion: {0}: char='{1}', at pos {2} in \n  {3}\n  {4}^\nBuffer = {5}".format(msg, c, i, chars, i * ' ', buf.getvalue())
 
 def doByte(chars, i, littleendian):
     """Convert two chars[i] and chars[i+1] into a byte.  
@@ -339,8 +303,10 @@ def doByte(chars, i, littleendian):
     return (escape(val), 2)
 
 # \a\b\n\r\t\v
-_ordinary = frozenset(' !"#%&\',-/0123456789:;<=>@ABCDEFGHIJKLMNOPQRSTUVWXYZ_`abcdefghijklmnopqrstuvwxyz~')
-_special = '$()*+.?[]^\\{|}'
+# MdR: took out '<' and '>' out of _ordinary because they were converted to entities &lt;&gt;
+# MdR: moved '!' from _ordinary to _special because it means "NOT" in the regex world. At this time no regex in any sig has a negate set, did this to be on the safe side
+_ordinary = frozenset(' "#%&\',-/0123456789:;=@ABCDEFGHIJKLMNOPQRSTUVWXYZ_`abcdefghijklmnopqrstuvwxyz~')
+_special = '$()*+.?![]^\\{|}'
 _hex = '0123456789abcdef'
 def _escape_char(c):
     if c in '\n':
@@ -357,12 +323,55 @@ def escape(string):
     "Escape characters in pattern that are non-printable, non-ascii, or special for regexes."
     return ''.join(c if c in _ordinary else _escape_char(c) for c in string)
 
+def calculate_repetition(char, offset, maxoffset):
+    """
+    Recursively calculates offset/maxoffset repetition,
+    when one or both offsets is greater than 65535 bytes (64KB)
+    see: bugs.python.org/issue13169
+    Otherwise it returns the {offset,maxoffset}
+    """
+    calcbuf = cStringIO.StringIO()
+    
+    calcremain = False
+    offsetremain = 0
+    maxoffsetremain = 0
+    
+    if offset != None and offset != '':
+        if int(offset) > 65535:
+            offsetremain = str(int(offset) - 65535)
+            offset = '65535'
+            calcremain = True
+    if maxoffset != None and maxoffset != '':
+        if int(maxoffset) > 65535:
+            maxoffsetremain = str(int(maxoffset) - 65535)
+            maxoffset = '65535'
+            calcremain = True
+    
+    if offset != '0':
+        calcbuf.write(char + '{')
+        calcbuf.write(str(offset))
+        if maxoffset != None:
+            calcbuf.write(',' + maxoffset)
+        if maxoffset == None:
+            calcbuf.write(',')
+        calcbuf.write('}')
+    elif maxoffset != None:
+        calcbuf.write('.{0,' + maxoffset + '}')
+
+    if calcremain: # recursion happens here
+        calcbuf.write(calculate_repetition(char, offsetremain, maxoffsetremain))
+    
+    val = calcbuf.getvalue()
+    calcbuf.close()
+    return val
+
 def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
     """Convert 
        @param chars, a pronom bytesequence, into a 
        @return regular expression.
        Endianness is not used.
     """
+
     if 'Big' in endianness:
         littleendian = False
     else:
@@ -371,20 +380,19 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
         offset = '0'
     if len(maxoffset) == 0:
         maxoffset = None
+    # make buf global so we can print it @'_convert_err_msg' while debugging (MdR)
+    global buf
     buf = cStringIO.StringIO()
     buf.write("(?s)")   #If a regex starts with (?s), it is equivalent to DOTALL.   
     i = 0
     state = 'start'
     if 'BOF' in pos:
+        buf.write('\\A') # start of regex
+        buf.write(calculate_repetition('.', offset, maxoffset))
+            
+    if 'IFB' in pos:
         buf.write('\\A')
-        if offset != '0':
-            buf.write('.{')
-            buf.write(str(offset))
-            if maxoffset != None:
-                buf.write(',' + maxoffset)
-            buf.write('}')
-        elif maxoffset != None:
-            buf.write('.{0,' + maxoffset + '}')
+        buf.write(calculate_repetition('.', offset, maxoffset))
             
     while True:
         if i == len(chars):
@@ -463,11 +471,29 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
                     i += 1
                 elif chars[i] == ')':
                     break
+                # START fix FIDO-20
+                elif chars[i] == '[':
+                    buf.write('[')
+                    i += 1
+                    (byt, inc) = doByte(chars, i, littleendian)
+                    buf.write(byt)
+                    i += inc
+                    assert(chars[i] == ':')
+                    buf.write('-')
+                    i += 1
+                    (byt, inc) = doByte(chars, i, littleendian)
+                    buf.write(byt)
+                    i += inc
+    
+                    assert(chars[i] == ']')
+                    buf.write(']')
+                    i += 1
                 else:
-                    raise Exception(_convert_err_msg('Illegal character in paren', chars[i], i, chars))
+                    raise Exception(_convert_err_msg(('Current state = \'{0}\' : Illegal character in paren').format(state), chars[i], i, chars))
             buf.write(')')
             i += 1
             state = 'start'
+            # END fix FIDO-20
         elif state in ['curly', 'curly-after-bracket']:
             # {nnnn} or {nnn-nnn} or {nnn-*}
             # {nnn} or {nnn,nnn} or {nnn,}
@@ -510,13 +536,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
         else:
             raise Exception('Illegal state {0}'.format(state))
     if 'EOF' in pos:
-        if offset != '0':
-            buf.write('.{' + offset)
-            if maxoffset != None:
-                buf.write(',' + maxoffset)
-            buf.write('}')
-        elif maxoffset != None:
-            buf.write('.{0,' + maxoffset + '}')
+        buf.write(calculate_repetition('.', offset, maxoffset))
         buf.write('\\Z')
     val = buf.getvalue()
     buf.close()
