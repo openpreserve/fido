@@ -575,7 +575,7 @@
       <pattern>
         <position>EOF</position>
         <pronom_pattern>0000000049454E44AE426082</pronom_pattern>
-        <regex>(?s)\x00\x00\x00\x00IEND\xaeB`\x82\Z</regex>
+        <regex>(?s)\x00\x00\x00\x00IEND\xaeB\x60\x82\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -992,7 +992,7 @@ Windows bitmap 2.0 and OS/2 bitmap 1.0 are effectively the same format - the onl
       <pattern>
         <position>EOF</position>
         <pronom_pattern>0000000049454E44AE426082</pronom_pattern>
-        <regex>(?s)\x00\x00\x00\x00IEND\xaeB`\x82\Z</regex>
+        <regex>(?s)\x00\x00\x00\x00IEND\xaeB\x60\x82\Z</regex>
       </pattern>
     </signature>
     <signature>
@@ -1006,7 +1006,7 @@ Windows bitmap 2.0 and OS/2 bitmap 1.0 are effectively the same format - the onl
       <pattern>
         <position>EOF</position>
         <pronom_pattern>0000000049454E44AE426082</pronom_pattern>
-        <regex>(?s)\x00\x00\x00\x00IEND\xaeB`\x82\Z</regex>
+        <regex>(?s)\x00\x00\x00\x00IEND\xaeB\x60\x82\Z</regex>
       </pattern>
     </signature>
     <signature>
@@ -1020,7 +1020,7 @@ Windows bitmap 2.0 and OS/2 bitmap 1.0 are effectively the same format - the onl
       <pattern>
         <position>EOF</position>
         <pronom_pattern>0000000049454E44AE426082</pronom_pattern>
-        <regex>(?s)\x00\x00\x00\x00IEND\xaeB`\x82\Z</regex>
+        <regex>(?s)\x00\x00\x00\x00IEND\xaeB\x60\x82\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -1554,7 +1554,7 @@ Windows bitmap 2.0 and OS/2 bitmap 1.0 are effectively the same format - the onl
       <pattern>
         <position>EOF</position>
         <pronom_pattern>0000000049454E44AE426082</pronom_pattern>
-        <regex>(?s)\x00\x00\x00\x00IEND\xaeB`\x82\Z</regex>
+        <regex>(?s)\x00\x00\x00\x00IEND\xaeB\x60\x82\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -3557,7 +3557,7 @@ Windows bitmap 2.0 and OS/2 bitmap 1.0 are effectively the same format - the onl
       <pattern>
         <position>BOF</position>
         <pronom_pattern>5B436F6E74656E745F54797065735D2E786D6C20A2</pronom_pattern>
-        <regex>(?s)\A.{30,}\[Content_Types\]\.xml \xa2</regex>
+        <regex>(?s)\A.{30}\[Content_Types\]\.xml \xa2</regex>
       </pattern>
       <pattern>
         <position>BOF</position>
@@ -3946,7 +3946,7 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
       <pattern>
         <position>BOF</position>
         <pronom_pattern>66747970{0-64}(6D703432|6D703431|69736F6D|69736F32){4-64}(6D6F6F76|6D646174|636D6F76)</pronom_pattern>
-        <regex>(?s)\A.{4,}ftyp.{0,64}(?:mp42|mp41|isom|iso2).{4,64}(?:moov|mdat|cmov)</regex>
+        <regex>(?s)\A.{4}ftyp.{0,64}(?:mp42|mp41|isom|iso2).{4,64}(?:moov|mdat|cmov)</regex>
       </pattern>
     </signature>
     <details>
@@ -6920,7 +6920,7 @@ WARC format has been written by the members of the IIPC (http://www.netpreserve.
       <pattern>
         <position>BOF</position>
         <pronom_pattern>12AF{6}08{120}F1</pronom_pattern>
-        <regex>(?s)\A.{4,}\x12\xaf.{6}\x08.{120}\xf1</regex>
+        <regex>(?s)\A.{4}\x12\xaf.{6}\x08.{120}\xf1</regex>
       </pattern>
     </signature>
     <details>
@@ -8690,7 +8690,7 @@ real name (optional account name) || email address.</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>001102FF0C00</pronom_pattern>
-        <regex>(?s)\A.{522,}\x00\x11\x02\xff\x0c\x00</regex>
+        <regex>(?s)\A.{522}\x00\x11\x02\xff\x0c\x00</regex>
       </pattern>
     </signature>
     <details>
@@ -9080,7 +9080,7 @@ real name (optional account name) || email address.</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0008(00|02)[01:04]{31}00000000{16}[03:04]</pronom_pattern>
-        <regex>(?s)\A.{2,}\x00\x08(?:\x00|\x02)[\x01-\x04].{31}\x00\x00\x00\x00.{16}[\x03-\x04]</regex>
+        <regex>(?s)\A.{2}\x00\x08(?:\x00|\x02)[\x01-\x04].{31}\x00\x00\x00\x00.{16}[\x03-\x04]</regex>
       </pattern>
     </signature>
     <details>
@@ -9111,7 +9111,7 @@ real name (optional account name) || email address.</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0008(00|02)[01:04]{51}[05:09]{34}00000000</pronom_pattern>
-        <regex>(?s)\A.{2,}\x00\x08(?:\x00|\x02)[\x01-\x04].{51}[\x05-\x09].{34}\x00\x00\x00\x00</regex>
+        <regex>(?s)\A.{2}\x00\x08(?:\x00|\x02)[\x01-\x04].{51}[\x05-\x09].{34}\x00\x00\x00\x00</regex>
       </pattern>
     </signature>
     <details>
@@ -9142,7 +9142,7 @@ real name (optional account name) || email address.</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0008(00|02)[01:20]{51}(0A|0B){34}00000000</pronom_pattern>
-        <regex>(?s)\A.{2,}\x00\x08(?:\x00|\x02)[\x01- ].{51}(?:\n|\x0b).{34}\x00\x00\x00\x00</regex>
+        <regex>(?s)\A.{2}\x00\x08(?:\x00|\x02)[\x01- ].{51}(?:\n|\x0b).{34}\x00\x00\x00\x00</regex>
       </pattern>
     </signature>
     <details>
@@ -9394,7 +9394,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
       <pattern>
         <position>BOF</position>
         <pronom_pattern>667479703367(65|67|68|70|72|73|74)[34:39]0000[00:03]00</pronom_pattern>
-        <regex>(?s)\A.{4,}ftyp3g(?:e|g|h|p|r|s|t)[4-9]\x00\x00[\x00-\x03]\x00</regex>
+        <regex>(?s)\A.{4}ftyp3g(?:e|g|h|p|r|s|t)[4-9]\x00\x00[\x00-\x03]\x00</regex>
       </pattern>
     </signature>
     <details>
@@ -9637,7 +9637,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0000{15}[!00]{3}[!00]{2}(0100|00[01:08])</pronom_pattern>
-        <regex>(?s)\A.{3200,}\x00\x00.{15}(!\x00).{3}(!\x00).{2}(?:\x01\x00|\x00[\x01-\x08])</regex>
+        <regex>(?s)\A.{3200}\x00\x00.{15}(!\x00).{3}(!\x00).{2}(?:\x01\x00|\x00[\x01-\x08])</regex>
       </pattern>
     </signature>
     <signature>
@@ -9651,7 +9651,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0000{15}[!00]{3}[!00]{2}(0100|00[01:08])</pronom_pattern>
-        <regex>(?s)\A.{3600,}\x00\x00.{15}(!\x00).{3}(!\x00).{2}(?:\x01\x00|\x00[\x01-\x08])</regex>
+        <regex>(?s)\A.{3600}\x00\x00.{15}(!\x00).{3}(!\x00).{2}(?:\x01\x00|\x00[\x01-\x08])</regex>
       </pattern>
     </signature>
     <details>
@@ -10849,7 +10849,7 @@ Community (IC) and other departments and agencies of the United States Governmen
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0908{2}00050500(9C35|6C92|920C|F90C)</pronom_pattern>
-        <regex>(?s)\A.{512,}\x09\x08.{2}\x00\x05\x05\x00(?:\x9c5|l\x92|\x92\x0c|\xf9\x0c)</regex>
+        <regex>(?s)\A.{512}\x09\x08.{2}\x00\x05\x05\x00(?:\x9c5|l\x92|\x92\x0c|\xf9\x0c)</regex>
       </pattern>
     </signature>
     <details>
@@ -10932,7 +10932,7 @@ Community (IC) and other departments and agencies of the United States Governmen
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0908{2}00050500(9C35|6C92|920C|F90C)</pronom_pattern>
-        <regex>(?s)\A.{512,}\x09\x08.{2}\x00\x05\x05\x00(?:\x9c5|l\x92|\x92\x0c|\xf9\x0c)</regex>
+        <regex>(?s)\A.{512}\x09\x08.{2}\x00\x05\x05\x00(?:\x9c5|l\x92|\x92\x0c|\xf9\x0c)</regex>
       </pattern>
     </signature>
     <details>
@@ -10979,7 +10979,7 @@ Community (IC) and other departments and agencies of the United States Governmen
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0908{2}00060500EC30CD07</pronom_pattern>
-        <regex>(?s)\A.{512,}\x09\x08.{2}\x00\x06\x05\x00\xec0\xcd\x07</regex>
+        <regex>(?s)\A.{512}\x09\x08.{2}\x00\x06\x05\x00\xec0\xcd\x07</regex>
       </pattern>
     </signature>
     <details>
@@ -11026,7 +11026,7 @@ Community (IC) and other departments and agencies of the United States Governmen
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0908{2}00060500EC30CD07</pronom_pattern>
-        <regex>(?s)\A.{512,}\x09\x08.{2}\x00\x06\x05\x00\xec0\xcd\x07</regex>
+        <regex>(?s)\A.{512}\x09\x08.{2}\x00\x06\x05\x00\xec0\xcd\x07</regex>
       </pattern>
     </signature>
     <details>
@@ -14013,7 +14013,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0008(00|02)[01:20]{51}0C{34}00000000</pronom_pattern>
-        <regex>(?s)\A.{2,}\x00\x08(?:\x00|\x02)[\x01- ].{51}\x0c.{34}\x00\x00\x00\x00</regex>
+        <regex>(?s)\A.{2}\x00\x08(?:\x00|\x02)[\x01- ].{51}\x0c.{34}\x00\x00\x00\x00</regex>
       </pattern>
     </signature>
     <details>
@@ -14218,7 +14218,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
       <pattern>
         <position>BOF</position>
         <pronom_pattern>11AF{6}08{24}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000{4}FAF1{2}0000000000000000</pronom_pattern>
-        <regex>(?s)\A.{4,}\x11\xaf.{6}\x08.{24}\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00.{4}\xfa\xf1.{2}\x00\x00\x00\x00\x00\x00\x00\x00</regex>
+        <regex>(?s)\A.{4}\x11\xaf.{6}\x08.{24}\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00.{4}\xfa\xf1.{2}\x00\x00\x00\x00\x00\x00\x00\x00</regex>
       </pattern>
     </signature>
     <details>
@@ -14328,7 +14328,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
       <pattern>
         <position>IFB</position>
         <pronom_pattern>53(202020202020|303030303030)31(0D0A|0A){72}(5320202020202032|5330303030303032|4720202020202031|4730303030303031)</pronom_pattern>
-        <regex>(?s)\A.{72,}S(?:      |000000)1(?:\r\n|\n).{72}(?:S      2|S0000002|G      1|G0000001)</regex>
+        <regex>(?s)\A.{72},}S(?:      |000000)1(?:\r\n|\n).{72}(?:S      2|S0000002|G      1|G0000001)</regex>
       </pattern>
     </signature>
     <details>
@@ -20673,7 +20673,7 @@ The 2 byte file type identifier BM indicates that the BMP was created by OS/2 or
       <pattern>
         <position>BOF</position>
         <pronom_pattern>6D6F6F76{4}6D766864</pronom_pattern>
-        <regex>(?s)\A.{4,}moov.{4}mvhd</regex>
+        <regex>(?s)\A.{4}moov.{4}mvhd</regex>
       </pattern>
     </signature>
     <signature>
@@ -20682,7 +20682,7 @@ The 2 byte file type identifier BM indicates that the BMP was created by OS/2 or
       <pattern>
         <position>BOF</position>
         <pronom_pattern>6D646174*6D6F6F76{4}6D766864</pronom_pattern>
-        <regex>(?s)\A.{4,}mdat.*moov.{4}mvhd</regex>
+        <regex>(?s)\A.{4}mdat.*moov.{4}mvhd</regex>
       </pattern>
     </signature>
     <signature>
@@ -20691,7 +20691,7 @@ The 2 byte file type identifier BM indicates that the BMP was created by OS/2 or
       <pattern>
         <position>BOF</position>
         <pronom_pattern>6D6F6F76{4}636D6F76{4}64636F6D</pronom_pattern>
-        <regex>(?s)\A.{4,}moov.{4}cmov.{4}dcom</regex>
+        <regex>(?s)\A.{4}moov.{4}cmov.{4}dcom</regex>
       </pattern>
     </signature>
     <signature>
@@ -20700,7 +20700,7 @@ The 2 byte file type identifier BM indicates that the BMP was created by OS/2 or
       <pattern>
         <position>BOF</position>
         <pronom_pattern>6D646174*6D6F6F76{4}636D6F76{4}64636F6D</pronom_pattern>
-        <regex>(?s)\A.{4,}mdat.*moov.{4}cmov.{4}dcom</regex>
+        <regex>(?s)\A.{4}mdat.*moov.{4}cmov.{4}dcom</regex>
       </pattern>
     </signature>
     <signature>
@@ -20727,7 +20727,7 @@ The 2 byte file type identifier BM indicates that the BMP was created by OS/2 or
       <pattern>
         <position>BOF</position>
         <pronom_pattern>6D646174</pronom_pattern>
-        <regex>(?s)\A.{4,}mdat</regex>
+        <regex>(?s)\A.{4}mdat</regex>
       </pattern>
     </signature>
     <details>
@@ -22810,7 +22810,7 @@ The 2 byte file type identifier BM indicates that the BMP was created by OS/2 or
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4341544941202020{2024}434154494120534F4C5554494F4E53205634{6}52454C4541534520</pronom_pattern>
-        <regex>(?s)\A.{80,}CATIA   .{2024}CATIA SOLUTIONS V4.{6}RELEASE </regex>
+        <regex>(?s)\A.{80}CATIA   .{2024}CATIA SOLUTIONS V4.{6}RELEASE </regex>
       </pattern>
     </signature>
     <details>
@@ -24352,7 +24352,7 @@ The 2 byte file type identifier BM indicates that the BMP was created by OS/2 or
       <pattern>
         <position>BOF</position>
         <pronom_pattern>1101</pronom_pattern>
-        <regex>(?s)\A.{522,}\x11\x01</regex>
+        <regex>(?s)\A.{522}\x11\x01</regex>
       </pattern>
     </signature>
     <details>
