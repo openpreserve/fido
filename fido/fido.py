@@ -7,7 +7,7 @@ from xml.etree import cElementTree as ET
 # print_r: https://github.com/marcbelmont/python-print_r
 # from print_r import print_r
 
-version = '0.9.6'
+version = '0.9.6-1'
 defaults = {'bufsize': 128 * 1024,
             'regexcachesize' : 2084,
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),

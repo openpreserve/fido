@@ -97,9 +97,11 @@ class FormatInfo:
         try:
             zip = zipfile.ZipFile(self.pronom_files, 'r')
             for item in zip.infolist():
+                #print item.filename
                 try:
                     stream = zip.open(item)
                     # Work is done here!
+                    #if item.filename != 'github/fido/fido/conf/pronom-xml/puid.fmt.11.xml':
                     format = self.parse_pronom_xml(stream, puid_filter)
                     if format != None:
                         formats.append(format) 
@@ -166,7 +168,6 @@ class FormatInfo:
             if rel == 'Has priority over':
                 ET.SubElement(fido_format, 'has_priority_over').text = get_text_tna(x, 'RelatedFormatID')
         # Get the InternalSignature information
-        #print "working on puid:", puid
         for pronom_sig in pronom_format.findall(TNA('InternalSignature')):
             fido_sig = ET.SubElement(fido_format, 'signature')
             ET.SubElement(fido_sig, 'name').text = get_text_tna(pronom_sig, 'SignatureName')
@@ -180,7 +181,9 @@ class FormatInfo:
                 max_offset = get_text_tna(pronom_pat, 'MaxOffset')
                 if max_offset == None:
                     pass
+#                print "working on puid:", puid, ", position: ", pos, "with offset, maxoffset: ", offset, ",", max_offset
                 regex = convert_to_regex(bytes, 'Little', pos, offset, max_offset)
+#                print "done puid", puid
                 ET.SubElement(fido_pat, 'position').text = pos
                 ET.SubElement(fido_pat, 'pronom_pattern').text = bytes
                 ET.SubElement(fido_pat, 'regex').text = regex
@@ -216,7 +219,7 @@ class FormatInfo:
             ET.SubElement(r, 'dc:type').text = get_text_tna(x, 'DocumentType')
             ET.SubElement(r, 'dcterms:license').text = get_text_tna(x, 'AvailabilityDescription')+" "+get_text_tna(x, 'AvailabilityNote')
             ET.SubElement(r, 'dc:rights').text = get_text_tna(x, 'DocumentIPR')
-        # Examples
+#         Examples
         for x in pronom_format.findall(TNA("ReferenceFile")):
             rf = ET.SubElement(fido_details,'example_file')
             ET.SubElement(rf, 'dc:title').text = get_text_tna(x, 'ReferenceFileName')
@@ -305,7 +308,7 @@ def doByte(chars, i, littleendian):
 # \a\b\n\r\t\v
 # MdR: took out '<' and '>' out of _ordinary because they were converted to entities &lt;&gt;
 # MdR: moved '!' from _ordinary to _special because it means "NOT" in the regex world. At this time no regex in any sig has a negate set, did this to be on the safe side
-_ordinary = frozenset(' "#%&\',-/0123456789:;=@ABCDEFGHIJKLMNOPQRSTUVWXYZ_`abcdefghijklmnopqrstuvwxyz~')
+_ordinary = frozenset(' "#%&\',-/0123456789:;=@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~')
 _special = '$()*+.?![]^\\{|}'
 _hex = '0123456789abcdef'
 def _escape_char(c):
@@ -323,7 +326,7 @@ def escape(string):
     "Escape characters in pattern that are non-printable, non-ascii, or special for regexes."
     return ''.join(c if c in _ordinary else _escape_char(c) for c in string)
 
-def calculate_repetition(char, offset, maxoffset):
+def calculate_repetition(char, pos, offset, maxoffset):
     """
     Recursively calculates offset/maxoffset repetition,
     when one or both offsets is greater than 65535 bytes (64KB)
@@ -347,19 +350,28 @@ def calculate_repetition(char, offset, maxoffset):
             maxoffset = '65535'
             calcremain = True
     
-    if offset != '0':
-        calcbuf.write(char + '{')
-        calcbuf.write(str(offset))
-        if maxoffset != None:
-            calcbuf.write(',' + maxoffset)
-        if maxoffset == None:
-            calcbuf.write(',')
-        calcbuf.write('}')
-    elif maxoffset != None:
-        calcbuf.write('.{0,' + maxoffset + '}')
+    if pos == "BOF" or pos == "EOF":
+        if offset != '0':
+            calcbuf.write(char + '{' + str(offset))
+            if maxoffset != None:
+                calcbuf.write(',' + maxoffset)
+            calcbuf.write('}')
+        elif maxoffset != None:
+            calcbuf.write(char + '{0,' + maxoffset + '}')
+
+    if pos == "IFB":
+        if offset != '0':
+            calcbuf.write(char + '{' + str(offset))
+            if maxoffset != None:
+                calcbuf.write(',' + maxoffset)
+            calcbuf.write('}')
+            if maxoffset == None:
+                calcbuf.write(',}')
+        elif maxoffset != None:
+            calcbuf.write(char + '{0,' + maxoffset + '}')
 
     if calcremain: # recursion happens here
-        calcbuf.write(calculate_repetition(char, offsetremain, maxoffsetremain))
+        calcbuf.write(calculate_repetition(char, pos, offsetremain, maxoffsetremain))
     
     val = calcbuf.getvalue()
     calcbuf.close()
@@ -388,11 +400,11 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
     state = 'start'
     if 'BOF' in pos:
         buf.write('\\A') # start of regex
-        buf.write(calculate_repetition('.', offset, maxoffset))
+        buf.write(calculate_repetition('.', pos, offset, maxoffset))
             
     if 'IFB' in pos:
         buf.write('\\A')
-        buf.write(calculate_repetition('.', offset, maxoffset))
+        buf.write(calculate_repetition('.', pos, offset, maxoffset))
             
     while True:
         if i == len(chars):
@@ -535,9 +547,11 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
             state = 'start'
         else:
             raise Exception('Illegal state {0}'.format(state))
+
     if 'EOF' in pos:
-        buf.write(calculate_repetition('.', offset, maxoffset))
+        buf.write(calculate_repetition('.', pos, offset, maxoffset))
         buf.write('\\Z')
+
     val = buf.getvalue()
     buf.close()
     return val

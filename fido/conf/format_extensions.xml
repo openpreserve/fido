@@ -243,4 +243,32 @@
       </pattern>
     </signature>
   </format>
+  <format>
+  <!-- .py format added by <maurice.de.rooij@nationaalarchief.nl> -->
+    <puid>fido-fmt/667.python</puid>
+    <name>Python script file</name>
+    <extension>py</extension>
+    <signature>
+      <name>Python script file</name>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)\A.{0,1024}\x23\x21(?:python|\/usr\/local\/bin\/python|\/usr\/bin\/env python)</regex>
+      </pattern>
+    </signature>
+  </format>
+<!-- this doesn't quite work yet
+  <format>
+	<comment>.md5 format added by maurice.de.rooij@nationaalarchief.nl</comment>
+    <puid>fido-fmt/668.md5</puid>
+    <name>MD5 file</name>
+    <extension>md5</extension>
+    <signature>
+      <name>MD5 file</name>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)\A[a-f0-9]{32}</regex>
+      </pattern>
+    </signature>
+  </format>
+-->
 </formats>
