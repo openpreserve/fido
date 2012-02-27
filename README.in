@@ -1,9 +1,8 @@
-usage: fido.py [-h] [-v] [-q] [-recurse] [-zip] [-input INPUT]
+usage: fido.py [-h] [-v] [-q] [-recurse] [-zip] [-nocontainer] [-input INPUT]
                [-useformats INCLUDEPUIDS] [-nouseformats EXCLUDEPUIDS]
-               [-matchprintf FORMATSTRING]
-               [-nomatchprintf FORMATSTRING] [-bufsize BUFSIZE] [-show SHOW]
-               [-loadformats XML1,...,XMLn] [-confdir CONFDIR] [-checkformats]
-               [-convert] [-source SOURCE] [-target TARGET]
+               [-matchprintf FORMATSTRING] [-nomatchprintf FORMATSTRING]
+               [-bufsize BUFSIZE] [-container_bufsize CONTAINER_BUFSIZE]
+               [-loadformats XML1,...,XMLn] [-confdir CONFDIR]
                [FILE [FILE ...]]
 
 Format Identification for Digital Objects (fido). FIDO is a command-line tool
@@ -21,6 +20,8 @@ optional arguments:
   -q                    run (more) quietly
   -recurse              recurse into subdirectories
   -zip                  recurse into zip and tar files
+  -nocontainer          disable deep scan of container documents, increases
+                        speed but may reduce accuracy with big files
   -input INPUT          file containing a list of files to check, one per
                         line. - means stdin
   -useformats INCLUDEPUIDS
@@ -35,20 +36,23 @@ optional arguments:
   -nomatchprintf FORMATSTRING
                         format string (Python style) to use if no match. See
                         README.txt
-  -bufsize BUFSIZE      size of the buffer to match against
-  -show SHOW            show "format" or "defaults"
+  -bufsize BUFSIZE      size (in bytes) of the buffer to match against
+                        (default=131072 bytes)
+  -container_bufsize CONTAINER_BUFSIZE
+                        size (in bytes) of the buffer to match against
+                        (default=524288 bytes)
   -loadformats XML1,...,XMLn
                         comma separated string of XML format files to add.
   -confdir CONFDIR      configuration directory to load_fido_xml, for example,
                         the format specifications from.
-  -checkformats         Check the supplied format XML files for quality.
 
 Open Planets Foundation (http://www.openplanetsfoundation.org)
 See License.txt for license information.
 Download from: http://github.com/openplanets/fido/downloads
 Author: Adam Farquhar, 2010
-Maintainer: Maurice de Rooij, 2011
-FIDO uses the UK National Archives (TNA) PRONOM File Format descriptions. PRONOM is available from www.tna.gov.uk/pronom.
+Maintainer: Maurice de Rooij (OPF/NANETH), 2011, 2012
+FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions.
+PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
 
 Installation
 ------------
@@ -60,16 +64,32 @@ Any platform
 3. Open a command shell, cd to the directory that you placed the zip contents into and cd into folder 'fido'
 4. You should now be able to see the help text: 
    python fido.py -h
+5. Before identifying files with FIDO for the first time, please update signatures first 
+   using the 'update_signatures.py' script (see below for instructions).
+
+Updating signatures
+-------------------
+
+To update FIDO with the latest PRONOM file format definitions, run:
+   python update_signatures.py
+This is an interactive CLI script which downloads the latest PRONOM signature file and signatures. Please note that it can take a while to download all PUID signatures.
+
+If you are having trouble running the script due to firewall restrictions, see OPF wiki: http://wiki.opf-labs.org/display/PT/Command+Line+Interface+proxy+usage
+
+Please note that this WILL NOT update the container signature file located in the 'conf' folder.
+The reason for this that the PRONOM container signature file contains special types 
+of sequences which need to be tested before FIDO can use them. If there is an update available 
+for the PRONOM container signature file it will show up in a next commit.
 
 Dependencies
 ------------
 
-Fido 0.9.6 and later will run on Python 2.6 or Python 2.7 with no other dependencies.
+FIDO 1.0 and later will run on Python 2.7 with no other dependencies.
 
 Format Definitions
 ------------------
 
-By default, Fido loads format information from two files conf/formats.xml
+By default, FIDO loads format information from two files conf/formats.xml
 and conf/format_extensions.xml. Addition format files can be specified using
 the -loadformats command line argument.  They should use the same syntax as 
 conf/format_extensions.xml. If more than one format file needs to be specified,
@@ -86,7 +106,7 @@ printmatch: info.version (file format version X), info.alias (format also called
 
 printnomatch: info.count (file N)
 
-The defaults for Fido 0.9.6 are:
+The defaults for FIDO 1.0 are:
   printmatch: 
     "OK,%(info.time)s,%(info.puid)s,%(info.formatname)s,%(info.signaturename)s,%(info.filesize)s,\"%(info.filename)s\",\"%(info.mimetype)s\",\"%(info.matchtype)s\"\n"
 
@@ -96,8 +116,19 @@ The defaults for Fido 0.9.6 are:
 It can be useful to provide an empty string for either, for example to ignore all failed matches, or all successful ones (see examples below). 
 Note that a newline needs to be added to the end of the string using \n.
 
-Examples
---------
+Matchttypes
+-----------
+
+FIDO returns the following matchtypes:
+- fail:      the object could not be identified with signature or file extension
+- extension: the object could only be identified by file extension
+- signature: the object has been identified with (a) PRONOM signature(s)
+- container: the object has been idenfified with (a) PRONOM container signature(s)
+
+(In some cases multiple results are returned.)
+
+Examples running FIDO
+---------------------
 
 Identify all files in the current directory and below, sending output
 into file-info.csv
@@ -125,6 +156,19 @@ Only show files that could not be identified.
 
 Only show files that could be identified.
    python fido.py -nomatchprintf "" .
+
+Deep scan of container objects
+------------------------------
+
+By default, when FIDO detects that a file is a container (compound) object,
+it will start a deep (complete) scan of the file using the PRONOM container signatures.
+When identifying big files, this behaviour can cause FIDO to slow down sigificantly.
+You can disable deep scanning by invoking FIDO with the '-nocontainer' argument.
+While disabling deep scan speeds up identification, it may reduce accuracy.
+
+At the moment (version 1.0) FIDO is not yet able to perform scanning containers which are 
+passed through STDIN. A workaround is to save the stream to a temporary file and have 
+FIDO identify this file.
 
 License information
 -------------------
