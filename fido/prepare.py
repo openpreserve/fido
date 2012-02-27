@@ -555,8 +555,8 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
     val = buf.getvalue()
     buf.close()
     return val
-    
-if __name__ == '__main__':
+
+def main():
     import sys
     from argparselocal import ArgumentParser  
     arglist = sys.argv[1:]
@@ -573,5 +573,7 @@ if __name__ == '__main__':
     info = FormatInfo(args.input)
     info.load_pronom_xml(args.puid)
     info.save(args.output)
-    print >> sys.stderr, 'FIDO: {0} formats'.format(len(info.formats))
+    print >> sys.stderr, 'Converted {0} PRONOM formats to FIDO signatures'.format(len(info.formats))
     
+if __name__ == '__main__':
+    main()    

@@ -1,19 +1,19 @@
 #!python
 # -*- coding: utf-8 -*-
-import sys, re, os, time
+import sys, re, os, time, math
 import hashlib, urllib, urlparse, csv, getopt
-from xml.etree import cElementTree as ET    
-# needed for debugging
-# print_r: https://github.com/marcbelmont/python-print_r
-# from print_r import print_r
+from xml.etree import cElementTree as ET
+from xml.etree import ElementTree as CET
 
-version = '0.9.6-1'
-defaults = {'bufsize': 128 * 1024,
-            'regexcachesize' : 2084,
+version = '1.0'
+defaults = {'bufsize': 128 * 1024, # (bytes)
+            'regexcachesize' : 2084, # (bytes)
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
-            'printmatch': "OK,%(info.time)s,%(info.puid)s,%(info.formatname)s,%(info.signaturename)s,%(info.filesize)s,\"%(info.filename)s\",\"%(info.mimetype)s\",\"%(info.matchtype)s\"\n",
+            'printmatch': "OK,%(info.time)s,%(info.puid)s,\"%(info.formatname)s\",\"%(info.signaturename)s\",%(info.filesize)s,\"%(info.filename)s\",\"%(info.mimetype)s\",\"%(info.matchtype)s\"\n",
             'printnomatch' : "KO,%(info.time)s,,,,%(info.filesize)s,\"%(info.filename)s\",,\"%(info.matchtype)s\"\n",
             'format_files': ['formats.xml', 'format_extensions.xml'],
+            'containersignature_file' : 'container-signature-20110204.xml',
+            'container_bufsize' : 512 * 1024, # (bytes)
             'description' : """
     Format Identification for Digital Objects (fido).
     FIDO is a command-line tool to identify the file formats of digital objects.
@@ -21,389 +21,36 @@ defaults = {'bufsize': 128 * 1024,
     """,
     'epilog' : """
     Open Planets Foundation (http://www.openplanetsfoundation.org)
-    See License.txt for license information.  Download from: http://github.com/openplanets/fido/downloads
+    See License.txt for license information.
+    Download from: http://github.com/openplanets/fido/downloads\n
     Author: Adam Farquhar, 2010
-    Maintainer: Maurice de Rooij (OPF/NANETH), 2011
-        
-    FIDO uses the UK National Archives (TNA) PRONOM File Format descriptions.
-    PRONOM is available from www.tna.gov.uk/pronom.
+    Maintainer: Maurice de Rooij (OPF/NANETH), 2011, 2012
+    FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions.
+    PRONOM is available from http://www.nationalarchives.gov.uk/pronom/.
     """
 }
 
-class NS:
-    """Helper class for XML name spaces in ElementTree.
-       Use like MYNS=NS("{http://some/uri}") and then
-       MYNS(tag1/tag2).
-    """
-    def __init__(self, uri):
-        self.uri = uri
-    def __getattr__(self, tag):
-        return self.uri + tag
-    def __call__(self, path):
-        return "/".join(getattr(self, tag) for tag in path.split("/"))
-
-# XHTML namespace
-XHTML = NS("{http://www.w3.org/1999/xhtml}")
-# TNA namespace
-TNA = NS("{http://pronom.nationalarchives.gov.uk}")
-# DC namespace
-DC = NS("{http://purl.org/dc/elements/1.1/}")
-# DCTERMS namespace
-DCTERMS = NS("{http://purl.org/dc/terms/}")
-
-def get_text_tna(element, tag, default=''):
-    """Helper function to return the text for a tag or path using the TNA namespace.
-    """
-    part = element.find(TNA(tag))
-    return part.text.strip() if part != None and part.text != None else default
-
-class FormatInfo:
-    def __init__(self, pronom_files, format_list=[]):
-        self.info = {}
-        self.formats = []
-        self.pronom_files = pronom_files
-        for f in format_list:
-            self.add_format(f)
-                             
-    def save_fido_xml(self, dst):
-        """Write the fido XML format definitions to @param dst
-        """
-        sys.stdout.write("Saving to "+dst+"...")
-        tree = ET.ElementTree(ET.Element('formats', {'version':'0.3',
-                                                     'xmlns:xsi' : "http://www.w3.org/2001/XMLSchema-instance",
-                                                     'xsi:noNamespaceSchemaLocation': "fido-formats.xsd",
-                                                     'xmlns:dc': "http://purl.org/dc/elements/1.1/",
-                                                     'xmlns:dcterms': "http://purl.org/dc/terms/"}))
-        root = tree.getroot()
-        for f in self.formats:
-            # This skips entries that have no signature:
-            #if f.find('signature'):
-                root.append(f)
-        self.indent(root)
-        out = open(dst, 'wb')
-        #print >> out, ET.tostring(root, encoding='UTF-8')     
-        sys.stdout.write(ET.tostring(root, encoding='UTF-8'))
-
-    def indent(self, elem, level=0):
-        i = "\n" + level*"  "
-        if len(elem):
-            if not elem.text or not elem.text.strip():
-                elem.text = i + "  "
-            if not elem.tail or not elem.tail.strip():
-                elem.tail = i
-            for elem in elem:
-                self.indent(elem, level+1)
-            if not elem.tail or not elem.tail.strip():
-                elem.tail = i
-        else:
-            if level and (not elem.tail or not elem.tail.strip()):
-                elem.tail = i
-                
-    def load_pronom_xml(self):
-        """Load the pronom XML from self.pronom_files and convert it to fido XML.
-           As a side-effect, set self.formats to a list of ElementTree.Element
-        """
-        #print "Loading PRONOM data from "+self.pronom_files
-        sys.stdout.write("Loading PRONOM data from "+self.pronom_files)
-        import zipfile
-        formats = []
-        zip = None
-        try:
-            zip = zipfile.ZipFile(self.pronom_files, 'r')
-            for item in zip.infolist():
-                try:
-                    stream = zip.open(item)
-                    # Work is done here!
-                    formats.append(self.parse_pronom_xml(stream))
-                finally:
-                    stream.close()
-        finally:
-            if( zip != None ):
-                zip.close()
-        # Replace the formatID with puids in has_priority_over
-        id_map = {}
-        for element in formats:
-            puid = element.find('puid').text
-            pronom_id = element.find('pronom_id').text
-            id_map[pronom_id] = puid
-        for element in formats:
-            for rel in element.findall('has_priority_over'):
-                rel.text = id_map[rel.text]
-        self._sort_formats(formats)
-        self.formats = formats
-                    
-    def parse_pronom_xml(self, source):
-        """Read a pronom XML from @param source, convert it to fido XML and
-           @return ET.ElementTree Element representing it.
-        """
-        pronom_xml = ET.parse(source)
-        pronom_root = pronom_xml.getroot()
-        pronom_format = pronom_root.find(TNA('report_format_detail/FileFormat'))
-        fido_format = ET.Element('format')
-        # Get the base Format information
-        for id in pronom_format.findall(TNA('FileFormatIdentifier')):
-            type = get_text_tna(id, 'IdentifierType')
-            if type == 'PUID':
-                puid = get_text_tna(id, 'Identifier')
-                ET.SubElement(fido_format, 'puid').text = puid
-        # A bit clumsy.  I want to have puid first, then mime, then container.
-        for id in pronom_format.findall(TNA('FileFormatIdentifier')):
-            type = get_text_tna(id, 'IdentifierType')
-            if type == 'MIME':
-                ET.SubElement(fido_format, 'mime').text = get_text_tna(id, 'Identifier')  
-            elif type == 'PUID':
-                puid = get_text_tna(id, 'Identifier')
-                if puid == 'x-fmt/263':
-                    ET.SubElement(fido_format, 'container').text = 'zip'
-                elif puid == 'x-fmt/265':
-                    ET.SubElement(fido_format, 'container').text = 'tar'
-        ET.SubElement(fido_format, 'name').text = get_text_tna(pronom_format, 'FormatName')
-        ET.SubElement(fido_format, 'version').text = get_text_tna(pronom_format, 'FormatVersion')
-        ET.SubElement(fido_format, 'alias').text = get_text_tna(pronom_format, 'FormatAliases')
-        ET.SubElement(fido_format, 'pronom_id').text = get_text_tna(pronom_format, 'FormatID')
-        # Get the extensions from the ExternalSignature
-        for x in pronom_format.findall(TNA('ExternalSignature')):
-                ET.SubElement(fido_format, 'extension').text = get_text_tna(x, 'Signature')
-        # Get the Apple format identifier
-        for id in pronom_format.findall(TNA('FileFormatIdentifier')):
-            type = get_text_tna(id, 'IdentifierType')
-            if type == 'Apple Uniform Type Identifier':
-                ET.SubElement(fido_format, 'apple_uti').text = get_text_tna(id, 'Identifier')  
-        # Handle the relationships
-        for x in pronom_format.findall(TNA('RelatedFormat')):
-            rel = get_text_tna(x, 'RelationshipType')
-            if rel == 'Has priority over':
-                ET.SubElement(fido_format, 'has_priority_over').text = get_text_tna(x, 'RelatedFormatID')
-        # Get the InternalSignature information
-        for pronom_sig in pronom_format.findall(TNA('InternalSignature')):
-            fido_sig = ET.SubElement(fido_format, 'signature')
-            ET.SubElement(fido_sig, 'name').text = get_text_tna(pronom_sig, 'SignatureName')
-            # There are some funny chars in the notes, which caused me trouble and it is a unicode string,
-            ET.SubElement(fido_sig, 'note').text = get_text_tna(pronom_sig, 'SignatureNote').encode('UTF-8')
-            for pronom_pat in pronom_sig.findall(TNA('ByteSequence')):
-                fido_pat = ET.SubElement(fido_sig, 'pattern')
-                pos = fido_position(get_text_tna(pronom_pat, 'PositionType'))
-                bytes = get_text_tna(pronom_pat, 'ByteSequenceValue')
-                offset = get_text_tna(pronom_pat, 'Offset')
-                max_offset = get_text_tna(pronom_pat, 'MaxOffset')
-                regex = convert_pronom_pattern_to_regex(bytes, pos, offset, max_offset)
-                ET.SubElement(fido_pat, 'position').text = pos
-                ET.SubElement(fido_pat, 'pronom_pattern').text = bytes
-                ET.SubElement(fido_pat, 'regex').text = regex
-
-        # Get the format details
-        fido_details = ET.SubElement(fido_format,'details')
-        ET.SubElement(fido_details, 'dc:description').text = get_text_tna(pronom_format, 'FormatDescription').encode('utf8')
-        ET.SubElement(fido_details, 'dcterms:available').text = get_text_tna(pronom_format, 'ReleaseDate')
-        ET.SubElement(fido_details, 'dc:creator').text = get_text_tna(pronom_format, 'Developers/DeveloperCompoundName')
-        ET.SubElement(fido_details, 'dcterms:publisher').text = get_text_tna(pronom_format, 'Developers/OrganisationName')
-        for x in pronom_format.findall(TNA('RelatedFormat')):
-            rel = get_text_tna(x, 'RelationshipType')
-            if rel == 'Is supertype of':
-                ET.SubElement(fido_details, 'is_supertype_of').text = get_text_tna(x, 'RelatedFormatID')
-        for x in pronom_format.findall(TNA('RelatedFormat')):
-            rel = get_text_tna(x, 'RelationshipType')
-            if rel == 'Is subtype of':
-                ET.SubElement(fido_details, 'is_subtype_of').text = get_text_tna(x, 'RelatedFormatID')
-        ET.SubElement(fido_details, 'content_type').text = get_text_tna(pronom_format, 'FormatTypes')
-        # References
-        for x in pronom_format.findall(TNA("Document")):
-            r = ET.SubElement(fido_details,'reference')
-            ET.SubElement(r, 'dc:title').text = get_text_tna(x, 'TitleText')
-            ET.SubElement(r, 'dc:creator').text = get_text_tna(x, 'Author/AuthorCompoundName')
-            ET.SubElement(r, 'dc:publisher').text = get_text_tna(x, 'Publisher/PublisherCompoundName')
-            ET.SubElement(r, 'dcterms:available').text = get_text_tna(x, 'PublicationDate')
-            for id in x.findall(TNA('DocumentIdentifier')):
-                type = get_text_tna(id, 'IdentifierType')
-                if type == 'URL':
-                    ET.SubElement(r, 'dc:identifier').text = "http://"+get_text_tna(id, 'Identifier')  
-                else:
-                    ET.SubElement(r, 'dc:identifier').text = get_text_tna(id, 'IdentifierType')+":"+get_text_tna(id, 'Identifier')  
-            ET.SubElement(r, 'dc:description').text = get_text_tna(x, 'DocumentNote')
-            ET.SubElement(r, 'dc:type').text = get_text_tna(x, 'DocumentType')
-            ET.SubElement(r, 'dcterms:license').text = get_text_tna(x, 'AvailabilityDescription')
-            if get_text_tna(x, 'AvailabilityNote') != "":
-                ET.SubElement(r, 'dc:source').text = get_text_tna(x, 'AvailabilityNote')
-            ET.SubElement(r, 'dc:rights').text = get_text_tna(x, 'DocumentIPR')
-        # Examples
-        for x in pronom_format.findall(TNA("ReferenceFile")):
-            rf = ET.SubElement(fido_details,'example_file')
-            ET.SubElement(rf, 'dc:title').text = get_text_tna(x, 'ReferenceFileName')
-            ET.SubElement(rf, 'dc:description').text = get_text_tna(x, 'ReferenceFileDescription')
-            checksum = ""
-            for id in x.findall(TNA('ReferenceFileIdentifier')):
-                type = get_text_tna(id, 'IdentifierType')
-                if type == 'URL':
-                    url = "http://"+get_text_tna(id, 'Identifier')
-                    ET.SubElement(rf, 'dc:identifier').text = url  
-                    try:
-                        # And calculate the checksum of this resource:
-                        fido = Fido()
-                        checksum=fido.calc_md5(url)
-                    except IOError:
-                        #print "WARNING! Could not download and calculate checksum for test file."
-                        sys.stdout.write("WARNING! Could not download and calculate checksum for test file.")
-
-                else:
-                    ET.SubElement(rf, 'dc:identifier').text = get_text_tna(id, 'IdentifierType')+":"+get_text_tna(id, 'Identifier')  
-            ET.SubElement(rf, 'dcterms:license').text = ""
-            ET.SubElement(rf, 'dc:rights').text = get_text_tna(x, 'ReferenceFileIPR')
-            checksumElement = ET.SubElement(rf, 'checksum')
-            checksumElement.text = checksum
-            checksumElement.attrib['type'] = "md5"
-        # Record Metadata
-        md = ET.SubElement(fido_details,'record_metadata')
-        ET.SubElement(md, 'status').text ='unknown'
-        ET.SubElement(md, 'dc:creator').text = get_text_tna(pronom_format, 'ProvenanceName')
-        ET.SubElement(md, 'dcterms:created').text = get_text_tna(pronom_format, 'ProvenanceSourceDate')
-        ET.SubElement(md, 'dcterms:modified').text = get_text_tna(pronom_format, 'LastUpdatedDate')
-        ET.SubElement(md, 'dc:description').text = get_text_tna(pronom_format, 'ProvenanceDescription').encode('utf8')
-
-        return fido_format
-            
-    #FIXME: I don't think that this quite works yet!
-    def _sort_formats(self, formatlist):
-        """Sort the format list based on their priority relationships so higher priority
-           formats appear earlier in the list.
-        """
-        def compare_formats(f1, f2):
-            f1ID = f1.find('puid').text
-            f2ID = f2.find('puid').text
-            for worse in f1.findall('has_priority_over'):
-                if worse.text == f2ID:
-                    return - 1
-            for worse in f2.findall('has_priority_over'):
-                if worse.text == f1ID:
-                    return 1
-            if f1ID < f2ID:
-                return - 1
-            elif f1ID == f2ID:
-                return 0
-            else:
-                return 1
-        return sorted(formatlist, cmp=compare_formats)
-
-def fido_position(pronom_position):
-    """@return BOF/EOF/VAR instead of the more verbose pronom position names.
-    """
-    if pronom_position == 'Absolute from BOF':
-        return 'BOF'
-    elif pronom_position == 'Absolute from EOF':
-        return 'EOF'
-    elif pronom_position == 'Variable':
-        return 'VAR'
-    else:
-        raise Exception("Unknown pronom PositionType=" + pronom_position)    
-
-def escape(string):
-    "Escape characters in pattern that are non-printable, non-ascii, or special for regexes."
-    return ''.join(c if c in _ordinary else _escape_char(c) for c in string)
-
-def escape_bytes(bytes, ignore=''):
-    def _byte_val(c1, c2):
-        c1 = '0123456789ABCDEF'.find(c1.upper())
-        c2 = '0123456789ABCDEF'.find(c2.upper())
-        return chr(16 * c1 + c2)
-    result = []
-    i = 0
-    while i < len(bytes):
-        if bytes[i] in ignore:
-            result.append(bytes[i])
-            i += 1
-        else:
-            char = _byte_val(bytes[i], bytes[i + 1])
-            if char in _ordinary:
-                result.append(char)
-            else:
-                result.append(_escape_char(char))
-            i += 2
-    return ''.join(result)
-            
-# \a\b\n\r\t\v
-_ordinary = frozenset(' !"#%&\',-/0123456789:;<=>@ABCDEFGHIJKLMNOPQRSTUVWXYZ_`abcdefghijklmnopqrstuvwxyz~')
-_special = '$()*+.?[]^\\{|}'
-_hex = '0123456789abcdef'
-def _escape_char(c):
-    if c in '\n':
-        return '\\n'
-    elif c == '\r':
-        return '\\r'
-    elif c in _special:
-        return '\\' + c
-    else:
-        (high, low) = divmod(ord(c), 16)
-        return '\\x' + _hex[high] + _hex[low]
-
-def convert_pronom_pattern_to_regex(pronom_pat, pos=None, offset=None, maxoffset=None):
-    import string
-    _conv_table = string.maketrans('-:[]', ',-()')
-
-    bytes = r'(?P<bytes>\w+)'                   # hex*
-    curly = r'(?P<curly>\{([\d\*\-]+)\})'       # {ddd} or {ddd-ddd} or {ddd-*}
-    paren = r'(?P<paren>\([|\w]+\))'            # (bbbb|bbbb|bbbb)
-    bracket = r'(?P<bracket>\[\w\w:\w\w\])'     # [bb:bb]
-    not_pat = r'(?P<not>\[!\w+\])'              # [!bbb]
-    specials = r'(?P<specials>([\*\+])|(\?\?))'
-    regex = re.compile('|'.join([bytes, curly, paren, bracket, not_pat, specials]))
-    result = ['(?s)']
-    if offset != None and len(offset) == 0: offset = None
-    if maxoffset != None and len(maxoffset) == 0: maxoffset = None
-    if pos == 'BOF':
-        str = r'\A'
-        if maxoffset != None:
-            str += '.{%s,%s}' % (offset if offset != None else 0, maxoffset)
-        elif offset != None and offset != '0':
-            str += '.{' + offset + '}'
-        result.append(str)
-    for m in regex.finditer(pronom_pat):
-        if m != None:
-            gd = m.groupdict()
-            if gd['bytes'] != None:
-                result.append(escape_bytes(m.group(0)))
-            elif gd['curly'] != None:
-                str = '.' + gd['curly'].translate(_conv_table, '*') 
-                result.append(str)
-            elif gd['paren'] != None:
-                result.append('(?:' + escape_bytes(m.group(0)[1:-1], '|') + ')')
-            elif gd['bracket'] != None:
-                result.append(escape_bytes(m.group(0), '[:-]').replace(':', '-'))
-            elif gd['not'] != None:
-                result.append('(?:' + escape_bytes(m.group(0)[1:-1], '!') + ')')
-            elif gd['specials'] != None:
-                result.append('.' + gd['specials'][0])
-        else:
-            #if we get here, then, error
-            #print >> sys.stderr, '***error parsing ', pronom_pat
-            sys.stderr.write('***error parsing ', pronom_pat)
-    if pos == 'EOF':
-        str = ''
-        if offset == None and maxoffset != None:
-            str = '.{0,' + maxoffset + '}'
-        elif offset != None and offset != '0' and maxoffset == None:
-            str = '.{%s}' % offset
-        elif offset != None and maxoffset != None:
-            str = '.{%s,%s}' % (offset, maxoffset)
-        str += r'\Z'
-        result.append(str)
-    return ''.join(result)
-
 class Fido:
-    def __init__(self, quiet=False, bufsize=None, printnomatch=None, printmatch=None,
-                 zip=False, handle_matches=None, conf_dir=None, format_files=None):
+    def __init__(self, quiet=False, bufsize=None, container_bufsize = None, printnomatch=None, printmatch=None,
+                 zip=False, nocontainer=False, handle_matches=None, conf_dir=None, format_files=None, containersignature_file=None):
         global defaults
         self.quiet = quiet
         self.bufsize = (defaults['bufsize'] if bufsize == None else bufsize)
+        self.container_bufsize = (defaults['container_bufsize'] if container_bufsize == None else container_bufsize)
         self.printmatch = (defaults['printmatch'] if printmatch == None else printmatch)
         self.printnomatch = (defaults['printnomatch'] if printnomatch == None else printnomatch)
         self.handle_matches = (self.print_matches if handle_matches == None else handle_matches)
         self.zip = zip
+        self.nocontainer = (defaults['nocontainer'] if nocontainer == None else nocontainer)
         self.conf_dir = defaults['conf_dir'] if conf_dir == None else conf_dir
         self.format_files = defaults['format_files'] if format_files == None else format_files
+        self.containersignature_file = defaults['containersignature_file'] if containersignature_file == None else containersignature_file
         self.formats = []
         self.puid_format_map = {}
         self.puid_has_priority_over_map = {}
         for file in self.format_files:
             self.load_fido_xml(os.path.join(os.path.abspath(self.conf_dir), file))
+        self.load_container_signature(os.path.join(os.path.abspath(self.conf_dir), self.containersignature_file))
         self.current_file = ''
         self.current_filesize = 0
         self.current_format = None
@@ -412,6 +59,112 @@ class Fido:
         self.current_count = 0  # Count of calls to match_formats
         re._MAXCACHE = defaults['regexcachesize']
         self.externalsig = ET.XML('<signature><name>External</name></signature>')
+
+    _ordinary = frozenset(' "#%&\',-/0123456789:;=@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~')
+    #_special = '$*+.?![]^\\{|}'
+    _special = '$()*+.?![]^\\{|}'
+    _hex = '0123456789abcdef'
+    def _escape_char(self,c):
+        if c in '\n':
+            return '\\n'
+        elif c == '\r':
+            return '\\r'
+        elif c in self._special:
+            return '\\' + c
+        else:
+            (high, low) = divmod(ord(c), 16)
+            return '\\x' + self._hex[high] + self._hex[low]
+    
+    def escape(self,string):
+        "Escape characters in pattern that are non-printable, non-ascii, or special for regexes."
+        escaped = ''.join(c if c in self._ordinary else self._escape_char(c) for c in string)
+        return escaped
+
+    def convert_container_sequence(self,sig):
+        """Parse the PRONOM container sequences
+        and convert to regular expressions
+        """
+        seq = '(?s)'
+        inq = False
+        byt = False
+        rng = False
+        ror = False
+        for i in range(len(sig)):
+            if not inq and not rng:
+                if sig[i] == "'":
+                    inq = True
+                    continue
+                if sig[i] == " ":
+                    continue
+                if sig[i] == "[":
+                    seq += "("
+                    rng = True
+                    continue
+                if not byt:
+                    seq += "\\x" + sig[i].lower()
+                    byt = True
+                    continue
+                if byt:
+                    seq += sig[i].lower()
+                    byt = False
+                    continue
+            if inq:
+                if sig[i] == "'" and not rng:
+                    inq = False
+                    continue
+                seq += self.escape(sig[i])
+                continue
+            if rng:
+                if sig[i] == "]":
+                    seq += ")"
+                    rng = False
+                    continue
+                if sig[i] != "-" and sig[i] != "'" and ror:
+                    seq += self.escape(sig[i])
+                    continue
+                if sig[i] != "-" and sig[i] != "'" and sig[i] != " " and not ror and not byt:
+                    seq += "\\x" + sig[i].lower()
+                    byt = True
+                    continue
+                if sig[i] != "-" and sig[i] != "'" and sig[i] != " " and not ror and byt:
+                    seq += sig[i].lower()
+                    byt = False
+                    continue
+                if sig[i] == "-" or sig[i] == " ":
+                    seq += "|"
+                    continue
+                if sig[i] == "'" and not ror:
+                    ror = True
+                    continue
+                if sig[i] == "'" and ror:
+                    ror = False
+                    continue
+        #print seq
+        return seq
+    
+    def load_container_signature(self, containersignature_file):
+        """Load the PRONOM container-signature file
+        and convert sequences to regular expressions
+        """
+        tree = CET.parse(containersignature_file)
+        # load and have container signatures converted
+        self.sequenceSignature = {}
+        for signature in tree.getroot().findall('ContainerSignatures/ContainerSignature'):
+            signatureId = signature.get('Id')
+            signatureSequence = signature.findall('Files/File/BinarySignatures/InternalSignatureCollection/InternalSignature/ByteSequence/SubSequence')
+            self.sequenceSignature[signatureId] = []
+            for sequence in signatureSequence:
+                self.sequenceSignature[signatureId].append(self.convert_container_sequence(sequence[0].text))
+        # find PUIDs which trigger container matching
+        self.puidTriggers = {}
+        triggers = tree.find('TriggerPuids')
+        for puid in triggers.findall('TriggerPuid'):
+            self.puidTriggers[puid.get('Puid')] = True
+        # map PUID to container signatureId
+        self.puidMapping = {}
+        mappings = tree.find('FileFormatMappings')
+        for mapping in mappings.findall('FileFormatMapping'):
+            self.puidMapping[mapping.get('signatureId')] = mapping.get('Puid')
 
     def load_fido_xml(self, file):
         """Load the fido format information from @param file.
@@ -435,7 +188,7 @@ class Fido:
             self.puid_has_priority_over_map[puid] = frozenset([puid_element.text for puid_element in element.findall('has_priority_over')])
         return self.formats
 
-    # To delete a format: (1) remove from self.formats, (2) remove from puid_format_map, (3) remove from selt.puid_has_pri
+    # To delete a format: (1) remove from self.formats, (2) remove from puid_format_map, (3) remove from selt.puid_has_priority_over_map
     def get_signatures(self, format):
         return format.findall('signature')
     
@@ -462,7 +215,7 @@ class Fido:
            @param fullname is name of the file being matched
            @param matches is a list of (format, signature)
            @param delta_t is the time taken for the match.
-           @param matchtype is the type of match (signature, extension, fail)
+           @param matchtype is the type of match (signature, containersignature, extension, fail)
         """
         class Info:
             pass
@@ -501,13 +254,14 @@ class Fido:
         if not self.quiet:
             rate = (int(round(count / secs)) if secs != 0 else 9999)
             #print >> sys.stderr, 'FIDO: Processed %6d files in %6.2f msec, %2d files/sec' %  (count, secs * 1000, rate)
-            sys.stderr.write('FIDO: Processed %6d files in %6.2f msec, %2d files/sec' %  (count, secs * 1000, rate))
+            sys.stderr.write('FIDO: Processed %6d files in %6.2f msec, %2d files/sec\n' %  (count, secs * 1000, rate))
                     
     def identify_file(self, filename):
         """Identify the type of @param filename.  
            Call self.handle_matches instead of returning a value.
         """
         self.current_file = filename
+        self.matchtype = "signature"
         try:
             t0 = time.clock()
             f = open(filename, 'rb')
@@ -518,13 +272,13 @@ class Fido:
             bofbuffer, eofbuffer = self.get_buffers(f, size, seekable=True)
             matches = self.match_formats(bofbuffer, eofbuffer)               
             # from here is also repeated in walk_zip
-            # we should make this uniform in next version!
+            # we should make this uniform in a next version!
             #
             # filesize is made conditional because files with 0 bytes
-            # are falsely characterised being 'rtf'
+            # are falsely characterised being 'rtf' (due to wacky sig)
             # in these cases we try to match the extension instead
             if len(matches) > 0 and self.current_filesize > 0:
-                self.handle_matches(filename, matches, time.clock() - t0, "signature")
+                self.handle_matches(filename, matches, time.clock() - t0, self.matchtype)
             elif len(matches) == 0 or self.current_filesize == 0:
                 matches = self.match_extensions(filename)
                 self.handle_matches(filename, matches, time.clock() - t0, "extension")
@@ -613,8 +367,7 @@ class Fido:
             if readbuffer == '':
                 break
         return buffer
-        
-                            
+                                  
     def get_buffers(self, stream, length=None, seekable=False):
         """Return buffers from the beginning and end of stream and the number of bytes read
            if there may be more bytes in the stream.  
@@ -754,6 +507,75 @@ class Fido:
                     return False
         return True
     
+    def buffered_read(self, file_pos, overlap):
+        """Buffered read of data chunks
+        """
+        buf = ""
+        if not overlap:
+            bufsize = self.container_bufsize
+        else:
+            bufsize = self.container_bufsize + self.overlap_range
+        file_end = self.current_filesize
+        file_handle = file(self.current_file, 'rb')
+        file_handle.seek(file_pos)
+        if file_end - file_pos < bufsize:
+            file_read = file_end - file_pos
+        else:
+            file_read = self.bufsize
+        buf = file_handle.read(file_read)
+        return buf
+
+    def read_container(self,parent_buffer,parent_result):
+        """Header of compound containers can be further away than default 128 KB buffer 
+           especially with big files containing binary objects.
+           This function reads containers in chunks of 512 KB (defaults['container_bufsize'])
+           Each chunk is inspected with the PRONOM container sequences.
+           Each chunk smuggles in a piece from the previous chunk to prevent 
+           cutting off patterns we are looking for in the middle.
+           This method is somewhat slower than reading the complete file at once.
+           This is to prevent Fido to potentially crash in the midst of scanning a very big file.
+        """
+        container_result = []
+        nobuffer = False
+        overlap = False
+        self.overlap_range = 512 # bytes
+        container_hit = False
+        passes = 1
+        container_buffer = ""
+        # in case argument 'nocontainer' is set
+        # read default bofbuffer
+        if self.nocontainer or self.current_filesize <= self.bufsize:
+            passes = 1
+            nobuffer = True
+        else:
+            passes = int(float(self.current_filesize / self.container_bufsize) + 1)
+        pos = 0
+        overlap_pos = 0
+        for i in xrange(passes):
+            if nobuffer:
+                container_buffer = parent_buffer
+            else:
+                if i == 0:
+                    pos = 0
+                else:
+                    pos = ((self.container_bufsize * i) - self.overlap_range)
+                    #print i, pos, (self.container_bufsize * i)
+                    overlap = True
+                container_buffer = self.buffered_read(pos, overlap)
+            for (container_id,container_regexes) in self.sequenceSignature.iteritems():
+                if len(container_regexes) > 0:
+                    for container_regex in container_regexes:
+                        if re.search(container_regex, container_buffer):
+                            self.matchtype = "container"
+                            container_puid = self.puidMapping[container_id]
+                            for container_format in self.formats:
+                                if container_format.find('puid').text == container_puid:
+                                    if self.as_good_as_any(container_format, parent_result):
+                                        for container_sig in self.get_signatures(container_format):
+                                            container_result.append((container_format, container_sig))
+                                        break
+        return container_result
+
     def match_formats(self, bofbuffer, eofbuffer):
         """Apply the patterns for formats to the supplied buffers.
            @return a match list of (format, signature) tuples. 
@@ -762,6 +584,7 @@ class Fido:
         self.current_count += 1
         #t0 = time.clock()
         result = []
+        container_result = []
         try:
             for format in self.formats:
                 self.current_format = format
@@ -792,14 +615,26 @@ class Fido:
                                     break
                         if success:
                             result.append((format, sig))
+                            # check if file needs to be parsed with container signature
+                            # we skip files with extension "zip" (x-fmt/263)
+                            ext = os.path.splitext(self.current_file)[1].lower().lstrip(".")
+                            if format.find('puid').text in self.puidTriggers and ext != "zip":
+                                container_result = self.read_container(bofbuffer,result)
+                                if len(container_result) != 0:
+                                    for (k,v) in container_result:
+                                        result.append((k,v))
                             break
-        except Exception:
-            sys.stdout.write('***', self.get_puid(format), regex)
+        except Exception,e:
+            print e
+            #print "Unexpected error:", sys.exc_info()[0], e
+            # TODO: MdR: needs some <3
+            #sys.stdout.write('***', self.get_puid(format), regex)
             
         #        t1 = time.clock()
         #        if t1 - t0 > 0.02:
         #            print >> sys.stderr, "FIDO: Slow ID", self.current_file
         result = [match for match in result if self.as_good_as_any(match[0], result)]
+        result = list(set(result)) # remove duplicate results, this is a due to a minor bug in self.read_container(), needs fix
         return result
     
     def match_extensions(self, filename):
@@ -819,247 +654,6 @@ class Fido:
             if len(buf) == 0:
                 break
             target.write(buf)
-            
-    def check_formats(self):
-        sys.stdout.write("Checking format signature files...\n")
-        # Scores:
-        scores = {'INCOMPLETE': 0,'STUB': 5,'ADEQUATE': 7,'COMPLETE': 10 }
-        # Accumulators:
-        states = {}
-        total = 0
-        # Output as CSV
-        scoreWriter = csv.writer(open('format_scores.csv','wb'))
-        scoreWriter.writerow(['Status', 'PUID', 'Name', 'Version', 'Score']);
-        for f in self.formats:
-            format_status = "UNKNOWN"
-            if f.find('version') == None or f.find('version').text == None:
-                version = "[?]"
-            else:
-                version = f.find('version').text
-            sys.stdout.write("FORMAT: "+f.find('puid').text+" "+f.find('name').text+" "+version+"\n")
-            format_status = self.check_format(f)
-            # Count up status profile:
-            if not states.has_key(format_status):
-                states[format_status] = 0
-            states[format_status] += 1
-            total += 1
-            # Summary judgement:
-            scoreWriter.writerow([format_status, f.find('puid').text, f.findtext('name'), version, str(scores[format_status])])
-            sys.stdout.write("STATUS: "+format_status+","+f.find('puid').text+","+f.findtext('name')+","+version+","+str(scores[format_status])+"\n")
-
-        # Scoring and total:
-        sys.stdout.write("Overall state: Total",total,"records:")
-        score = 0
-        statelist = states.keys()
-        statelist.sort()
-        for state in statelist:
-            sys.stdout.write(scores[state], state,states[state], states[state] * scores[state] + "\n")
-            score += states[state] * scores[state]
-        sys.stdout.write("Total format signature score: ",score+"\n")
-            
-    def check_format(self, f):
-        error_found = False
-        # Basic details:
-        if f.find('version') == None or f.find('version').text == None:
-            sys.stdout.write("INFO: No version specified.\n")
-        if f.find('mime') == None:
-            sys.stdout.write("INFO: No MIME Type specified.\n")
-        if f.find('extension') == None:
-            sys.stdout.write("INFO: No file extension specified.\n")
-            
-        # Basic identification info, required to be considered STUB.
-        if f.find("signature") == None:
-            sys.stdout.write("ERROR: No file signatures specified!\n")
-            error_found = True
-        else:
-            sc = 0
-            for s in f.findall("signature"):
-                sc += 1
-                if s.find("pattern") == None:
-                    sys.stdout.write("ERROR: signature",sc,"- No signature pattern(s) specified!\n")
-                    error_found = True
-                else:
-                    for p in s.findall("pattern"):
-                        position = ""
-                        if p.find("position") == None:
-                            sys.stdout.write("ERROR: signature",sc,"- No pattern position specified!\n")
-                            error_found = True
-                        else:
-                            position = p.find("position").text
-                        # Check value is sane
-                        if position != "BOF"  and position != "EOF" and position != "VAR":
-                            sys.stdout.write("ERROR: signature",sc,"- Pattern position must be one of BOF, EOF, VAR\n")
-                            error_found = True
-                        # Warn about VAR patterns:
-                        if position == "VAR":
-                            sys.stdout.write("WARNING: signature",sc,"- Variable-position signatures can be very slow to match.\n")
-                        # And the regex
-                        if p.find("regex") == None:
-                            sys.stdout.write("ERROR: signature",sc,"- No pattern regex(s) specified!\n")
-                            error_found = True
-                        # TODO This should reject the regex if it's malformed or not consistent with the 'position' value                      
-                            
-        # Return?
-        if error_found == True:
-            return "INCOMPLETE"
-        
-        # Now check for basic descriptive data, required to be considered ADEQUATE.
-        d = f.find("details")
-        if d == None:
-            sys.stdout.write("ERROR: No details section specified\n")
-            error_found = True
-        else:
-            desc = d.findtext(DC("description")) 
-            if self.none_or_empty(desc):
-                sys.stdout.write("ERROR: No dc:description section specified.\n")
-                error_found = True
-            else:
-                if re.match('^This is an outline record', desc, re.IGNORECASE):
-                    sys.stdout.write("ERROR: The dc:description says 'This is an outline record'\n")
-                    error_found = True
-            # Other expected fields?
-            if self.none_or_empty(d.findtext(DC("creator"))):
-                sys.stdout.write("INFO: No dc:creator specified!\n")
-            # Publication date: dcterms:available
-            if self.none_or_empty(d.findtext(DCTERMS("available"))):
-                sys.stdout.write("INFO: No dcterms:available publication date specified!\n")
-            # Now check for one or more references:
-            if d.find("reference") == None:
-                sys.stdout.write("ERROR: No reference elements found!\n")
-                error_found = True
-            else:
-                refc = 0
-                for ref in d.findall("reference"):
-                    refc += 1
-                    if self.none_or_empty(ref.findtext("type")):
-                        sys.stdout.write("ERROR: reference",refc,"- No reference type specified!\n")
-                        error_found = True
-                    if self.none_or_empty(ref.findtext(DC("title"))):
-                        sys.stdout.write("ERROR: reference",refc,"- Reference has no dc:title!\n")
-                        error_found = True
-                    if self.none_or_empty(ref.findtext(DC("creator"))):
-                        sys.stdout.write("ERROR: reference",refc,"- Reference has no dc:creator!\n")
-                        error_found = True
-                    if self.none_or_empty(ref.findtext(DC("identifier"))):
-                        sys.stdout.write("ERROR: reference",refc,"- Reference has no dc:identifier!\n")
-                        error_found = True
-                    if self.none_or_empty(ref.findtext(DC("description"))):
-                        sys.stdout.write("ERROR: reference",refc,"- Reference has no dc:description!\n")
-                        error_found = True
-                    if self.none_or_empty(ref.findtext(DC("type"))):
-                        sys.stdout.write("INFO: reference",refc,"- Reference has no dc:type.\n")
-                    if self.none_or_empty(ref.findtext(DC("type"))):
-                        sys.stdout.write("INFO: reference",refc,"- Reference has no dc:type.\n")
-                    if self.none_or_empty(ref.findtext(DCTERMS("created"))) and  self.none_or_empty(ref.findtext(DCTERMS("available"))):
-                        sys.stdout.write("INFO: reference",refc,"- Reference has no dcterms:created or dcterms:available.\n")
-                    if self.none_or_empty(ref.findtext(DCTERMS("license"))):
-                        sys.stdout.write("INFO: reference",refc,"- Reference has no dcterms:license.\n")
-                    if self.none_or_empty(ref.findtext(DCTERMS("rightsHolder"))):
-                        sys.stdout.write("INFO: reference",refc,"- Reference has no dcterms:rightsHolder.\n")
-            # Record metadata:
-            if d.find("record_metadata") == None:
-                sys.stdout.write("ERROR: No record_metadata elements found!\n")
-                error_found = True
-            else:
-                for md in d.findall("record_metadata"):
-                    if self.none_or_empty(md.findtext(DC("creator"))):
-                        sys.stdout.write("ERROR: No record dc:creator specified!\n")
-                        error_found = True
-                    if self.none_or_empty(md.findtext("status")):
-                        sys.stdout.write("ERROR: No record status specified!\n")
-                        error_found = True
-                    if self.none_or_empty(md.findtext(DCTERMS("created"))):
-                        sys.stdout.write("ERROR: No record dcterms:created date specified!\n")
-                        error_found = True
-                    if self.none_or_empty(md.findtext(DCTERMS("modified"))):
-                        sys.stdout.write("ERROR: No record dcterms:modified date specified!\n")
-                        error_found = True
-        
-        # Return?
-        if error_found == True:
-            return "STUB"
-
-        # Look for example files, required to be considered COMPLETE.
-        if d.find("example_file") == None:
-            sys.stdout.write("ERROR: No example_file elements found!\n")
-            error_found = True
-        else:
-            efc = 0
-            for ef in d.findall("example_file"):
-                efc+=1
-                if self.none_or_empty(ef.findtext(DC("title"))):
-                    sys.stdout.write("ERROR: example_file",efc,"- No example file dc:title specified!\n")
-                    error_found = True
-                if self.none_or_empty(ef.findtext(DC("description"))):
-                    sys.stdout.write("ERROR: example_file",efc,"- No example file dc:decription specified!\n")
-                    error_found = True
-                if self.none_or_empty(ef.findtext(DC("title"))):
-                    sys.stdout.write("ERROR: example_file",efc,"- No example file dc:title specified!\n")
-                    error_found = True
-                if self.none_or_empty(ef.findtext(DCTERMS("license"))):
-                    sys.stdout.write("ERROR: example_file",efc,"- No example file dcterms:license specified!\n")
-                    error_found = True
-                if self.none_or_empty(ef.findtext("checksum")):
-                    sys.stdout.write("ERROR: example_file",efc,"- No example file checksum specified!\n")
-                    error_found = True
-                if self.none_or_empty(ef.findtext(DC("source"))):
-                    sys.stdout.write("INFO: example_file",efc,"- No example file dc:source specified!\n")
-                if self.none_or_empty(ef.findtext(DC("rightsHolder"))):
-                    sys.stdout.write("INFO: example_file",efc,"- No example file dc:rightsHolder specified!\n")
-                # Check the identifiers
-                local_file = None
-                http_file = None
-                for efi in ef.findall(DC("identifier")):
-                    if re.match('^file:', efi.text, re.IGNORECASE) and local_file == None:
-                        local_file = efi.text
-                    if re.match('^http:', efi.text, re.IGNORECASE) and http_file == None:
-                        http_file = efi.text
-                    if re.match('^https:', efi.text, re.IGNORECASE) and http_file == None:
-                        http_file = efi.text
-                if local_file == None and http_file == None:
-                    sys.stdout.write("ERROR: example_file",efc,"- No local or http/https dc:identifier supplied for example file.\n")
-                    error_found = True
-                if local_file == None:
-                    sys.stdout.write("INFO: example_file",efc,"- No local 'file://...' dc:identifier supplied for example file.\n")
-                else:
-                    # Check the local file:// reference resolves okay.
-                    # Should be relative to the formats xml file, and so fido will have to be invoked there.
-                    checksum = None
-                    local_file = "."+urlparse.urlparse(local_file).path
-                    try:
-                        # And calculate the checksum of this resource:
-                        checksum=self.calc_md5(local_file)
-                    except IOError:
-                        sys.stdout.write("ERROR: example_file",efc,"- Could not calculate checksum for test file",local_file+"\n")
-                        error_found = True
-                    if checksum != None:
-                        sys.stdout.write("INFO: example_file",efc,"-",local_file,"md5 =",checksum+"\n")
-                        if not self.none_or_empty(ef.findtext("checksum")):
-                            if checksum != ef.findtext("checksum"):
-                                sys.stdout.write("ERROR: example_file",efc,"- Checksums do not match up!\n")
-                                error_found = True
-                        
-        # Return?
-        if error_found == True:
-            return "ADEQUATE"
-        
-        # All good
-        return "COMPLETE"
-    
-    def none_or_empty(self,var):
-        if var == None:
-            return True
-        if var.strip() == "":
-            return True
-        return False
-    
-    def calc_md5(self,url):
-        m = hashlib.md5() #@UndefinedVariable
-        sock = urllib.urlopen(url)
-        m.update(sock.read())
-        sock.close()
-        return m.hexdigest()
-        
              
 def list_files(roots, recurse=False):
     "Return the files one at a time.  Roots could be a fileobj or a list."
@@ -1088,6 +682,7 @@ def main(arglist=None):
     parser.add_argument('-q', default=False, action='store_true', help='run (more) quietly')
     parser.add_argument('-recurse', default=False, action='store_true', help='recurse into subdirectories')
     parser.add_argument('-zip', default=False, action='store_true', help='recurse into zip and tar files')
+    parser.add_argument('-nocontainer', default=False, action='store_true', help='disable deep scan of container documents, increases speed but may reduce accuracy with big files')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-input', default=False, help='file containing a list of files to check, one per line. - means stdin')
     group.add_argument('files', nargs='*', default=[], metavar='FILE', help='files to check.  If the file is -, then read content from stdin. In this case, python must be invoked with -u or it may convert the line terminators.')
@@ -1095,46 +690,26 @@ def main(arglist=None):
     parser.add_argument('-nouseformats', metavar='EXCLUDEPUIDS', default=None, help='comma separated string of formats not to use in identification')
     parser.add_argument('-matchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use on match. See nomatchprintf, README.txt.')
     parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use if no match. See README.txt')
-    parser.add_argument('-bufsize', type=int, default=None, help='size of the buffer to match against')
-    parser.add_argument('-show', default=False, help='show "format" or "defaults"')
+    parser.add_argument('-bufsize', type=int, default=None, help='size (in bytes) of the buffer to match against (default='+str(defaults['bufsize'])+' bytes)')
+    parser.add_argument('-container_bufsize', type=int, default=None, help='size (in bytes) of the buffer to match against (default='+str(defaults['container_bufsize'])+' bytes)')
     
     parser.add_argument('-loadformats', default=None, metavar='XML1,...,XMLn', help='comma separated string of XML format files to add.')
     parser.add_argument('-confdir', default=None, help='configuration directory to load_fido_xml, for example, the format specifications from.')
-   
-    parser.add_argument('-checkformats', default=False, action='store_true', help='Check the supplied format XML files for quality.')
-    
+       
     mydir = os.path.abspath(os.path.dirname(__file__))
-    # MdR: we need to take these out, because we use prepare.py
-    #parser.add_argument('-convert', default=False, action='store_true', help='Convert pronom xml to fido xml')
-    #parser.add_argument('-source', default=os.path.join(mydir, 'conf', 'pronom-xml.zip'),                         help='import from a zip file containing only Pronom xml files')
-    #parser.add_argument('-target', default=os.path.join(mydir, 'conf', 'formats.xml'), help='export fido xml output file')
-         
+        
     # PROCESS ARGUMENTS
     args = parser.parse_args(arglist)
     
-    # MdR: we need to take these out, because we use prepare.py 
-    #if args.convert:
-        # print os.path.abspath(args.input), os.path.abspath(args.output)
-        #info = FormatInfo(args.source)
-        #info.load_pronom_xml()
-        #info.save_fido_xml(args.target)
-        #delta_t = time.clock() - t0
-        #if not args.q:
-            #sys.stderr.write('FIDO: Converted {0} formats in {1}s\n'.format(len(info.formats), delta_t))
-    
     if args.v :
         sys.stdout.write("fido/" + version + "\n")
-        sys.exit(0)
-    if args.show == 'defaults':
-        for (k, v) in defaults.iteritems():
-            sys.stdout.write(k, '=', repr(v)+"\n")
         sys.exit(0)
     if args.matchprintf != None:
         args.matchprintf = args.matchprintf.decode('string_escape')
     if args.nomatchprintf != None:
         args.nomatchprintf = args.nomatchprintf.decode('string_escape')
     fido = Fido(quiet=args.q, bufsize=args.bufsize, 
-                printmatch=args.matchprintf, printnomatch=args.nomatchprintf, zip=args.zip, conf_dir=args.confdir)
+                printmatch=args.matchprintf, printnomatch=args.nomatchprintf, zip=args.zip, nocontainer = args.nocontainer, conf_dir=args.confdir)
     
     #TODO: Allow conf options to be dis-included
     if args.loadformats:
@@ -1148,17 +723,7 @@ def main(arglist=None):
     elif args.nouseformats:
         args.nouseformats = args.nouseformats.split(',')
         fido.formats = [f for f in fido.formats if f.find('puid').text not in args.nouseformats]
-    
-    if args.show == 'useformats':
-        for format in fido.formats:
-            sys.stdout.write(ET.tostring(format, encoding='UTF-8')+"\n")
-        sys.exit(0)
-    
-    # Test the format signature set
-    if args.checkformats:
-        fido.check_formats();
-        sys.exit(0)
-    
+ 
     # Set up to use stdin, or open input files:
     if args.input == '-':
         args.files = sys.stdin
@@ -1190,3 +755,4 @@ def main(arglist=None):
 
 if __name__ == '__main__':
     main()
+

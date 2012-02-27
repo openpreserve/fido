@@ -22,9 +22,9 @@ import csv
 import string
 
 # define FIDO version
-fidoVersion = '0.9.6'
+fidoVersion = '1.0'
 # define PRONOM signature version
-signatureVersion = '52'
+signatureVersion = '56'
 
 sys.stdout.write("""<?xml version="1.0" encoding="utf-8"?>
 <fido_output>

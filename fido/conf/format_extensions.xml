@@ -223,7 +223,7 @@
   </format>
   <format>
   <!-- .cayra format added by <maurice.de.rooij@nationaalarchief.nl> -->
-    <puid>fido-fmt/666.cayra</puid>
+    <puid>fido-fmt/cayra</puid>
     <name>Intalev Cayra Mindmap file</name>
     <extension>cayra</extension>
     <has_priority_over>x-fmt/263</has_priority_over>
@@ -245,7 +245,7 @@
   </format>
   <format>
   <!-- .py format added by <maurice.de.rooij@nationaalarchief.nl> -->
-    <puid>fido-fmt/667.python</puid>
+    <puid>fido-fmt/python</puid>
     <name>Python script file</name>
     <extension>py</extension>
     <signature>
@@ -256,19 +256,41 @@
       </pattern>
     </signature>
   </format>
-<!-- this doesn't quite work yet
   <format>
-	<comment>.md5 format added by maurice.de.rooij@nationaalarchief.nl</comment>
-    <puid>fido-fmt/668.md5</puid>
-    <name>MD5 file</name>
-    <extension>md5</extension>
+  <!-- SPSS format added by <maurice.de.rooij@nationaalarchief.nl>, February 2012 -->
+    <puid>fido-fmt/SPSS</puid>
+    <mime>application/x-spss</mime>
+    <name>SPSS file</name>
+    <extension>sav</extension>
+    <extension>spp</extension>
+    <extension>sbs</extension>
+    <extension>sps</extension>
+    <extension>spo</extension>
+    <extension>spv</extension>
     <signature>
-      <name>MD5 file</name>
+      <name>SPSS Statistical Data File</name>
       <pattern>
         <position>BOF</position>
-        <regex>(?s)\A[a-f0-9]{32}</regex>
+        <regex>(?s)\A\$FL2@\(#\) (IBM SPSS STATISTICS DATA FILE|PASW STATISTICS DATA FILE)</regex>
       </pattern>
     </signature>
   </format>
--->
+  <format>
+  <!-- VSD format added by <maurice.de.rooij@nationaalarchief.nl>, February 2012 -->
+  <!-- fix for PRONOM entry which misses 'signature' and thus breaks FIDO semantics (returns fmt/111)-->
+    <puid>x-fmt/259</puid>
+    <name>Microsoft Visio Drawing</name>
+    <version>2002</version>
+    <alias>Microsoft Visio Drawing (XP)</alias>
+    <pronom_id>377</pronom_id>
+    <extension>vsd</extension>
+    <has_priority_over>fmt/111</has_priority_over>
+    <signature>
+      <name>Microsoft Visio Drawing (XP) - FIDO fix</name>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)Visio \(TM\) Drawing\x0d\x0a</regex>
+      </pattern>
+    </signature>
+</format>
 </formats>
