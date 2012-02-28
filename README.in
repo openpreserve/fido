@@ -167,7 +167,7 @@ You can disable deep scanning by invoking FIDO with the '-nocontainer' argument.
 While disabling deep scan speeds up identification, it may reduce accuracy.
 
 At the moment (version 1.0) FIDO is not yet able to perform scanning containers which are 
-passed through STDIN. A workaround is to save the stream to a temporary file and have 
+passed through STDIN. A workaround would be to save the stream to a temporary file and have 
 FIDO identify this file.
 
 License information
