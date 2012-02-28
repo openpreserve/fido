@@ -11,7 +11,7 @@
 # PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
 #
 import sys
-__opfpronomutils__ = {'version' : '1.0'}
+__opfpronomutils__ = {'version' : '1.0.0'}
 
 def checkWellFormedness(filename,error=False):
     """
