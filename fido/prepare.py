@@ -11,6 +11,7 @@ import cStringIO, zipfile, os
 import hashlib
 import urllib
 from xml.etree import ElementTree as ET
+from xml.etree import ElementTree as VET # versions.xml
 # needed for debug
 # print_r: https://github.com/marcbelmont/python-print_r
 # from print_r import print_r
@@ -94,6 +95,10 @@ class FormatInfo:
            If a @param puid is specified, only that one will be loaded.
         """
         formats = []
+        #for p in self.pronom_files:
+        #    print p
+        #print self.pronom_files
+        #exit()
         try:
             zip = zipfile.ZipFile(self.pronom_files, 'r')
             for item in zip.infolist():
@@ -108,7 +113,11 @@ class FormatInfo:
                 finally:
                     stream.close()
         finally:
-            zip.close()
+            try:
+                zip.close()
+            except Exception, e:
+                sys.stderr.write("An error occured loading '{0}' (exception: {1})".format(self.pronom_files, e))
+                sys.exit()
         # Replace the formatID with puids in has_priority_over
         id_map = {}
         for element in formats:
@@ -181,9 +190,17 @@ class FormatInfo:
                 max_offset = get_text_tna(pronom_pat, 'MaxOffset')
                 if max_offset == None:
                     pass
-#                print "working on puid:", puid, ", position: ", pos, "with offset, maxoffset: ", offset, ",", max_offset
+                #print "working on puid:", puid, ", position: ", pos, "with offset, maxoffset: ", offset, ",", max_offset
                 regex = convert_to_regex(bytes, 'Little', pos, offset, max_offset)
-#                print "done puid", puid
+                #print "done puid", puid
+                if regex == "__INCOMPATIBLE_SIG__":
+                    print >> sys.stderr, "Error: incompatible PRONOM signature found for puid", puid, ", skipping..."
+                    # remove the empty 'signature' nodes
+                    # now that the signature is not compatible and thus "regex" is empty
+                    remove = fido_format.findall('signature')
+                    for r in remove:
+                        fido_format.remove(r)
+                    continue
                 ET.SubElement(fido_pat, 'position').text = pos
                 ET.SubElement(fido_pat, 'pronom_pattern').text = bytes
                 ET.SubElement(fido_pat, 'regex').text = regex
@@ -285,8 +302,9 @@ def fido_position(pronom_position):
         return 'VAR'
     elif pronom_position == 'Indirect From BOF':
         return 'IFB'
-    else:
-        raise Exception("Unknown pronom PositionType=" + pronom_position)    
+    else: # to make sure FIDO does not crash (IFB aftermath)
+        sys.stderr.write("Unknown pronom PositionType:" + pronom_position)    
+        return 'VAR'
 
 def _convert_err_msg(msg, c, i, chars):
     return "Conversion: {0}: char='{1}', at pos {2} in \n  {3}\n  {4}^\nBuffer = {5}".format(msg, c, i, chars, i * ' ', buf.getvalue())
@@ -453,14 +471,17 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
                 (byt, inc) = doByte(chars, i, littleendian)
                 buf.write(byt)
                 i += inc
-                assert(chars[i] == ':')
+                #assert(chars[i] == ':')
+                if chars[i] != ':':
+                    return "__INCOMPATIBLE_SIG__"
                 buf.write('-')
                 i += 1
                 (byt, inc) = doByte(chars, i, littleendian)
                 buf.write(byt)
                 i += inc
-
-                assert(chars[i] == ']')
+                #assert(chars[i] == ']')
+                if chars[i] != ']':
+                    return "__INCOMPATIBLE_SIG__"
                 buf.write(']')
                 i += 1
             except Exception:
@@ -490,14 +511,18 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
                     (byt, inc) = doByte(chars, i, littleendian)
                     buf.write(byt)
                     i += inc
-                    assert(chars[i] == ':')
+                    #assert(chars[i] == ':')
+                    if chars[i] != ':':
+                        return "__INCOMPATIBLE_SIG__"
                     buf.write('-')
                     i += 1
                     (byt, inc) = doByte(chars, i, littleendian)
                     buf.write(byt)
                     i += inc
     
-                    assert(chars[i] == ']')
+                    #assert(chars[i] == ']')
+                    if chars[i] != ']':
+                        return "__INCOMPATIBLE_SIG__"
                     buf.write(']')
                     i += 1
                 else:
@@ -556,17 +581,29 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
     buf.close()
     return val
 
-def main():
+def main(arg=None):
     import sys
-    from argparselocal import ArgumentParser  
-    arglist = sys.argv[1:]
-        
+    from argparselocal import ArgumentParser
+    if arg != None:
+        arglist = arg
+    else:
+        arglist = sys.argv[1:]
+    #print arglist
+    #exit()
     mydir = os.path.abspath(os.path.dirname(__file__))
+    # parse version file to fetch versions
+    versionsFile = os.path.join(mydir, 'conf', 'versions.xml')
+    try:
+        versions = VET.parse(versionsFile)
+    except Exception, e:
+        sys.stderr.write("An error occured loading versions.xml:\n{0}".format(e))
+        sys.exit()
+    xml_pronomSignature = os.path.join(mydir, 'conf', versions.find('pronomSignature').text)
+    xml_pronomZipFile = os.path.join(mydir, 'conf', "pronom-xml-v{0}.zip".format(versions.find('pronomVersion').text))
     parser = ArgumentParser(description='Produce the fido format xml that is loaded at run-time')
-    parser.add_argument('-input', default=os.path.join(mydir, 'conf', 'pronom-xml.zip'), help='input file, a zip containing Pronom xml files')
-    parser.add_argument('-output', default=os.path.join(mydir, 'conf', 'formats.xml'), help='output file')
+    parser.add_argument('-input', default=xml_pronomZipFile, help='input file, a zip containing Pronom xml files')
+    parser.add_argument('-output', default=xml_pronomSignature, help='output file')
     parser.add_argument('-puid', default=None, help='a particular PUID record to extract')
-    
     # PROCESS ARGUMENTS
     args = parser.parse_args(arglist)
     # print os.path.abspath(args.input), os.path.abspath(args.output)
