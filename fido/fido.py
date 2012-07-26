@@ -33,9 +33,20 @@ defaults = {'bufsize': 128 * 1024, # (bytes)
     """
 }
 
+versionsFile = os.path.join(os.path.abspath(defaults['conf_dir']), defaults['versions_file'])
+versions = VET.parse(versionsFile)
+
+defaults['xml_pronomSignature'] = versions.find("pronomSignature").text
+defaults['xml_pronomContainerSignature'] = versions.find("pronomContainerSignature").text
+defaults['xml_fidoExtensionSignature'] = versions.find("fidoExtensionSignature").text
+defaults['format_files'] = []
+defaults['format_files'].append(defaults['xml_pronomSignature'])
+defaults['format_files'].append(defaults['xml_fidoExtensionSignature'])
+versionHeader = "FIDO v{0} ({1}, {2}, {3})\n".format(version,defaults['xml_pronomSignature'],defaults['xml_pronomContainerSignature'],defaults['xml_fidoExtensionSignature'])
+
+
 class Fido:
-    def __init__(self, quiet=False, bufsize=None, container_bufsize = None, printnomatch=None, printmatch=None,
-                 zip=False, nocontainer=False, handle_matches=None, conf_dir=None, format_files=None, containersignature_file=None):
+    def __init__(self, quiet=False, bufsize=None, container_bufsize = None, printnomatch=None, printmatch=None, zip=False, nocontainer=False, handle_matches=None, conf_dir=None, format_files=None, containersignature_file=None):
         global defaults
         self.quiet = quiet
         self.bufsize = (defaults['bufsize'] if bufsize == None else bufsize)
@@ -721,21 +732,6 @@ def main(arglist=None):
     parser.add_argument('-loadformats', default=None, metavar='XML1,...,XMLn', help='comma separated string of XML format files to add.')
     parser.add_argument('-confdir', default=None, help='configuration directory to load_fido_xml, for example, the format specifications from.')
        
-    mydir = os.path.abspath(os.path.dirname(__file__))
-
-    versionsFile = os.path.join(os.path.abspath(defaults['conf_dir']), defaults['versions_file'])
-    try:
-        versions = VET.parse(versionsFile)
-    except Exception, e:
-        sys.stderr.write("An error occured loading versions.xml:\n{0}".format(e))
-        sys.exit()
-    defaults['xml_pronomSignature'] = versions.find("pronomSignature").text
-    defaults['xml_pronomContainerSignature'] = versions.find("pronomContainerSignature").text
-    defaults['xml_fidoExtensionSignature'] = versions.find("fidoExtensionSignature").text
-    defaults['format_files'] = []
-    defaults['format_files'].append(defaults['xml_pronomSignature'])
-    defaults['format_files'].append(defaults['xml_fidoExtensionSignature'])
-    versionHeader = "FIDO v{0} ({1}, {2}, {3})\n".format(version,defaults['xml_pronomSignature'],defaults['xml_pronomContainerSignature'],defaults['xml_fidoExtensionSignature'])
     # PROCESS ARGUMENTS
     args = parser.parse_args(arglist)
     
@@ -746,8 +742,14 @@ def main(arglist=None):
         args.matchprintf = args.matchprintf.decode('string_escape')
     if args.nomatchprintf != None:
         args.nomatchprintf = args.nomatchprintf.decode('string_escape')
-    fido = Fido(quiet=args.q, bufsize=args.bufsize, 
-                printmatch=args.matchprintf, printnomatch=args.nomatchprintf, zip=args.zip, nocontainer = args.nocontainer, conf_dir=args.confdir)
+
+    fido = Fido(quiet=args.q, 
+                bufsize=args.bufsize, 
+                printmatch=args.matchprintf, 
+                printnomatch=args.nomatchprintf, 
+                zip=args.zip, 
+                nocontainer = args.nocontainer, 
+                conf_dir=args.confdir)
     
     #TODO: Allow conf options to be dis-included
     if args.loadformats:
