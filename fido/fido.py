@@ -230,9 +230,13 @@ class Fido:
     
     def get_extension(self, format):
         return format.find('extension').text
-    
+
     def print_matches(self, fullname, matches, delta_t, matchtype=''):
-        """The default match handler.  Prints out information for each match in the list.
+        for obj in self.yield_matches(fullname, matches, delta_t, matchtype=''):
+            sys.stdout.write(self.printmatch % { "info.time" : obj.time, "info.puid" : obj.puid, "info.formatname" : obj.formatname, "info.signaturename" : obj.signaturename, "info.filesize" : obj.filesize, "info.filename" : obj.filename, "info.mimetype" : obj.mimetype, "info.matchtype" : obj.matchtype, "info.version" : obj.version, "info.alias" : obj.alias, "info.apple_uti" : obj.apple_uti, "info.group_size" : obj.group_size, "info.group_index" : obj.group_index, "info.count" : obj.count })
+
+    def yield_matches(self, fullname, matches, delta_t, matchtype=''):
+        """generator that returns matches
            @param fullname is name of the file being matched
            @param matches is a list of (format, signature)
            @param delta_t is the time taken for the match.
@@ -247,10 +251,7 @@ class Fido:
         obj.time = int(delta_t * 1000)
         obj.filesize = self.current_filesize
         obj.matchtype = matchtype
-        if len(matches) == 0:
-            sys.stdout.write(self.printnomatch % { "info.time" : obj.time, "info.filesize" : obj.filesize, "info.filename" : obj.filename, "info.count"
-            : obj.count, "info.matchtype" : "fail" } )
-        else:
+        if len(matches) > 0:
             i = 0
             for (f, s) in matches:
                 i += 1
@@ -266,7 +267,7 @@ class Fido:
                 obj.alias = alias.text if alias != None else None
                 apple_uti = f.find('apple_uid')
                 obj.apple_uti = apple_uti.text if apple_uti != None else None
-                sys.stdout.write(self.printmatch % { "info.time" : obj.time, "info.puid" : obj.puid, "info.formatname" : obj.formatname, "info.signaturename" : obj.signaturename, "info.filesize" : obj.filesize, "info.filename" : obj.filename, "info.mimetype" : obj.mimetype, "info.matchtype" : obj.matchtype, "info.version" : obj.version, "info.alias" : obj.alias, "info.apple_uti" : obj.apple_uti, "info.group_size" : obj.group_size, "info.group_index" : obj.group_index, "info.count" : obj.count })
+                yield obj 
         
     def print_summary(self, secs):
         """Print summary information on the number of matches and time taken.
@@ -792,7 +793,7 @@ def main(arglist=None):
         
     if not args.q:
         sys.stdout.flush()
-        fido.print_summary(time.clock() - t0)
+        #fido.print_summary(time.clock() - t0)
         sys.stderr.flush()
 
 if __name__ == '__main__':
