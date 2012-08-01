@@ -10,7 +10,6 @@ version = '1.1.0'
 defaults = {'bufsize': 128 * 1024, # (bytes)
             'regexcachesize' : 2084, # (bytes)
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
-            'printmatch': "OK,%(info.time)s,%(info.puid)s,\"%(info.formatname)s\",\"%(info.signaturename)s\",%(info.filesize)s,\"%(info.filename)s\",\"%(info.mimetype)s\",\"%(info.matchtype)s\"\n",
             'printnomatch' : "KO,%(info.time)s,,,,%(info.filesize)s,\"%(info.filename)s\",,\"%(info.matchtype)s\"\n",
             'containersignature_file' : 'container-signature-20110204.xml',
             # versions.xml is where fido.py reads version information
@@ -230,10 +229,6 @@ class Fido:
     
     def get_extension(self, format):
         return format.find('extension').text
-
-    def print_matches(self, fullname, matches, delta_t, matchtype=''):
-        for obj in self.yield_matches(fullname, matches, delta_t, matchtype=''):
-            sys.stdout.write(self.printmatch % { "info.time" : obj.time, "info.puid" : obj.puid, "info.formatname" : obj.formatname, "info.signaturename" : obj.signaturename, "info.filesize" : obj.filesize, "info.filename" : obj.filename, "info.mimetype" : obj.mimetype, "info.matchtype" : obj.matchtype, "info.version" : obj.version, "info.alias" : obj.alias, "info.apple_uti" : obj.apple_uti, "info.group_size" : obj.group_size, "info.group_index" : obj.group_index, "info.count" : obj.count })
 
     def yield_matches(self, fullname, matches, delta_t, matchtype=''):
         """generator that returns matches
@@ -785,7 +780,8 @@ def main(arglist=None):
                 fido.identify_stream(sys.stdin)
         else:
             for file in list_files(args.files, args.recurse):
-                fido.identify_file(file)
+                for i in fido.identify_file(file):
+                    print_match(i)
     except KeyboardInterrupt:
         msg = "FIDO: Interrupt while identifying file {0}"
         sys.stderr.write(msg.format(fido.current_file))
@@ -795,6 +791,10 @@ def main(arglist=None):
         sys.stdout.flush()
         #fido.print_summary(time.clock() - t0)
         sys.stderr.flush()
+
+def print_match(obj):
+    fmt = "OK,%(info.time)s,%(info.puid)s,\"%(info.formatname)s\",\"%(info.signaturename)s\",%(info.filesize)s,\"%(info.filename)s\",\"%(info.mimetype)s\",\"%(info.matchtype)s\"\n",
+    sys.stdout.write(fmt % { "info.time" : obj.time, "info.puid" : obj.puid, "info.formatname" : obj.formatname, "info.signaturename" : obj.signaturename, "info.filesize" : obj.filesize, "info.filename" : obj.filename, "info.mimetype" : obj.mimetype, "info.matchtype" : obj.matchtype, "info.version" : obj.version, "info.alias" : obj.alias, "info.apple_uti" : obj.apple_uti, "info.group_size" : obj.group_size, "info.group_index" : obj.group_index, "info.count" : obj.count })
 
 if __name__ == '__main__':
     main()
