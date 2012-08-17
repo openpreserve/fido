@@ -276,8 +276,44 @@
     </signature>
   </format>
   <format>
-  <!-- VSD format added by <maurice.de.rooij@nationaalarchief.nl>, February 2012 -->
-  <!-- fix for PRONOM entry which misses 'signature' and thus breaks FIDO semantics (returns fmt/111)-->
+  <!-- VSD format patch added by <maurice.de.rooij@nationaalarchief.nl>, February 2012 -->
+  <!-- fix for PRONOM entry which misses 'priority' -->
+    <puid>x-fmt/113</puid>
+    <name>Microsoft Visio Drawing</name>
+    <version>5.0</version>
+    <alias>Microsoft Visio Drawing (5.0)</alias>
+    <pronom_id>165</pronom_id>
+    <extension>vsd</extension>
+    <has_priority_over>fmt/111</has_priority_over>
+    <signature>
+      <name>Microsoft Visio Drawing (5.0) - FIDO patch</name>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)Visio \(TM\) Drawing\x0d\x0a</regex>
+      </pattern>
+    </signature>
+  </format>
+  <format>
+  <!-- VSD format patch added by <maurice.de.rooij@nationaalarchief.nl>, February 2012 -->
+  <!-- fix for PRONOM entry which misses 'priority' -->
+    <puid>x-fmt/258</puid>
+    <name>Microsoft Visio Drawing</name>
+    <version>2000</version>
+    <alias>Microsoft Visio Drawing (2000)</alias>
+    <pronom_id>376</pronom_id>
+    <extension>vsd</extension>
+    <has_priority_over>fmt/111</has_priority_over>
+    <signature>
+      <name>Microsoft Visio Drawing (2000) - FIDO patch</name>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)Visio \(TM\) Drawing\x0d\x0a</regex>
+      </pattern>
+    </signature>
+  </format>
+  <format>
+  <!-- VSD format patch added by <maurice.de.rooij@nationaalarchief.nl>, February 2012 -->
+  <!-- fix for PRONOM entry which misses 'priority' -->
     <puid>x-fmt/259</puid>
     <name>Microsoft Visio Drawing</name>
     <version>2002</version>
@@ -286,11 +322,11 @@
     <extension>vsd</extension>
     <has_priority_over>fmt/111</has_priority_over>
     <signature>
-      <name>Microsoft Visio Drawing (XP) - FIDO fix</name>
+      <name>Microsoft Visio Drawing (XP) - FIDO patch</name>
       <pattern>
         <position>BOF</position>
         <regex>(?s)Visio \(TM\) Drawing\x0d\x0a</regex>
       </pattern>
     </signature>
-</format>
+  </format>
 </formats>

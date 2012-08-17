@@ -4,15 +4,18 @@ import sys, re, os, time, math
 import hashlib, urllib, urlparse, csv, getopt
 from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
+from xml.etree import ElementTree as VET # versions.xml
 
-version = '1.0.0'
+version = '1.1.0'
 defaults = {'bufsize': 128 * 1024, # (bytes)
             'regexcachesize' : 2084, # (bytes)
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
             'printmatch': "OK,%(info.time)s,%(info.puid)s,\"%(info.formatname)s\",\"%(info.signaturename)s\",%(info.filesize)s,\"%(info.filename)s\",\"%(info.mimetype)s\",\"%(info.matchtype)s\"\n",
             'printnomatch' : "KO,%(info.time)s,,,,%(info.filesize)s,\"%(info.filename)s\",,\"%(info.matchtype)s\"\n",
-            'format_files': ['formats.xml', 'format_extensions.xml'],
             'containersignature_file' : 'container-signature-20110204.xml',
+            # versions.xml is where fido.py reads version information
+            # about which xml to load
+            'versions_file' : 'versions.xml',
             'container_bufsize' : 512 * 1024, # (bytes)
             'description' : """
     Format Identification for Digital Objects (fido).
@@ -48,6 +51,7 @@ class Fido:
         self.formats = []
         self.puid_format_map = {}
         self.puid_has_priority_over_map = {}
+        # load signatures
         for file in self.format_files:
             self.load_fido_xml(os.path.join(os.path.abspath(self.conf_dir), file))
         self.load_container_signature(os.path.join(os.path.abspath(self.conf_dir), self.containersignature_file))
@@ -164,7 +168,13 @@ class Fido:
         self.puidMapping = {}
         mappings = tree.find('FileFormatMappings')
         for mapping in mappings.findall('FileFormatMapping'):
-            self.puidMapping[mapping.get('signatureId')] = mapping.get('Puid')
+            if mapping.get('signatureId') not in self.puidMapping:
+                self.puidMapping[mapping.get('signatureId')] = []
+            self.puidMapping[mapping.get('signatureId')].append(mapping.get('Puid'))
+#        print "sequences:\n",self.sequenceSignature
+#        print "trigger:\n",self.puidTriggers
+#        print "mapping:\n",self.puidMapping
+#        exit()
 
     def load_fido_xml(self, file):
         """Load the fido format information from @param file.
@@ -299,7 +309,7 @@ class Fido:
             self.walk_zip(filename, fileobj)
         elif type == 'tar':
             self.walk_tar(filename, fileobj)
-        else:
+        else: # TODO: ouch!
             raise RuntimeError("Unknown container type: " + repr(type))
                 
     def identify_multi_object_stream(self, stream):
@@ -542,24 +552,39 @@ class Fido:
         container_hit = False
         passes = 1
         container_buffer = ""
+        # TODO: find better way to handle zip contents
+        # for now: ugly hack, but working
+        # this slows down because the zip is re-opened on each item
+        # if "!" is in filename, it is a zip item
+#        if "!" in self.current_file:
+#            import zipfile, tempfile
+#            zip, item = self.current_file.split("!")
+#            zipitem = tempfile.SpooledTemporaryFile(prefix='Fido')
+            #with zipstream.open(item) as source:
+#            try:
+#                source = zipstream.open(item)
+#                self.copy_stream(source, target)
+#                target.seek(0)
+#                self.identify_contents(item_name, target, self.container_type(matches))
+#            finally:
+#                source.close()
+        #exit()
         # in case argument 'nocontainer' is set
         # read default bofbuffer
-        if self.nocontainer or self.current_filesize <= self.bufsize:
+        if self.nocontainer or self.current_filesize <= self.bufsize or self.current_file == "STDIN":
             passes = 1
             nobuffer = True
         else:
             passes = int(float(self.current_filesize / self.container_bufsize) + 1)
         pos = 0
-        overlap_pos = 0
         for i in xrange(passes):
-            if nobuffer:
+            if nobuffer is True:
                 container_buffer = parent_buffer
             else:
                 if i == 0:
                     pos = 0
                 else:
                     pos = ((self.container_bufsize * i) - self.overlap_range)
-                    #print i, pos, (self.container_bufsize * i)
                     overlap = True
                 container_buffer = self.buffered_read(pos, overlap)
             for (container_id,container_regexes) in self.sequenceSignature.iteritems():
@@ -567,13 +592,13 @@ class Fido:
                     for container_regex in container_regexes:
                         if re.search(container_regex, container_buffer):
                             self.matchtype = "container"
-                            container_puid = self.puidMapping[container_id]
-                            for container_format in self.formats:
-                                if container_format.find('puid').text == container_puid:
-                                    if self.as_good_as_any(container_format, parent_result):
-                                        for container_sig in self.get_signatures(container_format):
-                                            container_result.append((container_format, container_sig))
-                                        break
+                            for container_puid in self.puidMapping[container_id]:
+                                for container_format in self.formats:
+                                    if container_format.find('puid').text == container_puid:
+                                        if self.as_good_as_any(container_format, parent_result):
+                                            for container_sig in self.get_signatures(container_format):
+                                                container_result.append((container_format, container_sig))
+                                            break
         return container_result
 
     def match_formats(self, bofbuffer, eofbuffer):
@@ -625,16 +650,16 @@ class Fido:
                                         result.append((k,v))
                             break
         except Exception,e:
-            print e
-            #print "Unexpected error:", sys.exc_info()[0], e
+            sys.stderr.write(str(e)+"\n")
             # TODO: MdR: needs some <3
+            #print "Unexpected error:", sys.exc_info()[0], e
             #sys.stdout.write('***', self.get_puid(format), regex)
             
         #        t1 = time.clock()
         #        if t1 - t0 > 0.02:
         #            print >> sys.stderr, "FIDO: Slow ID", self.current_file
         result = [match for match in result if self.as_good_as_any(match[0], result)]
-        result = list(set(result)) # remove duplicate results, this is a due to a minor bug in self.read_container(), needs fix
+        result = list(set(result)) # remove duplicate results, this is due to ??? in self.read_container(), needs fix
         return result
     
     def match_extensions(self, filename):
@@ -697,12 +722,25 @@ def main(arglist=None):
     parser.add_argument('-confdir', default=None, help='configuration directory to load_fido_xml, for example, the format specifications from.')
        
     mydir = os.path.abspath(os.path.dirname(__file__))
-        
+
+    versionsFile = os.path.join(os.path.abspath(defaults['conf_dir']), defaults['versions_file'])
+    try:
+        versions = VET.parse(versionsFile)
+    except Exception, e:
+        sys.stderr.write("An error occured loading versions.xml:\n{0}".format(e))
+        sys.exit()
+    defaults['xml_pronomSignature'] = versions.find("pronomSignature").text
+    defaults['xml_pronomContainerSignature'] = versions.find("pronomContainerSignature").text
+    defaults['xml_fidoExtensionSignature'] = versions.find("fidoExtensionSignature").text
+    defaults['format_files'] = []
+    defaults['format_files'].append(defaults['xml_pronomSignature'])
+    defaults['format_files'].append(defaults['xml_fidoExtensionSignature'])
+    versionHeader = "FIDO v{0} ({1}, {2}, {3})\n".format(version,defaults['xml_pronomSignature'],defaults['xml_pronomContainerSignature'],defaults['xml_fidoExtensionSignature'])
     # PROCESS ARGUMENTS
     args = parser.parse_args(arglist)
     
     if args.v :
-        sys.stdout.write("fido/" + version + "\n")
+        sys.stdout.write(versionHeader)
         sys.exit(0)
     if args.matchprintf != None:
         args.matchprintf = args.matchprintf.decode('string_escape')
@@ -732,6 +770,9 @@ def main(arglist=None):
     
     # RUN
     try:
+        if not args.q:
+            sys.stderr.write(versionHeader)
+            sys.stderr.flush()
         if (not args.input) and len(args.files) == 1 and args.files[0] == '-':
             if fido.zip == True:
                 raise RuntimeError("Multiple content read from stdin not yet supported.")
@@ -743,9 +784,8 @@ def main(arglist=None):
             for file in list_files(args.files, args.recurse):
                 fido.identify_file(file)
     except KeyboardInterrupt:
-        # MdR: this seems to be broken?
-        msg = "FIDO: Interrupt during:\n  File: {0}\n  Format: Puid={1.Identifier} [{1.FormatName}]\n  Sig: ID={2.SignatureID} [{2.SignatureName}]\n  Pat={3.ByteSequenceID} {3.regexstring!r}"
-        sys.stderr.write(msg.format(fido.current_file, fido.current_format, fido.current_sig, fido.current_pat))
+        msg = "FIDO: Interrupt while identifying file {0}"
+        sys.stderr.write(msg.format(fido.current_file))
         sys.exit(1)
         
     if not args.q:
