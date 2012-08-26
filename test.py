@@ -6,9 +6,15 @@ from fido.fido import Fido
 
 class FidoTests(TestCase):
 
+    def setUp(self):
+        self.fido = Fido()
+
+    def test_text(self):
+        i = list(self.fido.identify_file("test-data/fido.txt"))[0]
+        self.assertEqual(i.mimetype, "text/plain")
+
     def test_pdf(self):
-        f = Fido()
-        i = list(f.identify_file("test-data/fido.pdf"))[0]
+        i = list(self.fido.identify_file("test-data/fido.pdf"))[0]
         self.assertEqual(i.mimetype, "application/pdf")
         self.assertEqual(i.version, "1.4")
 
