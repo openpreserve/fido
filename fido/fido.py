@@ -45,14 +45,12 @@ versionHeader = "FIDO v{0} ({1}, {2}, {3})\n".format(version,defaults['xml_prono
 
 
 class Fido:
-    def __init__(self, quiet=False, bufsize=None, container_bufsize = None, printnomatch=None, printmatch=None, zip=False, nocontainer=False, handle_matches=None, conf_dir=None, format_files=None, containersignature_file=None):
+    def __init__(self, quiet=False, bufsize=None, container_bufsize = None, zip=False, nocontainer=False, handle_matches=None, conf_dir=None, format_files=None, containersignature_file=None):
         global defaults
         self.quiet = quiet
         self.bufsize = (defaults['bufsize'] if bufsize == None else bufsize)
         self.container_bufsize = (defaults['container_bufsize'] if container_bufsize == None else container_bufsize)
-        self.printmatch = (defaults['printmatch'] if printmatch == None else printmatch)
-        self.printnomatch = (defaults['printnomatch'] if printnomatch == None else printnomatch)
-        self.handle_matches = (self.print_matches if handle_matches == None else handle_matches)
+        self.handle_matches = handle_matches if handle_matches else self.yield_matches 
         self.zip = zip
         self.nocontainer = (defaults['nocontainer'] if nocontainer == None else nocontainer)
         self.conf_dir = defaults['conf_dir'] if conf_dir == None else conf_dir
@@ -295,10 +293,10 @@ class Fido:
             # are falsely characterised being 'rtf' (due to wacky sig)
             # in these cases we try to match the extension instead
             if len(matches) > 0 and self.current_filesize > 0:
-                self.handle_matches(filename, matches, time.clock() - t0, self.matchtype)
+                return self.handle_matches(filename, matches, time.clock() - t0, self.matchtype)
             elif len(matches) == 0 or self.current_filesize == 0:
                 matches = self.match_extensions(filename)
-                self.handle_matches(filename, matches, time.clock() - t0, "extension")
+                return self.handle_matches(filename, matches, time.clock() - t0, "fail")
             # till here matey!
             if self.zip:
                 self.identify_contents(filename, type=self.container_type(matches))
@@ -720,8 +718,8 @@ def main(arglist=None):
     group.add_argument('files', nargs='*', default=[], metavar='FILE', help='files to check.  If the file is -, then read content from stdin. In this case, python must be invoked with -u or it may convert the line terminators.')
     parser.add_argument('-useformats', metavar='INCLUDEPUIDS', default=None, help='comma separated string of formats to use in identification')
     parser.add_argument('-nouseformats', metavar='EXCLUDEPUIDS', default=None, help='comma separated string of formats not to use in identification')
-    parser.add_argument('-matchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use on match. See nomatchprintf, README.txt.')
-    parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use if no match. See README.txt')
+    parser.add_argument('-matchprintf', metavar='FORMATSTRING', default='OK,%(info.time)s,%(info.puid)s,"%(info.formatname)s","%(info.signaturename)s",%(info.filesize)s,"%(info.filename)s","%(info.mimetype)s","%(info.matchtype)s"\n', help='format string (Python style) to use on match. See nomatchprintf, README.txt.')
+    parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default='KO,%(info.time)s,,,,%(info.filesize)s,"%(info.filename)s",,"%(info.matchtype)s"\n', help='format string (Python style) to use if no match. See README.txt')
     parser.add_argument('-bufsize', type=int, default=None, help='size (in bytes) of the buffer to match against (default='+str(defaults['bufsize'])+' bytes)')
     parser.add_argument('-container_bufsize', type=int, default=None, help='size (in bytes) of the buffer to match against (default='+str(defaults['container_bufsize'])+' bytes)')
     
@@ -741,8 +739,6 @@ def main(arglist=None):
 
     fido = Fido(quiet=args.q, 
                 bufsize=args.bufsize, 
-                printmatch=args.matchprintf, 
-                printnomatch=args.nomatchprintf, 
                 zip=args.zip, 
                 nocontainer = args.nocontainer, 
                 conf_dir=args.confdir)
@@ -781,7 +777,10 @@ def main(arglist=None):
         else:
             for file in list_files(args.files, args.recurse):
                 for i in fido.identify_file(file):
-                    print_match(i)
+                    if i.matchtype == "fail":
+                        print_match(i, args.nomatchprintf)
+                    else:
+                        print_match(i, args.matchprintf)
     except KeyboardInterrupt:
         msg = "FIDO: Interrupt while identifying file {0}"
         sys.stderr.write(msg.format(fido.current_file))
@@ -792,9 +791,8 @@ def main(arglist=None):
         #fido.print_summary(time.clock() - t0)
         sys.stderr.flush()
 
-def print_match(obj):
-    fmt = "OK,%(info.time)s,%(info.puid)s,\"%(info.formatname)s\",\"%(info.signaturename)s\",%(info.filesize)s,\"%(info.filename)s\",\"%(info.mimetype)s\",\"%(info.matchtype)s\"\n",
-    sys.stdout.write(fmt % { "info.time" : obj.time, "info.puid" : obj.puid, "info.formatname" : obj.formatname, "info.signaturename" : obj.signaturename, "info.filesize" : obj.filesize, "info.filename" : obj.filename, "info.mimetype" : obj.mimetype, "info.matchtype" : obj.matchtype, "info.version" : obj.version, "info.alias" : obj.alias, "info.apple_uti" : obj.apple_uti, "info.group_size" : obj.group_size, "info.group_index" : obj.group_index, "info.count" : obj.count })
+def print_match(obj, fmt):
+    sys.stdout.write(fmt % {"info.time" : obj.time, "info.puid" : obj.puid, "info.formatname" : obj.formatname, "info.signaturename" : obj.signaturename, "info.filesize" : obj.filesize, "info.filename" : obj.filename, "info.mimetype" : obj.mimetype, "info.matchtype" : obj.matchtype, "info.version" : obj.version, "info.alias" : obj.alias, "info.apple_uti" : obj.apple_uti, "info.group_size" : obj.group_size, "info.group_index" : obj.group_index, "info.count" : obj.count})
 
 if __name__ == '__main__':
     main()
