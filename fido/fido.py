@@ -10,7 +10,6 @@ version = '1.1.0'
 defaults = {'bufsize': 128 * 1024, # (bytes)
             'regexcachesize' : 2084, # (bytes)
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
-            'printnomatch' : "KO,%(info.time)s,,,,%(info.filesize)s,\"%(info.filename)s\",,\"%(info.matchtype)s\"\n",
             'containersignature_file' : 'container-signature-20110204.xml',
             # versions.xml is where fido.py reads version information
             # about which xml to load
@@ -296,7 +295,7 @@ class Fido:
                 return self.handle_matches(filename, matches, time.clock() - t0, self.matchtype)
             elif len(matches) == 0 or self.current_filesize == 0:
                 matches = self.match_extensions(filename)
-                return self.handle_matches(filename, matches, time.clock() - t0, "fail")
+                return self.handle_matches(filename, matches, time.clock() - t0, "extensions")
             # till here matey!
             if self.zip:
                 self.identify_contents(filename, type=self.container_type(matches))
@@ -718,8 +717,7 @@ def main(arglist=None):
     group.add_argument('files', nargs='*', default=[], metavar='FILE', help='files to check.  If the file is -, then read content from stdin. In this case, python must be invoked with -u or it may convert the line terminators.')
     parser.add_argument('-useformats', metavar='INCLUDEPUIDS', default=None, help='comma separated string of formats to use in identification')
     parser.add_argument('-nouseformats', metavar='EXCLUDEPUIDS', default=None, help='comma separated string of formats not to use in identification')
-    parser.add_argument('-matchprintf', metavar='FORMATSTRING', default='OK,%(info.time)s,%(info.puid)s,"%(info.formatname)s","%(info.signaturename)s",%(info.filesize)s,"%(info.filename)s","%(info.mimetype)s","%(info.matchtype)s"\n', help='format string (Python style) to use on match. See nomatchprintf, README.txt.')
-    parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default='KO,%(info.time)s,,,,%(info.filesize)s,"%(info.filename)s",,"%(info.matchtype)s"\n', help='format string (Python style) to use if no match. See README.txt')
+    parser.add_argument('-matchprintf', metavar='FORMATSTRING', default='OK,%(info.time)s,%(info.puid)s,"%(info.formatname)s","%(info.signaturename)s",%(info.filesize)s,"%(info.filename)s","%(info.mimetype)s","%(info.matchtype)s"\n', help='format string (Python style) to use on match. See matchprintf, README.txt.')
     parser.add_argument('-bufsize', type=int, default=None, help='size (in bytes) of the buffer to match against (default='+str(defaults['bufsize'])+' bytes)')
     parser.add_argument('-container_bufsize', type=int, default=None, help='size (in bytes) of the buffer to match against (default='+str(defaults['container_bufsize'])+' bytes)')
     
@@ -734,8 +732,6 @@ def main(arglist=None):
         sys.exit(0)
     if args.matchprintf != None:
         args.matchprintf = args.matchprintf.decode('string_escape')
-    if args.nomatchprintf != None:
-        args.nomatchprintf = args.nomatchprintf.decode('string_escape')
 
     fido = Fido(quiet=args.q, 
                 bufsize=args.bufsize, 
@@ -777,10 +773,7 @@ def main(arglist=None):
         else:
             for file in list_files(args.files, args.recurse):
                 for i in fido.identify_file(file):
-                    if i.matchtype == "fail":
-                        print_match(i, args.nomatchprintf)
-                    else:
-                        print_match(i, args.matchprintf)
+                    print_match(i, args.matchprintf)
     except KeyboardInterrupt:
         msg = "FIDO: Interrupt while identifying file {0}"
         sys.stderr.write(msg.format(fido.current_file))
