@@ -30,7 +30,7 @@ Updating signatures
 
 To update FIDO with the latest PRONOM file format definitions, run:
 
-   python update\_signatures.py
+    python update\_signatures.py
 
 This is an interactive CLI script which downloads the latest PRONOM signature file and signatures. Please note that it can take a while to download all PUID signatures.
 
@@ -77,6 +77,7 @@ Matchttypes
 -----------
 
 FIDO returns the following matchtypes:
+
 - fail:      the object could not be identified with signature or file extension
 - extension: the object could only be identified by file extension
 - signature: the object has been identified with (a) PRONOM signature(s)
@@ -89,35 +90,41 @@ Examples running FIDO
 
 Identify all files in the current directory and below, sending output into file-info.csv:
 
-   python fido.py -recurse . > file-info.csv
+    python fido.py -recurse . > file-info.csv
 
 Do the same as above, but also look inside of zip or tar files:
 
-   python fido.py -recurse -zip . > file-info.csv
+    python fido.py -recurse -zip . > file-info.csv
 
 Take input from a list of files:
 
 Linux:
-   ls > files.txt
-   python fido.py -input files.txt
+
+    ls > files.txt
+    python fido.py -input files.txt
 
 Windows:
-   dir /b > files.txt
-   python fido.py -input files.txt
+
+    dir /b > files.txt
+    python fido.py -input files.txt
 
 Take input from a pipe:
 
 Linux:
-   find . -type f | python fido.py -input -
+
+    find . -type f | python fido.py -input -
 
 Windows:
-   dir /b | python fido.py -input -
+
+    dir /b | python fido.py -input -
 
 Only show files that could not be identified.
-   python fido.py -matchprintf "" .
+
+    python fido.py -matchprintf "" .
 
 Only show files that could be identified.
-   python fido.py -nomatchprintf "" .
+
+    python fido.py -nomatchprintf "" .
 
 Deep scan of container objects
 ------------------------------
