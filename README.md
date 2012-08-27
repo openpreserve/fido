@@ -30,7 +30,7 @@ Updating signatures
 
 To update FIDO with the latest PRONOM file format definitions, run:
 
-    python update\_signatures.py
+    python update_signatures.py
 
 This is an interactive CLI script which downloads the latest PRONOM signature file and signatures. Please note that it can take a while to download all PUID signatures.
 
@@ -47,9 +47,9 @@ Format Definitions
 ------------------
 
 By default, FIDO loads format information from two files conf/formats.xml
-and conf/format\_extensions.xml. Addition format files can be specified using
+and conf/format_extensions.xml. Addition format files can be specified using
 the -loadformats command line argument.  They should use the same syntax as 
-conf/format\_extensions.xml. If more than one format file needs to be specified,
+conf/format_extensions.xml. If more than one format file needs to be specified,
 then they should be comma separated as with the -formats argument.
 
 Output
@@ -59,7 +59,7 @@ Output is controlled with the two parameters matchprintf and nomatchprintf.
 Each is a string that may contain formating information.  They have access to
 an object called info with the following fields:
 
-printmatch: info.version (file format version X), info.alias (format also called X), info.apple\_uti (Apple Uniform Type Identifier), info.group\_size and info.group\_index (if a file has multiple (tentative) hits), info.count (file N)
+printmatch: info.version (file format version X), info.alias (format also called X), info.apple_uti (Apple Uniform Type Identifier), info.group_size and info.group_index (if a file has multiple (tentative) hits), info.count (file N)
 
 printnomatch: info.count (file N)
 
