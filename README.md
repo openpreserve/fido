@@ -88,15 +88,15 @@ FIDO returns the following matchtypes:
 Examples running FIDO
 ---------------------
 
-## Identify all files in the current directory and below, sending output into file-info.csv:
+### Identify all files in the current directory and below, sending output into file-info.csv:
 
     python fido.py -recurse . > file-info.csv
 
-## Do the same as above, but also look inside of zip or tar files:
+### Do the same as above, but also look inside of zip or tar files:
 
     python fido.py -recurse -zip . > file-info.csv
 
-##Take input from a list of files:
+### Take input from a list of files:
 
 Linux:
 
@@ -108,7 +108,7 @@ Windows:
     dir /b > files.txt
     python fido.py -input files.txt
 
-## Take input from a pipe:
+### Take input from a pipe:
 
 Linux:
 
@@ -118,11 +118,11 @@ Windows:
 
     dir /b | python fido.py -input -
 
-## Only show files that could not be identified.
+### Only show files that could not be identified.
 
     python fido.py -matchprintf "" .
 
-## Only show files that could be identified.
+### Only show files that could be identified.
 
     python fido.py -nomatchprintf "" .
 
