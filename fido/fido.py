@@ -44,13 +44,12 @@ versionHeader = "FIDO v{0} ({1}, {2}, {3})\n".format(version,defaults['xml_prono
 
 
 class Fido:
-    def __init__(self, quiet=False, bufsize=None, container_bufsize = None, zip=False, nocontainer=False, handle_matches=None, conf_dir=None, format_files=None, containersignature_file=None):
+    def __init__(self, quiet=False, bufsize=None, container_bufsize = None, nocontainer=False, handle_matches=None, conf_dir=None, format_files=None, containersignature_file=None):
         global defaults
         self.quiet = quiet
         self.bufsize = (defaults['bufsize'] if bufsize == None else bufsize)
         self.container_bufsize = (defaults['container_bufsize'] if container_bufsize == None else container_bufsize)
         self.handle_matches = handle_matches if handle_matches else self.yield_matches 
-        self.zip = zip
         self.nocontainer = (defaults['nocontainer'] if nocontainer == None else nocontainer)
         self.conf_dir = defaults['conf_dir'] if conf_dir == None else conf_dir
         self.format_files = defaults['format_files'] if format_files == None else format_files
@@ -742,7 +741,6 @@ def main(arglist=None):
 
     fido = Fido(quiet=args.q, 
                 bufsize=args.bufsize, 
-                zip=args.zip, 
                 nocontainer = args.nocontainer, 
                 conf_dir=args.confdir)
     
@@ -771,12 +769,7 @@ def main(arglist=None):
             sys.stderr.write(versionHeader)
             sys.stderr.flush()
         if (not args.input) and len(args.files) == 1 and args.files[0] == '-':
-            if fido.zip == True:
-                raise RuntimeError("Multiple content read from stdin not yet supported.")
-                sys.exit(1)
-                fido.identify_multi_object_stream(sys.stdin)
-            else:
-                fido.identify_stream(sys.stdin)
+            fido.identify_stream(sys.stdin)
         else:
             for file in list_files(args.files, args.recurse):
                 for i in fido.identify_files(file):

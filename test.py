@@ -55,11 +55,8 @@ class FidoTests(TestCase):
         self.assertEqual(i.count, 1)
 
     def test_zip(self):
-        f = Fido(zip=True)
-
         # a zip file should return the identified zip file as well
         # as any of the files it contains
-        #i = list(f.identify_files("test-data/fido.zip"))
         i = list(self.fido.identify_files("test-data/fido.zip"))
         self.assertEqual(len(i), 3)
 
