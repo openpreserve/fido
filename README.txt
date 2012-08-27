@@ -19,7 +19,6 @@ optional arguments:
   -v                    show version information
   -q                    run (more) quietly
   -recurse              recurse into subdirectories
-  -zip                  recurse into zip and tar files
   -nocontainer          disable deep scan of container documents, increases
                         speed but may reduce accuracy with big files
   -input INPUT          file containing a list of files to check, one per

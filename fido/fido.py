@@ -716,7 +716,6 @@ def main(arglist=None):
     parser.add_argument('-v', default=False, action='store_true', help='show version information')
     parser.add_argument('-q', default=False, action='store_true', help='run (more) quietly')
     parser.add_argument('-recurse', default=False, action='store_true', help='recurse into subdirectories')
-    parser.add_argument('-zip', default=False, action='store_true', help='recurse into zip and tar files')
     parser.add_argument('-nocontainer', default=False, action='store_true', help='disable deep scan of container documents, increases speed but may reduce accuracy with big files')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-input', default=False, help='file containing a list of files to check, one per line. - means stdin')
