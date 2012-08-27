@@ -1,7 +1,7 @@
 #!python
 # -*- coding: utf-8 -*-
 import sys, re, os, time, math
-import hashlib, urllib, urlparse, csv, getopt
+import hashlib, urllib, urlparse, csv, getopt, zipfile, tempfile
 from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
 from xml.etree import ElementTree as VET # versions.xml
@@ -272,7 +272,7 @@ class Fido:
                     
     def identify_file(self, filename):
         """Identify the type of @param filename.  
-           Call self.handle_matches instead of returning a value.
+           Returns a call to self.handle_matches for the match.
         """
         self.current_file = filename
         self.matchtype = "signature"
@@ -291,28 +291,43 @@ class Fido:
             # filesize is made conditional because files with 0 bytes
             # are falsely characterised being 'rtf' (due to wacky sig)
             # in these cases we try to match the extension instead
-            if len(matches) > 0 and self.current_filesize > 0:
-                return self.handle_matches(filename, matches, time.clock() - t0, self.matchtype)
-            elif len(matches) == 0 or self.current_filesize == 0:
-                matches = self.match_extensions(filename)
-                return self.handle_matches(filename, matches, time.clock() - t0, "extensions")
-            # till here matey!
+            for match in self.process_matches(filename, matches, t0):
+                yield match
+
+#            if len(matches) > 0 and self.current_filesize > 0:
+#                return self.handle_matches(filename, matches, time.clock() - t0, self.matchtype)
+#            elif len(matches) == 0 or self.current_filesize == 0:
+#                matches = self.match_extensions(filename)
+#                return self.handle_matches(filename, matches, time.clock() - t0, "extensions")
+
             if self.zip:
-                self.identify_contents(filename, type=self.container_type(matches))
+                for match in self.identify_contents(filename, type=self.container_type(matches)):
+                    yield match
+
         except IOError:
             #print >> sys.stderr, "FIDO: Error in identify_file: Path is {0}".format(filename)
             sys.stderr.write("FIDO: Error in identify_file: Path is {0}\n".format(filename))
+
+    def process_matches(self, filename, matches, t0):
+        if len(matches) > 0 and self.current_filesize > 0:
+            for match in self.handle_matches(filename, matches, time.clock() - t0, self.matchtype):
+                yield match
+        elif len(matches) == 0 or self.current_filesize == 0:
+            matches = self.match_extensions(filename)
+            for match in self.handle_matches(filename, matches, time.clock() - t0, "extensions"):
+                yield match
 
     def identify_contents(self, filename, fileobj=None, type=False):
         """Identify each item in a container (such as a zip or tar file).  Call self.handle_matches on each item.
            @param fileobj could be a file, or a stream.
         """
         if type == False:
-            return
+            print "type is false for %s" % filename
+            raise StopIteration
         elif type == 'zip':
-            self.walk_zip(filename, fileobj)
+            return self.walk_zip(filename, fileobj)
         elif type == 'tar':
-            self.walk_tar(filename, fileobj)
+            return self.walk_tar(filename, fileobj)
         else: # TODO: ouch!
             raise RuntimeError("Unknown container type: " + repr(type))
                 
@@ -436,7 +451,6 @@ class Fido:
            Call self.handle_matches instead of returning a value.
         """
         # IN 2.7+: with zipfile.ZipFile((fileobj if fileobj != None else filename), 'r') as stream:
-        import zipfile, tempfile
         try:
             zipstream = None
             zipstream = zipfile.ZipFile((fileobj if fileobj != None else filename), 'r')    
@@ -457,21 +471,21 @@ class Fido:
                 finally:
                     if f != None: f.close()
                 matches = self.match_formats(bofbuffer, eofbuffer)
-                if len(matches) > 0 and self.current_filesize > 0:
-                    self.handle_matches(item_name, matches, time.clock() - t0, "signature")
-                elif len(matches) == 0 or self.current_filesize == 0:
-                    matches = self.match_extensions(item_name)
-                    self.handle_matches(item_name, matches, time.clock() - t0, "extension")
+
+                for match in self.process_matches(self.current_file, matches, t0):
+                    yield match
+
                 if self.container_type(matches):
-                        target = tempfile.SpooledTemporaryFile(prefix='Fido')
-                        #with zipstream.open(item) as source:
-                        try:
-                            source = zipstream.open(item)
-                            self.copy_stream(source, target)
-                            #target.seek(0)
-                            self.identify_contents(item_name, target, self.container_type(matches))
-                        finally:
-                            source.close()
+                    target = tempfile.SpooledTemporaryFile(prefix='Fido')
+                    #with zipstream.open(item) as source:
+                    try:
+                        source = zipstream.open(item)
+                        self.copy_stream(source, target)
+                        #target.seek(0)
+                        for match in self.identify_contents(item_name, target, self.container_type(matches)):
+                            yield match
+                    finally:
+                        source.close()
         except IOError:
             sys.stderr.write("FIDO: ZipError {0}\n".format(filename))
         except zipfile.BadZipfile:
