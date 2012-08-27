@@ -7113,6 +7113,7 @@ Full specifications can be found at http://www.opengeospatial.org/standards/gml<
     <pronom_id>376</pronom_id>
     <extension>vsd</extension>
     <has_priority_over>fmt/111</has_priority_over>
+    <has_priority_over>fmt/442</has_priority_over>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
@@ -17314,6 +17315,8 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
       <is_supertype_of>781</is_supertype_of>
       <is_supertype_of>782</is_supertype_of>
       <is_supertype_of>783</is_supertype_of>
+      <is_supertype_of>1206</is_supertype_of>
+      <is_supertype_of>1231</is_supertype_of>
       <content_type>Text (Mark-up)</content_type>
       <reference>
         <dc:title>Open Document Format for Office Applications (OpenDocument) v1.0, OASIS Standard, 1 May 2005</dc:title>
@@ -17529,6 +17532,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
     <has_priority_over>x-fmt/263</has_priority_over>
     <has_priority_over>x-fmt/412</has_priority_over>
     <has_priority_over>fmt/135</has_priority_over>
+    <has_priority_over>fmt/444</has_priority_over>
     <signature>
       <name>ODF 1.0 database</name>
       <note>ZIP header + MIME-type declaration + version number</note>
@@ -27502,11 +27506,16 @@ Version 7.0 includes: tabbed dockable palettes, transform palette, align palette
     <alias />
     <pronom_id>1206</pronom_id>
     <extension>odb</extension>
+    <has_priority_over>x-fmt/263</has_priority_over>
+    <has_priority_over>x-fmt/412</has_priority_over>
+    <has_priority_over>fmt/135</has_priority_over>
+    <has_priority_over>fmt/444</has_priority_over>
     <details>
       <dc:description>OpenDocument (ODF) format is a generic format for office documents, such as text, spreadsheets, presentations, drawings, and databases. It was developed by OASIS, based on the original OpenOffice document format. The format is an open standard, and is supported by a variety of office software packages. ODF is an XML format, which may comprise a single XML document, or a collection of subdocuments within a package. The package format is the commonly used form, and comprises a standard ZIP package containing the XML content and any associated binary data, together with a manifest which lists the package content. An ODF database document contains a relational database. The content is contained in a 'content' xml subdocument. Additional subdocuments contain style information, document metadata, and application-specific settings.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
+      <is_subtype_of>778</is_subtype_of>
       <content_type>Database</content_type>
       <record_metadata>
         <status>unknown</status>
@@ -28212,6 +28221,7 @@ This version, published June 2009, added various improvements, but the major cha
     <pronom_id>1230</pronom_id>
     <extension>vsd</extension>
     <has_priority_over>fmt/111</has_priority_over>
+    <has_priority_over>fmt/442</has_priority_over>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
@@ -28223,6 +28233,32 @@ This version, published June 2009, added various improvements, but the major cha
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>11 Jun 2012</dcterms:created>
         <dcterms:modified>11 Jun 2012</dcterms:modified>
+        <dc:description>This format can be identified via a container signature in DROID version 6 or later. The PRONOM database cannot currently represent container signatures.</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/444</puid>
+    <name>OpenDocument Database Format</name>
+    <version>1.1</version>
+    <alias />
+    <pronom_id>1231</pronom_id>
+    <extension>odb</extension>
+    <has_priority_over>x-fmt/263</has_priority_over>
+    <has_priority_over>x-fmt/412</has_priority_over>
+    <has_priority_over>fmt/135</has_priority_over>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <is_subtype_of>778</is_subtype_of>
+      <content_type>Database</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>16 Jul 2012</dcterms:created>
+        <dcterms:modified>16 Jul 2012</dcterms:modified>
         <dc:description>This format can be identified via a container signature in DROID version 6 or later. The PRONOM database cannot currently represent container signatures.</dc:description>
       </record_metadata>
     </details>
