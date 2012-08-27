@@ -1,3 +1,6 @@
+fido
+====
+
 [![Build Status](https://secure.travis-ci.org/edsu/fido.png)](http://travis-ci.org/edsu/fido)
 
 Format Identification for Digital Objects (fido). FIDO is a command-line tool
@@ -16,12 +19,11 @@ Installation
 ------------
 
 Any platform
-# Download the latest zip release from http://github.com/openplanets/fido/downloads
-   (or use the big Downloads button on http://github.com/openplanets/fido)
-# Unzip into some directory
-# Open a command shell, cd to the directory that you placed the zip contents into and cd into folder 'fido'
-# You should now be able to see the help text: python fido.py -h
-# Before identifying files with FIDO for the first time, please update signatures first using the `update_signatures.py` script (see below for instructions).
+1. Download the latest zip release from http://github.com/openplanets/fido/downloads (or use the big Downloads button on http://github.com/openplanets/fido)
+1. Unzip into some directory
+1. Open a command shell, cd to the directory that you placed the zip contents into and cd into folder 'fido'
+1. You should now be able to see the help text: python fido.py -h
+1. Before identifying files with FIDO for the first time, please update signatures first using the `update_signatures.py` script (see below for instructions).
 
 Updating signatures
 -------------------
@@ -85,24 +87,29 @@ FIDO returns the following matchtypes:
 Examples running FIDO
 ---------------------
 
-Identify all files in the current directory and below, sending output
-into file-info.csv
+Identify all files in the current directory and below, sending output into file-info.csv:
+
    python fido.py -recurse . > file-info.csv
 
 Do the same as above, but also look inside of zip or tar files:
+
    python fido.py -recurse -zip . > file-info.csv
 
 Take input from a list of files:
+
 Linux:
    ls > files.txt
    python fido.py -input files.txt
+
 Windows:
    dir /b > files.txt
    python fido.py -input files.txt
 
 Take input from a pipe:
+
 Linux:
    find . -type f | python fido.py -input -
+
 Windows:
    dir /b | python fido.py -input -
 
@@ -116,14 +123,9 @@ Deep scan of container objects
 ------------------------------
 
 By default, when FIDO detects that a file is a container (compound) object,
-it will start a deep (complete) scan of the file using the PRONOM container signatures.
-When identifying big files, this behaviour can cause FIDO to slow down sigificantly.
-You can disable deep scanning by invoking FIDO with the '-nocontainer' argument.
-While disabling deep scan speeds up identification, it may reduce accuracy.
+it will start a deep (complete) scan of the file using the PRONOM container signatures.  When identifying big files, this behaviour can cause FIDO to slow down sigificantly.  You can disable deep scanning by invoking FIDO with the '-nocontainer' argument.  While disabling deep scan speeds up identification, it may reduce accuracy.
 
-At the moment (version 1.0) FIDO is not yet able to perform scanning containers which are 
-passed through STDIN. A workaround would be to save the stream to a temporary file and have 
-FIDO identify this file.
+At the moment (version 1.0) FIDO is not yet able to perform scanning containers which are passed through STDIN. A workaround would be to save the stream to a temporary file and have FIDO identify this file.
 
 License information
 -------------------
