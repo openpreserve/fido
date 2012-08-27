@@ -269,10 +269,16 @@ class Fido:
             rate = (int(round(count / secs)) if secs != 0 else 9999)
             #print >> sys.stderr, 'FIDO: Processed %6d files in %6.2f msec, %2d files/sec' %  (count, secs * 1000, rate)
             sys.stderr.write('FIDO: Processed %6d files in %6.2f msec, %2d files/sec\n' %  (count, secs * 1000, rate))
-                    
+
     def identify_file(self, filename):
-        """Identify the type of @param filename.  
-           Returns a call to self.handle_matches for the match.
+        """Identifies the first type of @param filename, or None if it was not identified"""
+        for i in self.identify_files(filename):
+            return i
+        return None
+                    
+    def identify_files(self, filename):
+        """Returns a generator for all the types associated with filename, 
+        which can be more than one if it is a container file type (zip, tar)
         """
         self.current_file = filename
         self.matchtype = "signature"
@@ -285,24 +291,12 @@ class Fido:
                 sys.stderr.write("FIDO: Zero byte file (empty): Path is: {0}\n".format(filename))
             bofbuffer, eofbuffer = self.get_buffers(f, size, seekable=True)
             matches = self.match_formats(bofbuffer, eofbuffer)               
-            # from here is also repeated in walk_zip
-            # we should make this uniform in a next version!
-            #
-            # filesize is made conditional because files with 0 bytes
-            # are falsely characterised being 'rtf' (due to wacky sig)
-            # in these cases we try to match the extension instead
             for match in self.process_matches(filename, matches, t0):
                 yield match
-
-#            if len(matches) > 0 and self.current_filesize > 0:
-#                return self.handle_matches(filename, matches, time.clock() - t0, self.matchtype)
-#            elif len(matches) == 0 or self.current_filesize == 0:
-#                matches = self.match_extensions(filename)
-#                return self.handle_matches(filename, matches, time.clock() - t0, "extensions")
-
-            if self.zip:
-                for match in self.identify_contents(filename, type=self.container_type(matches)):
-                    yield match
+            
+            # look for contained files
+            for match in self.identify_contents(filename, type=self.container_type(matches)):
+                yield match
 
         except IOError:
             #print >> sys.stderr, "FIDO: Error in identify_file: Path is {0}".format(filename)
@@ -322,7 +316,6 @@ class Fido:
            @param fileobj could be a file, or a stream.
         """
         if type == False:
-            print "type is false for %s" % filename
             raise StopIteration
         elif type == 'zip':
             return self.walk_zip(filename, fileobj)
@@ -786,7 +779,7 @@ def main(arglist=None):
                 fido.identify_stream(sys.stdin)
         else:
             for file in list_files(args.files, args.recurse):
-                for i in fido.identify_file(file):
+                for i in fido.identify_files(file):
                     print_match(i, args.matchprintf)
     except KeyboardInterrupt:
         msg = "FIDO: Interrupt while identifying file {0}"
