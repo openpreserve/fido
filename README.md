@@ -1,49 +1,8 @@
-usage: fido.py [-h] [-v] [-q] [-recurse] [-zip] [-nocontainer] [-input INPUT]
-               [-useformats INCLUDEPUIDS] [-nouseformats EXCLUDEPUIDS]
-               [-matchprintf FORMATSTRING] [-nomatchprintf FORMATSTRING]
-               [-bufsize BUFSIZE] [-container_bufsize CONTAINER_BUFSIZE]
-               [-loadformats XML1,...,XMLn] [-confdir CONFDIR]
-               [FILE [FILE ...]]
+[![Build Status](https://secure.travis-ci.org/edsu/fido.png)](http://travis-ci.org/edsu/fido)
 
 Format Identification for Digital Objects (fido). FIDO is a command-line tool
 to identify the file formats of digital objects. It is designed for simple
 integration into automated work-flows.
-
-positional arguments:
-  FILE                  files to check. If the file is -, then read content
-                        from stdin. In this case, python must be invoked with
-                        -u or it may convert the line terminators.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -v                    show version information
-  -q                    run (more) quietly
-  -recurse              recurse into subdirectories
-  -nocontainer          disable deep scan of container documents, increases
-                        speed but may reduce accuracy with big files
-  -input INPUT          file containing a list of files to check, one per
-                        line. - means stdin
-  -useformats INCLUDEPUIDS
-                        comma separated string of formats to use in
-                        identification
-  -nouseformats EXCLUDEPUIDS
-                        comma separated string of formats not to use in
-                        identification
-  -matchprintf FORMATSTRING
-                        format string (Python style) to use on match. See
-                        nomatchprintf, README.txt.
-  -nomatchprintf FORMATSTRING
-                        format string (Python style) to use if no match. See
-                        README.txt
-  -bufsize BUFSIZE      size (in bytes) of the buffer to match against
-                        (default=131072 bytes)
-  -container_bufsize CONTAINER_BUFSIZE
-                        size (in bytes) of the buffer to match against
-                        (default=524288 bytes)
-  -loadformats XML1,...,XMLn
-                        comma separated string of XML format files to add.
-  -confdir CONFDIR      configuration directory to load_fido_xml, for example,
-                        the format specifications from.
 
 Open Planets Foundation (http://www.openplanetsfoundation.org)
 See License.txt for license information.
@@ -57,28 +16,25 @@ Installation
 ------------
 
 Any platform
-1. Download the latest zip release from http://github.com/openplanets/fido/downloads
+# Download the latest zip release from http://github.com/openplanets/fido/downloads
    (or use the big Downloads button on http://github.com/openplanets/fido)
-2. Unzip into some directory
-3. Open a command shell, cd to the directory that you placed the zip contents into and cd into folder 'fido'
-4. You should now be able to see the help text: 
-   python fido.py -h
-5. Before identifying files with FIDO for the first time, please update signatures first 
-   using the 'update_signatures.py' script (see below for instructions).
+# Unzip into some directory
+# Open a command shell, cd to the directory that you placed the zip contents into and cd into folder 'fido'
+# You should now be able to see the help text: python fido.py -h
+# Before identifying files with FIDO for the first time, please update signatures first using the `update_signatures.py` script (see below for instructions).
 
 Updating signatures
 -------------------
 
 To update FIDO with the latest PRONOM file format definitions, run:
-   python update_signatures.py
+
+   python update\_signatures.py
+
 This is an interactive CLI script which downloads the latest PRONOM signature file and signatures. Please note that it can take a while to download all PUID signatures.
 
 If you are having trouble running the script due to firewall restrictions, see OPF wiki: http://wiki.opf-labs.org/display/PT/Command+Line+Interface+proxy+usage
 
-Please note that this WILL NOT update the container signature file located in the 'conf' folder.
-The reason for this that the PRONOM container signature file contains special types 
-of sequences which need to be tested before FIDO can use them. If there is an update available 
-for the PRONOM container signature file it will show up in a next commit.
+Please note that this WILL NOT update the container signature file located in the 'conf' folder.  The reason for this that the PRONOM container signature file contains special types of sequences which need to be tested before FIDO can use them. If there is an update available for the PRONOM container signature file it will show up in a next commit.
 
 Dependencies
 ------------
@@ -89,9 +45,9 @@ Format Definitions
 ------------------
 
 By default, FIDO loads format information from two files conf/formats.xml
-and conf/format_extensions.xml. Addition format files can be specified using
+and conf/format\_extensions.xml. Addition format files can be specified using
 the -loadformats command line argument.  They should use the same syntax as 
-conf/format_extensions.xml. If more than one format file needs to be specified,
+conf/format\_extensions.xml. If more than one format file needs to be specified,
 then they should be comma separated as with the -formats argument.
 
 Output
@@ -101,7 +57,7 @@ Output is controlled with the two parameters matchprintf and nomatchprintf.
 Each is a string that may contain formating information.  They have access to
 an object called info with the following fields:
 
-printmatch: info.version (file format version X), info.alias (format also called X), info.apple_uti (Apple Uniform Type Identifier), info.group_size and info.group_index (if a file has multiple (tentative) hits), info.count (file N)
+printmatch: info.version (file format version X), info.alias (format also called X), info.apple\_uti (Apple Uniform Type Identifier), info.group\_size and info.group\_index (if a file has multiple (tentative) hits), info.count (file N)
 
 printnomatch: info.count (file N)
 
