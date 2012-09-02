@@ -772,8 +772,12 @@ def main(arglist=None):
             fido.identify_stream(sys.stdin)
         else:
             for file in list_files(args.files, args.recurse):
-                for i in fido.identify_files(file):
-                    print_match(i, args.matchprintf)
+                if args.zip:
+                    for i in fido.identify_files(file):
+                        print_match(i, args.matchprintf)
+                else:
+                    print_match(fido.identify_file(file), args.matchprintf)
+
     except KeyboardInterrupt:
         msg = "FIDO: Interrupt while identifying file {0}"
         sys.stderr.write(msg.format(fido.current_file))
