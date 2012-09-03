@@ -24,6 +24,7 @@ fido.ttf http://digitalcorpora.org/corp/nps/files/govdocs1/017/017447.ttf
 fido.pptx http://digitalcorpora.org/corp/nps/files/govdocs1/018/018372.pptx
 fido.xlsx http://digitalcorpora.org/corp/nps/files/govdocs1/019/019916.xlsx
 fido.zip http://digitalcorpora.org/corp/nps/files/govdocs1/036/036280.zip
+fido.zip http://eospso.gsfc.nasa.gov/NASAScienceExplorer/Story/Mercury.zip
 fido.pub http://digitalcorpora.org/corp/nps/files/govdocs1/084/084437.pub
 fido.wp http://digitalcorpora.org/corp/nps/files/govdocs1/175/175240.wp
 fido.tif ftp://nssdcftp.gsfc.nasa.gov/photo_gallery/hi-res/planetary/mars/f561a25_raw.tiff

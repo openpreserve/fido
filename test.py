@@ -11,7 +11,25 @@ class FidoTests(TestCase):
 
     def test_identify_files(self):
         i = list(self.fido.identify_files("test-data/fido.zip"))
-        print len(i)
+        self.assertEqual(len(i), 6)
+
+        self.assertEqual(i[0].filename, "test-data/fido.zip")
+        self.assertEqual(i[0].puid, "x-fmt/263")
+
+        self.assertEqual(i[1].filename, "test-data/fido.zip!Mercury/Mercury.jpg")
+        self.assertEqual(i[1].puid, "fmt/44")
+
+        self.assertEqual(i[2].filename, "test-data/fido.zip!Mercury/Mercury.xml")
+        self.assertEqual(i[2].puid, "fmt/120")
+
+        self.assertEqual(i[3].filename, "test-data/fido.zip!Mercury/Mercury.xml")
+        self.assertEqual(i[3].puid, "fmt/120")
+
+        self.assertEqual(i[4].filename, "test-data/fido.zip!__MACOSX/Mercury/._Mercury.xml")
+        self.assertEqual(i[4].puid, "fmt/120")
+
+        self.assertEqual(i[5].filename, "test-data/fido.zip!__MACOSX/Mercury/._Mercury.xml")
+        self.assertEqual(i[5].puid, "fmt/120")
 
     def test_bmp(self):
         i = self.fido.identify_file("test-data/fido.bmp")
@@ -178,7 +196,7 @@ class FidoTests(TestCase):
         self.assertEqual(i.puid, "x-fmt/263")
         self.assertEqual(i.formatname, "ZIP Format")
         self.assertEqual(i.signaturename, "ZIP format")
-        self.assertEqual(i.filesize, 884409)
+        self.assertEqual(i.filesize, 1190653)
         self.assertEqual(i.filename, "test-data/fido.zip")
         self.assertEqual(i.mimetype, "application/zip")
         self.assertEqual(i.matchtype, "signature")
