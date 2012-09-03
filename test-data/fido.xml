@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mods xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.loc.gov/mods/v3" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd" ID="id-99-27381">
+<name type="corporate">
+<namePart>United States Government Printing Office</namePart>
+<role>
+<roleTerm authority="marcrelator" type="text">printer</roleTerm>
+<roleTerm authority="marcrelator" type="code">prt</roleTerm>
+</role>
+<role>
+<roleTerm authority="marcrelator" type="text">distributor</roleTerm>
+<roleTerm authority="marcrelator" type="code">dst</roleTerm>
+</role>
+</name>
+<name type="corporate">
+<namePart>United States</namePart>
+<namePart>National Archives and Records Administration</namePart>
+<namePart>Federal Register Office</namePart>
+<role>
+<roleTerm authority="marcrelator" type="text">author</roleTerm>
+<roleTerm authority="marcrelator" type="code">aut</roleTerm>
+</role>
+<description>Government Organization</description>
+</name>
+<typeOfResource>text</typeOfResource>
+<genre authority="marcgt">government publication</genre>
+<language>
+<languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+</language>
+<extension>
+<collectionCode>FR</collectionCode>
+<category>Regulatory Information</category>
+<waisDatabaseName>1999_register</waisDatabaseName>
+<branch>executive</branch>
+</extension>
+<genre authority="marcgt">article</genre>
+<titleInfo>
+<title>Fisheries of the Exclusive Economic Zone Off Alaska; Pacific Cod Fishery by Vessels Using Trawl Gear in Bering Sea and Aleutian Islands Management Area</title>
+<partName>Rules and Regulations</partName>
+</titleInfo>
+<name type="corporate">
+<namePart>United States</namePart>
+<namePart>Department of Commerce</namePart>
+<role>
+<roleTerm authority="marcrelator" type="text">originator</roleTerm>
+<roleTerm authority="marcrelator" type="code">org</roleTerm>
+</role>
+<description>United States Government Agency or Subagency</description>
+</name>
+<name type="corporate">
+<namePart>United States</namePart>
+<namePart>National Oceanic and Atmospheric Administration</namePart>
+<role>
+<roleTerm authority="marcrelator" type="text">originator</roleTerm>
+<roleTerm authority="marcrelator" type="code">org</roleTerm>
+</role>
+<description>United States Government Agency or Subagency</description>
+</name>
+<abstract>NMFS is closing directed fishing for Pacific cod by vessels using trawl gear in the Bering Sea and Aleutian Islands management area (BSAI). This action is necessary to prevent exceeding the 1999 halibut bycatch mortality allowance specified for the trawl Pacific cod fishery category.</abstract>
+<identifier type="FR citation">64 FR 56473</identifier>
+<identifier type="uri">http://www.gpo.gov/fdsys/granule/FR-1999-10-20/99-27381</identifier>
+<identifier type="FR Doc No.">99-27381</identifier>
+<identifier type="former granule identifier">fr20oc99-22</identifier>
+<identifier type="billing code">3510-22-F</identifier>
+<identifier type="department code">Docket No. 990304063-9063-01</identifier>
+<location>
+<url displayLabel="Content Detail" access="object in context">http://www.gpo.gov/fdsys/granule/FR-1999-10-20/99-27381/content-detail.html</url>
+<url displayLabel="PDF rendition" access="raw object">http://www.gpo.gov/fdsys/pkg/FR-1999-10-20/pdf/99-27381.pdf</url>
+<url displayLabel="HTML rendition" access="raw object">http://www.gpo.gov/fdsys/pkg/FR-1999-10-20/html/99-27381.html</url>
+</location>
+<physicalDescription>
+<extent>2 p.</extent>
+</physicalDescription>
+<part type="Rules and Regulations">
+<extent unit="pages">
+<start>56473</start>
+<end>56474</end>
+</extent>
+</part>
+<identifier type="preferred citation">64 FR 56473</identifier>
+<relatedItem type="isReferencedBy">
+<titleInfo>
+<title>Code of Federal Regulations</title>
+<partNumber>Title 50 Part 679</partNumber>
+</titleInfo>
+<identifier type="CFR citation">50 CFR  679</identifier>
+</relatedItem>
+<extension>
+<searchTitle>Fisheries of the Exclusive Economic Zone Off Alaska; Pacific Cod Fishery by Vessels Using Trawl Gear in Bering Sea and Aleutian Islands Management Area; Federal Register Vol. 64, Issue </searchTitle>
+<granuleClass>RULE</granuleClass>
+<accessId>99-27381</accessId>
+<agency order="1">DEPARTMENT OF COMMERCE</agency>
+<agency order="2">National Oceanic and Atmospheric Administration</agency>
+<effectiveDate>1999-10-18</effectiveDate>
+<departmentDoc>Docket No. 990304063-9063-01</departmentDoc>
+<departmentDoc>I.D. 101599E</departmentDoc>
+<billingCode>3510-22-F</billingCode>
+<frDocNumber>99-27381</frDocNumber>
+<action>Closure.</action>
+<summary>NMFS is closing directed fishing for Pacific cod by vessels using trawl gear in the Bering Sea and Aleutian Islands management area (BSAI). This action is necessary to prevent exceeding the 1999 halibut bycatch mortality allowance specified for the trawl Pacific cod fishery category.</summary>
+<dates>Effective 1200 hrs, Alaska local time (A.l.t.), October 18, 1999, until 2400 hrs, A.l.t., December 31, 1999.</dates>
+<contact>Andrew Smoker, 907-586-7228.</contact>
+<cfr title="50">
+            <part number="679"/>
+          </cfr>
+</extension>
+<relatedItem type="host" ID="" xlink:href="http://www.gpo.gov/fdsys/pkg/FR-1999-10-20/mods.xml">
+<titleInfo>
+<title>Federal Register</title>
+<partNumber>Vol. 64, no. 202</partNumber>
+</titleInfo>
+<originInfo>
+<publisher>Office of the Federal Register, National Archives and Records Administration</publisher>
+<dateIssued encoding="w3cdtf">1999-10-20</dateIssued>
+<issuance>continuing</issuance>
+<frequency>daily</frequency>
+</originInfo>
+<physicalDescription>
+<note type="source content type">deposited</note>
+<digitalOrigin>born digital</digitalOrigin>
+<extent>269 p.</extent>
+</physicalDescription>
+<tableOfContents xlink:href="http://www.gpo.gov/fdsys/pkg/FR-1999-10-20/toc.html">
+    Table of Contents: 
+  </tableOfContents>
+<classification authority="sudocs">AE 2.7:</classification>
+<classification authority="sudocs">GS 4.107:</classification>
+<classification authority="sudocs">AE 2.106:</classification>
+<classification authority="lcc">KF70.A2</classification>
+<identifier type="uri">http://www.gpo.gov/fdsys/pkg/FR-1999-10-20</identifier>
+<identifier type="issn">0097-6326</identifier>
+<identifier type="issn">0042-1219</identifier>
+<identifier type="issn">0364-1406</identifier>
+<identifier type="stock number">769-004-00000-9</identifier>
+<identifier type="ILS system id">000582072</identifier>
+<identifier type="former identifier">fr20oc99</identifier>
+<location>
+<url displayLabel="Content Detail" access="object in context">http://www.gpo.gov/fdsys/pkg/FR-1999-10-20/content-detail.html</url>
+<url displayLabel="PDF rendition" access="raw object">http://www.gpo.gov/fdsys/pkg/FR-1999-10-20/pdf/FR-1999-10-20.pdf</url>
+</location>
+<part type="issue">
+<extent unit="pages">
+<start>56399</start>
+<end>56667</end>
+</extent>
+</part>
+<recordInfo>
+<recordContentSource authority="marcorg">DGPO</recordContentSource>
+<recordCreationDate encoding="w3cdtf">2009-01-09</recordCreationDate>
+<recordChangeDate encoding="w3cdtf">2009-01-09</recordChangeDate>
+<recordIdentifier source="DGPO">FR-1999-10-20</recordIdentifier>
+<recordOrigin>machine generated</recordOrigin>
+<languageOfCataloging>
+<languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+</languageOfCataloging>
+</recordInfo>
+<extension>
+<docClass>FR</docClass>
+<accessId>FR-1999-10-20</accessId>
+<volume>64</volume>
+<issue>202</issue>
+</extension>
+</relatedItem>
+</mods>
