@@ -307,7 +307,7 @@ class Fido:
                 yield match
         elif len(matches) == 0 or self.current_filesize == 0:
             matches = self.match_extensions(filename)
-            for match in self.handle_matches(filename, matches, time.clock() - t0, "extensions"):
+            for match in self.handle_matches(filename, matches, time.clock() - t0, "extension"):
                 yield match
 
     def identify_contents(self, filename, fileobj=None, type=False):
