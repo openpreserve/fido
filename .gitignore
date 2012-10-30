@@ -1,3 +1,4 @@
+fido.egg-info
 *.pyc
 *.pyo
 /src/fido/analysis.py

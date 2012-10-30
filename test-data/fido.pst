@@ -1,0 +1,464 @@
+%!PS-Adobe
+%%BoundingBox 30 30 800 800
+/M {moveto} def /S {show} def
+/LCSM {lineto currentpoint stroke M} def
+72 72 scale 90 rotate 0.25 -8.2 translate
+0.004 setlinewidth
+  0.8500  0.1600 M
+  0.8900  0.2000 LCSM
+  0.8500  0.2000 M
+  0.8900  0.1600 LCSM
+  0.8550  0.3250 M
+  0.8550  0.3550 LCSM
+  0.8850  0.3550 LCSM
+  0.8850  0.3250 LCSM
+  0.8550  0.3250 LCSM
+  0.8550  0.3550 LCSM
+  0.8850  0.3550 LCSM
+  0.8850  0.3250 LCSM
+  0.8550  0.3250 LCSM
+  0.8500  0.5000 M
+  0.8900  0.5000 LCSM
+  0.8500  0.5000 LCSM
+  0.8700  0.4800 M
+  0.8700  0.5200 LCSM
+  0.8700  0.4800 LCSM
+/Helvetica findfont 0.18 scalefont setfont
+   1.000   0.440 M (BASE              ) S
+/Helvetica findfont 0.18 scalefont setfont
+   1.000   0.280 M (REPEAT            ) S
+/Helvetica findfont 0.18 scalefont setfont
+   1.000   0.120 M (END OR TARE       ) S
+/Helvetica findfont 0.18 scalefont setfont
+   2.820   0.120 M (COMPILATION:      ) S
+/Helvetica findfont 0.18 scalefont setfont
+   4.380   0.120 M (1999:1201 09:31:05) S
+/Helvetica findfont 0.18 scalefont setfont
+   2.820   0.280 M (GRAVITY METER:    ) S
+/Helvetica findfont 0.18 scalefont setfont
+   4.620   0.280 M (G8B               ) S
+/Helvetica findfont 0.18 scalefont setfont
+   2.820   0.440 M (DRIFT START:      ) S
+/Helvetica findfont 0.18 scalefont setfont
+   4.380   0.440 M (JUNE              ) S
+/Helvetica findfont 0.194 scalefont setfont
+   4.910   0.440 M
+   4.930   0.440 M (1993) S
+  1.0000  1.0000 M
+  1.5000  1.0000 LCSM
+  1.5000  1.0500 LCSM
+  1.5000  1.0000 LCSM
+  2.0000  1.0000 LCSM
+  2.0000  1.0500 LCSM
+  2.0000  1.0000 LCSM
+  2.5000  1.0000 LCSM
+  2.5000  1.0500 LCSM
+  2.5000  1.0000 LCSM
+  3.0000  1.0000 LCSM
+  3.0000  1.0500 LCSM
+  3.0000  1.0000 LCSM
+  3.5000  1.0000 LCSM
+  3.5000  1.0500 LCSM
+  3.5000  1.0000 LCSM
+  4.0000  1.0000 LCSM
+  4.0000  1.0500 LCSM
+  4.0000  1.0000 LCSM
+  4.5000  1.0000 LCSM
+  4.5000  1.0500 LCSM
+  4.5000  1.0000 LCSM
+  5.0000  1.0000 LCSM
+  5.0000  1.0500 LCSM
+  5.0000  1.0000 LCSM
+  5.5000  1.0000 LCSM
+  5.5000  1.0500 LCSM
+  5.5000  1.0000 LCSM
+  6.0000  1.0000 LCSM
+  6.0000  1.0500 LCSM
+  6.0000  1.0000 LCSM
+  6.5000  1.0000 LCSM
+  6.5000  1.0500 LCSM
+  6.5000  1.0000 LCSM
+  7.0000  1.0000 LCSM
+  7.0000  1.2857 LCSM
+  6.9500  1.2857 LCSM
+  7.0000  1.2857 LCSM
+  7.0000  1.5714 LCSM
+  6.9500  1.5714 LCSM
+  7.0000  1.5714 LCSM
+  7.0000  1.8571 LCSM
+  6.9500  1.8571 LCSM
+  7.0000  1.8571 LCSM
+  7.0000  2.1429 LCSM
+  6.5000  2.1429 LCSM
+  6.5000  2.0929 LCSM
+  6.5000  2.1429 LCSM
+  6.0000  2.1429 LCSM
+  6.0000  2.0929 LCSM
+  6.0000  2.1429 LCSM
+  5.5000  2.1429 LCSM
+  5.5000  2.0929 LCSM
+  5.5000  2.1429 LCSM
+  5.0000  2.1429 LCSM
+  5.0000  2.0929 LCSM
+  5.0000  2.1429 LCSM
+  4.5000  2.1429 LCSM
+  4.5000  2.0929 LCSM
+  4.5000  2.1429 LCSM
+  4.0000  2.1429 LCSM
+  4.0000  2.0929 LCSM
+  4.0000  2.1429 LCSM
+  3.5000  2.1429 LCSM
+  3.5000  2.0929 LCSM
+  3.5000  2.1429 LCSM
+  3.0000  2.1429 LCSM
+  3.0000  2.0929 LCSM
+  3.0000  2.1429 LCSM
+  2.5000  2.1429 LCSM
+  2.5000  2.0929 LCSM
+  2.5000  2.1429 LCSM
+  2.0000  2.1429 LCSM
+  2.0000  2.0929 LCSM
+  2.0000  2.1429 LCSM
+  1.5000  2.1429 LCSM
+  1.5000  2.0929 LCSM
+  1.5000  2.1429 LCSM
+  1.0000  2.1429 LCSM
+  1.0000  1.8571 LCSM
+  1.0500  1.8571 LCSM
+  1.0000  1.8571 LCSM
+  1.0000  1.5714 LCSM
+  1.0500  1.5714 LCSM
+  1.0000  1.5714 LCSM
+  1.0000  1.2857 LCSM
+  1.0500  1.2857 LCSM
+  1.0000  1.2857 LCSM
+  1.0000  1.0000 LCSM
+/Helvetica findfont 0.194 scalefont setfont
+   0.530   0.940 M
+   0.580   0.940 M
+(-0.2) S
+  1.0000  1.5714 M
+  7.0000  1.5714 LCSM
+  1.0000  1.5714 LCSM
+/Helvetica findfont 0.194 scalefont setfont
+   0.650   1.511 M
+(0.0) S
+/Helvetica findfont 0.194 scalefont setfont
+   0.650   2.083 M
+(0.2) S
+/Helvetica findfont 0.18 scalefont setfont
+   0.430   1.101 M
+ 90.0 currentpoint gsave translate rotate
+(MILLIGALS         ) S
+grestore
+/Helvetica findfont 0.097 scalefont setfont
+   1.190   0.920 M
+(21) S
+/Helvetica findfont 0.097 scalefont setfont
+   1.690   0.920 M
+(22) S
+/Helvetica findfont 0.097 scalefont setfont
+   2.190   0.920 M
+(23) S
+/Helvetica findfont 0.097 scalefont setfont
+   2.690   0.920 M
+(24) S
+/Helvetica findfont 0.097 scalefont setfont
+   3.190   0.920 M
+(25) S
+/Helvetica findfont 0.097 scalefont setfont
+   3.690   0.920 M
+(26) S
+/Helvetica findfont 0.097 scalefont setfont
+   4.190   0.920 M
+(27) S
+/Helvetica findfont 0.097 scalefont setfont
+   4.690   0.920 M
+(28) S
+/Helvetica findfont 0.097 scalefont setfont
+   5.190   0.920 M
+(29) S
+/Helvetica findfont 0.097 scalefont setfont
+   5.690   0.920 M
+(30) S
+  6.0000  1.0000 M
+  6.0000  2.1429 LCSM
+  6.0000  1.0000 LCSM
+/Helvetica findfont 0.18 scalefont setfont
+   3.260   0.760 M (J                 ) S
+/Helvetica findfont 0.18 scalefont setfont
+   3.380   0.760 M (U                 ) S
+/Helvetica findfont 0.18 scalefont setfont
+   3.500   0.760 M (N                 ) S
+/Helvetica findfont 0.18 scalefont setfont
+   3.620   0.760 M (E                 ) S
+/Helvetica findfont 0.097 scalefont setfont
+   6.220   0.920 M
+(1) S
+/Helvetica findfont 0.097 scalefont setfont
+   6.720   0.920 M
+(2) S
+/Helvetica findfont 0.18 scalefont setfont
+   6.260   0.760 M (J                 ) S
+/Helvetica findfont 0.18 scalefont setfont
+   6.380   0.760 M (U                 ) S
+/Helvetica findfont 0.18 scalefont setfont
+   6.500   0.760 M (L                 ) S
+/Helvetica findfont 0.18 scalefont setfont
+   6.620   0.760 M (Y                 ) S
+  1.1717  1.5714 M
+  1.2117  1.5714 LCSM
+  1.1717  1.5714 LCSM
+  1.1917  1.5514 M
+  1.1917  1.5914 LCSM
+  1.1917  1.5514 LCSM
+  1.1917  1.5714 M
+  1.2024  1.7600 LCSM
+  1.1824  1.7600 M
+  1.2224  1.7600 LCSM
+  1.1824  1.7600 LCSM
+  1.2024  1.7400 M
+  1.2024  1.7800 LCSM
+  1.2024  1.7400 LCSM
+  1.2024  1.7600 M
+  1.2125  1.9486 LCSM
+  1.1925  1.9486 M
+  1.2325  1.9486 LCSM
+  1.1925  1.9486 LCSM
+  1.2125  1.9286 M
+  1.2125  1.9686 LCSM
+  1.2125  1.9286 LCSM
+  1.2125  1.9486 M
+  1.2215  1.8057 LCSM
+  1.2015  1.8057 M
+  1.2415  1.8057 LCSM
+  1.2015  1.8057 LCSM
+  1.2215  1.7857 M
+  1.2215  1.8257 LCSM
+  1.2215  1.7857 LCSM
+  1.2215  1.8057 M
+  1.2285  1.7314 LCSM
+  1.2085  1.7314 M
+  1.2485  1.7314 LCSM
+  1.2085  1.7314 LCSM
+  1.2285  1.7114 M
+  1.2285  1.7514 LCSM
+  1.2285  1.7114 LCSM
+  1.2285  1.7314 M
+  1.2302  1.6829 LCSM
+  1.2102  1.6829 M
+  1.2502  1.6829 LCSM
+  1.2102  1.6829 LCSM
+  1.2302  1.6629 M
+  1.2302  1.7029 LCSM
+  1.2302  1.6629 LCSM
+  1.2302  1.6829 M
+  1.2594  1.7457 LCSM
+  1.2394  1.7457 M
+  1.2794  1.7457 LCSM
+  1.2394  1.7457 LCSM
+  1.2594  1.7257 M
+  1.2594  1.7657 LCSM
+  1.2594  1.7257 LCSM
+  1.2594  1.7457 M
+  1.2653  1.7086 LCSM
+  1.2453  1.7086 M
+  1.2853  1.7086 LCSM
+  1.2453  1.7086 LCSM
+  1.2653  1.6886 M
+  1.2653  1.7286 LCSM
+  1.2653  1.6886 LCSM
+  1.2653  1.7086 M
+  1.3781  1.7457 LCSM
+  1.3581  1.7457 M
+  1.3981  1.7457 LCSM
+  1.3581  1.7457 LCSM
+  1.3781  1.7257 M
+  1.3781  1.7657 LCSM
+  1.3781  1.7257 LCSM
+  1.3781  1.7457 M
+  1.6618  1.7000 LCSM
+  1.6418  1.7000 M
+  1.6818  1.7000 LCSM
+  1.6418  1.7000 LCSM
+  1.6618  1.6800 M
+  1.6618  1.7200 LCSM
+  1.6618  1.6800 LCSM
+  1.6618  1.7000 M
+  1.8997  1.6171 LCSM
+  1.8797  1.6171 M
+  1.9197  1.6171 LCSM
+  1.8797  1.6171 LCSM
+  1.8997  1.5971 M
+  1.8997  1.6371 LCSM
+  1.8997  1.5971 LCSM
+  1.8997  1.6171 M
+  2.1681  1.4686 LCSM
+  2.1481  1.4686 M
+  2.1881  1.4686 LCSM
+  2.1481  1.4686 LCSM
+  2.1681  1.4486 M
+  2.1681  1.4886 LCSM
+  2.1681  1.4486 LCSM
+  2.1681  1.4686 M
+  2.1691  1.5571 LCSM
+  2.1491  1.5571 M
+  2.1891  1.5571 LCSM
+  2.1491  1.5571 LCSM
+  2.1691  1.5371 M
+  2.1691  1.5771 LCSM
+  2.1691  1.5371 LCSM
+  2.1691  1.5571 M
+  2.3851  1.5857 LCSM
+  2.3651  1.5857 M
+  2.4051  1.5857 LCSM
+  2.3651  1.5857 LCSM
+  2.3851  1.5657 M
+  2.3851  1.6057 LCSM
+  2.3851  1.5657 LCSM
+  2.3851  1.5857 M
+  2.6618  1.5886 LCSM
+  2.6418  1.5886 M
+  2.6818  1.5886 LCSM
+  2.6418  1.5886 LCSM
+  2.6618  1.5686 M
+  2.6618  1.6086 LCSM
+  2.6618  1.5686 LCSM
+  2.6618  1.5886 M
+  2.9069  1.7371 LCSM
+  2.8869  1.7371 M
+  2.9269  1.7371 LCSM
+  2.8869  1.7371 LCSM
+  2.9069  1.7171 M
+  2.9069  1.7571 LCSM
+  2.9069  1.7171 LCSM
+  2.9069  1.7371 M
+  3.1628  1.6057 LCSM
+  3.1428  1.6057 M
+  3.1828  1.6057 LCSM
+  3.1428  1.6057 LCSM
+  3.1628  1.5857 M
+  3.1628  1.6257 LCSM
+  3.1628  1.5857 LCSM
+  3.1628  1.6057 M
+  3.3858  1.4600 LCSM
+  3.3658  1.4600 M
+  3.4058  1.4600 LCSM
+  3.3658  1.4600 LCSM
+  3.3858  1.4400 M
+  3.3858  1.4800 LCSM
+  3.3858  1.4400 LCSM
+  3.3858  1.4600 M
+  3.6722  1.3771 LCSM
+  3.6522  1.3771 M
+  3.6922  1.3771 LCSM
+  3.6522  1.3771 LCSM
+  3.6722  1.3571 M
+  3.6722  1.3971 LCSM
+  3.6722  1.3571 LCSM
+  3.6722  1.3771 M
+  3.8872  1.2571 LCSM
+  3.8672  1.2571 M
+  3.9072  1.2571 LCSM
+  3.8672  1.2571 LCSM
+  3.8872  1.2371 M
+  3.8872  1.2771 LCSM
+  3.8872  1.2371 LCSM
+  3.8872  1.2571 M
+  4.1722  1.2657 LCSM
+  4.1522  1.2657 M
+  4.1922  1.2657 LCSM
+  4.1522  1.2657 LCSM
+  4.1722  1.2457 M
+  4.1722  1.2857 LCSM
+  4.1722  1.2457 LCSM
+  4.1722  1.2657 M
+  4.2493  1.2086 LCSM
+  4.2293  1.2086 M
+  4.2693  1.2086 LCSM
+  4.2293  1.2086 LCSM
+  4.2493  1.1886 M
+  4.2493  1.2286 LCSM
+  4.2493  1.1886 LCSM
+  4.2493  1.2086 M
+  4.6736  1.3286 LCSM
+  4.6536  1.3286 M
+  4.6936  1.3286 LCSM
+  4.6536  1.3286 LCSM
+  4.6736  1.3086 M
+  4.6736  1.3486 LCSM
+  4.6736  1.3086 LCSM
+  4.6736  1.3286 M
+  4.9042  1.3914 LCSM
+  4.8842  1.3914 M
+  4.9242  1.3914 LCSM
+  4.8842  1.3914 LCSM
+  4.9042  1.3714 M
+  4.9042  1.4114 LCSM
+  4.9042  1.3714 LCSM
+  4.9042  1.3914 M
+  5.1701  1.2971 LCSM
+  5.1501  1.2971 M
+  5.1901  1.2971 LCSM
+  5.1501  1.2971 LCSM
+  5.1701  1.2771 M
+  5.1701  1.3171 LCSM
+  5.1701  1.2771 LCSM
+  5.1701  1.2971 M
+  5.4524  1.2629 LCSM
+  5.4324  1.2629 M
+  5.4724  1.2629 LCSM
+  5.4324  1.2629 LCSM
+  5.4524  1.2429 M
+  5.4524  1.2829 LCSM
+  5.4524  1.2429 LCSM
+  5.4524  1.2629 M
+  5.6851  1.3286 LCSM
+  5.6651  1.3286 M
+  5.7051  1.3286 LCSM
+  5.6651  1.3286 LCSM
+  5.6851  1.3086 M
+  5.6851  1.3486 LCSM
+  5.6851  1.3086 LCSM
+  5.6851  1.3286 M
+  5.9128  1.3229 LCSM
+  5.8928  1.3229 M
+  5.9328  1.3229 LCSM
+  5.8928  1.3229 LCSM
+  5.9128  1.3029 M
+  5.9128  1.3429 LCSM
+  5.9128  1.3029 LCSM
+  5.9128  1.3229 M
+  6.1639  1.1886 LCSM
+  6.1439  1.1886 M
+  6.1839  1.1886 LCSM
+  6.1439  1.1886 LCSM
+  6.1639  1.1686 M
+  6.1639  1.2086 LCSM
+  6.1639  1.1686 LCSM
+  6.1639  1.1886 M
+  6.3906  1.2629 LCSM
+  6.3706  1.2629 M
+  6.4106  1.2629 LCSM
+  6.3706  1.2629 LCSM
+  6.3906  1.2429 M
+  6.3906  1.2829 LCSM
+  6.3906  1.2429 LCSM
+  6.3906  1.2629 M
+  6.6691  1.2457 LCSM
+  6.6491  1.2457 M
+  6.6891  1.2457 LCSM
+  6.6491  1.2457 LCSM
+  6.6691  1.2257 M
+  6.6691  1.2657 LCSM
+  6.6691  1.2257 LCSM
+  6.6691  1.2457 M
+  6.9104  1.3743 LCSM
+  6.8904  1.3743 M
+  6.9304  1.3743 LCSM
+  6.8904  1.3743 LCSM
+  6.9104  1.3543 M
+  6.9104  1.3943 LCSM
+  6.9104  1.3543 LCSM
+  0.0000  0.0000 M
+showpage    % end of plot
