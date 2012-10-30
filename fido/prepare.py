@@ -60,7 +60,7 @@ class FormatInfo:
         """
         tree = ET.ElementTree(ET.Element('formats', {'version':'0.3',
                                                      'xmlns:xsi' : "http://www.w3.org/2001/XMLSchema-instance",
-                                                     'xsi:noNamespaceSchemaLocation': "fido-formats-0.3.xsd",
+                                                     'xsi:noNamespaceSchemaLocation': "fido-formats.xsd",
                                                      'xmlns:dc': "http://purl.org/dc/elements/1.1/",
                                                      'xmlns:dcterms': "http://purl.org/dc/terms/"}))
         root = tree.getroot()
@@ -588,8 +588,8 @@ def main(arg=None):
         arglist = arg
     else:
         arglist = sys.argv[1:]
-    #print arglist
-    #exit()
+#    print arglist
+#    exit()
     mydir = os.path.abspath(os.path.dirname(__file__))
     # parse version file to fetch versions
     versionsFile = os.path.join(mydir, 'conf', 'versions.xml')

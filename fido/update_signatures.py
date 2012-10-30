@@ -19,7 +19,7 @@ from pronomutils import getPronomSignature, checkWellFormedness
 import prepare
 
 defaults = {
-    'version': '1.2.0',
+    'version': '1.2.1',
     'conf_dir': os.path.join(os.path.dirname(__file__), 'conf'),
     'tmp_dir': 'tmp', 
     'signatureFileName' : 'DROID_SignatureFile-v{0}.xml',
@@ -49,16 +49,11 @@ def main(defaults):
             sys.exit()
         print "Querying latest signaturefile version..."
         signatureFile = os.path.join(os.path.abspath(defaults['conf_dir']), defaults['signatureFileName'].format(currentVersion))
-        versionsFile = os.path.join(os.path.abspath(defaults['conf_dir']), defaults['versionsFileName'])
         if os.path.isfile(signatureFile):
             print "You already have the latest PRONOM signature file, version "+str(currentVersion)
             ask = raw_input("Update anyway? (yes/no): ")
             if ask.lower() not in answers:
                 sys.exit()
-        print "Updating {0}...".format(defaults['versionsFileName'])
-        xmlversionsfile = open(versionsFile,'wb')
-        xmlversionsfile.write(versionXML.format(str(currentVersion),"formats-v"+str(currentVersion)+".xml"))
-        xmlversionsfile.close()
         print "Downloading signature file version "+str(currentVersion)+"..."
         currentFile = getPronomSignature("file")
         if currentFile == False:
@@ -136,7 +131,7 @@ def main(defaults):
             compression = zipfile.ZIP_DEFLATED
         except:
             compression = zipfile.ZIP_STORED
-        modes = {zipfile.ZIP_DEFLATED: 'deflated', zipfile.ZIP_STORED:   'stored'}
+        modes = {zipfile.ZIP_DEFLATED: 'deflated', zipfile.ZIP_STORED: 'stored'}
         print "Creating PRONOM zip,",
         zf = zipfile.ZipFile(os.path.join(os.path.abspath(defaults['conf_dir']), defaults['pronomZipFileName'].format(currentVersion)), mode='w')
         print "adding files with compression mode '"+modes[compression]+"'"
@@ -158,7 +153,14 @@ def main(defaults):
                 os.rmdir(tmpdir)
         except:
             pass
+        # update versions.xml
+        versionsFile = os.path.join(os.path.abspath(defaults['conf_dir']), defaults['versionsFileName'])
+        print "Updating {0}...".format(defaults['versionsFileName'])
+        xmlversionsfile = open(versionsFile,'wb')
+        xmlversionsfile.write(versionXML.format(str(currentVersion),"formats-v"+str(currentVersion)+".xml"))
+        xmlversionsfile.close()
         print "Preparing to convert PRONOM formats to FIDO signatures..."
+        # there should be a check here to handle prepare.main exit() signal (-1/0/1/...)
         prepare.main()
         print "FIDO signatures successfully updated"
         sys.exit()

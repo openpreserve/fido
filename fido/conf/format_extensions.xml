@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<formats xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.2" xsi:noNamespaceSchemaLocation="fido-formats.xsd">
+<formats xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xsi:noNamespaceSchemaLocation="fido-formats.xsd" version="0.3">
   <format>
     <puid>fido-fmt/189.word</puid>
     <name>Microsoft Office Open XML - Word</name>
@@ -276,57 +276,185 @@
     </signature>
   </format>
   <format>
-  <!-- VSD format patch added by <maurice.de.rooij@nationaalarchief.nl>, February 2012 -->
-  <!-- fix for PRONOM entry which misses 'priority' -->
-    <puid>x-fmt/113</puid>
-    <name>Microsoft Visio Drawing</name>
-    <version>5.0</version>
-    <alias>Microsoft Visio Drawing (5.0)</alias>
-    <pronom_id>165</pronom_id>
-    <extension>vsd</extension>
-    <has_priority_over>fmt/111</has_priority_over>
+  <!-- NEXUS format added by <maurice.de.rooij@nationaalarchief.nl> @SPRUCE London 2012 -->
+  <!-- http://wiki.opf-labs.org/display/SPR/NeXus+Data+Collection+ISIS+-+STFC+-+solution -->
+    <puid>fido-fmt/nexus</puid>
+    <mime>application/octet-stream</mime>
+    <name>Nexus</name>
+    <extension>nxs</extension>
     <signature>
-      <name>Microsoft Visio Drawing (5.0) - FIDO patch</name>
+      <name>FIDO Nexus Signature</name>
       <pattern>
         <position>BOF</position>
-        <regex>(?s)Visio \(TM\) Drawing\x0d\x0a</regex>
+        <regex>(?s)\A\x89\x48\x44\x46\x0d\x0a\x1a\x0a\x00{5}\x08\x08\x00\x04\x00\x10\x00{13}\xff{8}</regex>
       </pattern>
     </signature>
   </format>
+  <!-- iPer Advanced Embedded Hypertext format (AEH) -->
+  <!-- contributed by L. Hurley and A. Ogier -->
   <format>
-  <!-- VSD format patch added by <maurice.de.rooij@nationaalarchief.nl>, February 2012 -->
-  <!-- fix for PRONOM entry which misses 'priority' -->
-    <puid>x-fmt/258</puid>
-    <name>Microsoft Visio Drawing</name>
-    <version>2000</version>
-    <alias>Microsoft Visio Drawing (2000)</alias>
-    <pronom_id>376</pronom_id>
-    <extension>vsd</extension>
-    <has_priority_over>fmt/111</has_priority_over>
+    <puid>fido-fmt/aeh</puid>
+    <mime>text/html</mime>
+    <name>iPer Advanced Embedded Hypertext</name>
+    <alias>AEH</alias>
+    <extension>aeh</extension>
+    <apple_uti>public.data</apple_uti>
     <signature>
-      <name>Microsoft Visio Drawing (2000) - FIDO patch</name>
+      <name>AEH</name>
+      <note>at BOF "ALDO"</note>
       <pattern>
         <position>BOF</position>
-        <regex>(?s)Visio \(TM\) Drawing\x0d\x0a</regex>
+        <pronom_pattern>414C444F</pronom_pattern>
+        <regex>(?s)\AALDO</regex>
       </pattern>
     </signature>
+    <note>iPer Advanced Embedded Hypertext is a propietary file format, owned by Visual Vision, and used with the default software HyperPublish applications (formerly iPer), a comprehensive hypermedia publishing program both for Website and CDROM).</note>
+    <details>
+      <dc:description>iPer Advanced Embedded Hypertext is a propietary file format owned by Visual Vision.</dc:description>
+      <dc:creator>Visual Vision</dc:creator>
+      <dcterms:publisher>Visual Vision</dcterms:publisher>
+      <content_type>hypertext</content_type>
+      <reference>
+        <dcterms:title>iPer Advanced Embedded Hypertext</dcterms:title>
+        <dc:creator>Visual Vision</dc:creator>
+        <dc:publisher>Visual Vision</dc:publisher>
+        <dcterms:available>1999</dcterms:available>
+        <dc:identifier>http://www.visualvision.com/</dc:identifier>
+        <dc:description>iPer Advanced Embedded Hypertext is a propietary file format owned by Visual Vision.</dc:description>
+        <dc:type>Authoratative</dc:type>
+      </reference>
+      <record_metadata>
+        <status>unknown</status>  
+        <dc:creator>L. Hurley and A. Ogier</dc:creator>
+        <dcterms:created>01 Dec 2011</dcterms:created>
+      </record_metadata>
+    </details>
   </format>
+  <!-- MobiPocket Reader format (MOBI) -->
+  <!-- contributed by L. Hurley and A. Ogier -->
   <format>
-  <!-- VSD format patch added by <maurice.de.rooij@nationaalarchief.nl>, February 2012 -->
-  <!-- fix for PRONOM entry which misses 'priority' -->
-    <puid>x-fmt/259</puid>
-    <name>Microsoft Visio Drawing</name>
-    <version>2002</version>
-    <alias>Microsoft Visio Drawing (XP)</alias>
-    <pronom_id>377</pronom_id>
-    <extension>vsd</extension>
-    <has_priority_over>fmt/111</has_priority_over>
+    <puid>fido-fmt/mobi</puid>
+    <mime>application/x-mobipocket-ebook</mime>
+    <name>MobiPocket Reader</name>
+    <version></version>
+    <alias>MOBI</alias>
+    <extension>mobi</extension>
+    <extension>prc</extension>
+    <apple_uti>public.data</apple_uti>
     <signature>
-      <name>Microsoft Visio Drawing (XP) - FIDO patch</name>
+      <name>Mobi</name>
+      <note>Header contains BOOK at offset 60 and MOBI at offset 64</note>
       <pattern>
         <position>BOF</position>
-        <regex>(?s)Visio \(TM\) Drawing\x0d\x0a</regex>
+        <pronom_pattern>.{60}424F4F4B4D4F4249</pronom_pattern>
+        <regex>(?s)\A(\.|\x00){60}BOOKMOBI</regex>
       </pattern>
     </signature>
+    <details>
+      <dc:description>MOBI is an ebook format created by a French company, MobiPocket Reader, and bought by Amazon in 2005. Since 2005 the mobi standard has not been updated as Amazon has focused all its attention on the azw format, which is based on the mobi format. Mobi has a high and a low compression version, although the low compression version can be used on more e-reader devices. The mobi format was based on the PalmDOC (Palm Database) Format.</dc:description>
+      <dcterms:available>2000</dcterms:available>
+      <dc:creator>MobiPocket</dc:creator>
+      <dcterms:publisher>Amazon.com</dcterms:publisher>
+        <record_metadata>
+          <status>unknown</status>
+          <dc:creator>L. Hurley and A. Ogier</dc:creator>
+          <dcterms:created>01 Dec 2011</dcterms:created>
+        </record_metadata>
+    </details>
+  </format>
+  <!-- Protein Data Bank format (PDB) -->
+  <!-- contributed by L. Hurley and A. Ogier -->
+  <format>
+    <puid>fido-fmt/x-pdb</puid>
+    <mime>chemical/x-pdb</mime>
+    <name>Protein Data Bank</name>
+    <version>3.30</version>
+    <alias>PDB (3.30)</alias>
+    <extension>pdb</extension>
+    <apple_uti>public.data</apple_uti>
+    <has_priority_over>x-fmt/283</has_priority_over>
+    <has_priority_over>x-fmt/111</has_priority_over>
+    <signature>
+      <name>PDB</name>
+      <note>80 byte header record: BOF contains "HEADER" and date field (YY-MMM-DD at offset 50) and IDCode (1 digit followed by 3 alphanumeric at offset 63). Also: "END   " chunk at beginning of 80 byte footer record </note>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)\AHEADER.{44}\d\d\-[A-Z]{3}-\d\d.{3}\d\w{3}</regex>
+      </pattern>
+      <pattern>
+        <position>VAR</position>          <pronom_pattern>454E442020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020             2020202020202020202020202020202020202020202020202020200A</pronom_pattern>
+        <regex>(?s)END\x20{77}\x0A\Z</regex>
+      </pattern>
+    </signature>
+    <note>The Protein Data Bank (pdb) file format is the legacy file format of the Worldwide Protein Data Bank. The mission of the wwPDB is to maintain a single Protein Data Bank Archive of macromolecular structural data that is freely and publicly available to the global community. PDB is a flat textual file format describing the three dimensional structures of molecules held in the Protein Data Bank. The file consists of 80 byte records, beginning with a header and ending with an END record.</note>
+    <details>
+      <dc:description>PDB is a flat textual file format of macromolecular structural data in the Worldwide Protein Data Bank.</dc:description>
+      <dcterms:available>1972</dcterms:available>
+      <dc:creator>Brookhaven National Laboratory</dc:creator>
+      <dcterms:publisher>Worldwide Protein Data Bank</dcterms:publisher>
+      <content_type>ASCII text</content_type>
+      <reference>
+        <dc:title>Protein Data Bank</dc:title>
+        <dc:creator>Brookhaven National Laboratory</dc:creator>
+        <dc:publisher>Worldwide Protein Data Bank</dc:publisher>
+        <dcterms:available>1972</dcterms:available>
+        <dc:identifier>http://www.wwpdb.org/documentation/format33/v3.3.html</dc:identifier>
+        <dc:description>PDB is a flat textual file format of macromolecular structural data in the Worldwide Protein Data Bank</dc:description>
+        <dc:type>Authoratative</dc:type>
+      </reference>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>L. Hurley and A. Ogier</dc:creator>
+        <dcterms:created>01 Dec 2011</dcterms:created>
+      </record_metadata>
+    </details>
+  </format>
+  <!-- Progressive Graphics File format (PGF) -->
+  <!-- contributed by L. Hurley and A. Ogier -->
+  <format>
+    <puid>fido-fmt/pgf</puid>
+    <name>Progressive Graphics File</name>
+    <version></version>
+    <alias>PGF</alias>
+    <extension>pgf</extension>
+    <apple_uti>public.data</apple_uti>
+    <signature>
+      <name>PGF (little-endian)</name>
+      <note>Header begins with PGF at offset 00</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>504746</pronom_pattern>
+        <regex>(?s)\APGF</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Progressive Graphics Format (PGF) is an image format developed with a focus on speed rather than on compression ratio. It features both lossy (more than 10 without any visual quality loss) and lossless compression (about 3.1 according to the documentation), is based on a fast wavelet transform, and performs best with natural and aerial photos. In comparison with JPEG 2000, it has a slightly worse compression efficiency; however, JPEG 2000 is about 10 times slower than PGF.</dc:description>
+      <dcterms:available>18 June 2006</dcterms:available>
+      <dc:creator>xerania GmbH</dc:creator>
+      <dcterms:publisher>libpgf.org</dcterms:publisher>
+      <reference>
+        <dcterms:title>PGF: A new progressive file format for lossy and lossless compression</dcterms:title>
+        <dc:creator>Christoph Stamm</dc:creator>
+        <dcterms:publisher>libpgf.org</dcterms:publisher>
+        <dcterms:available></dcterms:available>
+        <dc:identifier>http://www.libpgf.org/uploads/media/PGF_Overview_V1_01.pdf</dc:identifier>
+        <dc:description>This is the initial presentation of PGF, describing the process used to create the file and summarizing the testing methodology.</dc:description>
+        <dc:type>Authoratative</dc:type>
+      </reference>
+      <reference>
+        <dcterms:title>PGF-Progressive Graphics File Version 6</dcterms:title>
+        <dc:creator>Christoph Stamm</dc:creator>
+        <dcterms:publisher>libpgf.org</dcterms:publisher>
+        <dcterms:available></dcterms:available>
+        <dc:identifier>http://www.libpgf.org/uploads/media/PGF_Header_ROI_V6_02.pdf</dc:identifier>
+        <dc:description>This is documentation for the PGF Header Structure and ROI coding scheme.</dc:description>
+        <dc:type>Authoratative</dc:type>       
+      </reference>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>L. Hurley and A. Ogier</dc:creator>
+        <dcterms:created>01 Dec 2011</dcterms:created>
+      </record_metadata>  
+    </details>
   </format>
 </formats>
