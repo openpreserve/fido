@@ -2283,6 +2283,7 @@ A DWF package must meet the following requirements:
   </format>
   <format>
     <puid>x-fmt/87</puid>
+    <mime>application/vnd.ms-powerpoint</mime>
     <name>Microsoft Powerpoint Show</name>
     <version />
     <alias />
@@ -3090,6 +3091,7 @@ File specifications are available at http://www.autodesk.com/techpubs/autocad/ac
   </format>
   <format>
     <puid>x-fmt/113</puid>
+    <mime>application/vnd.visio</mime>
     <name>Microsoft Visio Drawing</name>
     <version>5.0</version>
     <alias />
@@ -6786,6 +6788,7 @@ http://www.esri.com/library/whitepapers/pdfs/shapefile.pdf</dc:description>
   </format>
   <format>
     <puid>x-fmt/243</puid>
+    <mime>application/vnd.ms-project</mime>
     <name>Microsoft Project</name>
     <version>4.0</version>
     <alias />
@@ -6808,6 +6811,7 @@ http://www.esri.com/library/whitepapers/pdfs/shapefile.pdf</dc:description>
   </format>
   <format>
     <puid>x-fmt/244</puid>
+    <mime>application/vnd.ms-project</mime>
     <name>Microsoft Project</name>
     <version>95</version>
     <alias />
@@ -6830,6 +6834,7 @@ http://www.esri.com/library/whitepapers/pdfs/shapefile.pdf</dc:description>
   </format>
   <format>
     <puid>x-fmt/245</puid>
+    <mime>application/vnd.ms-project</mime>
     <name>Microsoft Project</name>
     <version>98</version>
     <alias />
@@ -6874,6 +6879,7 @@ http://www.esri.com/library/whitepapers/pdfs/shapefile.pdf</dc:description>
   </format>
   <format>
     <puid>x-fmt/247</puid>
+    <mime>application/vnd.ms-project</mime>
     <name>Microsoft Project</name>
     <version>2000-2003</version>
     <alias>Microsoft Project file (XP)</alias>
@@ -7132,6 +7138,7 @@ http://www.esri.com/library/whitepapers/pdfs/shapefile.pdf</dc:description>
   </format>
   <format>
     <puid>x-fmt/258</puid>
+    <mime>application/vnd.visio</mime>
     <name>Microsoft Visio Drawing</name>
     <version>2000</version>
     <alias />
@@ -7156,6 +7163,7 @@ http://www.esri.com/library/whitepapers/pdfs/shapefile.pdf</dc:description>
   </format>
   <format>
     <puid>x-fmt/259</puid>
+    <mime>application/vnd.visio</mime>
     <name>Microsoft Visio Drawing</name>
     <version>2002</version>
     <alias>Microsoft Visio Drawing (XP)</alias>
@@ -9162,6 +9170,7 @@ Full specifications can be found at http://www.w3.org/TR/xmlschema-0/</dc:descri
   </format>
   <format>
     <puid>x-fmt/333</puid>
+    <mime>vnd.lotus-approach</mime>
     <name>Lotus Approach View File</name>
     <version>97</version>
     <alias />
@@ -9184,6 +9193,7 @@ Full specifications can be found at http://www.w3.org/TR/xmlschema-0/</dc:descri
   </format>
   <format>
     <puid>x-fmt/334</puid>
+    <mime>application/vnd.lotus-approach</mime>
     <name>Lotus Approach View File</name>
     <version />
     <alias />
@@ -9206,6 +9216,7 @@ Full specifications can be found at http://www.w3.org/TR/xmlschema-0/</dc:descri
   </format>
   <format>
     <puid>x-fmt/335</puid>
+    <mime>application/vnd.lotus-freelance</mime>
     <name>Lotus Freelance Smartmaster Graphics</name>
     <version />
     <alias />
@@ -9228,6 +9239,7 @@ Full specifications can be found at http://www.w3.org/TR/xmlschema-0/</dc:descri
   </format>
   <format>
     <puid>x-fmt/336</puid>
+    <mime>application/vnd.lotus-notes</mime>
     <name>Lotus Notes Database</name>
     <version>2</version>
     <alias />
@@ -9251,6 +9263,7 @@ Full specifications can be found at http://www.w3.org/TR/xmlschema-0/</dc:descri
   </format>
   <format>
     <puid>x-fmt/337</puid>
+    <mime>application/vnd.lotus-notes</mime>
     <name>Lotus Notes Database</name>
     <version>3</version>
     <alias />
@@ -9274,6 +9287,7 @@ Full specifications can be found at http://www.w3.org/TR/xmlschema-0/</dc:descri
   </format>
   <format>
     <puid>x-fmt/338</puid>
+    <mime>application/vnd.lotus-notes</mime>
     <name>Lotus Notes Database</name>
     <version>4</version>
     <alias />
@@ -11423,6 +11437,12 @@ The identification byte is followed by four or more bytes that are all equal to 
       <dcterms:available>01 Jan 2004</dcterms:available>
       <dc:creator>Adobe Systems Incorporated</dc:creator>
       <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <is_supertype_of>1275</is_supertype_of>
+      <is_supertype_of>1276</is_supertype_of>
+      <is_supertype_of>1277</is_supertype_of>
+      <is_supertype_of>1278</is_supertype_of>
+      <is_supertype_of>1279</is_supertype_of>
+      <is_supertype_of>1280</is_supertype_of>
       <content_type>Page Description</content_type>
       <reference>
         <dc:title>PDF Reference, fifth edition: Adobe Portable Document Format, Version 1.6</dc:title>
@@ -12439,6 +12459,15 @@ The identification byte is followed by four or more bytes that are all equal to 
         <position>BOF</position>
         <pronom_pattern>77696465{1-20}6D766864</pronom_pattern>
         <regex>(?s)\A.{0,20}wide.{1,20}mvhd</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Quicktime 9</name>
+      <note>BOF, offset 4: 'free' atom, followed by one or more 00 bytes, with 'ftyp' atom seen later in the file</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>6672656500*66747970</pronom_pattern>
+        <regex>(?s)\A.{4}free\x00.*ftyp</regex>
       </pattern>
     </signature>
     <details>
@@ -13560,8 +13589,8 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
   <format>
     <puid>fmt/59</puid>
     <mime>application/vnd.ms-excel</mime>
-    <name>Microsoft Excel 5.0 Workbook (xls)</name>
-    <version>5</version>
+    <name>Microsoft Excel 5.0/95 Workbook (xls)</name>
+    <version>5/95</version>
     <alias>Microsoft Excel Workbook (5.0)</alias>
     <pronom_id>682</pronom_id>
     <extension>xlw</extension>
@@ -13570,11 +13599,11 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
     <has_priority_over>fmt/111</has_priority_over>
     <signature>
       <name>BIFF 5 &amp; 7 Workbook (generic)</name>
-      <note>09 - BOF / 08 - Version indicator / {2} - unspecified / 0005 - Version 5 / 0500 - unspecified /  (9C35|6C92|920C|F90C) - build identifier</note>
+      <note>09 - BOF / 08 - Version indicator / {2} - unspecified / 0005 - Version 5 / 0500 - unspecified</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>0908{2}00050500(9C35|6C92|920C|F90C)</pronom_pattern>
-        <regex>(?s)\A.{512}\x09\x08.{2}\x00\x05\x05\x00(?:\x9c5|l\x92|\x92\x0c|\xf9\x0c)</regex>
+        <pronom_pattern>0908{2}00050500</pronom_pattern>
+        <regex>(?s)\A.{512,8192}\x09\x08.{2}\x00\x05\x05\x00</regex>
       </pattern>
     </signature>
     <details>
@@ -13599,8 +13628,8 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>11 Mar 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
-        <dc:description />
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
+        <dc:description>This format can be identified via a container signature in DROID version 6 or later. The PRONOM database cannot currently represent container signatures.</dc:description>
       </record_metadata>
     </details>
   </format>
@@ -13611,21 +13640,11 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
     <version>7</version>
     <alias>Microsoft Excel Workbook (95)</alias>
     <pronom_id>683</pronom_id>
-    <extension>xlw</extension>
     <extension>xls</extension>
     <apple_uid>com.microsoft.excel.xls</apple_uid>
     <has_priority_over>fmt/111</has_priority_over>
-    <signature>
-      <name>BIFF 5 &amp; 7 Workbook (generic)</name>
-      <note>09 - BOF / 08 - Version indicator / {2} - unspecified / 0005 - Version 5 / 0500 - unspecified /  (9C35|6C92|920C|F90C) - build identifier</note>
-      <pattern>
-        <position>BOF</position>
-        <pronom_pattern>0908{2}00050500(9C35|6C92|920C|F90C)</pronom_pattern>
-        <regex>(?s)\A.{512}\x09\x08.{2}\x00\x05\x05\x00(?:\x9c5|l\x92|\x92\x0c|\xf9\x0c)</regex>
-      </pattern>
-    </signature>
     <details>
-      <dc:description>The Binary Interchange File Format (BIFF) is a spreadsheet file format developed by Microsoft. BIFF 7 is a native file format of Microsoft Excel 95. The format is proprietary and Microsoft does not make details of its structure public. The information here is derived primarily from OpenOffice.org's reverse-engineered documentation of the format and should not therefore be regarded as definitive. BIFF 7 is based on Microsoft&#8217;s generic OLE2 Compound Document Format. An Excel workbook is stored as a &#8216;Book&#8217; stream within a Compound Document Format file. The Book stream comprises a Workbook Globals Substream, containing a Beginning of File (BOF) record, the Workbook global records, and terminated by an End of File (EOF) record. This is followed by one or more Worksheet substreams, containing a Beginning of File (BOF) record, the worksheet records, and terminated by an End of File (EOF) record.</dc:description>
+      <dc:description>PUID deprecated. Please see fmt/60: Microsoft Excel 5.0/95 Workbook (xls).</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -13647,7 +13666,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>11 Mar 2005</dcterms:created>
         <dcterms:modified>19 Apr 2012</dcterms:modified>
-        <dc:description>This format can be identified via a container signature in DROID version 6 or later. The PRONOM database cannot currently represent container signatures.</dc:description>
+        <dc:description />
       </record_metadata>
     </details>
   </format>
@@ -13661,14 +13680,15 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
     <extension>xls</extension>
     <extension>xlw</extension>
     <apple_uid>com.microsoft.excel.xls</apple_uid>
+    <has_priority_over>fmt/59</has_priority_over>
     <has_priority_over>fmt/111</has_priority_over>
     <signature>
       <name>BIFF 8 &amp; 8X Workbook (generic)</name>
-      <note>09 - BOF / 08 - Version indicator / {2} - unspecified / 0006 - version / 0500 - substream EC30 - build identifier /  CD07 - year (1997)</note>
+      <note>09 - BOF / 08 - Version indicator / {2} - unspecified / 0006 - version / 0500 - substream</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>0908{2}00060500EC30CD07</pronom_pattern>
-        <regex>(?s)\A.{512}\x09\x08.{2}\x00\x06\x05\x00\xec0\xcd\x07</regex>
+        <pronom_pattern>0908{2}00060500</pronom_pattern>
+        <regex>(?s)\A.{512}\x09\x08.{2}\x00\x06\x05\x00</regex>
       </pattern>
     </signature>
     <details>
@@ -13693,7 +13713,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>11 Mar 2005</dcterms:created>
-        <dcterms:modified>19 Apr 2012</dcterms:modified>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description>This format can be identified via a container signature in DROID version 6 or later. The PRONOM database cannot currently represent container signatures.</dc:description>
       </record_metadata>
     </details>
@@ -13711,11 +13731,11 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
     <has_priority_over>fmt/111</has_priority_over>
     <signature>
       <name>BIFF 8 &amp; 8X Workbook (generic)</name>
-      <note>09 - BOF / 08 - Version indicator / {2} - unspecified / 0006 - version / 0500 - substream EC30 - build identifier /  CD07 - year (1997)</note>
+      <note>09 - BOF / 08 - Version indicator / {2} - unspecified / 0006 - version / 0500 - substream</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>0908{2}00060500EC30CD07</pronom_pattern>
-        <regex>(?s)\A.{512}\x09\x08.{2}\x00\x06\x05\x00\xec0\xcd\x07</regex>
+        <pronom_pattern>0908{2}00060500</pronom_pattern>
+        <regex>(?s)\A.{512}\x09\x08.{2}\x00\x06\x05\x00</regex>
       </pattern>
     </signature>
     <details>
@@ -17299,7 +17319,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
       </pattern>
       <pattern>
         <position>EOF</position>
-        <pronom_pattern>504B0506{18-65531}</pronom_pattern>
+        <pronom_pattern>504B0506</pronom_pattern>
         <regex>(?s)PK\x05\x06.{18,65531}\Z</regex>
       </pattern>
     </signature>
@@ -17370,6 +17390,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
   </format>
   <format>
     <puid>fmt/136</puid>
+    <mime>application/vnd.oasis.opendocument.text</mime>
     <name>OpenDocument Text</name>
     <version>1.0</version>
     <alias>ODF Text (1.0)</alias>
@@ -17416,6 +17437,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
   </format>
   <format>
     <puid>fmt/137</puid>
+    <mime>application/vnd.oasis.opendocument.spreadsheet</mime>
     <name>OpenDocument Spreadsheet</name>
     <version>1.0</version>
     <alias>ODF Spreadsheet (1.0)</alias>
@@ -17462,6 +17484,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
   </format>
   <format>
     <puid>fmt/138</puid>
+    <mime>application/vnd.oasis.opendocument.presentation</mime>
     <name>OpenDocument Presentation</name>
     <version>1.0</version>
     <alias>ODF presentation (1.0)</alias>
@@ -17508,6 +17531,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
   </format>
   <format>
     <puid>fmt/139</puid>
+    <mime>application/vnd.oasis.opendocument.graphics</mime>
     <name>OpenDocument Graphics</name>
     <version>1.0</version>
     <alias>ODF Drawing (1.0)</alias>
@@ -19970,11 +19994,21 @@ http://developer.apple.com/fonts/ttrefman/rm06/Chap6.html</dc:description>
   </format>
   <format>
     <puid>fmt/163</puid>
-    <name>Microsoft Works Word Processor for DOS</name>
-    <version>1.05</version>
+    <name>Microsoft Works Word Processor 1-3 for DOS and 2 for Windows</name>
+    <version />
     <alias />
     <pronom_id>890</pronom_id>
     <extension>wps</extension>
+    <signature>
+      <name>MS Works Word Processor DOS 1-3 and Win 2</name>
+      <note>BOF: .&#254;{18}&#208;.
+There is no published specification. These bytes are common to Works Word Processor for DOS versions 1-3 and Works Word Processor for Windows 2. The 18 variable bytes may signify distinct versions so further investigation may provide further granularity.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>01FE{18}D002</pronom_pattern>
+        <regex>(?s)\A\x01\xfe.{18}\xd0\x02</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
@@ -19985,7 +20019,7 @@ http://developer.apple.com/fonts/ttrefman/rm06/Chap6.html</dc:description>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>28 Sep 2009</dcterms:created>
-        <dcterms:modified>28 Sep 2009</dcterms:modified>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -19996,9 +20030,8 @@ http://developer.apple.com/fonts/ttrefman/rm06/Chap6.html</dc:description>
     <version>1.12</version>
     <alias />
     <pronom_id>891</pronom_id>
-    <extension>wps</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>PUID deprecated. Please see fmt/163: Microsoft Works Word Processor 1-3 for DOS and 2 for Windows.</dc:description>
       <dcterms:available />
       <dc:creator>Microsoft Corporation</dc:creator>
       <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
@@ -20007,7 +20040,7 @@ http://developer.apple.com/fonts/ttrefman/rm06/Chap6.html</dc:description>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>28 Sep 2009</dcterms:created>
-        <dcterms:modified>28 Sep 2009</dcterms:modified>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -20018,9 +20051,8 @@ http://developer.apple.com/fonts/ttrefman/rm06/Chap6.html</dc:description>
     <version>2.0</version>
     <alias />
     <pronom_id>893</pronom_id>
-    <extension>wps</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>PUID deprecated. Please see fmt/163: Microsoft Works Word Processor 1-3 for DOS and 2 for Windows.</dc:description>
       <dcterms:available />
       <dc:creator>Microsoft Corporation</dc:creator>
       <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
@@ -20029,7 +20061,7 @@ http://developer.apple.com/fonts/ttrefman/rm06/Chap6.html</dc:description>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>28 Sep 2009</dcterms:created>
-        <dcterms:modified>28 Sep 2009</dcterms:modified>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -21229,9 +21261,8 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
     <version>2.0</version>
     <alias />
     <pronom_id>951</pronom_id>
-    <extension>wps</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>PUID deprecated. Please see fmt/163: Microsoft Works Word Processor 1-3 for DOS and 2 for Windows.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -21240,7 +21271,7 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>19 Nov 2009</dcterms:created>
-        <dcterms:modified>19 Nov 2009</dcterms:modified>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -21471,9 +21502,8 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
     <version>2.0a</version>
     <alias />
     <pronom_id>962</pronom_id>
-    <extension>wps</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>PUID deprecated. Please see fmt/163: Microsoft Works Word Processor 1-3 for DOS and 2 for Windows</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -21482,15 +21512,15 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>19 Nov 2009</dcterms:created>
-        <dcterms:modified>19 Nov 2009</dcterms:modified>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
   </format>
   <format>
     <puid>fmt/233</puid>
-    <name>Microsoft Works Word Processor for Windows</name>
-    <version>3.0</version>
+    <name>Microsoft Works Word Processor 3-4 for Windows</name>
+    <version />
     <alias />
     <pronom_id>963</pronom_id>
     <extension>wps</extension>
@@ -21504,8 +21534,8 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>19 Nov 2009</dcterms:created>
-        <dcterms:modified>19 Nov 2009</dcterms:modified>
-        <dc:description />
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
+        <dc:description>This format can be identified via a container signature in DROID version 6 or later. The PRONOM database cannot currently represent container signatures.</dc:description>
       </record_metadata>
     </details>
   </format>
@@ -21515,9 +21545,8 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
     <version>3.0a</version>
     <alias />
     <pronom_id>964</pronom_id>
-    <extension>wps</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>PUID deprecated. Please see fmt/233: Microsoft Works Word Processor 3-4 for Windows.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -21526,7 +21555,7 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>19 Nov 2009</dcterms:created>
-        <dcterms:modified>19 Nov 2009</dcterms:modified>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -21537,9 +21566,8 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
     <version>3.0b</version>
     <alias />
     <pronom_id>965</pronom_id>
-    <extension>wps</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>PUID deprecated. Please see fmt/233: Microsoft Works Word Processor 3-4 for Windows.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -21548,7 +21576,7 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>19 Nov 2009</dcterms:created>
-        <dcterms:modified>19 Nov 2009</dcterms:modified>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -21559,9 +21587,8 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
     <version>4.0</version>
     <alias />
     <pronom_id>966</pronom_id>
-    <extension>wps</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>PUID deprecated. Please see fmt/233: Microsoft Works Word Processor 3-4 for Windows.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -21570,7 +21597,7 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>19 Nov 2009</dcterms:created>
-        <dcterms:modified>19 Nov 2009</dcterms:modified>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -21840,9 +21867,8 @@ Full specifications available at: http://www.opengeospatial.org/standards/kml</d
     <version>4.0a</version>
     <alias />
     <pronom_id>981</pronom_id>
-    <extension>wps</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>PUID deprecated. Please see fmt/233: Microsoft Works Word Processor 3-4 for Windows.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -21851,7 +21877,7 @@ Full specifications available at: http://www.opengeospatial.org/standards/kml</d
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>08 Jan 2010</dcterms:created>
-        <dcterms:modified>08 Jan 2010</dcterms:modified>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -21906,9 +21932,8 @@ Full specifications available at: http://www.opengeospatial.org/standards/kml</d
     <version>4.5</version>
     <alias />
     <pronom_id>989</pronom_id>
-    <extension>wps</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>PUID deprecated. Please see fmt/233: Microsoft Works Word Processor 3-4 for Windows.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -21917,7 +21942,7 @@ Full specifications available at: http://www.opengeospatial.org/standards/kml</d
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>08 Jan 2010</dcterms:created>
-        <dcterms:modified>08 Jan 2010</dcterms:modified>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -21972,9 +21997,8 @@ Full specifications available at: http://www.opengeospatial.org/standards/kml</d
     <version>4.5a</version>
     <alias />
     <pronom_id>992</pronom_id>
-    <extension>wps</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>PUID deprecated. Please see fmt/233: Microsoft Works Word Processor 3-4 for Windows.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -21983,7 +22007,7 @@ Full specifications available at: http://www.opengeospatial.org/standards/kml</d
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>08 Jan 2010</dcterms:created>
-        <dcterms:modified>08 Jan 2010</dcterms:modified>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -22068,8 +22092,8 @@ Full specifications available at: http://www.opengeospatial.org/standards/kml</d
   </format>
   <format>
     <puid>fmt/258</puid>
-    <name>Microsoft Works Word Processor Windows</name>
-    <version>2000</version>
+    <name>Microsoft Works Word Processor 5-6</name>
+    <version />
     <alias />
     <pronom_id>996</pronom_id>
     <extension>wps</extension>
@@ -22083,8 +22107,8 @@ Full specifications available at: http://www.opengeospatial.org/standards/kml</d
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>25 Feb 2010</dcterms:created>
-        <dcterms:modified>25 Feb 2010</dcterms:modified>
-        <dc:description />
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
+        <dc:description>This format can be identified via a container signature in DROID version 6 or later. The PRONOM database cannot currently represent container signatures.</dc:description>
       </record_metadata>
     </details>
   </format>
@@ -22226,9 +22250,8 @@ Full specifications available at: http://www.opengeospatial.org/standards/kml</d
     <version>3</version>
     <alias />
     <pronom_id>1003</pronom_id>
-    <extension>wps</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>PUID deprecated. Please see fmt/163: Microsoft Works Word Processor 1-3 for DOS and 2 for Windows.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -22237,7 +22260,7 @@ Full specifications available at: http://www.opengeospatial.org/standards/kml</d
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>25 Feb 2010</dcterms:created>
-        <dcterms:modified>25 Feb 2010</dcterms:modified>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -22248,9 +22271,8 @@ Full specifications available at: http://www.opengeospatial.org/standards/kml</d
     <version>3a</version>
     <alias />
     <pronom_id>1004</pronom_id>
-    <extension>wps</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>PUID deprecated. Please see fmt/163: Microsoft Works Word Processor 1-3 for DOS and 2 for Windows.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -22259,7 +22281,7 @@ Full specifications available at: http://www.opengeospatial.org/standards/kml</d
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>25 Feb 2010</dcterms:created>
-        <dcterms:modified>25 Feb 2010</dcterms:modified>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -22270,9 +22292,8 @@ Full specifications available at: http://www.opengeospatial.org/standards/kml</d
     <version>3b</version>
     <alias />
     <pronom_id>1005</pronom_id>
-    <extension>wps</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>PUID deprecated. Please see fmt/163: Microsoft Works Word Processor 1-3 for DOS and 2 for Windows.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -22281,7 +22302,7 @@ Full specifications available at: http://www.opengeospatial.org/standards/kml</d
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>25 Feb 2010</dcterms:created>
-        <dcterms:modified>25 Feb 2010</dcterms:modified>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -22961,6 +22982,7 @@ WARC format has been written by the members of the IIPC (http://www.netpreserve.
   </format>
   <format>
     <puid>fmt/290</puid>
+    <mime>application/vnd.oasis.opendocument.text</mime>
     <name>OpenDocument Text</name>
     <version>1.1</version>
     <alias />
@@ -23003,6 +23025,7 @@ WARC format has been written by the members of the IIPC (http://www.netpreserve.
   </format>
   <format>
     <puid>fmt/291</puid>
+    <mime>application/vnd.oasis.opendocument.text</mime>
     <name>OpenDocument Text</name>
     <version>1.2</version>
     <alias />
@@ -23037,6 +23060,7 @@ WARC format has been written by the members of the IIPC (http://www.netpreserve.
   </format>
   <format>
     <puid>fmt/292</puid>
+    <mime>application/vnd.oasis.opendocument.presentation</mime>
     <name>OpenDocument Presentation</name>
     <version>1.1</version>
     <alias />
@@ -23079,6 +23103,7 @@ WARC format has been written by the members of the IIPC (http://www.netpreserve.
   </format>
   <format>
     <puid>fmt/293</puid>
+    <mime>application/vnd.oasis.opendocument.presentation</mime>
     <name>OpenDocument Presentation</name>
     <version>1.2</version>
     <alias />
@@ -23113,6 +23138,7 @@ WARC format has been written by the members of the IIPC (http://www.netpreserve.
   </format>
   <format>
     <puid>fmt/294</puid>
+    <mime>application/vnd.oasis.opendocument.spreadsheet</mime>
     <name>OpenDocument Spreadsheet</name>
     <version>1.1</version>
     <alias />
@@ -23155,6 +23181,7 @@ WARC format has been written by the members of the IIPC (http://www.netpreserve.
   </format>
   <format>
     <puid>fmt/295</puid>
+    <mime>application/vnd.oasis.opendocument.spreadsheet</mime>
     <name>OpenDocument Spreadsheet</name>
     <version>1.2</version>
     <alias />
@@ -23189,6 +23216,7 @@ WARC format has been written by the members of the IIPC (http://www.netpreserve.
   </format>
   <format>
     <puid>fmt/296</puid>
+    <mime>application/vnd.oasis.opendocument.graphics</mime>
     <name>OpenDocument Graphics</name>
     <version>1.1</version>
     <alias />
@@ -23231,6 +23259,7 @@ WARC format has been written by the members of the IIPC (http://www.netpreserve.
   </format>
   <format>
     <puid>fmt/297</puid>
+    <mime>application/vnd.oasis.opendocument.graphics</mime>
     <name>OpenDocument Graphics</name>
     <version>1.2</version>
     <alias />
@@ -27315,11 +27344,11 @@ http://www.dca.fee.unicamp.br/~martino/disciplinas/ea978/tgaffs.pdf</dc:descript
     <has_priority_over>fmt/96</has_priority_over>
     <signature>
       <name>Internet Archive 1.1</name>
-      <note>Version block at beginning of file starts with string &#8220;filedesc://&#8221; followed by a path and filename whose filename extension is &#8220;.arc&#8221;&lt;sp&gt;. followed by &lt;ip address&gt;, &lt;date&gt; and &#8220;text/plain&#8221;&lt;sp&gt; followed by &lt;length&gt;&lt;nl&gt; 1&lt;sp&gt;1&lt;sp&gt; followed by &#8220;URL IP-address Archive-date Content-type Archive-length&#8221;</note>
+      <note>Version block at beginning of file starts with string &#8220;filedesc://&#8221; followed by a path and filename&lt;sp&gt;. Followed by &lt;ip address&gt;, &lt;date&gt; and &#8220;text/plain&#8221;&lt;sp&gt; followed by &lt;length&gt;&lt;nl&gt; 1&lt;sp&gt;1&lt;sp&gt; followed by &#8220;URL IP-address Archive-date Content-type Archive-length&#8221;</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>66696C65646573633A2F2F{1-128}2E61726320{1-3}2E{1-3}2E{1-3}2E{1-3}20{14}20746578742F706C61696E20{1-16}0A31203120*0A55524C2049502D6164647265737320417263686976652D6461746520436F6E74656E742D7479706520417263686976652D6C656E677468</pronom_pattern>
-        <regex>(?s)\Afiledesc://.{1,128}\.arc .{1,3}\..{1,3}\..{1,3}\..{1,3} .{14} text/plain .{1,16}\n1 1 .*\nURL IP-address Archive-date Content-type Archive-length</regex>
+        <pronom_pattern>66696C65646573633A2F2F{1-132}20{1-3}2E{1-3}2E{1-3}2E{1-3}20{14}20746578742F706C61696E20{1-16}0A31203120*0A55524C2049502D6164647265737320417263686976652D6461746520436F6E74656E742D7479706520417263686976652D6C656E677468</pronom_pattern>
+        <regex>(?s)\Afiledesc://.{1,132} .{1,3}\..{1,3}\..{1,3}\..{1,3} .{14} text/plain .{1,16}\n1 1 .*\nURL IP-address Archive-date Content-type Archive-length</regex>
       </pattern>
     </signature>
     <details>
@@ -27578,7 +27607,7 @@ documents. A PostScript language document description that minimally conforms to
         <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
         <dcterms:created>11 Jun 2012</dcterms:created>
         <dcterms:modified>11 Jun 2012</dcterms:modified>
-        <dc:description>Specification available at  http://mercator.elte.hu/~saman/hu/okt/AI7FileFormat.pdf</dc:description>
+        <dc:description>Specification available at http://mercator.elte.hu/~saman/hu/okt/AI7FileFormat.pdf</dc:description>
       </record_metadata>
     </details>
   </format>
@@ -28052,7 +28081,7 @@ Version 7.0 includes: tabbed dockable palettes, transform palette, align palette
       </pattern>
       <pattern>
         <position>EOF</position>
-        <pronom_pattern>30{1-2}454F46{1-2}</pronom_pattern>
+        <pronom_pattern>30{1-2}454F46</pronom_pattern>
         <regex>(?s)0.{1,2}EOF.{1,2}\Z</regex>
       </pattern>
     </signature>
@@ -28066,7 +28095,7 @@ Version 7.0 includes: tabbed dockable palettes, transform palette, align palette
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>11 Jun 2012</dcterms:created>
-        <dcterms:modified>11 Jun 2012</dcterms:modified>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -28154,6 +28183,11 @@ This initial version accompanied the launch of DNG and related products. It was 
     <alias />
     <pronom_id>1224</pronom_id>
     <extension>dng</extension>
+    <has_priority_over>x-fmt/387</has_priority_over>
+    <has_priority_over>x-fmt/388</has_priority_over>
+    <has_priority_over>x-fmt/399</has_priority_over>
+    <has_priority_over>fmt/154</has_priority_over>
+    <has_priority_over>fmt/353</has_priority_over>
     <signature>
       <name>DNG 1.2 (little-endian, BOF)</name>
       <note>TIFF header plus DNGVersion tag near BOF</note>
@@ -28225,6 +28259,11 @@ This version, published May 2008, was based on experience and feedback from othe
     <alias />
     <pronom_id>1225</pronom_id>
     <extension>dng</extension>
+    <has_priority_over>x-fmt/387</has_priority_over>
+    <has_priority_over>x-fmt/388</has_priority_over>
+    <has_priority_over>x-fmt/399</has_priority_over>
+    <has_priority_over>fmt/154</has_priority_over>
+    <has_priority_over>fmt/353</has_priority_over>
     <signature>
       <name>DNG 1.3 (big-endian, BOF)</name>
       <note>TIFF header plus DNGVersion tag near BOF</note>
@@ -28382,6 +28421,7 @@ This version, published June 2009, added various improvements, but the major cha
   </format>
   <format>
     <puid>fmt/442</puid>
+    <mime>application/vnd.visio</mime>
     <name>Microsoft Visio (generic)</name>
     <version />
     <alias />
@@ -28405,6 +28445,7 @@ This version, published June 2009, added various improvements, but the major cha
   </format>
   <format>
     <puid>fmt/443</puid>
+    <mime>application/vnd.visio</mime>
     <name>Microsoft Visio Drawing</name>
     <version>2003</version>
     <alias />
@@ -29120,6 +29161,7 @@ EOF: }..}..</note>
   </format>
   <format>
     <puid>fmt/463</puid>
+    <mime>image/jpm</mime>
     <name>JPM (JPEG 2000 part 6)</name>
     <version />
     <alias />
@@ -29890,6 +29932,450 @@ VAR: Identifies the byte sequence which equals - xmlns:pdfaid="http://www.aiim.o
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>25 Oct 2012</dcterms:created>
         <dcterms:modified>25 Oct 2012</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/482</puid>
+    <name>Apple iBook format</name>
+    <version />
+    <alias />
+    <pronom_id>1269</pronom_id>
+    <extension>ibooks</extension>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>British Library / British Library</dc:creator>
+        <dcterms:created>18 Dec 2012</dcterms:created>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
+        <dc:description>This format can be identified via a container signature in DROID version 6 or later. The PRONOM database cannot currently represent container signatures.</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/483</puid>
+    <name>ePub format</name>
+    <version />
+    <alias />
+    <pronom_id>1270</pronom_id>
+    <extension>epub</extension>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>18 Dec 2012</dcterms:created>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
+        <dc:description>This format can be identified via a container signature in DROID version 6 or later. The PRONOM database cannot currently represent container signatures.</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/484</puid>
+    <name>7Zip format</name>
+    <version />
+    <alias />
+    <pronom_id>1271</pronom_id>
+    <extension>7z</extension>
+    <signature>
+      <name>7Zip</name>
+      <note>BOF: 7z&#188;&#175;'.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>377ABCAF271C</pronom_pattern>
+        <regex>(?s)\A7z\xbc\xaf'\x1c</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>18 Dec 2012</dcterms:created>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/485</puid>
+    <name>Rocket Book eBook format</name>
+    <version />
+    <alias />
+    <pronom_id>1272</pronom_id>
+    <extension>rb</extension>
+    <signature>
+      <name>Rocket Book format</name>
+      <note>BOF: &#176;.&#176;.{2}NUVO</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>B00CB00C{2}4E55564F</pronom_pattern>
+        <regex>(?s)\A\xb0\x0c\xb0\x0c.{2}NUVO</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>British Library / British Library</dc:creator>
+        <dcterms:created>18 Dec 2012</dcterms:created>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/486</puid>
+    <name>Macromedia (Adobe) Director Compressed Resource file</name>
+    <version />
+    <alias />
+    <pronom_id>1273</pronom_id>
+    <extension>dcr</extension>
+    <signature>
+      <name>Macromedia Director DCR Windows</name>
+      <note>BOF: RIFX{4}FGDM</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>52494658{4}4647444D</pronom_pattern>
+        <regex>(?s)\ARIFX.{4}FGDM</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Macromedia Director DCR Macintosh</name>
+      <note>BOF: XFIR{4}MDGF</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>58464952{4}4D444746</pronom_pattern>
+        <regex>(?s)\AXFIR.{4}MDGF</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>These files are interactive plugin objects produced by Macromedia Director, and are typically found embedded in web pages, rendered by the Shockwave plugin.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Rhizome / Rhizome</dc:creator>
+        <dcterms:created>18 Dec 2012</dcterms:created>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/487</puid>
+    <name>Macro Enabled Microsoft Powerpoint</name>
+    <version>2007 Onwards</version>
+    <alias />
+    <pronom_id>1274</pronom_id>
+    <extension>pptm</extension>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>18 Dec 2012</dcterms:created>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
+        <dc:description>This format can be identified via a container signature in DROID version 6 or later. The PRONOM database cannot currently represent container signatures.</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/488</puid>
+    <name>Acrobat PDF/X - Portable Document Format - Exchange PDF/X-4</name>
+    <version />
+    <alias />
+    <pronom_id>1275</pronom_id>
+    <extension>pdf</extension>
+    <has_priority_over>fmt/14</has_priority_over>
+    <has_priority_over>fmt/15</has_priority_over>
+    <has_priority_over>fmt/16</has_priority_over>
+    <has_priority_over>fmt/17</has_priority_over>
+    <has_priority_over>fmt/18</has_priority_over>
+    <has_priority_over>fmt/19</has_priority_over>
+    <has_priority_over>fmt/20</has_priority_over>
+    <has_priority_over>fmt/276</has_priority_over>
+    <signature>
+      <name>PDF/X-4</name>
+      <note>BOF: %PDF-1.[0-7] - specification is based on PDF1.6, however the specification doesn't specifically preclude other versions. We have seen and produced samples with PDF value not 1.6, so we are including all possible values.
+VAR: &lt;pdfxid:GTS_PDFXVersion&gt;PDF/X-4&lt;/pdfxid:GTS_PDFXVersion&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>255044462D312E[30:37]</pronom_pattern>
+        <regex>(?s)\A.{0,0}%PDF-1\.[0-7]</regex>
+      </pattern>
+      <pattern>
+        <position>VAR</position>
+        <pronom_pattern>3C7064667869643A4754535F5044465856657273696F6E3E5044462F582D343C2F7064667869643A4754535F5044465856657273696F6E3E</pronom_pattern>
+        <regex>(?s)\x3cpdfxid:GTS_PDFXVersion\x3ePDF/X-4\x3c/pdfxid:GTS_PDFXVersion\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>PDF/X was developed by the Committee for Graphics Arts Technologies Standards (CGATS) and Adobe. This 'exchange standard' format is based on Adobe's PDF specification and includes additional notes specifically to facilitate graphics exchange. PDF/X is a subset of the PDF specification, and is an application standard as well as a file format standard. There are several versions of the standard, which address specific issues.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <is_subtype_of>637</is_subtype_of>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>18 Dec 2012</dcterms:created>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/489</puid>
+    <name>Acrobat PDF/X - Portable Document Format - Exchange PDF/X-4p</name>
+    <version />
+    <alias />
+    <pronom_id>1276</pronom_id>
+    <extension>pdf</extension>
+    <has_priority_over>fmt/14</has_priority_over>
+    <has_priority_over>fmt/15</has_priority_over>
+    <has_priority_over>fmt/16</has_priority_over>
+    <has_priority_over>fmt/17</has_priority_over>
+    <has_priority_over>fmt/18</has_priority_over>
+    <has_priority_over>fmt/19</has_priority_over>
+    <has_priority_over>fmt/20</has_priority_over>
+    <has_priority_over>fmt/276</has_priority_over>
+    <signature>
+      <name>PDF/X-4p</name>
+      <note>BOF: %PDF-1.[0-7] - specification is based on PDF1.6, however the specification doesn't specifically preclude other versions. We have seen and produced samples with PDF value not 1.6, so we are including all possible values.
+VAR: &lt;pdfxid:GTS_PDFXVersion&gt;PDF/X-4p&lt;/pdfxid:GTS_PDFXVersion&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>255044462D312E[30:37]</pronom_pattern>
+        <regex>(?s)\A.{0,0}%PDF-1\.[0-7]</regex>
+      </pattern>
+      <pattern>
+        <position>VAR</position>
+        <pronom_pattern>3C7064667869643A4754535F5044465856657273696F6E3E5044462F582D34703C2F7064667869643A4754535F5044465856657273696F6E3E</pronom_pattern>
+        <regex>(?s)\x3cpdfxid:GTS_PDFXVersion\x3ePDF/X-4p\x3c/pdfxid:GTS_PDFXVersion\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>PDF/X was developed by the Committee for Graphics Arts Technologies Standards (CGATS) and Adobe. This 'exchange standard' format is based on Adobe's PDF specification and includes additional notes specifically to facilitate graphics exchange. PDF/X is a subset of the PDF specification, and is an application standard as well as a file format standard. There are several versions of the standard, which address specific issues.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <is_subtype_of>637</is_subtype_of>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>18 Dec 2012</dcterms:created>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/490</puid>
+    <name>Acrobat PDF/X - Portable Document Format - Exchange PDF/X-5g</name>
+    <version />
+    <alias />
+    <pronom_id>1277</pronom_id>
+    <extension>pdf</extension>
+    <has_priority_over>fmt/14</has_priority_over>
+    <has_priority_over>fmt/15</has_priority_over>
+    <has_priority_over>fmt/16</has_priority_over>
+    <has_priority_over>fmt/17</has_priority_over>
+    <has_priority_over>fmt/18</has_priority_over>
+    <has_priority_over>fmt/19</has_priority_over>
+    <has_priority_over>fmt/20</has_priority_over>
+    <has_priority_over>fmt/276</has_priority_over>
+    <signature>
+      <name>PDF/X-5g</name>
+      <note>BOF: %PDF-1.(0-7). Specification is based on 1.6,  however doesn't specifically preclude other versions. 
+VAR: &lt;pdfxid:GTS_PDFXVersion&gt;PDF/X-5g&lt;/pdfxid:GTS_PDFXVersion&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>255044462D312E[30:37]</pronom_pattern>
+        <regex>(?s)\A%PDF-1\.[0-7]</regex>
+      </pattern>
+      <pattern>
+        <position>VAR</position>
+        <pronom_pattern>3C7064667869643A4754535F5044465856657273696F6E3E5044462F582D35673C2F7064667869643A4754535F5044465856657273696F6E3E</pronom_pattern>
+        <regex>(?s)\x3cpdfxid:GTS_PDFXVersion\x3ePDF/X-5g\x3c/pdfxid:GTS_PDFXVersion\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>PDF/X was developed by the Committee for Graphics Arts Technologies Standards (CGATS) and Adobe. This 'exchange standard' format is based on Adobe's PDF specification and includes additional notes specifically to facilitate graphics exchange. PDF/X is a subset of the PDF specification, and is an application standard as well as a file format standard. There are several versions of the standard, which address specific issues.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <is_subtype_of>637</is_subtype_of>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>18 Dec 2012</dcterms:created>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/491</puid>
+    <name>Acrobat PDF/X - Portable Document Format - Exchange PDF/X-5pg</name>
+    <version />
+    <alias />
+    <pronom_id>1278</pronom_id>
+    <extension>pdf</extension>
+    <has_priority_over>fmt/14</has_priority_over>
+    <has_priority_over>fmt/15</has_priority_over>
+    <has_priority_over>fmt/16</has_priority_over>
+    <has_priority_over>fmt/17</has_priority_over>
+    <has_priority_over>fmt/18</has_priority_over>
+    <has_priority_over>fmt/19</has_priority_over>
+    <has_priority_over>fmt/20</has_priority_over>
+    <has_priority_over>fmt/276</has_priority_over>
+    <signature>
+      <name>PDF/X-5pg</name>
+      <note>BOF: %PDF-1.(0-7). Specification is based on 1.6,  however doesn't specifically preclude other versions. 
+&lt;pdfxid:GTS_PDFXVersion&gt;PDF/X-5pg&lt;/pdfxid:GTS_PDFXVersion&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>255044462D312E[30:37]</pronom_pattern>
+        <regex>(?s)\A%PDF-1\.[0-7]</regex>
+      </pattern>
+      <pattern>
+        <position>VAR</position>
+        <pronom_pattern>3C7064667869643A4754535F5044465856657273696F6E3E5044462F582D3570673C2F7064667869643A4754535F5044465856657273696F6E3E</pronom_pattern>
+        <regex>(?s)\x3cpdfxid:GTS_PDFXVersion\x3ePDF/X-5pg\x3c/pdfxid:GTS_PDFXVersion\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>PDF/X was developed by the Committee for Graphics Arts Technologies Standards (CGATS) and Adobe. This 'exchange standard' format is based on Adobe's PDF specification and includes additional notes specifically to facilitate graphics exchange. PDF/X is a subset of the PDF specification, and is an application standard as well as a file format standard. There are several versions of the standard, which address specific issues.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <is_subtype_of>637</is_subtype_of>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>18 Dec 2012</dcterms:created>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/492</puid>
+    <name>Acrobat PDF/X - Portable Document Format - Exchange PDF/X-5n</name>
+    <version />
+    <alias />
+    <pronom_id>1279</pronom_id>
+    <extension>pdf</extension>
+    <has_priority_over>fmt/14</has_priority_over>
+    <has_priority_over>fmt/15</has_priority_over>
+    <has_priority_over>fmt/16</has_priority_over>
+    <has_priority_over>fmt/17</has_priority_over>
+    <has_priority_over>fmt/18</has_priority_over>
+    <has_priority_over>fmt/19</has_priority_over>
+    <has_priority_over>fmt/20</has_priority_over>
+    <has_priority_over>fmt/276</has_priority_over>
+    <signature>
+      <name>PDF/X-5n</name>
+      <note>BOF: %PDF-1.(0-7). Specification is based on 1.6,  however doesn't specifically preclude other versions. 
+&lt;pdfxid:GTS_PDFXVersion&gt;PDF/X-5n&lt;/pdfxid:GTS_PDFXVersion&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>255044462D312E[30:37]</pronom_pattern>
+        <regex>(?s)\A%PDF-1\.[0-7]</regex>
+      </pattern>
+      <pattern>
+        <position>VAR</position>
+        <pronom_pattern>3C7064667869643A4754535F5044465856657273696F6E3E5044462F582D356E3C2F7064667869643A4754535F5044465856657273696F6E3E</pronom_pattern>
+        <regex>(?s)\x3cpdfxid:GTS_PDFXVersion\x3ePDF/X-5n\x3c/pdfxid:GTS_PDFXVersion\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>PDF/X was developed by the Committee for Graphics Arts Technologies Standards (CGATS) and Adobe. This 'exchange standard' format is based on Adobe's PDF specification and includes additional notes specifically to facilitate graphics exchange. PDF/X is a subset of the PDF specification, and is an application standard as well as a file format standard. There are several versions of the standard, which address specific issues.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <is_subtype_of>637</is_subtype_of>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>18 Dec 2012</dcterms:created>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/493</puid>
+    <name>Acrobat PDF/E - Portable Document Format for Engineering PDF/E-1</name>
+    <version />
+    <alias />
+    <pronom_id>1280</pronom_id>
+    <extension>pdf</extension>
+    <has_priority_over>fmt/14</has_priority_over>
+    <has_priority_over>fmt/15</has_priority_over>
+    <has_priority_over>fmt/16</has_priority_over>
+    <has_priority_over>fmt/17</has_priority_over>
+    <has_priority_over>fmt/18</has_priority_over>
+    <has_priority_over>fmt/19</has_priority_over>
+    <has_priority_over>fmt/20</has_priority_over>
+    <has_priority_over>fmt/276</has_priority_over>
+    <signature>
+      <name>PDF/E-1</name>
+      <note>BOF: %PDF-1.[0-7] - specification is based on PDF1.6, however the specification doesn't specifically preclude other versions. We have seen and produced samples with PDF value not 1.6, so we are including all possible values.
+VAR: &lt;pdfe:ISO_PDFEVersion&gt;PDF/E-1&lt;/pdfe:ISO_PDFEVersion&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>255044462D312E[30:37]</pronom_pattern>
+        <regex>(?s)\A.{0,0}%PDF-1\.[0-7]</regex>
+      </pattern>
+      <pattern>
+        <position>VAR</position>
+        <pronom_pattern>3C706466653A49534F5F5044464556657273696F6E3E5044462F452D313C2F706466653A49534F5F5044464556657273696F6E3E</pronom_pattern>
+        <regex>(?s)\x3cpdfe:ISO_PDFEVersion\x3ePDF/E-1\x3c/pdfe:ISO_PDFEVersion\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <is_subtype_of>637</is_subtype_of>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>18 Dec 2012</dcterms:created>
+        <dcterms:modified>18 Dec 2012</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>

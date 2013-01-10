@@ -19,7 +19,7 @@ from pronomutils import getPronomSignature, checkWellFormedness
 import prepare
 
 defaults = {
-    'version': '1.2.1',
+    'version': '1.2.2',
     'conf_dir': os.path.join(os.path.dirname(__file__), 'conf'),
     'tmp_dir': 'tmp', 
     'signatureFileName' : 'DROID_SignatureFile-v{0}.xml',
@@ -27,7 +27,7 @@ defaults = {
     'fidoSignatureVersion' : 'format_extensions.xml', 
     'versionsFileName' : 'versions.xml',
     'http_throttle' : 0.5, # in secs, to prevent DoS of PRONOM server
-    'containerVersion' : 'container-signature-20110204.xml', # container version is kind of frozen and needs human attention before updating
+    'containerVersion' : 'container-signature-20121218.xml', # container version is frozen and needs human attention before updating
     'versionXML' : """<?xml version="1.0" encoding="UTF-8"?>\n<versions>\n\t<pronomVersion>{0}</pronomVersion>\n\t<pronomSignature>{1}</pronomSignature>\n\t<pronomContainerSignature>{2}</pronomContainerSignature>\n\t<fidoExtensionSignature>{3}</fidoExtensionSignature>\n\t<updateScript>{4}</updateScript>\n</versions>"""
     }
 
@@ -121,10 +121,9 @@ def main(defaults):
                 continue
             numfiles += 1
             percent = int(float(numfiles) / one_percent)
-            print "\b\b\b\b\b",
+            print "\r",
             print str(percent)+"%",
             time.sleep(defaults['http_throttle'])
-        print "\b\b\b\b\b",
         print "100%"
         try:
             import zlib

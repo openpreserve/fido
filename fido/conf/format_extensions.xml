@@ -379,10 +379,12 @@
       <note>80 byte header record: BOF contains "HEADER" and date field (YY-MMM-DD at offset 50) and IDCode (1 digit followed by 3 alphanumeric at offset 63). Also: "END   " chunk at beginning of 80 byte footer record </note>
       <pattern>
         <position>BOF</position>
-        <regex>(?s)\AHEADER.{44}\d\d\-[A-Z]{3}-\d\d.{3}\d\w{3}</regex>
+<!--        <regex>(?s)\AHEADER.{44}\d\d\-[A-Z]{3}-\d\d.{3}\d\w{3}</regex>-->
+        <regex>(?s)\AHEADER.{44}[0-9]{3}\-[a-z]{3}\-[0-9]{3}.{3}[0-9]{1}[a-z]{3}</regex>
       </pattern>
       <pattern>
-        <position>VAR</position>          <pronom_pattern>454E442020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020             2020202020202020202020202020202020202020202020202020200A</pronom_pattern>
+        <position>VAR</position>          
+        <pronom_pattern>454E442020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020             2020202020202020202020202020202020202020202020202020200A</pronom_pattern>
         <regex>(?s)END\x20{77}\x0A\Z</regex>
       </pattern>
     </signature>
