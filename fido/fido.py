@@ -6,7 +6,7 @@ from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
 from xml.etree import ElementTree as VET # versions.xml
 
-version = '1.1.2'
+version = '1.1.3'
 defaults = {'bufsize': 128 * 1024, # (bytes)
             'regexcachesize' : 2084, # (bytes)
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
@@ -341,6 +341,9 @@ class Fido:
             # MdR: this needs attention
             if len(matches) > 0:
                 self.handle_matches(self.current_file, matches, time.clock() - t0, "signature")
+            elif len(matches) == 0 or self.current_filesize == 0:
+                matches = self.match_extensions(self.current_file)
+                self.handle_matches(self.current_file, matches, time.clock() - t0, "extension")
                 
     def identify_stream(self, stream):
         """Identify the type of @param stream.  
@@ -355,6 +358,9 @@ class Fido:
         # MdR: this needs attention
         if len(matches) > 0:
             self.handle_matches(self.current_file, matches, time.clock() - t0, "signature")
+        elif len(matches) == 0 or self.current_filesize == 0:
+            matches = self.match_extensions(self.current_file)
+            self.handle_matches(self.current_file, matches, time.clock() - t0, "extension")
                     
     def container_type(self, matches):
         """Determine if one of the @param matches is the format of a container that we can look inside of (e.g., zip, tar).
