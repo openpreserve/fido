@@ -6,7 +6,7 @@ from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
 from xml.etree import ElementTree as VET # versions.xml
 
-version = '1.1.3'
+version = '1.1.4'
 defaults = {'bufsize': 128 * 1024, # (bytes)
             'regexcachesize' : 2084, # (bytes)
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
@@ -359,7 +359,17 @@ class Fido:
         if len(matches) > 0:
             self.handle_matches(self.current_file, matches, time.clock() - t0, "signature")
         elif len(matches) == 0 or self.current_filesize == 0:
+            # we can only determine the filename from the STDIN stream
+            # on Linux, on Windows there is not a (simple) way to do that
+            if (os.name != "nt"):
+                try:
+                    self.current_file = os.readlink("/proc/self/fd/0")
+                except:
+                    self.current_file = 'STDIN'
             matches = self.match_extensions(self.current_file)
+            # we have to reset self.current_file if not on Windows
+            if (os.name != "nt"):
+                self.current_file = 'STDIN'
             self.handle_matches(self.current_file, matches, time.clock() - t0, "extension")
                     
     def container_type(self, matches):
