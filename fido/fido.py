@@ -683,9 +683,11 @@ class Fido:
         myext = os.path.splitext(filename)[1].lower().lstrip(".")
         result = []
         if len(myext) > 0:
-            for format in self.formats:
-                if format.find('extension') != None and myext == format.find('extension').text:
-                    result.append((format, self.externalsig))
+            for element in self.formats:
+                if element.findall('extension') != None:
+                    for format in element.findall('extension'):
+                        if myext == format.text:
+                            result.append((element, self.externalsig))
         result = [match for match in result if self.as_good_as_any(match[0], result)]
         return result
     
