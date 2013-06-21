@@ -688,6 +688,7 @@ class Fido:
                     for format in element.findall('extension'):
                         if myext == format.text:
                             result.append((element, self.externalsig))
+                            break
         result = [match for match in result if self.as_good_as_any(match[0], result)]
         return result
     
