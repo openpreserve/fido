@@ -6,7 +6,7 @@ from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
 from xml.etree import ElementTree as VET # versions.xml
 
-version = '1.1.4'
+version = '1.1.5'
 defaults = {'bufsize': 128 * 1024, # (bytes)
             'regexcachesize' : 2084, # (bytes)
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
