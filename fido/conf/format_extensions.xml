@@ -459,4 +459,34 @@
       </record_metadata>  
     </details>
   </format>
+  <!-- ePub File format (ePub) -->
+  <!-- contributed by Kris Dekeyser (LIBIS, Leuven, Belgium) -->
+  <format>
+    <puid>fmt/483</puid>
+    <name>ePub format</name>
+    <version>1.0</version>
+    <alias>EPUB</alias>
+    <mime>application/epub+zip</mime>
+    <extension>epub</extension>
+    <has_priority_over>x-fmt/263</has_priority_over>
+    <has_priority_over>fmt/61</has_priority_over>
+    <signature>
+      <name>EPUB file</name>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)\APK\x03\x04</regex>
+      </pattern>
+      <pattern>
+        <position>BOF</position>
+        <regex>(?s)\A.{30}mimetypeapplication/epub\+zip</regex>
+      </pattern>
+    </signature>
+    <details>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Kris Dekeyser (LIBIS, Leuven, Belgium)</dc:creator>
+        <dcterms:created>09 July 2013</dcterms:created>
+      </record_metadata>  
+	</details>
+  </format>
 </formats>

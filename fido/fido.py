@@ -6,7 +6,7 @@ from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
 from xml.etree import ElementTree as VET # versions.xml
 
-version = '1.1.5'
+version = '1.1.6'
 defaults = {'bufsize': 128 * 1024, # (bytes)
             'regexcachesize' : 2084, # (bytes)
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
@@ -345,7 +345,7 @@ class Fido:
                 matches = self.match_extensions(self.current_file)
                 self.handle_matches(self.current_file, matches, time.clock() - t0, "extension")
                 
-    def identify_stream(self, stream):
+    def identify_stream(self, stream, filename):
         """Identify the type of @param stream.  
            Call self.handle_matches instead of returning a value.
            Does not close stream.
@@ -365,7 +365,13 @@ class Fido:
                 try:
                     self.current_file = os.readlink("/proc/self/fd/0")
                 except:
-                    self.current_file = 'STDIN'
+                    if filename is not None:
+                        self.current_file = filename
+                    else:
+                        self.current_file = 'STDIN'
+            else:
+                if filename is not None:
+                    self.current_file = filename
             matches = self.match_extensions(self.current_file)
             # we have to reset self.current_file if not on Windows
             if (os.name != "nt"):
@@ -730,6 +736,7 @@ def main(arglist=None):
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-input', default=False, help='file containing a list of files to check, one per line. - means stdin')
     group.add_argument('files', nargs='*', default=[], metavar='FILE', help='files to check.  If the file is -, then read content from stdin. In this case, python must be invoked with -u or it may convert the line terminators.')
+    parser.add_argument('-filename', default=None, help='filename if file contents passed through STDIN')
     parser.add_argument('-useformats', metavar='INCLUDEPUIDS', default=None, help='comma separated string of formats to use in identification')
     parser.add_argument('-nouseformats', metavar='EXCLUDEPUIDS', default=None, help='comma separated string of formats not to use in identification')
     parser.add_argument('-matchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use on match. See nomatchprintf, README.txt.')
@@ -798,7 +805,7 @@ def main(arglist=None):
                 sys.exit(1)
                 fido.identify_multi_object_stream(sys.stdin)
             else:
-                fido.identify_stream(sys.stdin)
+                fido.identify_stream(sys.stdin, args.filename)
         else:
             for file in list_files(args.files, args.recurse):
                 fido.identify_file(file)
