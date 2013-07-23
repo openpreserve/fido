@@ -461,6 +461,11 @@
   </format>
   <!-- ePub File format (ePub) -->
   <!-- contributed by Kris Dekeyser (LIBIS, Leuven, Belgium) -->
+  <!--
+  *** NOTE: commented out for the time being as the bugfix for container signatures
+  *** which has been committed with version 1.1.8 seems to do the trick
+  -->
+  <!--
   <format>
     <puid>fmt/483</puid>
     <name>ePub format</name>
@@ -489,4 +494,5 @@
       </record_metadata>  
 	</details>
   </format>
+  -->
 </formats>

@@ -556,18 +556,41 @@
     <pronom_id>49</pronom_id>
     <extension>ai</extension>
     <apple_uid>com.adobe.illustrator.ai-&#8203;image</apple_uid>
+    <has_priority_over>fmt/122</has_priority_over>
+    <has_priority_over>fmt/124</has_priority_over>
+    <has_priority_over>fmt/123</has_priority_over>
+    <has_priority_over>x-fmt/406</has_priority_over>
+    <has_priority_over>x-fmt/408</has_priority_over>
+    <signature>
+      <name>Adobe Illustrator 1.x v1</name>
+      <note>The first line of the file declares with the Comment prefix %! that the file contains a PostScript program. It then specifies that the file conforms to version 2.0 of the Document Structuring Conventions and further that the file conforms to version 1.2 of the conventions for Encapsulated PostScript Files. The second line contains a %%Creator comment that identifies version 1.0 as the version of Adobe Illustrator that generated the PostScript document.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>252150532D41646F62652D322E3020455053462D312E320D252543726561746F723A41646F626520496C6C7573747261746F7228544D2920312E30</pronom_pattern>
+        <regex>(?s)\A.{0,0}%\!PS-Adobe-2\.0 EPSF-1\.2\r%%Creator:Adobe Illustrator\(TM\) 1\.0</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Adobe Illustrator 1.x v2</name>
+      <note>The first line of the file declares with the Comment prefix %! that the file contains a PostScript program. It then specifies that the file conforms to version 2.0 of the Document Structuring Conventions. It may or may not specify EPSF 1.2. The Creator may or may not be Adobe Illustrator, but the DocumentProcsets declared in the header will be Adobe Illustrator 1.0, 1.1 or 1.2</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>252150532D41646F62652D322E30{10-2096}2525446F63756D656E7450726F63536574733A(2041|41)646F62655F496C6C7573747261746F725F312E(30|31|32)</pronom_pattern>
+        <regex>(?s)\A.{0,0}%\!PS-Adobe-2\.0.{10,2096}%%DocumentProcSets:(?: A|A)dobe_Illustrator_1\.(?:0|1|2)</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
 documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
       <content_type>Image (Vector)</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
         <dcterms:created>23 Sep 2003</dcterms:created>
-        <dcterms:modified>11 Jun 2012</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description>http://mercator.elte.hu/~saman/hu/okt/AI7FileFormat.pdf
 Adobe has classified Illustrator versions 1.0 and 1.1 as the same file format.</dc:description>
       </record_metadata>
@@ -1466,21 +1489,30 @@ A DWF package must meet the following requirements:
   <format>
     <puid>x-fmt/53</puid>
     <name>Macromedia Freehand</name>
-    <version />
+    <version>5</version>
     <alias />
     <pronom_id>87</pronom_id>
-    <extension>fh</extension>
+    <extension>fh5</extension>
+    <signature>
+      <name>FreeHand 5</name>
+      <note>MAC File type Code AGD1</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>41474431</pronom_pattern>
+        <regex>(?s)\A.{0,0}AGD1</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Macromedia, Inc.</dc:creator>
+      <dcterms:publisher>Macromedia, Inc.</dcterms:publisher>
       <content_type>Image (Vector)</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -2125,17 +2157,35 @@ The file format specification is available: http://graphcomp.com/info/specs/live
     <extension>pct</extension>
     <extension>pict</extension>
     <apple_uid>com.apple.pict</apple_uid>
+    <signature>
+      <name>Macintosh PICT Image 1.0 v1</name>
+      <note>512 byte header beginning with DRWG(MD|D2); At decimal location 522 (hex 20A) 1 byte opcode for &#8220;picversion&#8221; hex 11; next byte version number hex 01</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>44525747(4D44|4432){516}1101</pronom_pattern>
+        <regex>(?s)\A.{0,0}DRWG(?:MD|D2).{516}\x11\x01</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Macintosh PICT Image 1.0 v2</name>
+      <note>512 byte header consisting of all nulls;At decimal location 522 (hex 20A) 1 byte opcode for &#8220;picversion&#8221; hex 11; next byte version number hex 01</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>000000000000{516}1101</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x00\x00\x00\x00\x00\x00.{516}\x11\x01</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
       <content_type>Image (Raster), Image (Vector)</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>11 Jun 2012</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -2603,6 +2653,15 @@ The file format specification is available: http://graphcomp.com/info/specs/live
     <pronom_id>141</pronom_id>
     <extension>psw</extension>
     <extension>pwd</extension>
+    <signature>
+      <name>Pocket Word Document</name>
+      <note>File must be enclosed in braces { }. The opening brace is followed by control word \pwd followed by the version number 2 followed by the \ansi control word.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>7B5C707764325C616E7369</pronom_pattern>
+        <regex>(?s)\A.{0,0}\{\\pwd2\\ansi</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
@@ -2613,7 +2672,7 @@ The file format specification is available: http://graphcomp.com/info/specs/live
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -2625,6 +2684,15 @@ The file format specification is available: http://graphcomp.com/info/specs/live
     <alias />
     <pronom_id>143</pronom_id>
     <extension>pwi</extension>
+    <signature>
+      <name>Inkwriter/Notetaker PWI format</name>
+      <note>A pwi file must be enclosed in braces { }. The opening brace is followed by control word \pwi</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>7B5C707769</pronom_pattern>
+        <regex>(?s)\A.{0,0}\{\\pwi</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
@@ -2635,7 +2703,7 @@ The file format specification is available: http://graphcomp.com/info/specs/live
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -3417,7 +3485,7 @@ EOF: ....</note>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -3474,17 +3542,27 @@ EOF: ....</note>
     <alias />
     <pronom_id>181</pronom_id>
     <extension>xlc</extension>
+    <signature>
+      <name>BIFF 4 Chart</name>
+      <note>BIFF4: BOF hex 0904. record length hex 0600, BIFF version=(not used), filetype=chart=2000</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>09040600{2}2000</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x09\x04\x06\x00.{2} \x00</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <is_subtype_of>680</is_subtype_of>
       <content_type>Spreadsheet</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -3732,6 +3810,15 @@ http://www-mmsp.ece.mcgill.ca/documents/audioformats/aiff/docs/aiff-c.9.26.91.pd
     <alias />
     <pronom_id>197</pronom_id>
     <extension>asf</extension>
+    <signature>
+      <name>Electronic Arts Music ASF</name>
+      <note>Header Block ID = SCHl; 4 byte block length; Patch Tag = &#8220;PT&#8221;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>5343486C{4}5054</pronom_pattern>
+        <regex>(?s)\A.{0,0}SCHl.{4}PT</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
@@ -3740,9 +3827,9 @@ http://www-mmsp.ece.mcgill.ca/documents/audioformats/aiff/docs/aiff-c.9.26.91.pd
       <content_type>Audio</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -4652,6 +4739,15 @@ http://www.wiz-worx.com/iges5x/version5x/version5x.pdf</dc:description>
     <alias />
     <pronom_id>242</pronom_id>
     <extension>pic</extension>
+    <signature>
+      <name>PC Paint Bitmap (pic)</name>
+      <note>Magic number hex 3412; offset decimal 11 byte hex FF</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3412{9}FF</pronom_pattern>
+        <regex>(?s)\A.{0,0}4\x12.{9}\xff</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
@@ -4662,7 +4758,7 @@ http://www.wiz-worx.com/iges5x/version5x/version5x.pdf</dc:description>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -5769,10 +5865,28 @@ Known QuarkXpress file types are: qxd - QuarkXpress Document; qxl - QuarkXpress 
   <format>
     <puid>x-fmt/215</puid>
     <name>GEM Metafile Format</name>
-    <version />
+    <version>1.00</version>
     <alias />
     <pronom_id>304</pronom_id>
     <extension>gem</extension>
+    <signature>
+      <name>GEM metafile 1.00 big endian</name>
+      <note>Magic number FFFF; length = 0x18; version 100 decimal =hex 64; coordinate system either 0 (Normalized Device Coordinates) or 2 (Raster Coordinates)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>FFFF0018006400(02|00)</pronom_pattern>
+        <regex>(?s)\A.{0,0}\xff\xff\x00\x18\x00d\x00(?:\x02|\x00)</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>GEM metafile 1.00 little endian</name>
+      <note>Magic number FFFF; length = 0x18; version 100 decimal =hex 64; coordinate system either 0 (Normalized Device Coordinates) or 2 (Raster Coordinates)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>FFFF18006400(02|00)00</pronom_pattern>
+        <regex>(?s)\A.{0,0}\xff\xff\x18\x00d\x00(?:\x02|\x00)\x00</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
@@ -5781,9 +5895,9 @@ Known QuarkXpress file types are: qxd - QuarkXpress Document; qxl - QuarkXpress 
       <content_type>Image (Vector)</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -8419,16 +8533,16 @@ Full specifications can be found at http://www.w3.org/TR/xmlschema-0/</dc:descri
       </pattern>
     </signature>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>Adobe FrameMaker format is a desktop publishing and word processing format originally developed by Frame Technology Corp. Frame Technology Corp was bought by Adobe Systems in 1995, who continued to develop and support FrameMaker.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
-      <content_type />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Word Processor</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>23 Sep 2003</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -12288,6 +12402,7 @@ The identification byte is followed by four or more bytes that are all equal to 
     <pronom_id>656</pronom_id>
     <extension>wav</extension>
     <has_priority_over>fmt/6</has_priority_over>
+    <has_priority_over>fmt/141</has_priority_over>
     <signature>
       <name>BWAVE PCM 1</name>
       <note>RIFF header, WAVE ID, BEXT chunk (Version=1), Format chunk and Data chunk</note>
@@ -12400,7 +12515,7 @@ The identification byte is followed by four or more bytes that are all equal to 
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>11 Mar 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -13495,28 +13610,28 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
   <format>
     <puid>fmt/55</puid>
     <mime>application/vnd.ms-excel</mime>
-    <name>Microsoft Excel 2.1 Worksheet (xls)</name>
+    <name>Microsoft Excel 2.x Worksheet (xls)</name>
     <version>2</version>
     <alias>Microsoft Excel Worksheet (2.1)</alias>
     <pronom_id>678</pronom_id>
     <extension>xls</extension>
-    <extension>xlc</extension>
-    <extension>xlm</extension>
     <apple_uid>com.microsoft.excel.xls</apple_uid>
     <signature>
       <name>BIFF 2 Worksheet</name>
-      <note>09 - BOF / 00 - Version 2 / {2} - unspecified / 0700 - unspecified / 1000 - type of data (sheet)</note>
+      <note>BIFF2: BOF hex 0900. record length hex 0400, BIFF version (not used), filetype=worksheet=1000</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>0900{2}07001000</pronom_pattern>
-        <regex>(?s)\A\x09\x00.{2}\x07\x00\x10\x00</regex>
+        <pronom_pattern>09000400{2}1000</pronom_pattern>
+        <regex>(?s)\A\x09\x00\x04\x00.{2}\x10\x00</regex>
       </pattern>
     </signature>
     <details>
       <dc:description>The Binary Interchange File Format (BIFF) is a spreadsheet file format developed by Microsoft. BIFF 2 is the native file format of Microsoft Excel 2.1 for Windows. The format is proprietary and Microsoft does not make details of its structure public. The information contained here is derived primarily from OpenOffice.org's reverse-engineered documentation of the format, and should not therefore be regarded as definitive. BIFF is a stream based format, and a BIFF 2 file comprises a single worksheet stream, containing a Beginning of File (BOF) record, followed by a series of Worksheet records, and terminated by an End of File (EOF) record.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <is_supertype_of>1341</is_supertype_of>
+      <is_supertype_of>1343</is_supertype_of>
       <content_type>Spreadsheet</content_type>
       <reference>
         <dc:title>OpenOffice.org's documentation of the Microsoft Excel file format: Excel versions 2, 3, 4, 5, 95, 97, 2000, XP, 2003</dc:title>
@@ -13533,7 +13648,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>11 Mar 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -13545,24 +13660,24 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
     <version>3</version>
     <alias>Microsoft Excel Worksheet (3.0)</alias>
     <pronom_id>679</pronom_id>
-    <extension>xlc</extension>
-    <extension>xlm</extension>
     <extension>xls</extension>
     <apple_uid>com.microsoft.excel.xls</apple_uid>
     <signature>
       <name>BIFF 3 Worksheet</name>
-      <note>09 - BOF / 02 - Version 3 / {2} - unspecified / 0000 - unspecified / 1000 - type of data (sheet)</note>
+      <note>BIFF3: BOF hex 0902. record length hex 0600, BIFF version=(not used), filetype=worksheet=1000</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>0902{2}00001000</pronom_pattern>
-        <regex>(?s)\A\x09\x02.{2}\x00\x00\x10\x00</regex>
+        <pronom_pattern>09020600{2}1000</pronom_pattern>
+        <regex>(?s)\A\x09\x02\x06\x00.{2}\x10\x00</regex>
       </pattern>
     </signature>
     <details>
       <dc:description>The Binary Interchange File Format (BIFF) is a spreadsheet file format developed by Microsoft. BIFF 3 is the native file format of Microsoft Excel 3.0 for Windows. The format is proprietary and Microsoft does not make details of its structure public. The information contained here is derived primarily from OpenOffice.org's reverse-engineered documentation of the format, and should not therefore be regarded as definitive. BIFF is a stream based format, and a BIFF 3 file comprises a single worksheet stream, containing a Beginning of File (BOF) record, followed by a series of Worksheet records, and terminated by an End of File (EOF) record.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <is_supertype_of>1342</is_supertype_of>
+      <is_supertype_of>1344</is_supertype_of>
       <content_type>Spreadsheet</content_type>
       <reference>
         <dc:title>OpenOffice.org's documentation of the Microsoft Excel file format: Excel versions 2, 3, 4, 5, 95, 97, 2000, XP, 2003</dc:title>
@@ -13579,7 +13694,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>11 Mar 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -13591,24 +13706,23 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
     <version>4S</version>
     <alias>Microsoft Excel Worksheet (4.0)</alias>
     <pronom_id>680</pronom_id>
-    <extension>xlc</extension>
     <extension>xls</extension>
-    <extension>xlm</extension>
     <apple_uid>com.microsoft.excel.xls</apple_uid>
     <signature>
       <name>BIFF 4 Worksheet</name>
-      <note>09 - BOF / 04 - Version 4 / {2} - unspecified / 0000 - unspecified / 1000 - type of data (sheet)</note>
+      <note>BIFF4: BOF hex 0904. record length hex 0600, BIFF version=(not used), filetype=worksheet=1000</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>0904{2}00001000</pronom_pattern>
-        <regex>(?s)\A\x09\x04.{2}\x00\x00\x10\x00</regex>
+        <pronom_pattern>09040600{2}1000</pronom_pattern>
+        <regex>(?s)\A\x09\x04\x06\x00.{2}\x10\x00</regex>
       </pattern>
     </signature>
     <details>
       <dc:description>The Binary Interchange File Format (BIFF) is a spreadsheet file format developed by Microsoft. BIFF 4S is a native file format of Microsoft Excel 4.0 for Windows. Excel 4.0 allowed either a single worksheet to be stored as a worksheet file (BIFF 4S), or for multiple worksheets to be combined in a single workbook file (BIFF 4W). The format is proprietary and Microsoft does not make details of its structure public. The information contained here is derived primarily from OpenOffice.org's reverse-engineered documentation of the format, and should not therefore be regarded as definitive. BIFF is a stream based format, and a BIFF 4S file comprises a single Worksheet stream, containing a Beginning of File (BOF) record, followed by a series of Worksheet records, and terminated by an End of File (EOF) record.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <is_supertype_of>181</is_supertype_of>
       <content_type>Spreadsheet</content_type>
       <reference>
         <dc:title>OpenOffice.org's documentation of the Microsoft Excel file format: Excel versions 2, 3, 4, 5, 95, 97, 2000, XP, 2003</dc:title>
@@ -13625,7 +13739,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>11 Mar 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -13641,18 +13755,18 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
     <apple_uid>com.microsoft.excel.xls</apple_uid>
     <signature>
       <name>BIFF 4 Workbook/Workspace</name>
-      <note>09 - BOF / 04 - Version indicator / {2} - unspecified / 0004 - version 4 / 0001 - type of data (workspace)</note>
+      <note>BIFF4: BOF hex 0904. record length hex 0600, BIFF version=0004, filetype=workbook=0001</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>0904{2}00040001</pronom_pattern>
-        <regex>(?s)\A\x09\x04.{2}\x00\x04\x00\x01</regex>
+        <pronom_pattern>0904060000040001</pronom_pattern>
+        <regex>(?s)\A\x09\x04\x06\x00\x00\x04\x00\x01</regex>
       </pattern>
     </signature>
     <details>
       <dc:description>The Binary Interchange File Format (BIFF) is a spreadsheet file format developed by Microsoft. BIFF 4W is a native file format of Microsoft Excel 4.0 for Windows. Excel 4.0 allowed either a single worksheet to be stored as a worksheet file (BIFF 4S), or for multiple worksheets to be combined in a single workbook file (BIFF 4W). The format is proprietary and Microsoft does not make details of its structure public. The information contained here is derived primarily from OpenOffice.org's reverse-engineered documentation of the format, and should not therefore be regarded as definitive. BIFF is a stream based format, and a BIFF 4W file comprises a Workbook Globals Substream, containing a Beginning of File (BOF) record, one or more embedded Worksheet streams (in BIFF 4S format), and terminated by an End of File (EOF) record.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
       <content_type>Spreadsheet</content_type>
       <reference>
         <dc:title>OpenOffice.org's documentation of the Microsoft Excel file format: Excel versions 2, 3, 4, 5, 95, 97, 2000, XP, 2003</dc:title>
@@ -13669,7 +13783,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>11 Mar 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -15802,6 +15916,7 @@ Windows bitmap 2.0 and OS/2 bitmap 1.0 are effectively the same format - the onl
     <pronom_id>735</pronom_id>
     <extension>wav</extension>
     <has_priority_over>fmt/6</has_priority_over>
+    <has_priority_over>fmt/141</has_priority_over>
     <signature>
       <name>BWAVE PCM 0</name>
       <note>RIFF header, WAVE ID, BEXT chunk (Version=0), Format chunk and Data chunk</note>
@@ -15914,7 +16029,7 @@ Windows bitmap 2.0 and OS/2 bitmap 1.0 are effectively the same format - the onl
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>11 Mar 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -19555,14 +19670,14 @@ This version was published in February 2005 and corrected the flaws in the first
     <puid>x-fmt/450</puid>
     <mime>application/octet-stream</mime>
     <name>Adobe InDesign Document</name>
-    <version />
+    <version>Generic</version>
     <alias />
     <pronom_id>865</pronom_id>
     <extension>ind</extension>
     <extension>indd</extension>
     <signature>
-      <name>Adobe InDesign Document</name>
-      <note />
+      <name>Adobe InDesign Document Generic</name>
+      <note>16-byte GUID: 0606EDF5-D81D-46e5-BD31-EFE7FE74B71D; 8-byte string File Type: DOCUMENT;</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0606EDF5D81D46E5BD31EFE7FE74B71D444F43554D454E54</pronom_pattern>
@@ -19579,7 +19694,7 @@ This version was published in February 2005 and corrected the flaws in the first
         <status>unknown</status>
         <dc:creator>Digital Library Research Group / MIT Libraries</dc:creator>
         <dcterms:created>06 Apr 2009</dcterms:created>
-        <dcterms:modified>06 Apr 2009</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -20498,11 +20613,21 @@ EOF: ....</note>
   </format>
   <format>
     <puid>fmt/190</puid>
-    <name>Adobe FrameMaker</name>
+    <mime>application/vnd.framemaker</mime>
+    <name>Adobe FrameMaker Document</name>
     <version>5.0</version>
     <alias />
     <pronom_id>912</pronom_id>
     <extension>fm</extension>
+    <signature>
+      <name>Framemaker Document Version 5.0</name>
+      <note>&lt;MakerFile[version]&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C4D616B657246696C6520352E30593E</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x3cMakerFile 5\.0Y\x3e</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>Adobe FrameMaker format is a desktop publishing and word processing format originally developed by Frame Technology Corp. Frame Technology Corp was bought by Adobe Systems in 1995, who continued to develop and support FrameMaker. This version of FrameMaker was used by professional designers and technical writers for writing documents that require&#8217; substantial, standardised and structured content. FrameMaker 5.0 uses XML and SGML concepts. 
 Documentation for FrameMaker 5.0 was integrated into the user manual that was bundled with the software. FrameMaker 5.0 introduced online help, long filename support in Windows 95, OLE support, save to HTML and import text by reference. This information has been derived from third party sources and should be considered speculative.</dc:description>
@@ -20512,9 +20637,9 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
       <content_type>Presentation, Word Processor</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
         <dcterms:created>22 Oct 2009</dcterms:created>
-        <dcterms:modified>22 Oct 2009</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -20566,10 +20691,28 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
   <format>
     <puid>fmt/193</puid>
     <name>Digital Moving Picture Exchange Bitmap</name>
-    <version />
+    <version>1.0</version>
     <alias />
     <pronom_id>918</pronom_id>
     <extension>dpx</extension>
+    <signature>
+      <name>DPX v1 Big endian</name>
+      <note>Magic number in first four bytes: SDPX indicates big-endian byte order; 4 byte offset to image; Version 1.0</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>53445058{4}56312E30</pronom_pattern>
+        <regex>(?s)\A.{0,0}SDPX.{4}V1\.0</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>DPX v1 Little endian</name>
+      <note>Magic number in first four bytes: XPDS indicates little-endian byte order; 4 byte offset to image; Version 1.0</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>58504453{4}56312E30</pronom_pattern>
+        <regex>(?s)\A.{0,0}XPDS.{4}V1\.0</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
@@ -20578,9 +20721,9 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
       <content_type>Video</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
         <dcterms:created>27 Oct 2009</dcterms:created>
-        <dcterms:modified>27 Oct 2009</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -20640,11 +20783,13 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
   </format>
   <format>
     <puid>fmt/196</puid>
-    <name>InDesign Document</name>
-    <version />
+    <name>Adobe InDesign Document</name>
+    <version>CS</version>
     <alias />
     <pronom_id>921</pronom_id>
     <extension>indd</extension>
+    <extension>ind</extension>
+    <has_priority_over>x-fmt/450</has_priority_over>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
@@ -20655,7 +20800,7 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>27 Oct 2009</dcterms:created>
-        <dcterms:modified>27 Oct 2009</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -23113,13 +23258,21 @@ http://flac.sourceforge.net/documentation_format_overview.html</dc:description>
     <alias>ISO 28500-2009, Web ARChive file format</alias>
     <pronom_id>1029</pronom_id>
     <extension>warc</extension>
+    <has_priority_over>fmt/97</has_priority_over>
+    <has_priority_over>fmt/98</has_priority_over>
+    <has_priority_over>fmt/99</has_priority_over>
+    <has_priority_over>fmt/100</has_priority_over>
+    <has_priority_over>fmt/102</has_priority_over>
+    <has_priority_over>fmt/103</has_priority_over>
+    <has_priority_over>fmt/96</has_priority_over>
+    <has_priority_over>fmt/471</has_priority_over>
     <signature>
       <name>WARC</name>
       <note>Matching WARC header, type field and date. Header: WARC/{3-4}CRLF Type: WARC-Type:{0-12}CRLF Date: WARC-Date:[expression matching ISO8601 date pattern]CRLF. Note: Seems to be a problem matching WARC record at beginning of file so signature is currently variable position to catch records later in the file before 4096 bytes.</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>574152432F{3-4}0D0A574152432D547970653A{0-13}0D0A{0-512}574152432D446174653A{0-1}{4}2D{2}2D{2}54{2}3A{2}3A{2}5A0D0A{0-512}0D0A0D0A</pronom_pattern>
-        <regex>(?s)\A.{0,4096}WARC/.{3,4}\r\nWARC-Type:.{0,13}\r\n.{0,512}WARC-Date:.{0,1}.{4}-.{2}-.{2}T.{2}:.{2}:.{2}Z\r\n.{0,512}\r\n\r\n</regex>
+        <pronom_pattern>574152432F{3-4}0D0A574152432D547970653A{0-13}0D0A{0-512}574152432D446174653A{4-5}2D{2}2D{2}54{2}3A{2}3A{2}5A0D0A{0-1024}0D0A0D0A</pronom_pattern>
+        <regex>(?s)\A.{0,4096}WARC/.{3,4}\r\nWARC-Type:.{0,13}\r\n.{0,512}WARC-Date:.{4,5}-.{2}-.{2}T.{2}:.{2}:.{2}Z\r\n.{0,1024}\r\n\r\n</regex>
       </pattern>
     </signature>
     <details>
@@ -23134,7 +23287,7 @@ WARC format has been written by the members of the IIPC (http://www.netpreserve.
         <status>unknown</status>
         <dc:creator />
         <dcterms:created>02 Nov 2010</dcterms:created>
-        <dcterms:modified>06 Nov 2012</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description>Submitted by Biblioth&#232;que nationale de France with supplementary description information attributed to ISO 28500-2009 standard.</dc:description>
       </record_metadata>
     </details>
@@ -25009,15 +25162,15 @@ DATA: VERSION:160 SECURITY: ENCODING: CHARSET: COMPRESSION: OLDFILEUID: NEWFILEU
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
       <content_type>Image (Raster)</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
         <dcterms:created>21 Apr 2011</dcterms:created>
-        <dcterms:modified>21 Apr 2011</dcterms:modified>
-        <dc:description>Submitted by Georgia Tech Research Institute</dc:description>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
       </record_metadata>
     </details>
   </format>
@@ -27130,13 +27283,13 @@ Furthe information regarding this and other RIFF formats can be found at http://
   </format>
   <format>
     <puid>fmt/400</puid>
-    <name>FreeHand MX</name>
+    <name>Macromedia FreeHand MX</name>
     <version>11</version>
     <alias />
     <pronom_id>1148</pronom_id>
     <extension>fh11</extension>
     <signature>
-      <name>fh11</name>
+      <name>FreeHand 11</name>
       <note>ASCII text 'FreeHAnd 11' in BOF sequence, 'FlateDecode' in EOF sequence</note>
       <pattern>
         <position>BOF</position>
@@ -27152,14 +27305,14 @@ Furthe information regarding this and other RIFF formats can be found at http://
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Macromedia, Inc.</dc:creator>
+      <dcterms:publisher>Macromedia, Inc.</dcterms:publisher>
       <content_type />
       <record_metadata>
         <status>unknown</status>
         <dc:creator>National Library of New Zealand / National Library of New Zealand</dc:creator>
         <dcterms:created>16 Mar 2012</dcterms:created>
-        <dcterms:modified>16 Mar 2012</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -27648,21 +27801,31 @@ http://www.dca.fee.unicamp.br/~martino/disciplinas/ea978/tgaffs.pdf</dc:descript
   <format>
     <puid>fmt/415</puid>
     <name>Cinema 4D</name>
-    <version>1.0</version>
+    <version>4.x</version>
     <alias />
     <pronom_id>1194</pronom_id>
     <extension>c4d</extension>
+    <has_priority_over>x-fmt/157</has_priority_over>
+    <signature>
+      <name>Cinema 4D 4.x</name>
+      <note>Header is 12 bytes: IFF Identifier = &#8220;FORM&#8221;, Long integer = File size&#8217; Cinema 4d Identifier = &#8220;MC4D&#8221;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>464F524D{4}4D433444</pronom_pattern>
+        <regex>(?s)\A.{0,0}FORM.{4}MC4D</regex>
+      </pattern>
+    </signature>
     <details>
-      <dc:description>CINEMA 4D doesn&#8217;t use separate files for material, object and scene information. Instead CINEMA 4D uses one file format which can contain all these elements. That means one editor where animation, modeling, texturing and rendering can be done at the same time. CINEMA 4D uses IFF, which means Interchange File Format&#8220;. IFF is a chunk based format. IFF allows you to read only those structures of a file which your application can handle.</dc:description>
+      <dc:description>CINEMA 4D is a 3D modeling, animation and rendering application developed by MAXON Computer GmbH. CINEMA 4D doesn&#8217;t use separate files for material, object and scene information. Instead CINEMA 4D uses one file format which can contain all these elements. That means one editor where animation, modeling, texturing and rendering can be done at the same time. CINEMA 4D uses IFF, which means Interchange File Format&#8220;. IFF is a chunk based format. IFF allows you to read only those structures of a file which your application can handle.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
       <content_type>Aggregate</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
         <dcterms:created>11 Jun 2012</dcterms:created>
-        <dcterms:modified>11 Jun 2012</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description>Specification Link: http://paulbourke.net/dataformats/cinema4d/cinema4d.pdf
 As quoted by Wikipedia Cinema 4D Version 1.0 was released in 1993.</dc:description>
       </record_metadata>
@@ -27675,6 +27838,15 @@ As quoted by Wikipedia Cinema 4D Version 1.0 was released in 1993.</dc:descripti
     <alias />
     <pronom_id>1198</pronom_id>
     <extension>caf</extension>
+    <signature>
+      <name>Apple Core Audio Format 1</name>
+      <note>File type =&#8221;caff&#8221;, File version = 1, Flags = 0, Chunk type = &#8220;desc&#8221;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>636166660001000064657363</pronom_pattern>
+        <regex>(?s)\A.{0,0}caff\x00\x01\x00\x00desc</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>Apple&#8217;s Core Audio Format is a file format for storing and manipulating digital audio data. It is fully supported by Core Audio APIs on Mac OS X v10.4 and later and on Mac OS X v10.3 with QuickTime 7 or later. CAF provides high performance and flexibility, and is scalable to future ultra-high resolution audio recording, editing, and playback. CAF files have several advantages over other standard audio file formats:
 &#8226;	  Unrestricted File Size
@@ -27683,14 +27855,14 @@ As quoted by Wikipedia Cinema 4D Version 1.0 was released in 1993.</dc:descripti
 &#8226;	 Support For Many Types of Auxiliary Data
 &#8226;	 Support of Data Dependencies</dc:description>
       <dcterms:available>04 Jun 2005</dcterms:available>
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
       <content_type>Audio</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
         <dcterms:created>11 Jun 2012</dcterms:created>
-        <dcterms:modified>11 Jun 2012</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description>http://developer.apple.com/library/mac/documentation/MusicAudio/Reference/CAFSpec/CAFSpec.pdf</dc:description>
       </record_metadata>
     </details>
@@ -27703,18 +27875,50 @@ As quoted by Wikipedia Cinema 4D Version 1.0 was released in 1993.</dc:descripti
     <pronom_id>1199</pronom_id>
     <extension>ai</extension>
     <apple_uid>com.adobe.illustrator-image</apple_uid>
+    <has_priority_over>fmt/122</has_priority_over>
+    <has_priority_over>fmt/124</has_priority_over>
+    <has_priority_over>fmt/123</has_priority_over>
+    <has_priority_over>x-fmt/406</has_priority_over>
+    <has_priority_over>x-fmt/408</has_priority_over>
+    <signature>
+      <name>Adobe Illustrator 88 v1</name>
+      <note>The first line of the file declares with the Comment prefix %! that the file contains a PostScript program. It then specifies that the file conforms to version 2.0 of the Document Structuring Conventions. The second line contains a %%Creator comment that identifies the version of Adobe Illustrator that generated the PostScript document. The Trademark symbol was found both before and after version 88.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>252150532D41646F62652D322E30{1-16}252543726561746F72(3A|3A20)41646F626520496C6C7573747261746F72(28544D29203838|20383828544D29)</pronom_pattern>
+        <regex>(?s)\A.{0,0}%\!PS-Adobe-2\.0.{1,16}%%Creator(?::|: )Adobe Illustrator(?:\(TM\) 88| 88\(TM\))</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Adobe Illustrator 88 v2</name>
+      <note>The first line of the file declares with the Comment prefix %! that the file contains a PostScript program. It then specifies that the file conforms to version 2.0 of the Document Structuring Conventions and further that the file conforms to version 1.2 of the conventions for Encapsulated PostScript Files.  In Header DocProcSets: Adobe_Illustrator_88 In Header is DocProcSets:  Adobe_Illustrator_88 or Adobe_Illustrator88</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>252150532D41646F62652D322E3020455053462D312E32{10-2096}2525446F63756D656E7450726F63536574733A41646F62655F496C6C7573747261746F725F3838</pronom_pattern>
+        <regex>(?s)\A.{0,0}%\!PS-Adobe-2\.0 EPSF-1\.2.{10,2096}%%DocumentProcSets:Adobe_Illustrator_88</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Adobe Illustrator 88 v3</name>
+      <note>The first line of the file declares with the Comment prefix %! that the file contains a PostScript program. It then specifies that the file conforms to version 2.0 of the Document Structuring Conventions and further that the file conforms to version 1.2 of the conventions for Encapsulated PostScript Files.  In Header is DocProcSets: Adobe_Illustrator_88 or DocProcSets: Adobe_Illustrator88</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>252150532D41646F62652D322E3020455053462D312E32{10-2096}2525446F63756D656E7450726F63536574733A2041646F62655F496C6C7573747261746F72(5F3838|3838)</pronom_pattern>
+        <regex>(?s)\A.{0,0}%\!PS-Adobe-2\.0 EPSF-1\.2.{10,2096}%%DocumentProcSets: Adobe_Illustrator(?:_88|88)</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
 documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
       <content_type>Image (Vector)</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
         <dcterms:created>11 Jun 2012</dcterms:created>
-        <dcterms:modified>11 Jun 2012</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description>http://mercator.elte.hu/~saman/hu/okt/AI7FileFormat.pdf</dc:description>
       </record_metadata>
     </details>
@@ -27727,19 +27931,60 @@ documents. A PostScript language document description that minimally conforms to
     <pronom_id>1200</pronom_id>
     <extension>ai</extension>
     <apple_uid>com.adobe.illustrator-image</apple_uid>
+    <has_priority_over>fmt/122</has_priority_over>
+    <has_priority_over>fmt/124</has_priority_over>
+    <has_priority_over>fmt/123</has_priority_over>
+    <has_priority_over>x-fmt/406</has_priority_over>
+    <has_priority_over>x-fmt/408</has_priority_over>
+    <signature>
+      <name>Adobe Illustrator 3.x v1</name>
+      <note>The first line of the file is a unique comment that declares the file contains a Postscript program and identifies the version of the Document Structuring Conventions to which the document conforms as 2.0 or 3.0. The first line may also specify that the file conforms to a version of the Encapsulated PostScript File format (EPSF). The prolog contains %%DocumentNeededResources: and the continuation %%+ procset Adobe_Illustrator_AI3 or %%+procset Adobe_IllustratorA_AI3</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>252150532D41646F62652D322E30{16-512}2525446F63756D656E744E65656465645265736F75726365733A{1-512}25252B2070726F637365742041646F62655F496C6C7573747261746F72(5F414933|415F414933)</pronom_pattern>
+        <regex>(?s)\A.{0,0}%\!PS-Adobe-2\.0.{16,512}%%DocumentNeededResources:.{1,512}%%\+ procset Adobe_Illustrator(?:_AI3|A_AI3)</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Adobe Illustrator 3.x v2</name>
+      <note>The first line of the file is a unique comment that declares the file contains a Postscript program and identifies the version of the Document Structuring Conventions to which the document conforms as 2.0 or 3.0. The prolog did not contain %%DocumentNeededResources:  but did contain %%DocumentSuppliedResources: and the continuation %%+ procset Adobe_Illustrator_AI3 or %%+procset Adobe_IllustratorA_AI3</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>252150532D41646F62652D322E30{16-512}2525446F63756D656E74537570706C6965645265736F75726365733A{1-512}25252B2070726F637365742041646F62655F496C6C7573747261746F72(5F414933|415F414933)</pronom_pattern>
+        <regex>(?s)\A.{0,0}%\!PS-Adobe-2\.0.{16,512}%%DocumentSuppliedResources:.{1,512}%%\+ procset Adobe_Illustrator(?:_AI3|A_AI3)</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Adobe Illustrator 3.x v3</name>
+      <note>The first line of the file is a unique comment that declares the file contains a Postscript program and identifies the version of the Document Structuring Conventions to which the document conforms as 2.0 or 3.0. The first line may also specify that the file conforms to a version of the Encapsulated PostScript File format (EPSF). The prolog contains %%DocumentNeededResources: and the continuation %%+ procset Adobe_Illustrator_AI3 or %%+procset Adobe_IllustratorA_AI3</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>252150532D41646F62652D332E30{16-512}2525446F63756D656E744E65656465645265736F75726365733A{1-512}25252B2070726F637365742041646F62655F496C6C7573747261746F72(5F414933|415F414933)</pronom_pattern>
+        <regex>(?s)\A.{0,0}%\!PS-Adobe-3\.0.{16,512}%%DocumentNeededResources:.{1,512}%%\+ procset Adobe_Illustrator(?:_AI3|A_AI3)</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Adobe Illustrator 3.x v4</name>
+      <note>The first line of the file is a unique comment that declares the file contains a Postscript program and identifies the version of the Document Structuring Conventions to which the document conforms as 2.0 or 3.0. The prolog did not contain %%DocumentNeededResources:  but did contain %%DocumentSuppliedResources: and the continuation %%+ procset Adobe_Illustrator_AI3 or %%+procset Adobe_IllustratorA_AI3</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>252150532D41646F62652D332E30{16-512}2525446F63756D656E74537570706C6965645265736F75726365733A{1-512}25252B2070726F637365742041646F62655F496C6C7573747261746F72(5F414933|415F414933)</pronom_pattern>
+        <regex>(?s)\A.{0,0}%\!PS-Adobe-3\.0.{16,512}%%DocumentSuppliedResources:.{1,512}%%\+ procset Adobe_Illustrator(?:_AI3|A_AI3)</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
 documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page.
 Version 3 includes graph creation.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
       <content_type>Image (Vector)</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
         <dcterms:created>11 Jun 2012</dcterms:created>
-        <dcterms:modified>11 Jun 2012</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description>http://mercator.elte.hu/~saman/hu/okt/AI7FileFormat.pdf
 Adobe has classified Illustrator versions 3.0 and 3.2 as the same file format.
 Version 3 includes graph creation.</dc:description>
@@ -27754,18 +27999,33 @@ Version 3 includes graph creation.</dc:description>
     <pronom_id>1201</pronom_id>
     <extension>ai</extension>
     <apple_uid>com.adobe.illustrator-image</apple_uid>
+    <has_priority_over>fmt/122</has_priority_over>
+    <has_priority_over>fmt/124</has_priority_over>
+    <has_priority_over>fmt/123</has_priority_over>
+    <has_priority_over>x-fmt/406</has_priority_over>
+    <has_priority_over>x-fmt/408</has_priority_over>
+    <has_priority_over>fmt/418</has_priority_over>
+    <signature>
+      <name>Adobe Illustrator 4.0</name>
+      <note>The first line of the file declares that the file contains a Postscript program and identifies the version of the Document Structuring Conventions to which the document conforms as 3.0. In version 4.0 files, the Creator Comment contains the string &#8220;Adobe Illustrator (TM) for Windows, version 4&#8221;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>252150532D41646F62652D332E30{1-128}252543726561746F723A2041646F626520496C6C7573747261746F7228544D2920666F722057696E646F77732C2076657273696F6E20342E30</pronom_pattern>
+        <regex>(?s)\A.{0,0}%\!PS-Adobe-3\.0.{1,128}%%Creator: Adobe Illustrator\(TM\) for Windows, version 4\.0</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
 documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
       <content_type>Image (Vector)</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
         <dcterms:created>11 Jun 2012</dcterms:created>
-        <dcterms:modified>11 Jun 2012</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description>Specification available at http://mercator.elte.hu/~saman/hu/okt/AI7FileFormat.pdf</dc:description>
       </record_metadata>
     </details>
@@ -27778,18 +28038,32 @@ documents. A PostScript language document description that minimally conforms to
     <pronom_id>1202</pronom_id>
     <extension>ai</extension>
     <apple_uid>com.adobe.illustrator-image</apple_uid>
+    <has_priority_over>fmt/122</has_priority_over>
+    <has_priority_over>fmt/124</has_priority_over>
+    <has_priority_over>fmt/123</has_priority_over>
+    <has_priority_over>x-fmt/406</has_priority_over>
+    <has_priority_over>x-fmt/408</has_priority_over>
+    <signature>
+      <name>Adobe Illustrator 5.0</name>
+      <note>The first line of the file declares that the file contains a Postscript program and identifies the version of the Document Structuring Conventions to which the document conforms as 3.0. The comment &#8220;%AI5_FileFormat 1&#8221; indicates that this is a version 5.x file.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D61742031</pronom_pattern>
+        <regex>(?s)\A.{0,0}%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 1</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
 documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
       <content_type>Image (Vector)</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
         <dcterms:created>11 Jun 2012</dcterms:created>
-        <dcterms:modified>11 Jun 2012</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description>Specification available at http://mercator.elte.hu/~saman/hu/okt/AI7FileFormat.pdf
 Adobe has classified Illustrator Versions 5.0 and 5.5 as the same file format.
 Version 5.0 includes layers and live editing in preview mode
@@ -27829,18 +28103,32 @@ documents. A PostScript language document description that minimally conforms to
     <pronom_id>1204</pronom_id>
     <extension>ai</extension>
     <apple_uid>com.adobe.illustrator-image</apple_uid>
+    <has_priority_over>fmt/122</has_priority_over>
+    <has_priority_over>fmt/124</has_priority_over>
+    <has_priority_over>fmt/123</has_priority_over>
+    <has_priority_over>x-fmt/406</has_priority_over>
+    <has_priority_over>x-fmt/408</has_priority_over>
+    <signature>
+      <name>Adobe Illustrator 6.0</name>
+      <note>The first line of the file declares that the file contains a Postscript program and identifies the version of the Document Structuring Conventions to which the document conforms as 3.0.  The comment &#8220;%AI5_FileFormat 2&#8221; indicates that this is a version 6.x Adobe Illustrator file.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D61742032</pronom_pattern>
+        <regex>(?s)\A.{0,0}%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 2</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
 documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
       <content_type>Image (Vector)</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
         <dcterms:created>11 Jun 2012</dcterms:created>
-        <dcterms:modified>11 Jun 2012</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description>Specifications link: http://mercator.elte.hu/~saman/hu/okt/AI7FileFormat.pdf
 Version 6.0 includes; gradients, eye dropper, paint bucket</dc:description>
       </record_metadata>
@@ -27854,18 +28142,32 @@ Version 6.0 includes; gradients, eye dropper, paint bucket</dc:description>
     <pronom_id>1205</pronom_id>
     <extension>ai</extension>
     <apple_uid>com.adobe.illustrator-image</apple_uid>
+    <has_priority_over>fmt/122</has_priority_over>
+    <has_priority_over>fmt/124</has_priority_over>
+    <has_priority_over>fmt/123</has_priority_over>
+    <has_priority_over>x-fmt/406</has_priority_over>
+    <has_priority_over>x-fmt/408</has_priority_over>
+    <signature>
+      <name>Adobe Illustrator 7.0</name>
+      <note>The first line of the file declares that the file contains a Postscript program and identifies the version of the Document Structuring Conventions to which the document conforms as 3.0. The comment &#8220;%AI5_FileFormat 3&#8221; indicates that this is a version 7.0 Adobe Illustrator file.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D61742033</pronom_pattern>
+        <regex>(?s)\A.{0,0}%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 3</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
 documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
       <content_type>Image (Vector)</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
         <dcterms:created>11 Jun 2012</dcterms:created>
-        <dcterms:modified>11 Jun 2012</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description>Specifications link: http://mercator.elte.hu/~saman/hu/okt/AI7FileFormat.pdf
 Version 7.0 includes: tabbed dockable palettes, transform palette, align palette, Photoshop pixel filters, rasterize, punk, bloat, free distort, layout grid, vertical text tool</dc:description>
       </record_metadata>
@@ -30165,17 +30467,27 @@ VAR: Identifies the byte sequence which equals - xmlns:pdfaid="http://www.aiim.o
     <alias />
     <pronom_id>1269</pronom_id>
     <extension>ibooks</extension>
+    <has_priority_over>x-fmt/263</has_priority_over>
+    <signature>
+      <name>iBook</name>
+      <note>PK..{26}mimetypeapplication/x-ibooks+zip</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>504B0304{26}6D696D65747970656170706C69636174696F6E2F782D69626F6F6B732B7A6970</pronom_pattern>
+        <regex>(?s)\A.{0,0}PK\x03\x04.{26}mimetypeapplication/x-ibooks\+zip</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
       <content_type>Text (Structured)</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>British Library / British Library</dc:creator>
         <dcterms:created>18 Dec 2012</dcterms:created>
-        <dcterms:modified>18 Dec 2012</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description>This format can be identified via a container signature in DROID version 6 or later. The PRONOM database cannot currently represent container signatures.</dc:description>
       </record_metadata>
     </details>
@@ -30187,6 +30499,16 @@ VAR: Identifies the byte sequence which equals - xmlns:pdfaid="http://www.aiim.o
     <alias />
     <pronom_id>1270</pronom_id>
     <extension>epub</extension>
+    <has_priority_over>x-fmt/263</has_priority_over>
+    <signature>
+      <name>ePub</name>
+      <note>PK..{26}mimetypeapplication/epub+zip</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>504B0304{26}6D696D65747970656170706C69636174696F6E2F657075622B7A6970</pronom_pattern>
+        <regex>(?s)\A.{0,0}PK\x03\x04.{26}mimetypeapplication/epub\+zip</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
@@ -30197,7 +30519,7 @@ VAR: Identifies the byte sequence which equals - xmlns:pdfaid="http://www.aiim.o
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>18 Dec 2012</dcterms:created>
-        <dcterms:modified>18 Dec 2012</dcterms:modified>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description>This format can be identified via a container signature in DROID version 6 or later. The PRONOM database cannot currently represent container signatures.</dc:description>
       </record_metadata>
     </details>
@@ -31894,6 +32216,1335 @@ EOF IEND&#174;B`&#8218;</note>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>01 May 2013</dcterms:created>
         <dcterms:modified>01 May 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/533</puid>
+    <mime>application/vnd.framemaker</mime>
+    <name>Adobe FrameMaker Document</name>
+    <version>2.0</version>
+    <alias />
+    <pronom_id>1320</pronom_id>
+    <extension>fm</extension>
+    <signature>
+      <name>Framemaker Document Version 2.0</name>
+      <note>&lt;MakerFile[version]&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C4D616B657246696C6520322E304A3E</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x3cMakerFile 2\.0J\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Adobe FrameMaker format is a desktop publishing and word processing format originally developed by Frame Technology Corp. Frame Technology Corp was bought by Adobe Systems in 1995, who continued to develop and support FrameMaker.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/534</puid>
+    <mime>application/vnd.framemaker</mime>
+    <name>Adobe FrameMaker Document</name>
+    <version>3.0</version>
+    <alias />
+    <pronom_id>1321</pronom_id>
+    <extension>fm</extension>
+    <signature>
+      <name>Framemaker Document Version 3.0</name>
+      <note>&lt;MakerFile[version]&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C4D616B657246696C6520332E30463E</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x3cMakerFile 3\.0F\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Adobe FrameMaker format is a desktop publishing and word processing format originally developed by Frame Technology Corp. Frame Technology Corp was bought by Adobe Systems in 1995, who continued to develop and support FrameMaker.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/535</puid>
+    <mime>application/vnd.framemaker</mime>
+    <name>Adobe FrameMaker Document</name>
+    <version>4.0</version>
+    <alias />
+    <pronom_id>1322</pronom_id>
+    <extension>fm</extension>
+    <signature>
+      <name>Framemaker Document Version 4.0</name>
+      <note>&lt;MakerFile[version]&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C4D616B657246696C6520342E304B3E</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x3cMakerFile 4\.0K\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Adobe FrameMaker format is a desktop publishing and word processing format originally developed by Frame Technology Corp. Frame Technology Corp was bought by Adobe Systems in 1995, who continued to develop and support FrameMaker.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/536</puid>
+    <mime>application/vnd.framemaker</mime>
+    <name>Adobe FrameMaker Document</name>
+    <version>5.5</version>
+    <alias />
+    <pronom_id>1323</pronom_id>
+    <extension>fm</extension>
+    <signature>
+      <name>Framemaker Document Version 5.5</name>
+      <note>&lt;MakerFile[version]&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C4D616B657246696C6520352E35513E</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x3cMakerFile 5\.5Q\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Adobe FrameMaker format is a desktop publishing and word processing format originally developed by Frame Technology Corp. Frame Technology Corp was bought by Adobe Systems in 1995, who continued to develop and support FrameMaker.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/537</puid>
+    <mime>application/vnd.framemaker</mime>
+    <name>Adobe FrameMaker Document</name>
+    <version>6.0</version>
+    <alias />
+    <pronom_id>1324</pronom_id>
+    <extension>fm</extension>
+    <signature>
+      <name>Framemaker Document Version 6.0</name>
+      <note>&lt;MakerFile[version]&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C4D616B657246696C6520362E304A3E</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x3cMakerFile 6\.0J\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Adobe FrameMaker format is a desktop publishing and word processing format originally developed by Frame Technology Corp. Frame Technology Corp was bought by Adobe Systems in 1995, who continued to develop and support FrameMaker.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/538</puid>
+    <mime>application/vnd.framemaker</mime>
+    <name>Adobe FrameMaker Document</name>
+    <version>7.0</version>
+    <alias />
+    <pronom_id>1325</pronom_id>
+    <extension>fm</extension>
+    <signature>
+      <name>Framemaker Document Version 7.0</name>
+      <note>&lt;MakerFile[version]&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C4D616B657246696C6520372E30483E</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x3cMakerFile 7\.0H\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Adobe FrameMaker format is a desktop publishing and word processing format originally developed by Frame Technology Corp. Frame Technology Corp was bought by Adobe Systems in 1995, who continued to develop and support FrameMaker.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/539</puid>
+    <mime>application/vnd.framemaker</mime>
+    <name>Adobe FrameMaker Document</name>
+    <version>9.0</version>
+    <alias />
+    <pronom_id>1326</pronom_id>
+    <extension>fm</extension>
+    <signature>
+      <name>Framemaker Document Version 9.0</name>
+      <note>&lt;MakerFile[version]&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C4D616B657246696C6520392E30483E</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x3cMakerFile 9\.0H\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Adobe FrameMaker format is a desktop publishing and word processing format originally developed by Frame Technology Corp. Frame Technology Corp was bought by Adobe Systems in 1995, who continued to develop and support FrameMaker.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/540</puid>
+    <name>Cinema 4D</name>
+    <version>5.x</version>
+    <alias />
+    <pronom_id>1327</pronom_id>
+    <extension>c4d</extension>
+    <signature>
+      <name>Cinema 4D 5.x</name>
+      <note>16 byte header: Cinema 4D Version 5 identifier = &#8220;MC50&#8221;, long integer file length, long Filetype: (possible file types: &#8220;PRF5&#8221;, &#8220;DOK5&#8221;, &#8220;CAT5&#8221;, &#8220;FCV5&#8221;)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D433530{4}(50524635|444F4B35|43415435|46435635)</pronom_pattern>
+        <regex>(?s)\A.{0,0}MC50.{4}(?:PRF5|DOK5|CAT5|FCV5)</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>CINEMA 4D is a 3D modeling, animation and rendering application developed by MAXON Computer GmbH. CINEMA 4D doesn&#8217;t use separate files for material, object and scene information. Instead CINEMA 4D uses one file format which can contain all these elements. That means one editor where animation, modeling, texturing and rendering can be done at the same time. CINEMA 4D uses IFF, which means Interchange File Format&#8220;. IFF is a chunk based format. IFF allows you to read only those structures of a file which your application can handle.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/541</puid>
+    <name>Digital Moving Picture Exchange Bitmap</name>
+    <version>2.0</version>
+    <alias />
+    <pronom_id>1328</pronom_id>
+    <extension>dpx</extension>
+    <signature>
+      <name>DPX v2 Big endian</name>
+      <note>Magic number in first four bytes: SDPX indicates big-endian byte order; 4 byte offset to image; Version 2</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>53445058{4}56322E30</pronom_pattern>
+        <regex>(?s)\A.{0,0}SDPX.{4}V2\.0</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>DPX v2 Little endian</name>
+      <note>Magic number in first four bytes: XPDS indicates little-endian byte order; 4 byte offset to image; Version 2</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>58504453{4}56322E30</pronom_pattern>
+        <regex>(?s)\A.{0,0}XPDS.{4}V2\.0</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Video</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/542</puid>
+    <name>GEM Metafile Format</name>
+    <version>1.01</version>
+    <alias />
+    <pronom_id>1329</pronom_id>
+    <extension>gem</extension>
+    <signature>
+      <name>GEM metafile 1.01 big endian</name>
+      <note>Magic number FFFF; length = 0x18 or 0x0E; version 101 decimal =hex 65; coordinate system either 0 (Normalized Device Coordinates) or 2 (Raster Coordinates)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>FFFF00(18|0E)006500(02|00)</pronom_pattern>
+        <regex>(?s)\A.{0,0}\xff\xff\x00(?:\x18|\x0e)\x00e\x00(?:\x02|\x00)</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>GEM metafile 1.01 little endian</name>
+      <note>Magic number FFFF; length = 0x18 or 0x0E; version 101 decimal =hex 65; coordinate system either 0 (Normalized Device Coordinates) or 2 (Raster Coordinates)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>FFFF(18|0E)006500(02|00)00</pronom_pattern>
+        <regex>(?s)\A.{0,0}\xff\xff(?:\x18|\x0e)\x00e\x00(?:\x02|\x00)\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/543</puid>
+    <name>GEM Metafile Format</name>
+    <version>3.10</version>
+    <alias />
+    <pronom_id>1330</pronom_id>
+    <extension>gem</extension>
+    <signature>
+      <name>GEM metafile 3.10 little endian</name>
+      <note>Magic number FFFF; length = 0x18; version 310 decimal =hex 3601; coordinate system either 0 (Normalized Device Coordinates) or 2 (Raster Coordinates)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>FFFF18003601(02|00)00</pronom_pattern>
+        <regex>(?s)\A.{0,0}\xff\xff\x18\x006\x01(?:\x02|\x00)\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/544</puid>
+    <name>Macromedia FreeHand</name>
+    <version>7</version>
+    <alias />
+    <pronom_id>1331</pronom_id>
+    <extension>fh7</extension>
+    <signature>
+      <name>FreeHand 7</name>
+      <note>MAC File type Code AGD2</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>41474432</pronom_pattern>
+        <regex>(?s)\A.{0,0}AGD2</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>Macromedia, Inc.</dc:creator>
+      <dcterms:publisher>Macromedia, Inc.</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/545</puid>
+    <name>Macromedia FreeHand</name>
+    <version>8</version>
+    <alias />
+    <pronom_id>1333</pronom_id>
+    <extension>fh8</extension>
+    <signature>
+      <name>FreeHand 8</name>
+      <note>MAC File type Code AGD3</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>41474433</pronom_pattern>
+        <regex>(?s)\A.{0,0}AGD3</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>Macromedia, Inc.</dc:creator>
+      <dcterms:publisher>Macromedia, Inc.</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/546</puid>
+    <name>Macromedia FreeHand</name>
+    <version>9</version>
+    <alias />
+    <pronom_id>1334</pronom_id>
+    <extension>fh9</extension>
+    <signature>
+      <name>FreeHand 9</name>
+      <note>MAC File type code AGD4</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>41474434</pronom_pattern>
+        <regex>(?s)\A.{0,0}AGD4</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>Macromedia, Inc.</dc:creator>
+      <dcterms:publisher>Macromedia, Inc.</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/547</puid>
+    <name>Macromedia FreeHand</name>
+    <version>10</version>
+    <alias />
+    <pronom_id>1335</pronom_id>
+    <extension>fh10</extension>
+    <signature>
+      <name>FreeHand 10</name>
+      <note>Fileheader+FreeHand10</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>1C0100000200041C0114000200141C0116000200081C011E000A4672656548616E643130</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x1c\x01\x00\x00\x02\x00\x04\x1c\x01\x14\x00\x02\x00\x14\x1c\x01\x16\x00\x02\x00\x08\x1c\x01\x1e\x00\nFreeHand10</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>Macromedia, Inc.</dc:creator>
+      <dcterms:publisher>Macromedia, Inc.</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/548</puid>
+    <name>Adobe InDesign Document</name>
+    <version>CS2</version>
+    <alias />
+    <pronom_id>1336</pronom_id>
+    <extension>ind</extension>
+    <extension>indd</extension>
+    <has_priority_over>x-fmt/450</has_priority_over>
+    <signature>
+      <name>Adobe InDesign Document CS2</name>
+      <note>16-byte GUID: 0606EDF5-D81D-46e5-BD31-EFE7FE74B71D; 8-byte string File Type: DOCUMENT; 1-byte Endianness: 1=little endian (intel), 2= big endian (Motorola); 4 wildcard bytes; 4 byte version (consider endianess) 4=CS2</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>0606EDF5D81D46E5BD31EFE7FE74B71D444F43554D454E54(01|02){4}(04000000|00000004)</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x06\x06\xed\xf5\xd8\x1dF\xe5\xbd1\xef\xe7\xfet\xb7\x1dDOCUMENT(?:\x01|\x02).{4}(?:\x04\x00\x00\x00|\x00\x00\x00\x04)</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/549</puid>
+    <name>Adobe InDesign Document</name>
+    <version>CS3</version>
+    <alias />
+    <pronom_id>1337</pronom_id>
+    <extension>ind</extension>
+    <extension>indd</extension>
+    <has_priority_over>x-fmt/450</has_priority_over>
+    <signature>
+      <name>Adobe InDesign Document CS3</name>
+      <note>16-byte GUID: 0606EDF5-D81D-46e5-BD31-EFE7FE74B71D; 8-byte string File Type: DOCUMENT; 1-byte Endianness: 1=little endian (intel), 2= big endian (Motorola); 4 wildcard bytes; 4 byte version (consider endianess) 5=CS3</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>0606EDF5D81D46E5BD31EFE7FE74B71D444F43554D454E54(01|02){4}(05000000|00000005)</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x06\x06\xed\xf5\xd8\x1dF\xe5\xbd1\xef\xe7\xfet\xb7\x1dDOCUMENT(?:\x01|\x02).{4}(?:\x05\x00\x00\x00|\x00\x00\x00\x05)</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/550</puid>
+    <name>Adobe InDesign Document</name>
+    <version>CS4</version>
+    <alias />
+    <pronom_id>1338</pronom_id>
+    <extension>ind</extension>
+    <extension>indd</extension>
+    <has_priority_over>x-fmt/450</has_priority_over>
+    <signature>
+      <name>Adobe InDesign Document CS4</name>
+      <note>16-byte GUID: 0606EDF5-D81D-46e5-BD31-EFE7FE74B71D; 8-byte string File Type: DOCUMENT; 1-byte Endianness: 1=little endian (intel), 2= big endian (Motorola); 4 wildcard bytes; 4 byte version (consider endianess) 6=CS4</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>0606EDF5D81D46E5BD31EFE7FE74B71D444F43554D454E54(01|02){4}(06000000|00000006)</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x06\x06\xed\xf5\xd8\x1dF\xe5\xbd1\xef\xe7\xfet\xb7\x1dDOCUMENT(?:\x01|\x02).{4}(?:\x06\x00\x00\x00|\x00\x00\x00\x06)</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/551</puid>
+    <name>Adobe InDesign Document</name>
+    <version>CS5</version>
+    <alias />
+    <pronom_id>1339</pronom_id>
+    <extension>ind</extension>
+    <extension>ind</extension>
+    <has_priority_over>x-fmt/450</has_priority_over>
+    <signature>
+      <name>Adobe InDesign Document CS5</name>
+      <note>16-byte GUID: 0606EDF5-D81D-46e5-BD31-EFE7FE74B71D; 8-byte string File Type: DOCUMENT; 1-byte Endianness: 1=little endian (intel), 2= big endian (Motorola); 4 wildcard bytes; 4 byte version (consider endianess) 7=CS5</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>0606EDF5D81D46E5BD31EFE7FE74B71D444F43554D454E54(01|02){4}(07000000|00000007)</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x06\x06\xed\xf5\xd8\x1dF\xe5\xbd1\xef\xe7\xfet\xb7\x1dDOCUMENT(?:\x01|\x02).{4}(?:\x07\x00\x00\x00|\x00\x00\x00\x07)</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/552</puid>
+    <name>Adobe InDesign Document</name>
+    <version>CS6</version>
+    <alias />
+    <pronom_id>1340</pronom_id>
+    <extension>ind</extension>
+    <extension>indd</extension>
+    <has_priority_over>x-fmt/450</has_priority_over>
+    <signature>
+      <name>Adobe InDesign Document CS6</name>
+      <note>16-byte GUID: 0606EDF5-D81D-46e5-BD31-EFE7FE74B71D; 8-byte string File Type: DOCUMENT; 1-byte Endianness: 1=little endian (intel), 2= big endian (Motorola); 4 wildcard bytes; 4 byte version (consider endianess) 8=CS6</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>0606EDF5D81D46E5BD31EFE7FE74B71D444F43554D454E54(01|02){4}(08000000|00000008)</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x06\x06\xed\xf5\xd8\x1dF\xe5\xbd1\xef\xe7\xfet\xb7\x1dDOCUMENT(?:\x01|\x02).{4}(?:\x08\x00\x00\x00|\x00\x00\x00\x08)</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/553</puid>
+    <mime>application/vnd.ms-excel</mime>
+    <name>Microsoft Excel Chart</name>
+    <version>2.x</version>
+    <alias />
+    <pronom_id>1341</pronom_id>
+    <extension>xlc</extension>
+    <signature>
+      <name>BIFF 2 Chart</name>
+      <note>BIFF2: BOF hex 0900. record length hex 0400, BIFF version (not used);filetype=chart=2000</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>09000400{2}2000</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x09\x00\x04\x00.{2} \x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <is_subtype_of>678</is_subtype_of>
+      <content_type>Spreadsheet</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/554</puid>
+    <mime>application/vnd.ms-excel</mime>
+    <name>Microsoft Excel Chart</name>
+    <version>3.0</version>
+    <alias />
+    <pronom_id>1342</pronom_id>
+    <extension>xlc</extension>
+    <signature>
+      <name>BIFF 3 Chart</name>
+      <note>BIFF3: BOF hex 0902. record length hex 0600, BIFF version=(not used), filetype=chart=2000</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>09020600{2}2000</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x09\x02\x06\x00.{2} \x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <is_subtype_of>679</is_subtype_of>
+      <content_type>Spreadsheet</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/555</puid>
+    <mime>application/vnd.ms-excel</mime>
+    <name>Microsoft Excel Macro</name>
+    <version>2.x</version>
+    <alias />
+    <pronom_id>1343</pronom_id>
+    <extension>xlm</extension>
+    <signature>
+      <name>BIFF 2 Macro</name>
+      <note>BIFF2: BOF hex 0900. record length hex 0400, BIFF version (not used), filetype=macro=4000</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>09000400{2}4000</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x09\x00\x04\x00.{2}@\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <is_subtype_of>678</is_subtype_of>
+      <content_type>Spreadsheet</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/556</puid>
+    <mime>application/vnd.ms-excel</mime>
+    <name>Microsoft Excel Macro</name>
+    <version>3.0</version>
+    <alias />
+    <pronom_id>1344</pronom_id>
+    <extension>xlm</extension>
+    <signature>
+      <name>BIFF 3 Macro</name>
+      <note>BIFF3: BOF hex 0902. record length hex 0600, BIFF version=(not used), filetype=macro=4000</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>09020600{2}4000</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x09\x02\x06\x00.{2}@\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <is_subtype_of>679</is_subtype_of>
+      <content_type>Spreadsheet</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/557</puid>
+    <name>Adobe Illustrator</name>
+    <version>8.0</version>
+    <alias />
+    <pronom_id>1345</pronom_id>
+    <extension>ai</extension>
+    <apple_uid>com.adobe.illustrator-image</apple_uid>
+    <has_priority_over>fmt/122</has_priority_over>
+    <has_priority_over>fmt/124</has_priority_over>
+    <has_priority_over>fmt/123</has_priority_over>
+    <has_priority_over>x-fmt/406</has_priority_over>
+    <has_priority_over>x-fmt/408</has_priority_over>
+    <signature>
+      <name>Adobe Illustrator 8.0</name>
+      <note>The first line of the file declares that the file contains a Postscript program and identifies the version of the Document Structuring Conventions to which the document conforms as 3.0. The comment &#8220;%AI5_FileFormat 4&#8221; indicates that this is a version 8.0 Adobe Illustrator file.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D61742034</pronom_pattern>
+        <regex>(?s)\A.{0,0}%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 4</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
+documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/558</puid>
+    <name>Adobe Illustrator</name>
+    <version>9.0</version>
+    <alias />
+    <pronom_id>1346</pronom_id>
+    <extension>ai</extension>
+    <apple_uid>com.adobe.illustrator-image</apple_uid>
+    <has_priority_over>fmt/17</has_priority_over>
+    <has_priority_over>fmt/18</has_priority_over>
+    <signature>
+      <name>Adobe Illustrator 9.0</name>
+      <note>Header PDF-1.4 (or 1.3). Comment %!PS-Adobe-3.0 declares that the file contains a Postscript program. The comment &#8220;%AI5_FileFormat 5&#8221; indicates that this is a version 9.0 Adobe Illustrator file.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>255044462D312E(33|34)*252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D61742035</pronom_pattern>
+        <regex>(?s)\A.{0,0}%PDF-1\.(?:3|4).*%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 5</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
+documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page.
+Beginning with version 9, the Adobe Illustrated ai file format included both a pdf copy of the illustration and a postscript copy.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/559</puid>
+    <name>Adobe Illustrator</name>
+    <version>10.0</version>
+    <alias />
+    <pronom_id>1347</pronom_id>
+    <extension>ai</extension>
+    <apple_uid>com.adobe.illustrator-image</apple_uid>
+    <has_priority_over>fmt/18</has_priority_over>
+    <signature>
+      <name>Adobe Illustrator 10.0</name>
+      <note>Header PDF-1.4. Comment %!PS-Adobe-3.0 declares that the file contains a Postscript program. The comment &#8220;%AI5_FileFormat 6&#8221; indicates that the format is that of a version 10.0 Adobe Illustrator file.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>255044462D312E34*252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D61742036</pronom_pattern>
+        <regex>(?s)\A.{0,0}%PDF-1\.4.*%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 6</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
+documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page.
+Beginning with version 9, the Adobe Illustrated ai file format included both a pdf copy of the illustration and a postscript copy.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/560</puid>
+    <name>Adobe Illustrator</name>
+    <version>11.0</version>
+    <alias />
+    <pronom_id>1348</pronom_id>
+    <extension>ai</extension>
+    <apple_uid>com.adobe.illustrator-image</apple_uid>
+    <has_priority_over>fmt/18</has_priority_over>
+    <signature>
+      <name>Adobe Illustrator 11.0</name>
+      <note>Header PDF-1.4. Comment %!PS-Adobe-3.0 declares that the file contains a Postscript program. The comment &#8220;%AI5_FileFormat 7&#8221; indicates that the format is that of a version 11.0 Adobe Illustrator file.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>255044462D312E34*252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D61742037</pronom_pattern>
+        <regex>(?s)\A.{0,0}%PDF-1\.4.*%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 7</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
+documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page.
+Beginning with version 9, the Adobe Illustrated ai file format included both a pdf copy of the illustration and a postscript copy.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/561</puid>
+    <name>Adobe Illustrator</name>
+    <version>12.0</version>
+    <alias />
+    <pronom_id>1349</pronom_id>
+    <extension>ai</extension>
+    <apple_uid>com.adobe.illustrator-image</apple_uid>
+    <has_priority_over>fmt/18</has_priority_over>
+    <signature>
+      <name>Adobe Illustrator 12.0</name>
+      <note>Header PDF-1.4. Comment %!PS-Adobe-3.0 declares that the file contains a Postscript program. The comment &#8220;%AI5_FileFormat 8&#8221; indicates that the format is that of a version 12.0 Adobe Illustrator file.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>255044462D312E34*252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D61742038</pronom_pattern>
+        <regex>(?s)\A.{0,0}%PDF-1\.4.*%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 8</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
+documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page.
+Beginning with version 9, the Adobe Illustrated ai file format included both a pdf copy of the illustration and a postscript copy.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/562</puid>
+    <name>Adobe Illustrator</name>
+    <version>13.0</version>
+    <alias />
+    <pronom_id>1350</pronom_id>
+    <extension>ai</extension>
+    <apple_uid>com.adobe.illustrator-image</apple_uid>
+    <has_priority_over>fmt/19</has_priority_over>
+    <signature>
+      <name>Adobe Illustrator 13.0</name>
+      <note>Header PDF-1.5. Comment %!PS-Adobe-3.0 declares that the file contains a Postscript program. The comment &#8220;%AI5_FileFormat 9&#8221; indicates that the format is that of a version 13.0 Adobe Illustrator file.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>255044462D312E35*252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D61742039</pronom_pattern>
+        <regex>(?s)\A.{0,0}%PDF-1\.5.*%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 9</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
+documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page.
+Beginning with version 9, the Adobe Illustrated ai file format included both a pdf copy of the illustration and a postscript copy. Beginning with Adobe Illustrator 13.0. the PDF that Illustrator embeds in the file so that other apps can read the file is PDF 1.5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/563</puid>
+    <name>Adobe Illustrator</name>
+    <version>14.0</version>
+    <alias />
+    <pronom_id>1351</pronom_id>
+    <extension>ai</extension>
+    <apple_uid>com.adobe.illustrator-image</apple_uid>
+    <has_priority_over>fmt/19</has_priority_over>
+    <signature>
+      <name>Adobe Illustrator 14.0</name>
+      <note>Header PDF-1.5. Comment %!PS-Adobe-3.0 declares that the file contains a Postscript program. The comment &#8220;%AI5_FileFormat 10&#8221; indicates that the format is that of a version 14.0 Adobe Illustrator file.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>255044462D312E35*252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D6174203130</pronom_pattern>
+        <regex>(?s)\A.{0,0}%PDF-1\.5.*%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 10</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
+documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page.
+Beginning with version 9, the Adobe Illustrated ai file format included both a pdf copy of the illustration and a postscript copy. Beginning with Adobe Illustrator 13.0. the PDF that Illustrator embeds in the file so that other apps can read the file is PDF 1.5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/564</puid>
+    <name>Adobe Illustrator</name>
+    <version>15.0</version>
+    <alias />
+    <pronom_id>1352</pronom_id>
+    <extension>ai</extension>
+    <apple_uid>com.adobe.illustrator-image</apple_uid>
+    <has_priority_over>fmt/19</has_priority_over>
+    <signature>
+      <name>Adobe Illustrator 15.0</name>
+      <note>Header PDF-1.5. Comment %!PS-Adobe-3.0 declares that the file contains a Postscript program. The comment &#8220;%AI5_FileFormat 11&#8221; indicates that the format is that of a version 15.0 Adobe Illustrator file.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>255044462D312E35*252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D6174203131</pronom_pattern>
+        <regex>(?s)\A.{0,0}%PDF-1\.5.*%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 11</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
+documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page.
+Beginning with version 9, the Adobe Illustrated ai file format included both a pdf copy of the illustration and a postscript copy. Beginning with Adobe Illustrator 13.0. the PDF that Illustrator embeds in the file so that other apps can read the file is PDF 1.5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/565</puid>
+    <name>Adobe Illustrator</name>
+    <version>16.0</version>
+    <alias />
+    <pronom_id>1353</pronom_id>
+    <extension>ai</extension>
+    <apple_uid>com.adobe.illustrator-image</apple_uid>
+    <has_priority_over>fmt/19</has_priority_over>
+    <signature>
+      <name>Adobe Illustrator 16.0</name>
+      <note>Header PDF-1.5. Comment %!PS-Adobe-3.0 declares that the file contains a Postscript program. The comment &#8220;%AI5_FileFormat 12&#8221; indicates that the format is that of a version 16.0 Adobe Illustrator file.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>255044462D312E35*252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D6174203132</pronom_pattern>
+        <regex>(?s)\A.{0,0}%PDF-1\.5.*%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 12</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
+documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page.
+Beginning with version 9, the Adobe Illustrated ai file format included both a pdf copy of the illustration and a postscript copy. Beginning with Adobe Illustrator 13.0. the PDF that Illustrator embeds in the file so that other apps can read the file is PDF 1.5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Georgia Tech Research Institute / Georgia Tech Research Institute</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/566</puid>
+    <name>WebP</name>
+    <version>Lossy</version>
+    <alias />
+    <pronom_id>1354</pronom_id>
+    <extension>webp</extension>
+    <signature>
+      <name>WebP Lossy</name>
+      <note>RIFF{4}WEBPVP8</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>52494646{4}5745425056503820</pronom_pattern>
+        <regex>(?s)\A.{0,0}RIFF.{4}WEBPVP8 </regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>WebP is a raster image format developed by Google that uses the Resource Interchange File Format as a container. WebP's lossy compression algorithm is based on the intra-frame coding of the VP8 video format.</dc:description>
+      <dcterms:available />
+      <dc:creator>Google</dc:creator>
+      <dcterms:publisher>Google</dcterms:publisher>
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/567</puid>
+    <name>WebP</name>
+    <version>Lossless</version>
+    <alias />
+    <pronom_id>1355</pronom_id>
+    <extension>webp</extension>
+    <signature>
+      <name>WebP Lossless</name>
+      <note>RIFF{4}WEBPVP8L</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>52494646{4}574542505650384C</pronom_pattern>
+        <regex>(?s)\A.{0,0}RIFF.{4}WEBPVP8L</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>WebP is a raster image format developed by Google that uses the Resource Interchange File Format as a container. WebP&#8217;s lossless compression uses advanced techniques such as dedicated entropy codes for different color channels, exploiting 2D locality of backward reference distances and a color cache of recently used colors. This complements basic techniques such as dictionary coding, Huffman coding and color indexing transform.</dc:description>
+      <dcterms:available />
+      <dc:creator>Google</dc:creator>
+      <dcterms:publisher>Google</dcterms:publisher>
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/568</puid>
+    <name>WebP</name>
+    <version>Extended</version>
+    <alias />
+    <pronom_id>1356</pronom_id>
+    <extension>webp</extension>
+    <signature>
+      <name>WebP Extended</name>
+      <note>RIFF{4}WEBPVP8X</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>52494646{4}5745425056503858</pronom_pattern>
+        <regex>(?s)\A.{0,0}RIFF.{4}WEBPVP8X</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>WebP is a raster image format developed by Google that uses the Resource Interchange File Format as a container. The extended version of the format allows for alternative colour profiles and animation.</dc:description>
+      <dcterms:available />
+      <dc:creator>Google</dc:creator>
+      <dcterms:publisher>Google</dcterms:publisher>
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/569</puid>
+    <name>Matroska</name>
+    <version />
+    <alias />
+    <pronom_id>1357</pronom_id>
+    <extension>mkv</extension>
+    <extension>mk3d</extension>
+    <extension>mka</extension>
+    <extension>mks</extension>
+    <signature>
+      <name>Matroska Video</name>
+      <note>.E&#223;&#163;{0-32}B&#8218;&#710;matroskaB&#8225;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>1A45DFA3{0-32}4282886D6174726F736B614287</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x1aE\xdf\xa3.{0,32}B\x82\x88matroskaB\x87</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The Matroska Multimedia Container is an open standard free container format, based on the Extensible Binary Meta Language (EBML). Matroska file extensions are .MKV for video (with subtitles and audio), .MK3D for stereoscopic video, .MKA for audio-only files, and .MKS for subtitles only.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Video</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Axiell / Axiell</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/570</puid>
+    <name>Extensible Metadata Platform Packet</name>
+    <version />
+    <alias />
+    <pronom_id>1358</pronom_id>
+    <extension>xmp</extension>
+    <signature>
+      <name>Extensible Metadata Platform Packet</name>
+      <note>&lt;?xpacket begin="(0xEFBBBF)" id="W5M0MpCehiHzreSzNTczkc9d"?&gt;.&lt;x:xmpmeta xmlns:x="adobe:ns:meta/"</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F787061636B657420626567696E3D22EFBBBF222069643D2257354D304D7043656869487A7265537A4E54637A6B633964223F3E0A3C783A786D706D65746120786D6C6E733A783D2261646F62653A6E733A6D6574612F22</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x3c\?xpacket begin="\xef\xbb\xbf" id="W5M0MpCehiHzreSzNTczkc9d"\?\x3e\n\x3cx:xmpmeta xmlns:x="adobe:ns:meta/"</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The Extensible Metadata Platform (XMP) is an ISO standard, originally created by Adobe Systems Inc., for the creation, processing and interchange of standardized and custom metadata for all kinds of resources.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Text (Mark-up)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/571</puid>
+    <name>Domino XML Document Export</name>
+    <version />
+    <alias />
+    <pronom_id>1359</pronom_id>
+    <extension>dxl</extension>
+    <signature>
+      <name>Domino XML Document Export</name>
+      <note>&lt;document form=('|"){0-32}&gt;('|")&lt;noteinfo noteid=('|"){0-32}('|")unid=('|"){32}('|")</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C646F63756D656E7420666F726D3D(22|27){0-32}(22|27)3E{0-32}3C6E6F7465696E666F206E6F746569643D(22|27){0-32}(22|27){0-32}756E69643D(22|27){32}(22|27)</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x3cdocument form=(?:"|').{0,32}(?:"|')\x3e.{0,32}\x3cnoteinfo noteid=(?:"|').{0,32}(?:"|').{0,32}unid=(?:"|').{32}(?:"|')</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>IBM Corporation</dc:creator>
+      <dcterms:publisher>IBM Corporation</dcterms:publisher>
+      <content_type>Text (Mark-up)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Nokia / Nokia</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/572</puid>
+    <name>Domino XML Database Export</name>
+    <version />
+    <alias />
+    <pronom_id>1360</pronom_id>
+    <extension>dxl</extension>
+    <has_priority_over>fmt/101</has_priority_over>
+    <signature>
+      <name>Domino XML Database Export</name>
+      <note>&lt;?xml version="1.0"...
+&lt;!DOCTYPE database...
+&lt;database xmlns="http://www.lotus.com/dxl"</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F786D6C2076657273696F6E3D(22|27)312E30(22|27){1-64}3C21444F4354595045206461746162617365{1-64}3C646174616261736520786D6C6E733D22687474703A2F2F7777772E6C6F7475732E636F6D2F64786C22</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x3c\?xml version=(?:"|')1\.0(?:"|').{1,64}\x3c\!DOCTYPE database.{1,64}\x3cdatabase xmlns="http://www\.lotus\.com/dxl"</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>IBM Corporation</dc:creator>
+      <dcterms:publisher>IBM Corporation</dcterms:publisher>
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Nokia / Nokia</dc:creator>
+        <dcterms:created>19 Jul 2013</dcterms:created>
+        <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>

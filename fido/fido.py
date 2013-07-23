@@ -6,7 +6,7 @@ from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
 from xml.etree import ElementTree as VET # versions.xml
 
-version = '1.1.7'
+version = '1.1.8'
 defaults = {'bufsize': 128 * 1024, # (bytes)
             'regexcachesize' : 2084, # (bytes)
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
@@ -566,6 +566,9 @@ class Fido:
            cutting off patterns we are looking for in the middle.
            This method is somewhat slower than reading the complete file at once.
            This is to prevent Fido to potentially crash in the midst of scanning a very big file.
+           NOTE (MdR): this piece of code is still a bit quirky
+           as it does not yet takes byte positions into account which
+           are available in the DROID container signature file
         """
         container_result = []
         nobuffer = False
@@ -610,9 +613,18 @@ class Fido:
                     overlap = True
                 container_buffer = self.buffered_read(pos, overlap)
             for (container_id,container_regexes) in self.sequenceSignature.iteritems():
+                # set hitcounter in case a container entry
+                # has more than one regex
+                hitcounter = 0
                 if len(container_regexes) > 0:
                     for container_regex in container_regexes:
                         if re.search(container_regex, container_buffer):
+                            hitcounter += 1
+                            # if the hitcounter matches the number of regexes
+                            # then it must be a positive hit, else continue
+                            # to match the rest of the sequences
+                            if hitcounter < len(container_regexes):
+                                continue
                             self.matchtype = "container"
                             for container_puid in self.puidMapping[container_id]:
                                 for container_format in self.formats:
