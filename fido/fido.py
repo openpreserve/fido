@@ -784,7 +784,7 @@ def main(arglist=None):
         args.matchprintf = args.matchprintf.decode('string_escape')
     if args.nomatchprintf != None:
         args.nomatchprintf = args.nomatchprintf.decode('string_escape')
-    fido = Fido(quiet=args.q, bufsize=args.bufsize, 
+    fido = Fido(quiet=args.q, bufsize=args.bufsize, container_bufsize=args.container_bufsize,
                 printmatch=args.matchprintf, printnomatch=args.nomatchprintf, zip=args.zip, nocontainer = args.nocontainer, conf_dir=args.confdir)
     
     #TODO: Allow conf options to be dis-included
