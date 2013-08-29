@@ -23,32 +23,23 @@ optional arguments:
   -q                    run (more) quietly
   -recurse              recurse into subdirectories
   -zip                  recurse into zip and tar files
-  -nocontainer          disable deep scan of container documents, increases spee
-d but may reduce accuracy with big files
-  -input INPUT          file containing a list of files to check, one per line.
-- means stdin
+  -nocontainer          disable deep scan of container documents, increases speed but may reduce accuracy with big files
+  -input INPUT          file containing a list of files to check, one per line. - means stdin
   -filename FILENAME    filename if file contents passed through STDIN
   -useformats INCLUDEPUIDS
-                        comma separated string of formats to use in identificati
-on
+                        comma separated string of formats to use in identification
   -nouseformats EXCLUDEPUIDS
-                        comma separated string of formats not to use in identifi
-cation
+                        comma separated string of formats not to use in identification
   -matchprintf FORMATSTRING
-                        format string (Python style) to use on match. See nomatc
-hprintf, README.txt.
+                        format string (Python style) to use on match. See nomatchprintf, README.txt.
   -nomatchprintf FORMATSTRING
-                        format string (Python style) to use if no match. See REA
-DME.txt
-  -bufsize BUFSIZE      size (in bytes) of the buffer to match against (default=
-131072 bytes)
+                        format string (Python style) to use if no match. See README.txt
+  -bufsize BUFSIZE      size (in bytes) of the buffer to match against (default=131072 bytes)
   -container_bufsize CONTAINER_BUFSIZE
-                        size (in bytes) of the buffer to match against (default=
-524288 bytes)
+                        size (in bytes) of the buffer to match against (default=524288 bytes)
   -loadformats XML1,...,XMLn
                         comma separated string of XML format files to add.
-  -confdir CONFDIR      configuration directory to load_fido_xml, for example, t
-he format specifications from.
+  -confdir CONFDIR      configuration directory to load_fido_xml, for example, the format specifications from.
 
     Open Planets Foundation (http://www.openplanetsfoundation.org)
     See License.txt for license information.
