@@ -6,7 +6,7 @@ from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
 from xml.etree import ElementTree as VET # versions.xml
 
-version = '1.1.9'
+version = '1.1.91'
 defaults = {'bufsize': 128 * 1024, # (bytes)
             'regexcachesize' : 2084, # (bytes)
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
@@ -25,17 +25,17 @@ defaults = {'bufsize': 128 * 1024, # (bytes)
     'epilog' : """
     Open Planets Foundation (http://www.openplanetsfoundation.org)
     See License.txt for license information.
-    Download from: http://github.com/openplanets/fido/downloads\n
-    Author: Adam Farquhar, 2010
-    Maintainer: Maurice de Rooij (OPF/NANETH), 2011, 2012
-    FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions.
-    PRONOM is available from http://www.nationalarchives.gov.uk/pronom/.
-    """
+    Download from: https://github.com/openplanets/fido/releases
+    Usage guide: http://wiki.opf-labs.org/display/TR/FIDO+usage+guide
+    Author: Adam Farquhar (BL), 2010
+    Maintainer: Maurice de Rooij (OPF/NANETH), 2011, 2012, 2013
+    FIDO uses the UK National Archives (TNA) PRONOM File Format
+    and Container descriptions.
+    PRONOM is available from http://www.nationalarchives.gov.uk/pronom/"""
 }
 
 class Fido:
-    def __init__(self, quiet=False, bufsize=None, container_bufsize = None, printnomatch=None, printmatch=None,
-                 zip=False, nocontainer=False, handle_matches=None, conf_dir=None, format_files=None, containersignature_file=None):
+    def __init__(self, quiet=False, bufsize=None, container_bufsize = None, printnomatch=None, printmatch=None, zip=False, nocontainer=False, handle_matches=None, conf_dir=None, format_files=None, containersignature_file=None):
         global defaults
         self.quiet = quiet
         self.bufsize = (defaults['bufsize'] if bufsize == None else bufsize)
@@ -734,12 +734,12 @@ def list_files(roots, recurse=False):
 def main(arglist=None):
     # The argparse package was introduced in 2.7
     t0 = time.clock() 
-    from argparselocal import ArgumentParser
+    from argparselocal import ArgumentParser, RawTextHelpFormatter    
     if arglist == None:
         arglist = sys.argv[1:]
     if len(arglist) == False:
         arglist.append("-h")        
-    parser = ArgumentParser(description=defaults['description'], epilog=defaults['epilog'], fromfile_prefix_chars='@')
+    parser = ArgumentParser(description=defaults['description'], epilog=defaults['epilog'], fromfile_prefix_chars='@', formatter_class=RawTextHelpFormatter)
     parser.add_argument('-v', default=False, action='store_true', help='show version information')
     parser.add_argument('-q', default=False, action='store_true', help='run (more) quietly')
     parser.add_argument('-recurse', default=False, action='store_true', help='recurse into subdirectories')
@@ -747,7 +747,7 @@ def main(arglist=None):
     parser.add_argument('-nocontainer', default=False, action='store_true', help='disable deep scan of container documents, increases speed but may reduce accuracy with big files')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-input', default=False, help='file containing a list of files to check, one per line. - means stdin')
-    group.add_argument('files', nargs='*', default=[], metavar='FILE', help='files to check.  If the file is -, then read content from stdin. In this case, python must be invoked with -u or it may convert the line terminators.')
+    group.add_argument('files', nargs='*', default=[], metavar='FILE', help='files to check. If the file is -, then read content from stdin. In this case, python must be invoked with -u or it may convert the line terminators.')
     parser.add_argument('-filename', default=None, help='filename if file contents passed through STDIN')
     parser.add_argument('-useformats', metavar='INCLUDEPUIDS', default=None, help='comma separated string of formats to use in identification')
     parser.add_argument('-nouseformats', metavar='EXCLUDEPUIDS', default=None, help='comma separated string of formats not to use in identification')

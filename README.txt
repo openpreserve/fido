@@ -1,18 +1,21 @@
 usage: fido.py [-h] [-v] [-q] [-recurse] [-zip] [-nocontainer] [-input INPUT]
-               [-useformats INCLUDEPUIDS] [-nouseformats EXCLUDEPUIDS]
-               [-matchprintf FORMATSTRING] [-nomatchprintf FORMATSTRING]
-               [-bufsize BUFSIZE] [-container_bufsize CONTAINER_BUFSIZE]
+               [-filename FILENAME] [-useformats INCLUDEPUIDS]
+               [-nouseformats EXCLUDEPUIDS] [-matchprintf FORMATSTRING]
+               [-nomatchprintf FORMATSTRING] [-bufsize BUFSIZE]
+               [-container_bufsize CONTAINER_BUFSIZE]
                [-loadformats XML1,...,XMLn] [-confdir CONFDIR]
                [FILE [FILE ...]]
 
-Format Identification for Digital Objects (fido). FIDO is a command-line tool
-to identify the file formats of digital objects. It is designed for simple
-integration into automated work-flows.
+    Format Identification for Digital Objects (fido).
+    FIDO is a command-line tool to identify the file formats of digital objects.
+
+    It is designed for simple integration into automated work-flows.
+
 
 positional arguments:
-  FILE                  files to check. If the file is -, then read content
-                        from stdin. In this case, python must be invoked with
-                        -u or it may convert the line terminators.
+  FILE                  files to check. If the file is -, then read content from
+ stdin. In this case, python must be invoked with -u or it may convert the line
+terminators.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -20,46 +23,50 @@ optional arguments:
   -q                    run (more) quietly
   -recurse              recurse into subdirectories
   -zip                  recurse into zip and tar files
-  -nocontainer          disable deep scan of container documents, increases
-                        speed but may reduce accuracy with big files
-  -input INPUT          file containing a list of files to check, one per
-                        line. - means stdin
+  -nocontainer          disable deep scan of container documents, increases spee
+d but may reduce accuracy with big files
+  -input INPUT          file containing a list of files to check, one per line.
+- means stdin
+  -filename FILENAME    filename if file contents passed through STDIN
   -useformats INCLUDEPUIDS
-                        comma separated string of formats to use in
-                        identification
+                        comma separated string of formats to use in identificati
+on
   -nouseformats EXCLUDEPUIDS
-                        comma separated string of formats not to use in
-                        identification
+                        comma separated string of formats not to use in identifi
+cation
   -matchprintf FORMATSTRING
-                        format string (Python style) to use on match. See
-                        nomatchprintf, README.txt.
+                        format string (Python style) to use on match. See nomatc
+hprintf, README.txt.
   -nomatchprintf FORMATSTRING
-                        format string (Python style) to use if no match. See
-                        README.txt
-  -bufsize BUFSIZE      size (in bytes) of the buffer to match against
-                        (default=131072 bytes)
+                        format string (Python style) to use if no match. See REA
+DME.txt
+  -bufsize BUFSIZE      size (in bytes) of the buffer to match against (default=
+131072 bytes)
   -container_bufsize CONTAINER_BUFSIZE
-                        size (in bytes) of the buffer to match against
-                        (default=524288 bytes)
+                        size (in bytes) of the buffer to match against (default=
+524288 bytes)
   -loadformats XML1,...,XMLn
                         comma separated string of XML format files to add.
-  -confdir CONFDIR      configuration directory to load_fido_xml, for example,
-                        the format specifications from.
+  -confdir CONFDIR      configuration directory to load_fido_xml, for example, t
+he format specifications from.
 
-Open Planets Foundation (http://www.openplanetsfoundation.org)
-See License.txt for license information.
-Download from: http://github.com/openplanets/fido/downloads
-Author: Adam Farquhar, 2010
-Maintainer: Maurice de Rooij (OPF/NANETH), 2011, 2012
-FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions.
-PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
+    Open Planets Foundation (http://www.openplanetsfoundation.org)
+    See License.txt for license information.
+    Download from: https://github.com/openplanets/fido/releases
+    Usage guide: http://wiki.opf-labs.org/display/TR/FIDO+usage+guide
+    Author: Adam Farquhar (BL), 2010
+    Maintainer: Maurice de Rooij (OPF/NANETH), 2011, 2012, 2013
+    FIDO uses the UK National Archives (TNA) PRONOM File Format
+    and Container descriptions.
+    PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
 
 Installation
 ------------
 
+(also see: http://wiki.opf-labs.org/display/TR/FIDO+usage+guide)
+
 Any platform
-1. Download the latest zip release from http://github.com/openplanets/fido/downloads
-   (or use the big Downloads button on http://github.com/openplanets/fido)
+1. Download the latest zip release from https://github.com/openplanets/fido/releases
 2. Unzip into some directory
 3. Open a command shell, cd to the directory that you placed the zip contents into and cd into folder 'fido'
 4. You should now be able to see the help text: 
@@ -116,7 +123,7 @@ The defaults for FIDO 1.0 are:
 It can be useful to provide an empty string for either, for example to ignore all failed matches, or all successful ones (see examples below). 
 Note that a newline needs to be added to the end of the string using \n.
 
-Matchttypes
+Matchtypes
 -----------
 
 FIDO returns the following matchtypes:

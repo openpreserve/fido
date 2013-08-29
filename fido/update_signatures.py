@@ -5,7 +5,7 @@
 #
 # Open Planets Foundation (http://www.openplanetsfoundation.org)
 # See License.txt for license information.
-# Download from: http://github.com/openplanets/fido/downloads
+# Download from: https://github.com/openplanets/fido/releases
 # Author: Maurice de Rooij (NANETH), 2012
 #        
 # FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions .

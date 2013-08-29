@@ -9,6 +9,7 @@
 *.py~
 /build
 /dist
+/fido.egg-info
 *.~is
 /.settings/org.eclipse.wst.sse.core.prefs
 /.settings/org.eclipse.ltk.core.refactoring.prefs
