@@ -1,4 +1,6 @@
 FIDO TODO LIST
+TODO: Describe main class interface
+TODO: Clean up XML file naming mess
 TODO: MDR: Use SPARQL endpoint to query available PUID's, then fetch them (URL:http://test.linkeddatapronom.nationalarchives.gov.uk/sparql/endpoint.php?query=select+distinct+%3Fname+%3Fext+%3Fpuid+%3Fxpuid+where+{%0D%0A+%0D%0A+%3Fs+<http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23label>+%3Fname+.%0D%0A+%3Fs+<http%3A%2F%2Freference.data.gov.uk%2Ftechnical-registry%2Fextension>+%3Fext+.%0D%0A+OPTIONAL+{+%3Fs+<http%3A%2F%2Freference.data.gov.uk%2Ftechnical-registry%2FPUID>+%3Fpuid+.+}%0D%0A+OPTIONAL+{+%3Fs+<http%3A%2F%2Freference.data.gov.uk%2Ftechnical-registry%2FXPUID>+%3Fxpuid+.+}%0D%0A+%0D%0A%0D%0A}&output=xml&jsonp=&key=)
 TODO: ANJ: Complete validator to check refs, files, metadata and regexes are well formed, match EOF/BOF/VAR etc.
 TODO: ANJ: Report inconsistency of STATUS flag?
@@ -12,7 +14,7 @@ TODO: Change order of preference for extension matches!
 TODO: Review api against JHOVE/2
 TODO: Review format information against FITS
 TODO: Get the magic file and add signatures from it
-TODO: Move the fetch code from shell/wget to python
+done: Move the fetch code from shell/wget to python
 note: In 0.9.3 I tried memoizing the routines to get_puid/regex/etc.  This resulted in an overall slowdown.
 done: Fix fmt/40 - for word; it requires 'microsoft word', but my example has 'microsoft office word'
 note: As of 8-Dec, there are 52 identical regexes.

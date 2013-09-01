@@ -6,9 +6,9 @@ from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
 from xml.etree import ElementTree as VET # versions.xml
 
-version = '1.1.91'
+version = '1.2.0'
 defaults = {'bufsize': 128 * 1024, # (bytes)
-            'regexcachesize' : 2084, # (bytes)
+            'regexcachesize' :2084, # (bytes)
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
             'printmatch': "OK,%(info.time)s,%(info.puid)s,\"%(info.formatname)s\",\"%(info.signaturename)s\",%(info.filesize)s,\"%(info.filename)s\",\"%(info.mimetype)s\",\"%(info.matchtype)s\"\n",
             'printnomatch' : "KO,%(info.time)s,,,,%(info.filesize)s,\"%(info.filename)s\",,\"%(info.matchtype)s\"\n",
@@ -46,14 +46,17 @@ class Fido:
         self.zip = zip
         self.nocontainer = (defaults['nocontainer'] if nocontainer == None else nocontainer)
         self.conf_dir = defaults['conf_dir'] if conf_dir == None else conf_dir
+#        print defaults
+#        sys.exit()
         self.format_files = defaults['format_files'] if format_files == None else format_files
-        self.containersignature_file = defaults['containersignature_file'] if containersignature_file == None else containersignature_file
+        #self.containersignature_file = defaults['containersignature_file'] if containersignature_file == None else containersignature_file
+        self.containersignature_file = defaults['containersignature_file'] #if containersignature_file == None else containersignature_file
         self.formats = []
         self.puid_format_map = {}
         self.puid_has_priority_over_map = {}
         # load signatures
-        for file in self.format_files:
-            self.load_fido_xml(os.path.join(os.path.abspath(self.conf_dir), file))
+        for xml_file in self.format_files:
+            self.load_fido_xml(os.path.join(os.path.abspath(self.conf_dir), xml_file))
         self.load_container_signature(os.path.join(os.path.abspath(self.conf_dir), self.containersignature_file))
         self.current_file = ''
         self.current_filesize = 0
@@ -758,24 +761,33 @@ def main(arglist=None):
     
     parser.add_argument('-loadformats', default=None, metavar='XML1,...,XMLn', help='comma separated string of XML format files to add.')
     parser.add_argument('-confdir', default=None, help='configuration directory to load_fido_xml, for example, the format specifications from.')
-       
-    mydir = os.path.abspath(os.path.dirname(__file__))
+    
+    # what is this doing here only once?   
+    #mydir = os.path.abspath(os.path.dirname(__file__))
 
-    versionsFile = os.path.join(os.path.abspath(defaults['conf_dir']), defaults['versions_file'])
+    # PROCESS ARGUMENTS
+    args = parser.parse_args(arglist)
+
+    # process confdir
+    # load versions.xml
+    # and stick it in defaults
+    if args.confdir:
+        versionsFile = os.path.join(os.path.abspath(args.confdir), defaults['versions_file'])
+    else:
+        versionsFile = os.path.join(os.path.abspath(defaults['conf_dir']), defaults['versions_file'])
     try:
         versions = VET.parse(versionsFile)
     except Exception, e:
         sys.stderr.write("An error occured loading versions.xml:\n{0}".format(e))
         sys.exit()
     defaults['xml_pronomSignature'] = versions.find("pronomSignature").text
-    defaults['xml_pronomContainerSignature'] = versions.find("pronomContainerSignature").text
+#    defaults['xml_pronomContainerSignature'] = versions.find("pronomContainerSignature").text
+    defaults['containersignature_file'] = versions.find("pronomContainerSignature").text
     defaults['xml_fidoExtensionSignature'] = versions.find("fidoExtensionSignature").text
     defaults['format_files'] = []
     defaults['format_files'].append(defaults['xml_pronomSignature'])
     defaults['format_files'].append(defaults['xml_fidoExtensionSignature'])
-    versionHeader = "FIDO v{0} ({1}, {2}, {3})\n".format(version,defaults['xml_pronomSignature'],defaults['xml_pronomContainerSignature'],defaults['xml_fidoExtensionSignature'])
-    # PROCESS ARGUMENTS
-    args = parser.parse_args(arglist)
+    versionHeader = "FIDO v{0} ({1}, {2}, {3})\n".format(version,defaults['xml_pronomSignature'],defaults['containersignature_file'],defaults['xml_fidoExtensionSignature'])
     
     if args.v :
         sys.stdout.write(versionHeader)
@@ -833,4 +845,3 @@ def main(arglist=None):
 
 if __name__ == '__main__':
     main()
-
