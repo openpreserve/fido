@@ -6,7 +6,7 @@ from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
 from xml.etree import ElementTree as VET # versions.xml
 
-version = '1.2.0'
+version = '1.3.0'
 defaults = {'bufsize': 128 * 1024, # (bytes)
             'regexcachesize' :2084, # (bytes)
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
@@ -748,6 +748,7 @@ def main(arglist=None):
     parser.add_argument('-recurse', default=False, action='store_true', help='recurse into subdirectories')
     parser.add_argument('-zip', default=False, action='store_true', help='recurse into zip and tar files')
     parser.add_argument('-nocontainer', default=False, action='store_true', help='disable deep scan of container documents, increases speed but may reduce accuracy with big files')
+    parser.add_argument('-pronom_only', default=False, action='store_true', help='disables loading of format extensions file, only PRONOM signatures are loaded, may reduce accuracy of results')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-input', default=False, help='file containing a list of files to check, one per line. - means stdin')
     group.add_argument('files', nargs='*', default=[], metavar='FILE', help='files to check. If the file is -, then read content from stdin. In this case, python must be invoked with -u or it may convert the line terminators.')
@@ -767,7 +768,8 @@ def main(arglist=None):
 
     # PROCESS ARGUMENTS
     args = parser.parse_args(arglist)
-
+#    print args
+#    sys.exit()
     # process confdir
     # load versions.xml
     # and stick it in defaults
@@ -786,8 +788,11 @@ def main(arglist=None):
     defaults['xml_fidoExtensionSignature'] = versions.find("fidoExtensionSignature").text
     defaults['format_files'] = []
     defaults['format_files'].append(defaults['xml_pronomSignature'])
-    defaults['format_files'].append(defaults['xml_fidoExtensionSignature'])
-    versionHeader = "FIDO v{0} ({1}, {2}, {3})\n".format(version,defaults['xml_pronomSignature'],defaults['containersignature_file'],defaults['xml_fidoExtensionSignature'])
+    if args.pronom_only:
+        versionHeader = "FIDO v{0} ({1}, {2})\n".format(version,defaults['xml_pronomSignature'],defaults['containersignature_file'])
+    else:
+        versionHeader = "FIDO v{0} ({1}, {2}, {3})\n".format(version,defaults['xml_pronomSignature'],defaults['containersignature_file'],defaults['xml_fidoExtensionSignature'])
+        defaults['format_files'].append(defaults['xml_fidoExtensionSignature'])
     
     if args.v :
         sys.stdout.write(versionHeader)

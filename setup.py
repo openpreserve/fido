@@ -7,7 +7,7 @@ if sys.version_info >= (3,):
     extra['use_2to3'] = True
 
 setup( name='fido',
-       version='1.1.91',
+       version='1.3.0',
        install_requires=['distribute'],
        description='Format Identification for Digital Objects (FIDO)',
        packages=['fido'],
