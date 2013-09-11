@@ -1,5 +1,5 @@
-usage: fido.py [-h] [-v] [-q] [-recurse] [-zip] [-nocontainer] [-input INPUT]
-               [-filename FILENAME] [-useformats INCLUDEPUIDS]
+usage: fido.py [-h] [-v] [-q] [-recurse] [-zip] [-nocontainer] [-pronom_only]
+               [-input INPUT] [-filename FILENAME] [-useformats INCLUDEPUIDS]
                [-nouseformats EXCLUDEPUIDS] [-matchprintf FORMATSTRING]
                [-nomatchprintf FORMATSTRING] [-bufsize BUFSIZE]
                [-container_bufsize CONTAINER_BUFSIZE]
@@ -8,9 +8,8 @@ usage: fido.py [-h] [-v] [-q] [-recurse] [-zip] [-nocontainer] [-input INPUT]
 
     Format Identification for Digital Objects (fido).
     FIDO is a command-line tool to identify the file formats of digital objects.
-
     It is designed for simple integration into automated work-flows.
-
+    
 
 positional arguments:
   FILE                  files to check. If the file is -, then read content from stdin. In this case, python must be invoked with -u or it may convert the line terminators.
@@ -22,6 +21,7 @@ optional arguments:
   -recurse              recurse into subdirectories
   -zip                  recurse into zip and tar files
   -nocontainer          disable deep scan of container documents, increases speed but may reduce accuracy with big files
+  -pronom_only          disables loading of format extensions file, only PRONOM signatures are loaded, may reduce accuracy of results
   -input INPUT          file containing a list of files to check, one per line. - means stdin
   -filename FILENAME    filename if file contents passed through STDIN
   -useformats INCLUDEPUIDS
