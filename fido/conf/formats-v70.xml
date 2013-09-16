@@ -1180,6 +1180,7 @@ The only difference between Windows bitmap 2.0 and OS/2 bitmap 1.0 is the data t
   </format>
   <format>
     <puid>x-fmt/44</puid>
+    <mime>application/vnd.wordperfect</mime>
     <name>WordPerfect for MS-DOS/Windows Document</name>
     <version>6.0</version>
     <alias />
@@ -5546,6 +5547,7 @@ Known QuarkXpress file types are: qxd - QuarkXpress Document; qxl - QuarkXpress 
   </format>
   <format>
     <puid>x-fmt/203</puid>
+    <mime>application/vnd.wordperfect</mime>
     <name>WordPerfect for Windows Document</name>
     <version>5.2</version>
     <alias />
@@ -16036,7 +16038,7 @@ Windows bitmap 2.0 and OS/2 bitmap 1.0 are effectively the same format - the onl
   </format>
   <format>
     <puid>x-fmt/393</puid>
-    <mime>vnd.wordperfect</mime>
+    <mime>application/vnd.wordperfect</mime>
     <name>WordPerfect for MS-DOS Document</name>
     <version>5.0</version>
     <alias />
@@ -16082,7 +16084,7 @@ Windows bitmap 2.0 and OS/2 bitmap 1.0 are effectively the same format - the onl
   </format>
   <format>
     <puid>x-fmt/394</puid>
-    <mime>vnd.wordperfect</mime>
+    <mime>application/vnd.wordperfect</mime>
     <name>WordPerfect for MS-DOS/Windows Document</name>
     <version>5.1</version>
     <alias />
@@ -20790,6 +20792,15 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
     <extension>indd</extension>
     <extension>ind</extension>
     <has_priority_over>x-fmt/450</has_priority_over>
+    <signature>
+      <name>Adobe InDesign Document CS</name>
+      <note>16-byte GUID: 0606EDF5-D81D-46e5-BD31-EFE7FE74B71D; 8-byte string File Type: DOCUMENT; 1-byte Endianness: 1=little endian (intel), 2= big endian (Motorola); 4 wildcard bytes; 4 byte version (consider endianess) 3=CS</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>0606EDF5D81D46E5BD31EFE7FE74B71D444F43554D454E54(01|02){4}(03000000|00000003)</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x06\x06\xed\xf5\xd8\x1dF\xe5\xbd1\xef\xe7\xfet\xb7\x1dDOCUMENT(?:\x01|\x02).{4}(?:\x03\x00\x00\x00|\x00\x00\x00\x03)</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
@@ -21398,6 +21409,7 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
   </format>
   <format>
     <puid>fmt/214</puid>
+    <mime>application/vnd.ms-excel</mime>
     <name>Microsoft Excel for Windows</name>
     <version>2007 onwards</version>
     <alias />
@@ -21420,6 +21432,7 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
   </format>
   <format>
     <puid>fmt/215</puid>
+    <mime>application/vnd.ms-powerpoint</mime>
     <name>Microsoft Powerpoint for Windows</name>
     <version>2007 onwards</version>
     <alias />
@@ -30462,6 +30475,7 @@ VAR: Identifies the byte sequence which equals - xmlns:pdfaid="http://www.aiim.o
   </format>
   <format>
     <puid>fmt/482</puid>
+    <mime>application/x-ibooks+zip</mime>
     <name>Apple iBook format</name>
     <version />
     <alias />
@@ -30494,6 +30508,7 @@ VAR: Identifies the byte sequence which equals - xmlns:pdfaid="http://www.aiim.o
   </format>
   <format>
     <puid>fmt/483</puid>
+    <mime>application/epub+zip</mime>
     <name>ePub format</name>
     <version />
     <alias />
@@ -33546,6 +33561,481 @@ Beginning with version 9, the Adobe Illustrated ai file format included both a p
         <dcterms:created>19 Jul 2013</dcterms:created>
         <dcterms:modified>19 Jul 2013</dcterms:modified>
         <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/573</puid>
+    <mime>video/webm</mime>
+    <name>WebM</name>
+    <version />
+    <alias />
+    <pronom_id>1361</pronom_id>
+    <extension>webm</extension>
+    <signature>
+      <name>WebM</name>
+      <note>.E&#223;&#163;.{0-32}B&#8218;&#8222;webmB&#8225;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>1A45DFA3{0-32}4282847765626D4287</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x1aE\xdf\xa3.{0,32}B\x82\x84webmB\x87</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>WebM is a media file format, developed by Google based on the Extensible Binary Meta Language.</dc:description>
+      <dcterms:available />
+      <dc:creator>Google</dc:creator>
+      <dcterms:publisher>Google</dcterms:publisher>
+      <content_type>Video</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>28 Aug 2013</dcterms:created>
+        <dcterms:modified>28 Aug 2013</dcterms:modified>
+        <dc:description>http://www.matroska.org/technical/specs/index.html</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/574</puid>
+    <name>Digital Imaging and Communications in Medicine file format</name>
+    <version />
+    <alias />
+    <pronom_id>1362</pronom_id>
+    <extension>dcm</extension>
+    <signature>
+      <name>DICOM</name>
+      <note>128 0x00 bytes, followed by 'DICM' ASCII string. This could also be expessed as just 'DICM', with a 128 byte offset, however including the 00 bytes strengthens the signature.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004449434D</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00DICM</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>DICOM (Digital Imaging and Communications in Medicine) is a standard for handling, storing, printing, and transmitting information in medical imaging. It includes a file format definition and a network communications protocol. The communication protocol is an application protocol that uses TCP/IP to communicate between systems. DICOM files can be exchanged between two entities that are capable of receiving image and patient data in DICOM format. The National Electrical Manufacturers Association (NEMA) holds the copyright to this standard. It was developed by the DICOM Standards Committee, whose members are also partly members of NEMA.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Tessella / Tessella</dc:creator>
+        <dcterms:created>28 Aug 2013</dcterms:created>
+        <dcterms:modified>28 Aug 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/575</puid>
+    <name>GraphPad Prism</name>
+    <version>1-3</version>
+    <alias />
+    <pronom_id>1363</pronom_id>
+    <extension>pzm</extension>
+    <signature>
+      <name>GraphPad Prism 1-3</name>
+      <note>BOF: PCFFGRAF</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>5043464647524146</pronom_pattern>
+        <regex>(?s)\A.{0,0}PCFFGRAF</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>GraphPad Prism is a scientific graphing and analysis application which organises, analyses and graphs repeated experiments, picks appropriate statistical tests, and interprets the results.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Tessella / Tessella</dc:creator>
+        <dcterms:created>28 Aug 2013</dcterms:created>
+        <dcterms:modified>28 Aug 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/576</puid>
+    <name>GraphPad Prism</name>
+    <version>4</version>
+    <alias />
+    <pronom_id>1364</pronom_id>
+    <extension>pzf</extension>
+    <signature>
+      <name>GraphPad Prism 4</name>
+      <note>BOF: PCFFGRA4</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>5043464647524134</pronom_pattern>
+        <regex>(?s)\A.{0,0}PCFFGRA4</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>GraphPad Prism is a scientific graphing and analysis application which organises, analyses and graphs repeated experiments, picks appropriate statistical tests, and interprets the results.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Tessella / Tessella</dc:creator>
+        <dcterms:created>28 Aug 2013</dcterms:created>
+        <dcterms:modified>28 Aug 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/577</puid>
+    <name>Image Cytometry Standard</name>
+    <version>1</version>
+    <alias />
+    <pronom_id>1365</pronom_id>
+    <extension>ics</extension>
+    <signature>
+      <name>Image Cytometry Standard 1.0</name>
+      <note>BOF: &lt;horizontal tab&gt;&lt;line feed&gt;ics_version.1.0</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>090A6963735F76657273696F6E09312E30</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x09\nics_version\x091\.0</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The Image Cytometry Standard (ICS) is a digital multidimensional image file format used in life sciences microscopy. It stores not only the image data, but also the microscopic parameters describing the optics during the acquisition. Version 1 of the format holds just the metadata and a pointer to a corresponding .ids file which contains the pixel data.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Tessella / Tessella</dc:creator>
+        <dcterms:created>28 Aug 2013</dcterms:created>
+        <dcterms:modified>28 Aug 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/578</puid>
+    <name>Image Cytometry Standard</name>
+    <version>2</version>
+    <alias />
+    <pronom_id>1366</pronom_id>
+    <extension>ics</extension>
+    <signature>
+      <name>Image Cytometry Standard 2.0</name>
+      <note>BOF: &lt;horizontal tab&gt;&lt;line feed&gt;ics_version.2.0</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>090A6963735F76657273696F6E09322E30</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x09\nics_version\x092\.0</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The Image Cytometry Standard (ICS) is a digital multidimensional image file format used in life sciences microscopy. It stores not only the image data, but also the microscopic parameters describing the optics during the acquisition. Version 2 of the format contains both the metadata and pixel data.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Tessella / Tessella</dc:creator>
+        <dcterms:created>28 Aug 2013</dcterms:created>
+        <dcterms:modified>28 Aug 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/579</puid>
+    <name>X3D</name>
+    <version>3.0</version>
+    <alias />
+    <pronom_id>1367</pronom_id>
+    <extension>x3d</extension>
+    <has_priority_over>fmt/101</has_priority_over>
+    <signature>
+      <name>X3D v3.0</name>
+      <note>&lt;?xml version="1.0" encoding="UTF-8"?&gt;.&lt;!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN"</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F786D6C2076657273696F6E3D22312E302220656E636F64696E673D225554462D38223F3E0A3C21444F435459504520583344205055424C4943202249534F2F2F57656233442F2F4454442058334420332E302F2F454E22</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x3c\?xml version="1\.0" encoding="UTF-8"\?\x3e\n\x3c\!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3\.0//EN"</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>X3D is an integrated 3D graphics and multimedia framework in the ISO process for Information technology &#8212; Computer graphics, image processing and environmental representation. The standards pass through a number of member only and then public review processes, until they reach full ISO approval as international standards.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Vector), Text (Mark-up)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Central Digital Archive / Central Digital Archive</dc:creator>
+        <dcterms:created>28 Aug 2013</dcterms:created>
+        <dcterms:modified>28 Aug 2013</dcterms:modified>
+        <dc:description>http://www.web3d.org/realtime-3d/specification/version/V3.0</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/580</puid>
+    <name>X3D</name>
+    <version>3.1</version>
+    <alias />
+    <pronom_id>1368</pronom_id>
+    <extension>x3d</extension>
+    <has_priority_over>fmt/101</has_priority_over>
+    <signature>
+      <name>X3D v3.1</name>
+      <note>&lt;?xml version="1.0" encoding="UTF-8"?&gt;.&lt;!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.1//EN"</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F786D6C2076657273696F6E3D22312E302220656E636F64696E673D225554462D38223F3E0A3C21444F435459504520583344205055424C4943202249534F2F2F57656233442F2F4454442058334420332E312F2F454E22</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x3c\?xml version="1\.0" encoding="UTF-8"\?\x3e\n\x3c\!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3\.1//EN"</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>X3D is an integrated 3D graphics and multimedia framework in the ISO process for Information technology &#8212; Computer graphics, image processing and environmental representation. The standards pass through a number of member only and then public review processes, until they reach full ISO approval as international standards.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Vector), Text (Mark-up)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Central Digital Archive / Central Digital Archive</dc:creator>
+        <dcterms:created>28 Aug 2013</dcterms:created>
+        <dcterms:modified>28 Aug 2013</dcterms:modified>
+        <dc:description>http://www.web3d.org/realtime-3d/specification/version/V3.1</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/581</puid>
+    <name>X3D</name>
+    <version>3.2</version>
+    <alias />
+    <pronom_id>1369</pronom_id>
+    <extension>x3d</extension>
+    <has_priority_over>fmt/101</has_priority_over>
+    <signature>
+      <name>X3D v3.2</name>
+      <note>&lt;?xml version="1.0" encoding="UTF-8"?&gt;.&lt;!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.2//EN"</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F786D6C2076657273696F6E3D22312E302220656E636F64696E673D225554462D38223F3E0A3C21444F435459504520583344205055424C4943202249534F2F2F57656233442F2F4454442058334420332E322F2F454E22</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x3c\?xml version="1\.0" encoding="UTF-8"\?\x3e\n\x3c\!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3\.2//EN"</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>X3D is an integrated 3D graphics and multimedia framework in the ISO process for Information technology &#8212; Computer graphics, image processing and environmental representation. The standards pass through a number of member only and then public review processes, until they reach full ISO approval as international standards.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Vector), Text (Mark-up)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Central Digital Archive / Central Digital Archive</dc:creator>
+        <dcterms:created>28 Aug 2013</dcterms:created>
+        <dcterms:modified>28 Aug 2013</dcterms:modified>
+        <dc:description>http://www.web3d.org/realtime-3d/specification/version/V3.2</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/582</puid>
+    <name>X3D</name>
+    <version>3.3</version>
+    <alias />
+    <pronom_id>1370</pronom_id>
+    <extension>x3d</extension>
+    <has_priority_over>fmt/101</has_priority_over>
+    <signature>
+      <name>X3D v3.3</name>
+      <note>&lt;?xml version="1.0" encoding="UTF-8"?&gt;.&lt;!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.3//EN"</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F786D6C2076657273696F6E3D22312E302220656E636F64696E673D225554462D38223F3E0A3C21444F435459504520583344205055424C4943202249534F2F2F57656233442F2F4454442058334420332E332F2F454E22</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x3c\?xml version="1\.0" encoding="UTF-8"\?\x3e\n\x3c\!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3\.3//EN"</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>X3D is an integrated 3D graphics and multimedia framework in the ISO process for Information technology &#8212; Computer graphics, image processing and environmental representation. The standards pass through a number of member only and then public review processes, until they reach full ISO approval as international standards.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Vector), Text (Mark-up)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Central Digital Archive / Central Digital Archive</dc:creator>
+        <dcterms:created>28 Aug 2013</dcterms:created>
+        <dcterms:modified>28 Aug 2013</dcterms:modified>
+        <dc:description>http://www.web3d.org/realtime-3d/specification/version/V3.3</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/583</puid>
+    <name>Vector Markup Language</name>
+    <version />
+    <alias />
+    <pronom_id>1371</pronom_id>
+    <extension>vml</extension>
+    <has_priority_over>fmt/101</has_priority_over>
+    <signature>
+      <name>Vector Markup Language</name>
+      <note>xmlns:v="urn:schemas-microsoft-com:vml"</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>786D6C6E733A763D2275726E3A736368656D61732D6D6963726F736F66742D636F6D3A766D6C22</pronom_pattern>
+        <regex>(?s)\A.{0,128}xmlns:v="urn:schemas-microsoft-com:vml"</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Vector Markup Language (VML) is an XML-based file format for two-dimensional vector graphics.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <content_type>Image (Vector), Text (Mark-up)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>28 Aug 2013</dcterms:created>
+        <dcterms:modified>28 Aug 2013</dcterms:modified>
+        <dc:description>http://msdn.microsoft.com/en-us/library/ee384217(v=vs.85).aspx
+http://www.w3.org/TR/NOTE-VML#h2:specification</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/584</puid>
+    <name>Windows Media Metafile</name>
+    <version />
+    <alias />
+    <pronom_id>1372</pronom_id>
+    <extension>wmx</extension>
+    <extension>wax</extension>
+    <extension>wvx</extension>
+    <extension>asx</extension>
+    <signature>
+      <name>Windows Media Metafile</name>
+      <note>&lt;(asx|ASX) (version|VERSION){0-1}={0-3}3{0-64}&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C(617378|415358)20(76657273696F6E|56455253494F4E){0-1}3D{0-3}33{0-64}3E</pronom_pattern>
+        <regex>(?s)\A.{0,1}\x3c(?:asx|ASX) (?:version|VERSION).{0,1}=.{0,3}3.{0,64}\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>A media metafile is a file that contains information about other files. A metafile can be used to list a group of media content files that are to be played in order. The .wax metafile references Windows Media files with .asf, .wma, or .wax file name extensions. The .wvx metafile references Windows Media files with .wma, .wmv, .wvx, or .wax file name extensions. The asx metafile references Windows Media files with .wma, .wax, .wmv, .wvx, .asf, or .asx file name extensions.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <content_type>Text (Mark-up)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>28 Aug 2013</dcterms:created>
+        <dcterms:modified>28 Aug 2013</dcterms:modified>
+        <dc:description>http://msdn.microsoft.com/en-us/library/dd564665(v=vs.85).aspx</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/585</puid>
+    <name>MPEG 2 Transport Stream</name>
+    <version />
+    <alias />
+    <pronom_id>1373</pronom_id>
+    <extension>m2t</extension>
+    <signature>
+      <name>MPEG 2 Transport Stream</name>
+      <note>Packets of 188 bytes each, each packet beginning with 0x47. This signature may be strengthened with a better understanding of the make-up of these packets.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>47{187}47{187}47{187}47{187}47{187}47{187}47{187}47</pronom_pattern>
+        <regex>(?s)\A.{0,0}G.{187}G.{187}G.{187}G.{187}G.{187}G.{187}G.{187}G</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>MPEG transport stream is a format for transmission and storage of audio, video, and Program and System Information Protocol (PSIP) data.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Video</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of Wales / National Library of Wales</dc:creator>
+        <dcterms:created>28 Aug 2013</dcterms:created>
+        <dcterms:modified>28 Aug 2013</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/586</puid>
+    <name>LifeTechnologies SDS</name>
+    <version />
+    <alias />
+    <pronom_id>1374</pronom_id>
+    <extension>sds</extension>
+    <signature>
+      <name>LifeTechnologies SDS</name>
+      <note>SDS2....</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>5344533200020002</pronom_pattern>
+        <regex>(?s)\A.{0,0}SDS2\x00\x02\x00\x02</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>SDS (Sequence Detection System) is a file format produced by science company Life Technologies. This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Tessella / Tessella</dc:creator>
+        <dcterms:created>28 Aug 2013</dcterms:created>
+        <dcterms:modified>28 Aug 2013</dcterms:modified>
+        <dc:description>http://www.lifetechnologies.com/uk/en/home/about-us.html</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/587</puid>
+    <name>LifeTechnologies ABIF</name>
+    <version />
+    <alias />
+    <pronom_id>1375</pronom_id>
+    <extension>abif</extension>
+    <signature>
+      <name>LifeTechnologies ABIF</name>
+      <note>414249460065</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>414249460065</pronom_pattern>
+        <regex>(?s)\A.{0,0}ABIF\x00e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The ABIF file format is a binary file format for storing data. Elements of data stored in the file are associated with tags, which are analogous to the keys in a (key, value) mapping.</dc:description>
+      <dcterms:available>28 Aug 2013</dcterms:available>
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Tessella / Tessella</dc:creator>
+        <dcterms:created>28 Aug 2013</dcterms:created>
+        <dcterms:modified>28 Aug 2013</dcterms:modified>
+        <dc:description>http://www.lifetechnologies.com/uk/en/home/about-us.html</dc:description>
       </record_metadata>
     </details>
   </format>
