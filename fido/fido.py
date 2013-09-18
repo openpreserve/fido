@@ -6,12 +6,13 @@ from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
 from xml.etree import ElementTree as VET # versions.xml
 
-version = '1.3.0'
+version = '1.3.1'
 defaults = {'bufsize': 128 * 1024, # (bytes)
             'regexcachesize' :2084, # (bytes)
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
             'printmatch': "OK,%(info.time)s,%(info.puid)s,\"%(info.formatname)s\",\"%(info.signaturename)s\",%(info.filesize)s,\"%(info.filename)s\",\"%(info.mimetype)s\",\"%(info.matchtype)s\"\n",
             'printnomatch' : "KO,%(info.time)s,,,,%(info.filesize)s,\"%(info.filename)s\",,\"%(info.matchtype)s\"\n",
+            'format_files': ['formats-v70.xml', 'format_extensions.xml'],
             'containersignature_file' : 'container-signature-20130501.xml',
             # versions.xml is where fido.py reads version information
             # about which xml to load
