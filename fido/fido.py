@@ -27,7 +27,7 @@ defaults = {'bufsize': 128 * 1024, # (bytes)
     Open Planets Foundation (http://www.openplanetsfoundation.org)
     See License.txt for license information.
     Download from: https://github.com/openplanets/fido/releases
-    Usage guide: http://wiki.opf-labs.org/display/TR/FIDO+usage+guide
+    Usage guide: http://wiki.opf-labs.org/display/KB/FIDO+usage+guide 
     Author: Adam Farquhar (BL), 2010
     Maintainer: Maurice de Rooij (OPF/NANETH), 2011, 2012, 2013
     FIDO uses the UK National Archives (TNA) PRONOM File Format
