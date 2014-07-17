@@ -88,7 +88,7 @@ def getPronomSignature(type):
             if type == "file":
                 exp = re.compile("\<SignatureFile\>.*\<\/SignatureFile\>")
                 sigxml = exp.search(xml.read())
-                sigtxt = sigxml.group(0)
+                sigtxt = sigxml.group(0) if sigxml else ''
                 if len(sigtxt) > 0:
                     tmpfile = "./tmp_getPronomSignature.xml"
                     tmp = open(tmpfile,'wb')
