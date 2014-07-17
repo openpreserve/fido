@@ -111,5 +111,5 @@ def getPronomSignature(type):
         print sys.stderr.write("getPronomSignature(): unexpected return")
         return False
     except Exception, e:
-        print sys.stderr.write("getPronomSignature(): unknown error:",e)
+        print sys.stderr.write("getPronomSignature(): unknown error: "+str(e))
         return False
