@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <versions>
-	<pronomVersion>74</pronomVersion>
-	<pronomSignature>formats-v74.xml</pronomSignature>
+	<pronomVersion>75</pronomVersion>
+	<pronomSignature>formats-v75.xml</pronomSignature>
 	<pronomContainerSignature>container-signature-20130501.xml</pronomContainerSignature>
 	<fidoExtensionSignature>format_extensions.xml</fidoExtensionSignature>
 	<updateScript>1.2.2</updateScript>
