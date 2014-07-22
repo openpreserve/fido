@@ -61,7 +61,7 @@ def getPronomSignature(type):
         else:
             sys.stderr.write("getPronomSignature(): unknown type: "+type)
             return False
-        webservice = httplib.HTTP("www.nationalarchives.gov.uk")
+        webservice = httplib.HTTP("apps.nationalarchives.gov.uk")
         webservice.putrequest("POST", "/pronom/service.asmx")
         webservice.putheader("Host", "www.nationalarchives.gov.uk")
         webservice.putheader("User-Agent", "PRONOM UTILS v{0} (OPF)".format(__pronomutils__['version']))
@@ -88,7 +88,7 @@ def getPronomSignature(type):
             if type == "file":
                 exp = re.compile("\<SignatureFile\>.*\<\/SignatureFile\>")
                 sigxml = exp.search(xml.read())
-                sigtxt = sigxml.group(0)
+                sigtxt = sigxml.group(0) if sigxml else ''
                 if len(sigtxt) > 0:
                     tmpfile = "./tmp_getPronomSignature.xml"
                     tmp = open(tmpfile,'wb')
@@ -111,5 +111,5 @@ def getPronomSignature(type):
         print sys.stderr.write("getPronomSignature(): unexpected return")
         return False
     except Exception, e:
-        print sys.stderr.write("getPronomSignature(): unknown error:",e)
+        print sys.stderr.write("getPronomSignature(): unknown error: "+str(e))
         return False
