@@ -648,8 +648,8 @@ class Fido:
         #t0 = time.clock()
         result = []
         container_result = []
-        try:
-            for format in self.formats:
+        for format in self.formats:
+            try:
                 self.current_format = format
                 if self.as_good_as_any(format, result):
                     for sig in self.get_signatures(format):
@@ -687,8 +687,9 @@ class Fido:
                                     for (k,v) in container_result:
                                         result.append((k,v))
                             break
-        except Exception,e:
-            sys.stderr.write(str(e)+"\n")
+            except Exception as e:
+                sys.stderr.write(str(e)+"\n")
+                continue
             # TODO: MdR: needs some <3
             #print "Unexpected error:", sys.exc_info()[0], e
             #sys.stdout.write('***', self.get_puid(format), regex)
