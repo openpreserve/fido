@@ -38103,7 +38103,7 @@ The creating software version number can be found at hex position 0x28-29, and t
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D2E4B2E</pronom_pattern>
-        <regex>(?s)\A.{1080,0}M\.K\.</regex>
+        <regex>(?s)\A.{1080,}M\.K\.</regex>
       </pattern>
     </signature>
     <details>
@@ -38134,7 +38134,7 @@ The creating software version number can be found at hex position 0x28-29, and t
       <pattern>
         <position>BOF</position>
         <pronom_pattern>2153637265616D211A</pronom_pattern>
-        <regex>(?s)\A.{20,0}\!Scream\!\x1a</regex>
+        <regex>(?s)\A.{20,}\!Scream\!\x1a</regex>
       </pattern>
     </signature>
     <details>
@@ -38165,7 +38165,7 @@ The creating software version number can be found at hex position 0x28-29, and t
       <pattern>
         <position>BOF</position>
         <pronom_pattern>1A100000{12}5343524D</pronom_pattern>
-        <regex>(?s)\A.{28,0}\x1a\x10\x00\x00.{12}SCRM</regex>
+        <regex>(?s)\A.{28,}\x1a\x10\x00\x00.{12}SCRM</regex>
       </pattern>
     </signature>
     <details>
