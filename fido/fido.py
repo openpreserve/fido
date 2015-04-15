@@ -130,7 +130,7 @@ class Fido:
                 if sig[i] != "-" and sig[i] != "'" and ror:
                     seq += self.escape(sig[i])
                     continue
-                if sig[i] != "-" and sig[i] != "'" and sig[i] != " " and not ror and not byt:
+                if sig[i] != "-" and sig[i] != "'" and sig[i] != " " and sig[i] != ":" and not ror and not byt:
                     seq += "\\x" + sig[i].lower()
                     byt = True
                     continue
