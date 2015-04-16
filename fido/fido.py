@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import sys, re, os, time, math
+import sys, re, os, time, math, zipfile
 import hashlib, urllib, urlparse, csv, getopt
 from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
@@ -34,6 +34,48 @@ defaults = {'bufsize': 128 * 1024, # (bytes)
     and Container descriptions.
     PRONOM is available from http://www.nationalarchives.gov.uk/pronom/"""
 }
+
+class ZipPackage(object):
+    def __init__(self, zip, signatures):
+        self.zip = zip
+        self.signatures = signatures
+
+    def _process_puid_map(self, data, puid_map):
+        results = []
+        for puid, signatures in puid_map.iteritems():
+            results.extend(self._process_matches(data, puid, signatures))
+
+        return results
+
+    def _process_matches(self, data, puid, signatures):
+        results = []
+        for signature in signatures:
+            if re.search(signature["signature"], data):
+                results.append(puid)
+
+        return results
+
+
+    def detect_formats(self):
+        try:
+            zip = zipfile.ZipFile(self.zip)
+        except zipfile.BadZipfile:
+            return []
+
+        results = []
+        for path, puid_map in self.signatures.iteritems():
+            # Each ZIP container signature lists the path of the file inside the ZIP
+            # on which it operates; if the file is missing, there can be no match.
+            if path not in zip.namelist():
+                continue
+
+            # Extract the requested file from the ZIP only once, and pass the same
+            # data to each signature that requires it.
+            with zip.open(path) as id_file:
+                contents = id_file.read()
+                results.extend(self._process_puid_map(contents, puid_map))
+
+        return results
 
 class Fido:
     def __init__(self, quiet=False, bufsize=None, container_bufsize = None, printnomatch=None, printmatch=None, zip=False, nocontainer=False, handle_matches=None, conf_dir=None, format_files=None, containersignature_file=None):
@@ -180,6 +222,54 @@ class Fido:
 #        print "mapping:\n",self.puidMapping
 #        exit()
 
+    def extract_signatures(self, doc, signature_type="ZIP"):
+        """
+        Given an XML container signature file, returns a dictionary of signatures.
+
+        The format of the dictionary is:
+
+        {
+            path_to_file_inside_zip: {puid: [signatures]}
+        }
+        """
+        root = doc.getroot()
+        format_mappings = root.find("FileFormatMappings")
+
+        def get_puid(doc, element_id):
+            return format_mappings.find('FileFormatMapping[@signatureId="{}"]'.format(element_id)).attrib["Puid"]
+
+        def format_signature_attributes(element):
+            return {
+                "path": element.findtext("Files/File/Path"),
+                "id": element.attrib["Id"],
+                "signature": self.convert_container_sequence(element.findtext("Files/File/BinarySignatures/InternalSignatureCollection/InternalSignature/ByteSequence/SubSequence/Sequence"))
+            }
+
+        elements = root.findall("ContainerSignatures/ContainerSignature[@ContainerType=\"{}\"]".format(signature_type))
+        signatures = {}
+        for el in elements:
+            if el.find("Files/File/BinarySignatures") is None:
+                continue
+
+            puid = get_puid(doc, el.attrib["Id"])
+            signature = format_signature_attributes(el)
+            path = signature["path"]
+            if path not in signatures:
+                signatures[path] = {}
+            if puid not in signatures[path]:
+                signatures[path][puid] = []
+            signatures[path][puid].append(format_signature_attributes(el))
+        return signatures
+
+    def match_zip_container(self, file, signature_file):
+        puids = ZipPackage(file, self.extract_signatures(signature_file, signature_type="ZIP")).detect_formats()
+        results = []
+        for puid in puids:
+            format = self.puid_format_map[puid]
+            signature = format.findtext("name")
+            results.append((format, signature))
+        return results
+
     def load_fido_xml(self, file):
         """Load the fido format information from @param file.
            As a side-effect, set self.formats
@@ -245,12 +335,12 @@ class Fido:
             : obj.count, "info.matchtype" : "fail" } )
         else:
             i = 0
-            for (f, s) in matches:
+            for (f, sig_name) in matches:
                 i += 1
                 obj.group_index = i
                 obj.puid = self.get_puid(f)
                 obj.formatname = f.find('name').text
-                obj.signaturename = s.find('name').text
+                obj.signaturename = sig_name
                 mime = f.find('mime')
                 obj.mimetype = mime.text if mime != None else None
                 version = f.find('version')
@@ -285,6 +375,12 @@ class Fido:
                 sys.stderr.write("FIDO: Zero byte file (empty): Path is: {0}\n".format(filename))
             bofbuffer, eofbuffer = self.get_buffers(f, size, seekable=True)
             matches = self.match_formats(bofbuffer, eofbuffer)               
+            if self.container_type(matches) == "zip":
+                container_file = ET.parse(os.path.join(os.path.abspath(self.conf_dir), self.containersignature_file))
+                zip_matches = self.match_zip_container(filename, container_file)
+                if len(zip_matches) > 0:
+                    self.handle_matches(filename, zip_matches, time.clock() - t0, "container")
+                    return
             # from here is also repeated in walk_zip
             # we should make this uniform in a next version!
             #
@@ -581,23 +677,6 @@ class Fido:
         container_hit = False
         passes = 1
         container_buffer = ""
-        # TODO: find better way to handle zip contents
-        # for now: ugly hack, but working
-        # this slows down because the zip is re-opened on each item
-        # if "!" is in filename, it is a zip item
-#        if "!" in self.current_file:
-#            import zipfile, tempfile
-#            zip, item = self.current_file.split("!")
-#            zipitem = tempfile.SpooledTemporaryFile(prefix='Fido')
-            #with zipstream.open(item) as source:
-#            try:
-#                source = zipstream.open(item)
-#                self.copy_stream(source, target)
-#                target.seek(0)
-#                self.identify_contents(item_name, target, self.container_type(matches))
-#            finally:
-#                source.close()
-        #exit()
         # in case argument 'nocontainer' is set
         # read default bofbuffer
         if self.nocontainer or self.current_filesize <= self.bufsize or self.current_file == "STDIN":
@@ -677,7 +756,7 @@ class Fido:
                                     success = False 
                                     break
                         if success:
-                            result.append((format, sig))
+                            result.append((format, sig.findtext("name")))
                             # check if file needs to be parsed with container signature
                             # we skip files with extension "zip" (x-fmt/263)
                             ext = os.path.splitext(self.current_file)[1].lower().lstrip(".")
@@ -685,7 +764,7 @@ class Fido:
                                 container_result = self.read_container(bofbuffer,result)
                                 if len(container_result) != 0:
                                     for (k,v) in container_result:
-                                        result.append((k,v))
+                                        result.append((k,v.findtext("name")))
                             break
             except Exception as e:
                 sys.stderr.write(str(e)+"\n")
@@ -710,7 +789,7 @@ class Fido:
                 if element.findall('extension') != None:
                     for format in element.findall('extension'):
                         if myext == format.text:
-                            result.append((element, self.externalsig))
+                            result.append((element, self.externalsig.findtext("name")))
                             break
         result = [match for match in result if self.as_good_as_any(match[0], result)]
         return result
