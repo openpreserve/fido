@@ -91,20 +91,6 @@
     </signature>
   </format>
   <format>
-    <puid>fido-x-fmt/384</puid>
-    <mime>video/quicktime</mime>
-    <name>Quicktime</name>
-    <extension>mov</extension>
-    <signature>
-      <name>QuickTime</name>
-      <note>Simple addition to cover the case in the fido test suite.  Needs research to correct and merge with x-fmt/384</note>
-      <pattern>
-        <position>BOF</position>
-        <regex>(?s)\A\x00{3} ftypqt.{0,25}qt.{0,20}moov.{4}mvhd</regex>
-      </pattern>
-    </signature>
-  </format>
-  <format>
     <puid>fmt/40</puid>
     <mime>application/msword</mime>
     <name>Microsoft Word for Windows Document</name>
