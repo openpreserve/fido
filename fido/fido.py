@@ -6,6 +6,8 @@ from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
 from xml.etree import ElementTree as VET # versions.xml
 
+import olefile
+
 version = '1.3.1'
 defaults = {'bufsize': 128 * 1024, # (bytes)
             'regexcachesize' :2084, # (bytes)
@@ -35,11 +37,7 @@ defaults = {'bufsize': 128 * 1024, # (bytes)
     PRONOM is available from http://www.nationalarchives.gov.uk/pronom/"""
 }
 
-class ZipPackage(object):
-    def __init__(self, zip, signatures):
-        self.zip = zip
-        self.signatures = signatures
-
+class Package(object):
     def _process_puid_map(self, data, puid_map):
         results = []
         for puid, signatures in puid_map.iteritems():
@@ -55,6 +53,40 @@ class ZipPackage(object):
 
         return results
 
+class OlePackage(Package):
+    def __init__(self, ole, signatures):
+        self.ole = ole
+        self.signatures = signatures
+
+    def detect_formats(self):
+        try:
+            ole = olefile.OleFileIO(self.ole)
+        except IOError:
+            return []
+
+        results = []
+        for path, puid_map in self.signatures.iteritems():
+            # Each OLE container signature lists the path of the file inside the OLE
+            # on which it operates; if the file is missing, there can be no match.
+            # This is not a precise match because the name of the stream may slightly
+            # differ; for example, \x01CompObj instead of CompObj
+            filepath = None
+            for paths in ole.listdir():
+                p = '/'.join(paths)
+                if p == path or p[1:] == path:
+                    filepath = p
+                    break
+
+            with ole.openstream(filepath) as stream:
+                contents = stream.read()
+                results.extend(self._process_puid_map(contents, puid_map))
+
+        return results
+
+class ZipPackage(Package):
+    def __init__(self, zip, signatures):
+        self.zip = zip
+        self.signatures = signatures
 
     def detect_formats(self):
         try:
@@ -261,8 +293,8 @@ class Fido:
             signatures[path][puid].append(format_signature_attributes(el))
         return signatures
 
-    def match_zip_container(self, file, signature_file):
-        puids = ZipPackage(file, self.extract_signatures(signature_file, signature_type="ZIP")).detect_formats()
+    def match_container(self, signature_type, klass, file, signature_file):
+        puids = klass(file, self.extract_signatures(signature_file, signature_type=signature_type)).detect_formats()
         results = []
         for puid in puids:
             format = self.puid_format_map[puid]
@@ -375,11 +407,15 @@ class Fido:
                 sys.stderr.write("FIDO: Zero byte file (empty): Path is: {0}\n".format(filename))
             bofbuffer, eofbuffer = self.get_buffers(f, size, seekable=True)
             matches = self.match_formats(bofbuffer, eofbuffer)               
-            if self.container_type(matches) == "zip":
+            container_type = self.container_type(matches)
+            if container_type in ("zip", "ole"):
                 container_file = ET.parse(os.path.join(os.path.abspath(self.conf_dir), self.containersignature_file))
-                zip_matches = self.match_zip_container(filename, container_file)
-                if len(zip_matches) > 0:
-                    self.handle_matches(filename, zip_matches, time.clock() - t0, "container")
+                if container_type == "zip":
+                    container_matches = self.match_container("ZIP", ZipPackage, filename, container_file)
+                else:
+                    container_matches = self.match_container("OLE2", OlePackage, filename, container_file)
+                if len(container_matches) > 0:
+                    self.handle_matches(filename, container_matches, time.clock() - t0, "container")
                     return
             # from here is also repeated in walk_zip
             # we should make this uniform in a next version!
@@ -484,8 +520,14 @@ class Fido:
         """
         for (format, unused) in matches:
             container = format.find('container')
-            if container != None:
+            if container is not None:
                 return container.text
+
+            # aside from checking <container> elements,
+            # check for fmt/111, which is OLE
+            puid = format.find('puid')
+            if puid is not None and puid.text == 'fmt/111':
+                return 'ole'
         return False
     
     def blocking_read(self, file, bytes_to_read):
