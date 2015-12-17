@@ -237,11 +237,6 @@ class Fido:
             self.sequenceSignature[signatureId] = []
             for sequence in signatureSequence:
                 self.sequenceSignature[signatureId].append(self.convert_container_sequence(sequence[0].text))
-        # find PUIDs which trigger container matching
-        self.puidTriggers = {}
-        triggers = tree.find('TriggerPuids')
-        for puid in triggers.findall('TriggerPuid'):
-            self.puidTriggers[puid.get('Puid')] = True
         # map PUID to container signatureId
         self.puidMapping = {}
         mappings = tree.find('FileFormatMappings')
@@ -250,7 +245,6 @@ class Fido:
                 self.puidMapping[mapping.get('signatureId')] = []
             self.puidMapping[mapping.get('signatureId')].append(mapping.get('Puid'))
 #        print "sequences:\n",self.sequenceSignature
-#        print "trigger:\n",self.puidTriggers
 #        print "mapping:\n",self.puidMapping
 #        exit()
 
@@ -699,67 +693,6 @@ class Fido:
         buf = file_handle.read(file_read)
         return buf
 
-    def read_container(self,parent_buffer,parent_result):
-        """Header of compound containers can be further away than default 128 KB buffer 
-           especially with big files containing binary objects.
-           This function reads containers in chunks of 512 KB (defaults['container_bufsize'])
-           Each chunk is inspected with the PRONOM container sequences.
-           Each chunk smuggles in a piece from the previous chunk to prevent 
-           cutting off patterns we are looking for in the middle.
-           This method is somewhat slower than reading the complete file at once.
-           This is to prevent Fido to potentially crash in the midst of scanning a very big file.
-           NOTE (MdR): this piece of code is still a bit quirky
-           as it does not yet takes byte positions into account which
-           are available in the DROID container signature file
-        """
-        container_result = []
-        nobuffer = False
-        overlap = False
-        self.overlap_range = 512 # bytes
-        container_hit = False
-        passes = 1
-        container_buffer = ""
-        # in case argument 'nocontainer' is set
-        # read default bofbuffer
-        if self.nocontainer or self.current_filesize <= self.bufsize or self.current_file == "STDIN":
-            passes = 1
-            nobuffer = True
-        else:
-            passes = int(float(self.current_filesize / self.container_bufsize) + 1)
-        pos = 0
-        for i in xrange(passes):
-            if nobuffer is True:
-                container_buffer = parent_buffer
-            else:
-                if i == 0:
-                    pos = 0
-                else:
-                    pos = ((self.container_bufsize * i) - self.overlap_range)
-                    overlap = True
-                container_buffer = self.buffered_read(pos, overlap)
-            for (container_id,container_regexes) in self.sequenceSignature.iteritems():
-                # set hitcounter in case a container entry
-                # has more than one regex
-                hitcounter = 0
-                if len(container_regexes) > 0:
-                    for container_regex in container_regexes:
-                        if re.search(container_regex, container_buffer):
-                            hitcounter += 1
-                            # if the hitcounter matches the number of regexes
-                            # then it must be a positive hit, else continue
-                            # to match the rest of the sequences
-                            if hitcounter < len(container_regexes):
-                                continue
-                            self.matchtype = "container"
-                            for container_puid in self.puidMapping[container_id]:
-                                for container_format in self.formats:
-                                    if container_format.find('puid').text == container_puid:
-                                        if self.as_good_as_any(container_format, parent_result):
-                                            for container_sig in self.get_signatures(container_format):
-                                                container_result.append((container_format, container_sig))
-                                            break
-        return container_result
-
     def match_formats(self, bofbuffer, eofbuffer):
         """Apply the patterns for formats to the supplied buffers.
            @return a match list of (format, signature) tuples. 
@@ -799,15 +732,6 @@ class Fido:
                                     break
                         if success:
                             result.append((format, sig.findtext("name")))
-                            # check if file needs to be parsed with container signature
-                            # we skip files with extension "zip" (x-fmt/263)
-                            ext = os.path.splitext(self.current_file)[1].lower().lstrip(".")
-                            if format.find('puid').text in self.puidTriggers and ext != "zip":
-                                container_result = self.read_container(bofbuffer,result)
-                                if len(container_result) != 0:
-                                    for (k,v) in container_result:
-                                        result.append((k,v.findtext("name")))
-                            break
             except Exception as e:
                 sys.stderr.write(str(e)+"\n")
                 continue
@@ -819,7 +743,6 @@ class Fido:
         #        if t1 - t0 > 0.02:
         #            print >> sys.stderr, "FIDO: Slow ID", self.current_file
         result = [match for match in result if self.as_good_as_any(match[0], result)]
-        result = list(set(result)) # remove duplicate results, this is due to ??? in self.read_container(), needs fix
         return result
     
     def match_extensions(self, filename):
