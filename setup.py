@@ -8,7 +8,7 @@ if sys.version_info >= (3,):
 
 setup( name='fido',
        version='1.3.0',
-       install_requires=['setuptools'],
+       install_requires=['setuptools', 'olefile>=0.4,<1'],
        description='Format Identification for Digital Objects (FIDO)',
        packages=['fido'],
        package_data={'fido':['*.*', 'conf/*.*']},
