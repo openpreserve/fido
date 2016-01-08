@@ -77,6 +77,10 @@ class OlePackage(Package):
                     filepath = p
                     break
 
+            # Path to match isn't in the container at all
+            if filepath is None:
+                continue
+
             with ole.openstream(filepath) as stream:
                 contents = stream.read()
                 results.extend(self._process_puid_map(contents, puid_map))
