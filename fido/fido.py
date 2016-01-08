@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import sys, re, os, time, math
+import sys, re, os, time, math, zipfile
 import hashlib, urllib, urlparse, csv, getopt
 from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
 from xml.etree import ElementTree as VET # versions.xml
+
+import olefile
 
 version = '1.3.1'
 defaults = {'bufsize': 128 * 1024, # (bytes)
@@ -34,6 +36,82 @@ defaults = {'bufsize': 128 * 1024, # (bytes)
     and Container descriptions.
     PRONOM is available from http://www.nationalarchives.gov.uk/pronom/"""
 }
+
+class Package(object):
+    def _process_puid_map(self, data, puid_map):
+        results = []
+        for puid, signatures in puid_map.iteritems():
+            results.extend(self._process_matches(data, puid, signatures))
+
+        return results
+
+    def _process_matches(self, data, puid, signatures):
+        results = []
+        for signature in signatures:
+            if re.search(signature["signature"], data):
+                results.append(puid)
+
+        return results
+
+class OlePackage(Package):
+    def __init__(self, ole, signatures):
+        self.ole = ole
+        self.signatures = signatures
+
+    def detect_formats(self):
+        try:
+            ole = olefile.OleFileIO(self.ole)
+        except IOError:
+            return []
+
+        results = []
+        for path, puid_map in self.signatures.iteritems():
+            # Each OLE container signature lists the path of the file inside the OLE
+            # on which it operates; if the file is missing, there can be no match.
+            # This is not a precise match because the name of the stream may slightly
+            # differ; for example, \x01CompObj instead of CompObj
+            filepath = None
+            for paths in ole.listdir():
+                p = '/'.join(paths)
+                if p == path or p[1:] == path:
+                    filepath = p
+                    break
+
+            # Path to match isn't in the container at all
+            if filepath is None:
+                continue
+
+            with ole.openstream(filepath) as stream:
+                contents = stream.read()
+                results.extend(self._process_puid_map(contents, puid_map))
+
+        return results
+
+class ZipPackage(Package):
+    def __init__(self, zip, signatures):
+        self.zip = zip
+        self.signatures = signatures
+
+    def detect_formats(self):
+        try:
+            zip = zipfile.ZipFile(self.zip)
+        except zipfile.BadZipfile:
+            return []
+
+        results = []
+        for path, puid_map in self.signatures.iteritems():
+            # Each ZIP container signature lists the path of the file inside the ZIP
+            # on which it operates; if the file is missing, there can be no match.
+            if path not in zip.namelist():
+                continue
+
+            # Extract the requested file from the ZIP only once, and pass the same
+            # data to each signature that requires it.
+            with zip.open(path) as id_file:
+                contents = id_file.read()
+                results.extend(self._process_puid_map(contents, puid_map))
+
+        return results
 
 class Fido:
     def __init__(self, quiet=False, bufsize=None, container_bufsize = None, printnomatch=None, printmatch=None, zip=False, nocontainer=False, handle_matches=None, conf_dir=None, format_files=None, containersignature_file=None):
@@ -163,11 +241,6 @@ class Fido:
             self.sequenceSignature[signatureId] = []
             for sequence in signatureSequence:
                 self.sequenceSignature[signatureId].append(self.convert_container_sequence(sequence[0].text))
-        # find PUIDs which trigger container matching
-        self.puidTriggers = {}
-        triggers = tree.find('TriggerPuids')
-        for puid in triggers.findall('TriggerPuid'):
-            self.puidTriggers[puid.get('Puid')] = True
         # map PUID to container signatureId
         self.puidMapping = {}
         mappings = tree.find('FileFormatMappings')
@@ -176,9 +249,56 @@ class Fido:
                 self.puidMapping[mapping.get('signatureId')] = []
             self.puidMapping[mapping.get('signatureId')].append(mapping.get('Puid'))
 #        print "sequences:\n",self.sequenceSignature
-#        print "trigger:\n",self.puidTriggers
 #        print "mapping:\n",self.puidMapping
 #        exit()
+
+    def extract_signatures(self, doc, signature_type="ZIP"):
+        """
+        Given an XML container signature file, returns a dictionary of signatures.
+
+        The format of the dictionary is:
+
+        {
+            path_to_file_inside_zip: {puid: [signatures]}
+        }
+        """
+        root = doc.getroot()
+        format_mappings = root.find("FileFormatMappings")
+
+        def get_puid(doc, element_id):
+            return format_mappings.find('FileFormatMapping[@signatureId="{}"]'.format(element_id)).attrib["Puid"]
+
+        def format_signature_attributes(element):
+            return {
+                "path": element.findtext("Files/File/Path"),
+                "id": element.attrib["Id"],
+                "signature": self.convert_container_sequence(element.findtext("Files/File/BinarySignatures/InternalSignatureCollection/InternalSignature/ByteSequence/SubSequence/Sequence"))
+            }
+
+        elements = root.findall("ContainerSignatures/ContainerSignature[@ContainerType=\"{}\"]".format(signature_type))
+        signatures = {}
+        for el in elements:
+            if el.find("Files/File/BinarySignatures") is None:
+                continue
+
+            puid = get_puid(doc, el.attrib["Id"])
+            signature = format_signature_attributes(el)
+            path = signature["path"]
+            if path not in signatures:
+                signatures[path] = {}
+            if puid not in signatures[path]:
+                signatures[path][puid] = []
+            signatures[path][puid].append(format_signature_attributes(el))
+        return signatures
+
+    def match_container(self, signature_type, klass, file, signature_file):
+        puids = klass(file, self.extract_signatures(signature_file, signature_type=signature_type)).detect_formats()
+        results = []
+        for puid in puids:
+            format = self.puid_format_map[puid]
+            signature = format.findtext("name")
+            results.append((format, signature))
+        return results
 
     def load_fido_xml(self, file):
         """Load the fido format information from @param file.
@@ -245,12 +365,12 @@ class Fido:
             : obj.count, "info.matchtype" : "fail" } )
         else:
             i = 0
-            for (f, s) in matches:
+            for (f, sig_name) in matches:
                 i += 1
                 obj.group_index = i
                 obj.puid = self.get_puid(f)
                 obj.formatname = f.find('name').text
-                obj.signaturename = s.find('name').text
+                obj.signaturename = sig_name
                 mime = f.find('mime')
                 obj.mimetype = mime.text if mime != None else None
                 version = f.find('version')
@@ -285,6 +405,16 @@ class Fido:
                 sys.stderr.write("FIDO: Zero byte file (empty): Path is: {0}\n".format(filename))
             bofbuffer, eofbuffer = self.get_buffers(f, size, seekable=True)
             matches = self.match_formats(bofbuffer, eofbuffer)               
+            container_type = self.container_type(matches)
+            if container_type in ("zip", "ole"):
+                container_file = ET.parse(os.path.join(os.path.abspath(self.conf_dir), self.containersignature_file))
+                if container_type == "zip":
+                    container_matches = self.match_container("ZIP", ZipPackage, filename, container_file)
+                else:
+                    container_matches = self.match_container("OLE2", OlePackage, filename, container_file)
+                if len(container_matches) > 0:
+                    self.handle_matches(filename, container_matches, time.clock() - t0, "container")
+                    return
             # from here is also repeated in walk_zip
             # we should make this uniform in a next version!
             #
@@ -388,8 +518,14 @@ class Fido:
         """
         for (format, unused) in matches:
             container = format.find('container')
-            if container != None:
+            if container is not None:
                 return container.text
+
+            # aside from checking <container> elements,
+            # check for fmt/111, which is OLE
+            puid = format.find('puid')
+            if puid is not None and puid.text == 'fmt/111':
+                return 'ole'
         return False
     
     def blocking_read(self, file, bytes_to_read):
@@ -561,84 +697,6 @@ class Fido:
         buf = file_handle.read(file_read)
         return buf
 
-    def read_container(self,parent_buffer,parent_result):
-        """Header of compound containers can be further away than default 128 KB buffer 
-           especially with big files containing binary objects.
-           This function reads containers in chunks of 512 KB (defaults['container_bufsize'])
-           Each chunk is inspected with the PRONOM container sequences.
-           Each chunk smuggles in a piece from the previous chunk to prevent 
-           cutting off patterns we are looking for in the middle.
-           This method is somewhat slower than reading the complete file at once.
-           This is to prevent Fido to potentially crash in the midst of scanning a very big file.
-           NOTE (MdR): this piece of code is still a bit quirky
-           as it does not yet takes byte positions into account which
-           are available in the DROID container signature file
-        """
-        container_result = []
-        nobuffer = False
-        overlap = False
-        self.overlap_range = 512 # bytes
-        container_hit = False
-        passes = 1
-        container_buffer = ""
-        # TODO: find better way to handle zip contents
-        # for now: ugly hack, but working
-        # this slows down because the zip is re-opened on each item
-        # if "!" is in filename, it is a zip item
-#        if "!" in self.current_file:
-#            import zipfile, tempfile
-#            zip, item = self.current_file.split("!")
-#            zipitem = tempfile.SpooledTemporaryFile(prefix='Fido')
-            #with zipstream.open(item) as source:
-#            try:
-#                source = zipstream.open(item)
-#                self.copy_stream(source, target)
-#                target.seek(0)
-#                self.identify_contents(item_name, target, self.container_type(matches))
-#            finally:
-#                source.close()
-        #exit()
-        # in case argument 'nocontainer' is set
-        # read default bofbuffer
-        if self.nocontainer or self.current_filesize <= self.bufsize or self.current_file == "STDIN":
-            passes = 1
-            nobuffer = True
-        else:
-            passes = int(float(self.current_filesize / self.container_bufsize) + 1)
-        pos = 0
-        for i in xrange(passes):
-            if nobuffer is True:
-                container_buffer = parent_buffer
-            else:
-                if i == 0:
-                    pos = 0
-                else:
-                    pos = ((self.container_bufsize * i) - self.overlap_range)
-                    overlap = True
-                container_buffer = self.buffered_read(pos, overlap)
-            for (container_id,container_regexes) in self.sequenceSignature.iteritems():
-                # set hitcounter in case a container entry
-                # has more than one regex
-                hitcounter = 0
-                if len(container_regexes) > 0:
-                    for container_regex in container_regexes:
-                        if re.search(container_regex, container_buffer):
-                            hitcounter += 1
-                            # if the hitcounter matches the number of regexes
-                            # then it must be a positive hit, else continue
-                            # to match the rest of the sequences
-                            if hitcounter < len(container_regexes):
-                                continue
-                            self.matchtype = "container"
-                            for container_puid in self.puidMapping[container_id]:
-                                for container_format in self.formats:
-                                    if container_format.find('puid').text == container_puid:
-                                        if self.as_good_as_any(container_format, parent_result):
-                                            for container_sig in self.get_signatures(container_format):
-                                                container_result.append((container_format, container_sig))
-                                            break
-        return container_result
-
     def match_formats(self, bofbuffer, eofbuffer):
         """Apply the patterns for formats to the supplied buffers.
            @return a match list of (format, signature) tuples. 
@@ -677,16 +735,7 @@ class Fido:
                                     success = False 
                                     break
                         if success:
-                            result.append((format, sig))
-                            # check if file needs to be parsed with container signature
-                            # we skip files with extension "zip" (x-fmt/263)
-                            ext = os.path.splitext(self.current_file)[1].lower().lstrip(".")
-                            if format.find('puid').text in self.puidTriggers and ext != "zip":
-                                container_result = self.read_container(bofbuffer,result)
-                                if len(container_result) != 0:
-                                    for (k,v) in container_result:
-                                        result.append((k,v))
-                            break
+                            result.append((format, sig.findtext("name")))
             except Exception as e:
                 sys.stderr.write(str(e)+"\n")
                 continue
@@ -698,7 +747,6 @@ class Fido:
         #        if t1 - t0 > 0.02:
         #            print >> sys.stderr, "FIDO: Slow ID", self.current_file
         result = [match for match in result if self.as_good_as_any(match[0], result)]
-        result = list(set(result)) # remove duplicate results, this is due to ??? in self.read_container(), needs fix
         return result
     
     def match_extensions(self, filename):
@@ -710,7 +758,7 @@ class Fido:
                 if element.findall('extension') != None:
                     for format in element.findall('extension'):
                         if myext == format.text:
-                            result.append((element, self.externalsig))
+                            result.append((element, self.externalsig.findtext("name")))
                             break
         result = [match for match in result if self.as_good_as_any(match[0], result)]
         return result

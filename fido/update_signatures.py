@@ -27,7 +27,7 @@ defaults = {
     'fidoSignatureVersion' : 'format_extensions.xml', 
     'versionsFileName' : 'versions.xml',
     'http_throttle' : 0.5, # in secs, to prevent DoS of PRONOM server
-    'containerVersion' : 'container-signature-20130501.xml', # container version is frozen and needs human attention before updating
+    'containerVersion' : 'container-signature-20151217.xml', # container version is frozen and needs human attention before updating
     'versionXML' : """<?xml version="1.0" encoding="UTF-8"?>\n<versions>\n\t<pronomVersion>{0}</pronomVersion>\n\t<pronomSignature>{1}</pronomSignature>\n\t<pronomContainerSignature>{2}</pronomContainerSignature>\n\t<fidoExtensionSignature>{3}</fidoExtensionSignature>\n\t<updateScript>{4}</updateScript>\n</versions>"""
     }
 
