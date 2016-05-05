@@ -11,7 +11,6 @@
 # FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions .
 # PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
 #
-from __future__ import print_function
 
 import sys, os, urllib, time, zipfile, shutil
 
@@ -36,7 +35,7 @@ defaults = {
     'versionXML' : """<?xml version="1.0" encoding="UTF-8"?>\n<versions>\n\t<pronomVersion>{0}</pronomVersion>\n\t<pronomSignature>{1}</pronomSignature>\n\t<pronomContainerSignature>{2}</pronomContainerSignature>\n\t<fidoExtensionSignature>{3}</fidoExtensionSignature>\n\t<updateScript>{4}</updateScript>\n</versions>"""
     }
 
-def main(defaults):
+def main(defaults=defaults):
     """
         Updates PRONOM signatures
         Interactive script, requires keyboard input

@@ -39,6 +39,11 @@ setup(
     description='Format Identification for Digital Objects (FIDO)',
     packages=['fido'],
     package_data={'fido': ['*.*', 'conf/*.*']},
-    entry_points={'console_scripts': ['fido = fido.fido:main']},
+    entry_points={'console_scripts': [
+      'fido = fido.fido:main',
+      'fido-prepare = fido.prepare:main',
+      'fido-update-signatures = fido.update_signatures:main',
+      'fido-toxml = fido.toxml:main',
+    ]},
     **extra
 )

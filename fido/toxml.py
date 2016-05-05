@@ -29,27 +29,33 @@ from . import __version__
 # define PRONOM signature version
 signatureVersion = '56'
 
-sys.stdout.write("""<?xml version="1.0" encoding="utf-8"?>
+
+def main():
+    sys.stdout.write("""<?xml version="1.0" encoding="utf-8"?>
 <fido_output>
-	<versions>
-		<fido_version>{0}</fido_version>
-		<signature_version>{1}</signature_version>
-	</versions>""".format(__version__,signatureVersion))
+    <versions>
+        <fido_version>{0}</fido_version>
+        <signature_version>{1}</signature_version>
+    </versions>""".format(__version__,signatureVersion))
 
-reader = csv.reader(sys.stdin)
+    reader = csv.reader(sys.stdin)
 
-for row in reader:
-    sys.stdout.write("""
-	<file>
-		<filename>{0}</filename>
-		<status>{1}</status>
-		<matchtype>{2}</matchtype>
-		<time>{3}</time>
-		<puid>{4}</puid>
-		<mimetype>{5}</mimetype>
-		<formatname>{6}</formatname>
-		<signaturename>{7}</signaturename>
-		<filesize>{8}</filesize>
-	</file>""".format(row[6],row[0],row[8],row[1],row[2],row[7],row[3],row[4],row[5]))
+    for row in reader:
+        sys.stdout.write("""
+    <file>
+        <filename>{0}</filename>
+        <status>{1}</status>
+        <matchtype>{2}</matchtype>
+        <time>{3}</time>
+        <puid>{4}</puid>
+        <mimetype>{5}</mimetype>
+        <formatname>{6}</formatname>
+        <signaturename>{7}</signaturename>
+        <filesize>{8}</filesize>
+    </file>""".format(row[6],row[0],row[8],row[1],row[2],row[7],row[3],row[4],row[5]))
 
-sys.stdout.write("\n</fido_output>\n")
+    sys.stdout.write("\n</fido_output>\n")
+
+
+if __name__ == '__main__':
+    main()
