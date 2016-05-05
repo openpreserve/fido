@@ -27,16 +27,22 @@ install_requires = [
 ]
 
 
-# Attempt automatic python2 to python3 conversion if using python3
-extra = {}
-if sys.version_info >= (3,):
-    extra['use_2to3'] = True
+setup_requires = [
+    'pytest-runner',
+]
+
+
+tests_require = [
+    'pytest',
+]
 
 
 setup(
     name='fido',
     version=find_version('fido', '__init__.py'),
     install_requires=install_requires,
+    setup_requires=setup_requires,
+    tests_require=tests_require,
     description='Format Identification for Digital Objects (FIDO)',
     packages=['fido'],
     package_data={'fido': ['*.*', 'conf/*.*']},
