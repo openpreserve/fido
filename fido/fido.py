@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 
 import sys, re, os, time, math, zipfile
+from argparse import ArgumentParser, RawTextHelpFormatter
 import hashlib, urllib, urlparse, csv, getopt
 from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
@@ -12,7 +13,7 @@ from xml.etree import ElementTree as VET # versions.xml
 import olefile
 
 from . import __version__
-from .argparselocal import ArgumentParser, RawTextHelpFormatter
+
 
 defaults = {'bufsize': 128 * 1024, # (bytes)
             'regexcachesize' :2084, # (bytes)
@@ -790,7 +791,6 @@ def list_files(roots, recurse=False):
                     break
             
 def main(arglist=None):
-    # The argparse package was introduced in 2.7
     t0 = time.clock() 
     if arglist == None:
         arglist = sys.argv[1:]

@@ -8,6 +8,7 @@
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
+from argparse import ArgumentParser
 import cStringIO, zipfile, os
 import hashlib
 import urllib
@@ -584,7 +585,6 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
 
 def main(arg=None):
     import sys
-    from argparselocal import ArgumentParser
     if arg != None:
         arglist = arg
     else:
