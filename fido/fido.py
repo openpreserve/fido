@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from __future__ import absolute_import
+
 import sys, re, os, time, math, zipfile
 import hashlib, urllib, urlparse, csv, getopt
 from xml.etree import cElementTree as ET

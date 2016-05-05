@@ -1,5 +1,6 @@
-#!python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 # Format Identification for Digital Objects
 
 # MdR: 'reload(sys)' and 'setdefaultencoding("utf-8")' needed to fix utf-8 encoding errors
