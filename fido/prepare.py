@@ -3,51 +3,63 @@
 
 # Format Identification for Digital Objects
 
+from __future__ import print_function
+
+from argparse import ArgumentParser
+import cStringIO
+import hashlib
+import os
+import sys
+import urllib
+from xml.dom import minidom
+from xml.etree import ElementTree as ET
+from xml.etree import ElementTree as VET  # versions.xml
+import zipfile
+
+
 # MdR: 'reload(sys)' and 'setdefaultencoding("utf-8")' needed to fix utf-8 encoding errors
 # when converting from PRONOM to FIDO format
-import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
-from argparse import ArgumentParser
-import cStringIO, zipfile, os
-import hashlib
-import urllib
-from xml.etree import ElementTree as ET
-from xml.etree import ElementTree as VET # versions.xml
-# needed for debug
-# print_r: https://github.com/marcbelmont/python-print_r
-# from print_r import print_r
+
 
 class NS:
-    """Helper class for XML name spaces in ElementTree.
-       Use like MYNS=NS("{http://some/uri}") and then
-       MYNS(tag1/tag2).
+    """
+    Helper class for XML name spaces in ElementTree.
+    Use like MYNS=NS("{http://some/uri}") and then MYNS(tag1/tag2).
     """
     def __init__(self, uri):
         self.uri = uri
+
     def __getattr__(self, tag):
         return self.uri + tag
+
     def __call__(self, path):
         return "/".join(getattr(self, tag) for tag in path.split("/"))
 
-# XHTML namespace
-XHTML = NS("{http://www.w3.org/1999/xhtml}")
-# TNA namespace
-TNA = NS("{http://pronom.nationalarchives.gov.uk}")
+
+XHTML = NS("{http://www.w3.org/1999/xhtml}")  # XHTML namespace
+TNA = NS("{http://pronom.nationalarchives.gov.uk}")  # TNA namespace
+
 
 def get_text_tna(element, tag, default=''):
-    """Helper function to return the text for a tag or path using the TNA namespace.
+    """
+    Helper function to return the text for a tag or path using the TNA namespace.
     """
     part = element.find(TNA(tag))
-    return part.text.strip() if part != None and part.text != None else default
+    if part is None or part.text is None:
+        return default
+    return part.text.strip()
+
 
 def prettify(elem):
-    """Return a pretty-printed XML string for the Element.
     """
-    from xml.dom import minidom
+    Return a pretty-printed XML string for the Element.
+    """
     rough_string = ET.tostring(elem, 'UTF-8')
     reparsed = minidom.parseString(rough_string)
     return reparsed.toprettyxml(indent="  ")
+
 
 class FormatInfo:
     def __init__(self, pronom_files, format_list=[]):
@@ -56,35 +68,38 @@ class FormatInfo:
         self.pronom_files = pronom_files
         for f in format_list:
             self.add_format(f)
-                             
-    def save(self, dst):
-        """Write the fido XML format definitions to @param dst
+
+    def save(self, dst=sys.stdout):
         """
-        tree = ET.ElementTree(ET.Element('formats', {'version':'0.3',
-                                                     'xmlns:xsi' : "http://www.w3.org/2001/XMLSchema-instance",
-                                                     'xsi:noNamespaceSchemaLocation': "fido-formats.xsd",
-                                                     'xmlns:dc': "http://purl.org/dc/elements/1.1/",
-                                                     'xmlns:dcterms': "http://purl.org/dc/terms/"}))
+        Write the fido XML format definitions to @param dst.
+        """
+        tree = ET.ElementTree(ET.Element('formats', {
+            'version': '0.3',
+            'xmlns:xsi': "http://www.w3.org/2001/XMLSchema-instance",
+            'xsi:noNamespaceSchemaLocation': "fido-formats.xsd",
+            'xmlns:dc': "http://purl.org/dc/elements/1.1/",
+            'xmlns:dcterms': "http://purl.org/dc/terms/"
+        }))
         root = tree.getroot()
         for f in self.formats:
             # MdR: this skipped puids without sig, but we want them ALL
             # because puid might be matched on extension
-            #if f.find('signature'):
+            # if f.find('signature'):
             root.append(f)
         self.indent(root)
-        with open(dst, 'wb') as out:
-                #print >>out, ET.tostring(root,encoding='utf-8')     
-                print >>out, ET.tostring(root)     
+        with open(dst, 'wb') as file_:
+            # print >>out, ET.tostring(root,encoding='utf-8')
+            print(ET.tostring(root), file=file_)
 
     def indent(self, elem, level=0):
-        i = "\n" + level*"  "
+        i = "\n" + level * "  "
         if len(elem):
             if not elem.text or not elem.text.strip():
                 elem.text = i + "  "
             if not elem.tail or not elem.tail.strip():
                 elem.tail = i
             for elem in elem:
-                self.indent(elem, level+1)
+                self.indent(elem, level + 1)
             if not elem.tail or not elem.tail.strip():
                 elem.tail = i
         else:
@@ -92,39 +107,40 @@ class FormatInfo:
                 elem.tail = i
 
     def load_pronom_xml(self, puid_filter=None):
-        """Load the pronom XML from self.pronom_files and convert it to fido XML.
-           As a side-effect, set self.formats to a list of ElementTree.Element
-           If a @param puid is specified, only that one will be loaded.
+        """
+        Load the pronom XML from self.pronom_files and convert it to fido XML.
+        As a side-effect, set self.formats to a list of ElementTree.Element.
+        If a @param puid is specified, only that one will be loaded.
         """
         formats = []
-        #for p in self.pronom_files:
+        # for p in self.pronom_files:
         #    print p
-        #print self.pronom_files
-        #exit()
+        # print self.pronom_files
+        # exit()
         try:
             zip = zipfile.ZipFile(self.pronom_files, 'r')
             for item in zip.infolist():
-                #print item.filename
+                # print item.filename
                 try:
                     stream = zip.open(item)
                     # Work is done here!
-                    #if item.filename != 'github/fido/fido/conf/pronom-xml/puid.fmt.11.xml':
-                    format = self.parse_pronom_xml(stream, puid_filter)
-                    if format != None:
-                        formats.append(format) 
+                    # if item.filename != 'github/fido/fido/conf/pronom-xml/puid.fmt.11.xml':
+                    format_ = self.parse_pronom_xml(stream, puid_filter)
+                    if len(format_):
+                        formats.append(format_)
                 finally:
                     stream.close()
         finally:
             try:
                 zip.close()
-            except Exception, e:
-                sys.stderr.write("An error occured loading '{0}' (exception: {1})".format(self.pronom_files, e))
+            except Exception as e:
+                print("An error occured loading '{0}' (exception: {1})".format(self.pronom_files, e), file=sys.stderr)
                 sys.exit()
         # Replace the formatID with puids in has_priority_over
         id_map = {}
         for element in formats:
             puid = element.find('puid').text
-            #print "working on puid:",puid
+            # print "working on puid:",puid
             pronom_id = element.find('pronom_id').text
             id_map[pronom_id] = puid
         for element in formats:
@@ -133,11 +149,12 @@ class FormatInfo:
 
         self._sort_formats(formats)
         self.formats = formats
-                    
+
     def parse_pronom_xml(self, source, puid_filter=None):
-        """Read a pronom XML from @param source, convert it to fido XML and
-           @return ET.ElementTree Element representing it.
-           If a @param puid is specified, only that one will be loaded.
+        """
+        Read a pronom XML from @param source, convert it to fido XML and
+        @return ET.ElementTree Element representing it.
+        If a @param puid is specified, only that one will be loaded.
         """
         pronom_xml = ET.parse(source)
         pronom_root = pronom_xml.getroot()
@@ -149,13 +166,13 @@ class FormatInfo:
             if type == 'PUID':
                 puid = get_text_tna(id, 'Identifier')
                 ET.SubElement(fido_format, 'puid').text = puid
-                if puid_filter != None and puid != puid_filter:
+                if puid_filter and puid != puid_filter:
                     return None
         # A bit clumsy.  I want to have puid first, then mime, then container.
         for id in pronom_format.findall(TNA('FileFormatIdentifier')):
             type = get_text_tna(id, 'IdentifierType')
             if type == 'MIME':
-                ET.SubElement(fido_format, 'mime').text = get_text_tna(id, 'Identifier')  
+                ET.SubElement(fido_format, 'mime').text = get_text_tna(id, 'Identifier')
             elif type == 'PUID':
                 puid = get_text_tna(id, 'Identifier')
                 if puid == 'x-fmt/263':
@@ -172,7 +189,7 @@ class FormatInfo:
         for id in pronom_format.findall(TNA('FileFormatIdentifier')):
             type = get_text_tna(id, 'IdentifierType')
             if type == 'Apple Uniform Type Identifier':
-                ET.SubElement(fido_format, 'apple_uid').text = get_text_tna(id, 'Identifier')  
+                ET.SubElement(fido_format, 'apple_uid').text = get_text_tna(id, 'Identifier')
         # Handle the relationships
         for x in pronom_format.findall(TNA('RelatedFormat')):
             rel = get_text_tna(x, 'RelationshipType')
@@ -190,13 +207,13 @@ class FormatInfo:
                 bytes = get_text_tna(pronom_pat, 'ByteSequenceValue')
                 offset = get_text_tna(pronom_pat, 'Offset')
                 max_offset = get_text_tna(pronom_pat, 'MaxOffset')
-                if max_offset == None:
+                if not max_offset:
                     pass
-                #print "working on puid:", puid, ", position: ", pos, "with offset, maxoffset: ", offset, ",", max_offset
+                # print "working on puid:", puid, ", position: ", pos, "with offset, maxoffset: ", offset, ",", max_offset
                 regex = convert_to_regex(bytes, 'Little', pos, offset, max_offset)
-                #print "done puid", puid
+                # print "done puid", puid
                 if regex == "__INCOMPATIBLE_SIG__":
-                    print >> sys.stderr, "Error: incompatible PRONOM signature found for puid", puid, ", skipping..."
+                    print("Error: incompatible PRONOM signature found for puid {} skipping...".format(puid), file=sys.stderr)
                     # remove the empty 'signature' nodes
                     # now that the signature is not compatible and thus "regex" is empty
                     remove = fido_format.findall('signature')
@@ -207,7 +224,7 @@ class FormatInfo:
                 ET.SubElement(fido_pat, 'pronom_pattern').text = bytes
                 ET.SubElement(fido_pat, 'regex').text = regex
         # Get the format details
-        fido_details = ET.SubElement(fido_format,'details')
+        fido_details = ET.SubElement(fido_format, 'details')
         ET.SubElement(fido_details, 'dc:description').text = get_text_tna(pronom_format, 'FormatDescription').encode('utf8')
         ET.SubElement(fido_details, 'dcterms:available').text = get_text_tna(pronom_format, 'ReleaseDate')
         ET.SubElement(fido_details, 'dc:creator').text = get_text_tna(pronom_format, 'Developers/DeveloperCompoundName')
@@ -223,7 +240,7 @@ class FormatInfo:
         ET.SubElement(fido_details, 'content_type').text = get_text_tna(pronom_format, 'FormatTypes')
         # References
         for x in pronom_format.findall(TNA("Document")):
-            r = ET.SubElement(fido_details,'reference')
+            r = ET.SubElement(fido_details, 'reference')
             ET.SubElement(r, 'dc:title').text = get_text_tna(x, 'TitleText')
             ET.SubElement(r, 'dc:creator').text = get_text_tna(x, 'Author/AuthorCompoundName')
             ET.SubElement(r, 'dc:publisher').text = get_text_tna(x, 'Publisher/PublisherCompoundName')
@@ -231,47 +248,47 @@ class FormatInfo:
             for id in x.findall(TNA('DocumentIdentifier')):
                 type = get_text_tna(id, 'IdentifierType')
                 if type == 'URL':
-                    ET.SubElement(r, 'dc:identifier').text = "http://"+get_text_tna(id, 'Identifier')  
+                    ET.SubElement(r, 'dc:identifier').text = "http://" + get_text_tna(id, 'Identifier')
                 else:
-                    ET.SubElement(r, 'dc:identifier').text = get_text_tna(id, 'IdentifierType')+":"+get_text_tna(id, 'Identifier')  
+                    ET.SubElement(r, 'dc:identifier').text = get_text_tna(id, 'IdentifierType') + ":" + get_text_tna(id, 'Identifier')
             ET.SubElement(r, 'dc:description').text = get_text_tna(x, 'DocumentNote')
             ET.SubElement(r, 'dc:type').text = get_text_tna(x, 'DocumentType')
-            ET.SubElement(r, 'dcterms:license').text = get_text_tna(x, 'AvailabilityDescription')+" "+get_text_tna(x, 'AvailabilityNote')
+            ET.SubElement(r, 'dcterms:license').text = get_text_tna(x, 'AvailabilityDescription') + " " + get_text_tna(x, 'AvailabilityNote')
             ET.SubElement(r, 'dc:rights').text = get_text_tna(x, 'DocumentIPR')
-#         Examples
+        # Examples
         for x in pronom_format.findall(TNA("ReferenceFile")):
-            rf = ET.SubElement(fido_details,'example_file')
+            rf = ET.SubElement(fido_details, 'example_file')
             ET.SubElement(rf, 'dc:title').text = get_text_tna(x, 'ReferenceFileName')
             ET.SubElement(rf, 'dc:description').text = get_text_tna(x, 'ReferenceFileDescription')
             checksum = ""
             for id in x.findall(TNA('ReferenceFileIdentifier')):
                 type = get_text_tna(id, 'IdentifierType')
                 if type == 'URL':
-                    url = "http://"+get_text_tna(id, 'Identifier')
-                    ET.SubElement(rf, 'dc:identifier').text = url  
+                    url = "http://" + get_text_tna(id, 'Identifier')
+                    ET.SubElement(rf, 'dc:identifier').text = url
                     # And calculate the checksum of this resource:
                     m = hashlib.md5()
                     sock = urllib.urlopen(url)
                     m.update(sock.read())
                     sock.close()
-                    checksum=m.hexdigest()
+                    checksum = m.hexdigest()
                 else:
-                    ET.SubElement(rf, 'dc:identifier').text = get_text_tna(id, 'IdentifierType')+":"+get_text_tna(id, 'Identifier')  
+                    ET.SubElement(rf, 'dc:identifier').text = get_text_tna(id, 'IdentifierType') + ":" + get_text_tna(id, 'Identifier')
             ET.SubElement(rf, 'dcterms:license').text = ""
             ET.SubElement(rf, 'dc:rights').text = get_text_tna(x, 'ReferenceFileIPR')
             checksumElement = ET.SubElement(rf, 'checksum')
             checksumElement.text = checksum
             checksumElement.attrib['type'] = "md5"
         # Record Metadata
-        md = ET.SubElement(fido_details,'record_metadata')
-        ET.SubElement(md, 'status').text ='unknown'
+        md = ET.SubElement(fido_details, 'record_metadata')
+        ET.SubElement(md, 'status').text = 'unknown'
         ET.SubElement(md, 'dc:creator').text = get_text_tna(pronom_format, 'ProvenanceName')
         ET.SubElement(md, 'dcterms:created').text = get_text_tna(pronom_format, 'ProvenanceSourceDate')
         ET.SubElement(md, 'dcterms:modified').text = get_text_tna(pronom_format, 'LastUpdatedDate')
         ET.SubElement(md, 'dc:description').text = get_text_tna(pronom_format, 'ProvenanceDescription').encode('utf8')
-        return fido_format  
-        
-    #FIXME: I don't think that this quite works yet!
+        return fido_format
+
+    # FIXME: I don't think that this quite works yet!
     def _sort_formats(self, formatlist):
         """Sort the format list based on their priority relationships so higher priority
            formats appear earlier in the list.
@@ -293,8 +310,10 @@ class FormatInfo:
                 return 1
         return sorted(formatlist, cmp=compare_formats)
 
+
 def fido_position(pronom_position):
-    """@return BOF/EOF/VAR instead of the more verbose pronom position names.
+    """
+    @return BOF/EOF/VAR instead of the more verbose pronom position names.
     """
     if pronom_position == 'Absolute from BOF':
         return 'BOF'
@@ -304,16 +323,19 @@ def fido_position(pronom_position):
         return 'VAR'
     elif pronom_position == 'Indirect From BOF':
         return 'IFB'
-    else: # to make sure FIDO does not crash (IFB aftermath)
-        sys.stderr.write("Unknown pronom PositionType:" + pronom_position)    
+    else:  # to make sure FIDO does not crash (IFB aftermath)
+        sys.stderr.write("Unknown pronom PositionType:" + pronom_position)
         return 'VAR'
+
 
 def _convert_err_msg(msg, c, i, chars):
     return "Conversion: {0}: char='{1}', at pos {2} in \n  {3}\n  {4}^\nBuffer = {5}".format(msg, c, i, chars, i * ' ', buf.getvalue())
 
+
 def doByte(chars, i, littleendian):
-    """Convert two chars[i] and chars[i+1] into a byte.  
-       @return a tuple (byte, 2) 
+    """
+    Convert two chars[i] and chars[i+1] into a byte.
+    @return a tuple (byte, 2)
     """
     c1 = '0123456789ABCDEF'.find(chars[i].upper())
     c2 = '0123456789ABCDEF'.find(chars[i + 1].upper())
@@ -331,6 +353,8 @@ def doByte(chars, i, littleendian):
 _ordinary = frozenset(' "#%&\',-/0123456789:;=@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~')
 _special = '$()*+.?![]^\\{|}'
 _hex = '0123456789abcdef'
+
+
 def _escape_char(c):
     if c in '\n':
         return '\\n'
@@ -342,9 +366,13 @@ def _escape_char(c):
         (high, low) = divmod(ord(c), 16)
         return '\\x' + _hex[high] + _hex[low]
 
+
 def escape(string):
-    "Escape characters in pattern that are non-printable, non-ascii, or special for regexes."
+    """
+    Escape characters in pattern that are non-printable, non-ascii, or special for regexes.
+    """
     return ''.join(c if c in _ordinary else _escape_char(c) for c in string)
+
 
 def calculate_repetition(char, pos, offset, maxoffset):
     """
@@ -354,54 +382,53 @@ def calculate_repetition(char, pos, offset, maxoffset):
     Otherwise it returns the {offset,maxoffset}
     """
     calcbuf = cStringIO.StringIO()
-    
+
     calcremain = False
     offsetremain = 0
     maxoffsetremain = 0
-    
-    if offset != None and offset != '':
-        if int(offset) > 65535:
-            offsetremain = str(int(offset) - 65535)
-            offset = '65535'
-            calcremain = True
-    if maxoffset != None and maxoffset != '':
-        if int(maxoffset) > 65535:
-            maxoffsetremain = str(int(maxoffset) - 65535)
-            maxoffset = '65535'
-            calcremain = True
-    
+
+    if offset and int(offset) > 65535:
+        offsetremain = str(int(offset) - 65535)
+        offset = '65535'
+        calcremain = True
+    if maxoffset and int(maxoffset) > 65535:
+        maxoffsetremain = str(int(maxoffset) - 65535)
+        maxoffset = '65535'
+        calcremain = True
+
     if pos == "BOF" or pos == "EOF":
         if offset != '0':
             calcbuf.write(char + '{' + str(offset))
-            if maxoffset != None:
+            if maxoffset:
                 calcbuf.write(',' + maxoffset)
             calcbuf.write('}')
-        elif maxoffset != None:
+        elif maxoffset:
             calcbuf.write(char + '{0,' + maxoffset + '}')
 
     if pos == "IFB":
         if offset != '0':
             calcbuf.write(char + '{' + str(offset))
-            if maxoffset != None:
+            if maxoffset:
                 calcbuf.write(',' + maxoffset)
             calcbuf.write('}')
-            if maxoffset == None:
+            if maxoffset:
                 calcbuf.write(',}')
-        elif maxoffset != None:
+        elif maxoffset:
             calcbuf.write(char + '{0,' + maxoffset + '}')
 
-    if calcremain: # recursion happens here
+    if calcremain:  # recursion happens here
         calcbuf.write(calculate_repetition(char, pos, offsetremain, maxoffsetremain))
-    
+
     val = calcbuf.getvalue()
     calcbuf.close()
     return val
 
+
 def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
-    """Convert 
-       @param chars, a pronom bytesequence, into a 
-       @return regular expression.
-       Endianness is not used.
+    """
+    Endianness is not used.
+    @param chars, a pronom bytesequence, into a
+    @return regular expression.
     """
 
     if 'Big' in endianness:
@@ -415,21 +442,21 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
     # make buf global so we can print it @'_convert_err_msg' while debugging (MdR)
     global buf
     buf = cStringIO.StringIO()
-    buf.write("(?s)")   #If a regex starts with (?s), it is equivalent to DOTALL.   
+    buf.write("(?s)")  # If a regex starts with (?s), it is equivalent to DOTALL.
     i = 0
     state = 'start'
     if 'BOF' in pos:
-        buf.write('\\A') # start of regex
+        buf.write('\\A')  # start of regex
         buf.write(calculate_repetition('.', pos, offset, maxoffset))
-            
+
     if 'IFB' in pos:
         buf.write('\\A')
         buf.write(calculate_repetition('.', pos, offset, maxoffset))
-            
+
     while True:
         if i == len(chars):
             break
-        #print _convert_err_msg(state,chars[i],i,chars)
+        # print _convert_err_msg(state,chars[i],i,chars)
         if state == 'start':
             if chars[i].isalnum():
                 state = 'bytes'
@@ -473,7 +500,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
                 (byt, inc) = doByte(chars, i, littleendian)
                 buf.write(byt)
                 i += inc
-                #assert(chars[i] == ':')
+                # assert(chars[i] == ':')
                 if chars[i] != ':':
                     return "__INCOMPATIBLE_SIG__"
                 buf.write('-')
@@ -481,13 +508,13 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
                 (byt, inc) = doByte(chars, i, littleendian)
                 buf.write(byt)
                 i += inc
-                #assert(chars[i] == ']')
+                # assert(chars[i] == ']')
                 if chars[i] != ']':
                     return "__INCOMPATIBLE_SIG__"
                 buf.write(']')
                 i += 1
             except Exception:
-                print _convert_err_msg('Illegal character in bracket', chars[i], i, chars)
+                print(_convert_err_msg('Illegal character in bracket', chars[i], i, chars))
                 raise
             if i < len(chars) and chars[i] == '{':
                 state = 'curly-after-bracket'
@@ -513,7 +540,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
                     (byt, inc) = doByte(chars, i, littleendian)
                     buf.write(byt)
                     i += inc
-                    #assert(chars[i] == ':')
+                    # assert(chars[i] == ':')
                     if chars[i] != ':':
                         return "__INCOMPATIBLE_SIG__"
                     buf.write('-')
@@ -521,8 +548,8 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
                     (byt, inc) = doByte(chars, i, littleendian)
                     buf.write(byt)
                     i += inc
-    
-                    #assert(chars[i] == ']')
+
+                    # assert(chars[i] == ']')
                     if chars[i] != ']':
                         return "__INCOMPATIBLE_SIG__"
                     buf.write(']')
@@ -539,7 +566,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
             # when there is a curly-after-bracket, then the {m,n} applies to the bracketed item
             # The above, while sensible, appears to be incorrect.  A '.' is always needed.
             # for droid equiv behavior
-            #if state == 'curly':
+            # if state == 'curly':
             buf.write('.')
             buf.write('{')
             i += 1                # skip the (
@@ -550,7 +577,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
                 elif chars[i] == '-':
                     buf.write(',')
                     i += 1
-                elif chars[i] == '*': # skip the *
+                elif chars[i] == '*':  # skip the *
                     i += 1
                 elif chars[i] == '}':
                     break
@@ -583,21 +610,19 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
     buf.close()
     return val
 
+
 def main(arg=None):
-    import sys
-    if arg != None:
+    if arg:
         arglist = arg
     else:
         arglist = sys.argv[1:]
-#    print arglist
-#    exit()
     mydir = os.path.abspath(os.path.dirname(__file__))
-    # parse version file to fetch versions
+    # Parse version file to fetch versions
     versionsFile = os.path.join(mydir, 'conf', 'versions.xml')
     try:
         versions = VET.parse(versionsFile)
-    except Exception, e:
-        sys.stderr.write("An error occured loading versions.xml:\n{0}".format(e))
+    except Exception as e:
+        print("An error occured loading versions.xml:\n{0}".format(e), file=sys.stderr)
         sys.exit()
     xml_pronomSignature = os.path.join(mydir, 'conf', versions.find('pronomSignature').text)
     xml_pronomZipFile = os.path.join(mydir, 'conf', "pronom-xml-v{0}.zip".format(versions.find('pronomVersion').text))
@@ -611,7 +636,8 @@ def main(arg=None):
     info = FormatInfo(args.input)
     info.load_pronom_xml(args.puid)
     info.save(args.output)
-    print >> sys.stderr, 'Converted {0} PRONOM formats to FIDO signatures'.format(len(info.formats))
-    
+    print('Converted {0} PRONOM formats to FIDO signatures'.format(len(info.formats)), file=sys.stderr)
+
+
 if __name__ == '__main__':
-    main()    
+    main()

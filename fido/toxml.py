@@ -35,7 +35,7 @@ def main():
     <versions>
         <fido_version>{0}</fido_version>
         <signature_version>{1}</signature_version>
-    </versions>""".format(__version__,signatureVersion))
+    </versions>""".format(__version__, signatureVersion))
 
     reader = csv.reader(sys.stdin)
 
@@ -51,7 +51,7 @@ def main():
         <formatname>{6}</formatname>
         <signaturename>{7}</signaturename>
         <filesize>{8}</filesize>
-    </file>""".format(row[6],row[0],row[8],row[1],row[2],row[7],row[3],row[4],row[5]))
+    </file>""".format(row[6], row[0], row[8], row[1], row[2], row[7], row[3], row[4], row[5]))
 
     sys.stdout.write("\n</fido_output>\n")
 

@@ -21,8 +21,8 @@ def find_version(*file_paths):
 
 
 install_requires = [
-  'setuptools',
-  'olefile >= 0.4, < 1',
+    'setuptools',
+    'olefile >= 0.4, < 1',
 ]
 
 
@@ -40,10 +40,10 @@ setup(
     packages=['fido'],
     package_data={'fido': ['*.*', 'conf/*.*']},
     entry_points={'console_scripts': [
-      'fido = fido.fido:main',
-      'fido-prepare = fido.prepare:main',
-      'fido-update-signatures = fido.update_signatures:main',
-      'fido-toxml = fido.toxml:main',
+        'fido = fido.fido:main',
+        'fido-prepare = fido.prepare:main',
+        'fido-update-signatures = fido.update_signatures:main',
+        'fido-toxml = fido.toxml:main',
     ]},
     **extra
 )
