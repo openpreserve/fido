@@ -15,9 +15,12 @@
 # FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions.
 # PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
 #
+from __future__ import absolute_import
 import sys
 from xml.dom import minidom
-__pronomutils__ = {'version' : '1.0.1'}
+
+from . import __version__
+
 
 def checkWellFormedness(filename,error=False):
     """
@@ -64,7 +67,7 @@ def getPronomSignature(type):
         webservice = httplib.HTTP("apps.nationalarchives.gov.uk")
         webservice.putrequest("POST", "/pronom/service.asmx")
         webservice.putheader("Host", "www.nationalarchives.gov.uk")
-        webservice.putheader("User-Agent", "PRONOM UTILS v{0} (OPF)".format(__pronomutils__['version']))
+        webservice.putheader("User-Agent", "PRONOM UTILS v{0} (OPF)".format(__version__))
         webservice.putheader("Content-type", "text/xml; charset=\"UTF-8\"")
         webservice.putheader("Content-length", "%d" % len(soapStr))
         webservice.putheader("SOAPAction", soapAction)

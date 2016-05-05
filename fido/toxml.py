@@ -17,12 +17,15 @@
 # http://support.microsoft.com/default.aspx?kbid=321788
 #
 
+from __future__ import absolute_import
+
 import sys
 import csv
 import string
 
-# define FIDO version
-fidoVersion = '1.0'
+from . import __version__
+
+
 # define PRONOM signature version
 signatureVersion = '56'
 
@@ -31,7 +34,7 @@ sys.stdout.write("""<?xml version="1.0" encoding="utf-8"?>
 	<versions>
 		<fido_version>{0}</fido_version>
 		<signature_version>{1}</signature_version>
-	</versions>""".format(fidoVersion,signatureVersion))
+	</versions>""".format(__version__,signatureVersion))
 
 reader = csv.reader(sys.stdin)
 

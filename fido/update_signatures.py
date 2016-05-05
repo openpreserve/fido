@@ -11,15 +11,20 @@
 # FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions .
 # PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
 #
+from __future__ import print_function
+
 import sys, os, urllib, time, zipfile, shutil
 
 from xml.etree import ElementTree as CET
 from xml.etree import ElementTree as VET
-from pronomutils import getPronomSignature, checkWellFormedness
-import prepare
+
+from . import __version__
+from .prepare import main as prepare_main
+from .pronomutils import getPronomSignature, checkWellFormedness
+
 
 defaults = {
-    'version': '1.2.2',
+    'version': __version__,
     'conf_dir': os.path.join(os.path.dirname(__file__), 'conf'),
     'tmp_dir': 'tmp', 
     'signatureFileName' : 'DROID_SignatureFile-v{0}.xml',
@@ -160,7 +165,7 @@ def main(defaults):
         xmlversionsfile.close()
         print "Preparing to convert PRONOM formats to FIDO signatures..."
         # there should be a check here to handle prepare.main exit() signal (-1/0/1/...)
-        prepare.main()
+        prepare_main()
         print "FIDO signatures successfully updated"
         sys.exit()
     except KeyboardInterrupt:

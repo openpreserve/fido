@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 import sys, re, os, time, math, zipfile
 import hashlib, urllib, urlparse, csv, getopt
 from xml.etree import cElementTree as ET
@@ -8,7 +9,9 @@ from xml.etree import ElementTree as VET # versions.xml
 
 import olefile
 
-version = '1.3.1'
+from . import __version__
+from .argparselocal import ArgumentParser, RawTextHelpFormatter
+
 defaults = {'bufsize': 128 * 1024, # (bytes)
             'regexcachesize' :2084, # (bytes)
             'conf_dir' : os.path.join(os.path.dirname(__file__), 'conf'),
@@ -787,7 +790,6 @@ def list_files(roots, recurse=False):
 def main(arglist=None):
     # The argparse package was introduced in 2.7
     t0 = time.clock() 
-    from argparselocal import ArgumentParser, RawTextHelpFormatter    
     if arglist == None:
         arglist = sys.argv[1:]
     if len(arglist) == False:
@@ -839,9 +841,9 @@ def main(arglist=None):
     defaults['format_files'] = []
     defaults['format_files'].append(defaults['xml_pronomSignature'])
     if args.pronom_only:
-        versionHeader = "FIDO v{0} ({1}, {2})\n".format(version,defaults['xml_pronomSignature'],defaults['containersignature_file'])
+        versionHeader = "FIDO v{0} ({1}, {2})\n".format(__version__,defaults['xml_pronomSignature'],defaults['containersignature_file'])
     else:
-        versionHeader = "FIDO v{0} ({1}, {2}, {3})\n".format(version,defaults['xml_pronomSignature'],defaults['containersignature_file'],defaults['xml_fidoExtensionSignature'])
+        versionHeader = "FIDO v{0} ({1}, {2}, {3})\n".format(__version__,defaults['xml_pronomSignature'],defaults['containersignature_file'],defaults['xml_fidoExtensionSignature'])
         defaults['format_files'].append(defaults['xml_fidoExtensionSignature'])
     
     if args.v :
