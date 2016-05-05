@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# PRONOM UTILS  
+# PRONOM UTILS
 #
-# PYTHON FUNCTION TO QUERY PRONOM VERSION 
+# PYTHON FUNCTION TO QUERY PRONOM VERSION
 # AND DOWNLOAD SIGNATUREFILE
 # USES PRONOM SOAP SERVICE
 #
@@ -10,14 +10,13 @@
 # See License.txt for license information.
 # Download from: http://github.com/openplanets/fido/downloads
 # Author: Maurice de Rooij (OPF/NANETH), 2012
-# 
-# PRONOM UTILS is a library used by FIDO 
+#
+# PRONOM UTILS is a library used by FIDO
 # FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions.
 # PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
 #
 from __future__ import absolute_import
 import sys
-from xml.dom import minidom
 
 from . import __version__
 

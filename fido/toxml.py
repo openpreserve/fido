@@ -21,7 +21,6 @@ from __future__ import absolute_import
 
 import sys
 import csv
-import string
 
 from . import __version__
 

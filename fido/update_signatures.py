@@ -1,21 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# FIDO SIGNATURE UPDATER  
+# FIDO SIGNATURE UPDATER
 #
 # Open Planets Foundation (http://www.openplanetsfoundation.org)
 # See License.txt for license information.
 # Download from: https://github.com/openplanets/fido/releases
 # Author: Maurice de Rooij (NANETH), 2012
-#        
+#
 # FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions .
 # PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
 #
 
-import sys, os, urllib, time, zipfile, shutil
+import sys, os, urllib, time, zipfile
 
 from xml.etree import ElementTree as CET
-from xml.etree import ElementTree as VET
 
 from . import __version__
 from .prepare import main as prepare_main
@@ -25,10 +24,10 @@ from .pronomutils import getPronomSignature, checkWellFormedness
 defaults = {
     'version': __version__,
     'conf_dir': os.path.join(os.path.dirname(__file__), 'conf'),
-    'tmp_dir': 'tmp', 
+    'tmp_dir': 'tmp',
     'signatureFileName' : 'DROID_SignatureFile-v{0}.xml',
     'pronomZipFileName' : 'pronom-xml-v{0}.zip',
-    'fidoSignatureVersion' : 'format_extensions.xml', 
+    'fidoSignatureVersion' : 'format_extensions.xml',
     'versionsFileName' : 'versions.xml',
     'http_throttle' : 0.5, # in secs, to prevent DoS of PRONOM server
     'containerVersion' : 'container-signature-20151217.xml', # container version is frozen and needs human attention before updating
@@ -129,11 +128,7 @@ def main(defaults=defaults):
             print str(percent)+"%",
             time.sleep(defaults['http_throttle'])
         print "100%"
-        try:
-            import zlib
-            compression = zipfile.ZIP_DEFLATED
-        except:
-            compression = zipfile.ZIP_STORED
+        compression = zipfile.ZIP_DEFLATED if 'zlib' in sys.modules else zipfile.ZIP_STORED
         modes = {zipfile.ZIP_DEFLATED: 'deflated', zipfile.ZIP_STORED: 'stored'}
         print "Creating PRONOM zip,",
         zf = zipfile.ZipFile(os.path.join(os.path.abspath(defaults['conf_dir']), defaults['pronomZipFileName'].format(currentVersion)), mode='w')

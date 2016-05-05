@@ -3,9 +3,8 @@
 
 from __future__ import absolute_import
 
-import sys, re, os, time, math, zipfile
+import sys, re, os, time, zipfile
 from argparse import ArgumentParser, RawTextHelpFormatter
-import hashlib, urllib, urlparse, csv, getopt
 from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
 from xml.etree import ElementTree as VET # versions.xml
@@ -35,7 +34,7 @@ defaults = {'bufsize': 128 * 1024, # (bytes)
     Open Planets Foundation (http://www.openplanetsfoundation.org)
     See License.txt for license information.
     Download from: https://github.com/openplanets/fido/releases
-    Usage guide: http://wiki.opf-labs.org/display/KB/FIDO+usage+guide 
+    Usage guide: http://wiki.opf-labs.org/display/KB/FIDO+usage+guide
     Author: Adam Farquhar (BL), 2010
     Maintainer: Maurice de Rooij (OPF/NANETH), 2011, 2012, 2013
     FIDO uses the UK National Archives (TNA) PRONOM File Format
@@ -166,7 +165,7 @@ class Fido:
         else:
             (high, low) = divmod(ord(c), 16)
             return '\\x' + self._hex[high] + self._hex[low]
-    
+
     def escape(self,string):
         "Escape characters in pattern that are non-printable, non-ascii, or special for regexes."
         escaped = ''.join(c if c in self._ordinary else self._escape_char(c) for c in string)
@@ -233,7 +232,7 @@ class Fido:
                     continue
         #print seq
         return seq
-    
+
     def load_container_signature(self, containersignature_file):
         """Load the PRONOM container-signature file
         and convert sequences to regular expressions
@@ -317,7 +316,7 @@ class Fido:
         for element in tree.getroot().findall('./format'):
             puid = self.get_puid(element)
             # Handle over-writes in multiple file loads
-            existing = self.puid_format_map.get(puid, False) 
+            existing = self.puid_format_map.get(puid, False)
             if  existing:
                 # Already have one, so replace old with new!
                 self.formats[self.formats.index(existing)] = element
@@ -331,25 +330,25 @@ class Fido:
     # To delete a format: (1) remove from self.formats, (2) remove from puid_format_map, (3) remove from selt.puid_has_priority_over_map
     def get_signatures(self, format):
         return format.findall('signature')
-    
+
     def has_priority_over(self, format, possibly_inferior):
         return self.get_puid(possibly_inferior)in self.puid_has_priority_over_map[self.get_puid(format)]
-                
+
     def get_puid(self, format):
         return format.find('puid').text
-    
+
     def get_patterns(self, signature):
         return signature.findall('pattern')
-    
-    def get_pos(self, pat):        
+
+    def get_pos(self, pat):
         return pat.find('position').text
-    
+
     def get_regex(self, pat):
         return pat.find('regex').text
-    
+
     def get_extension(self, format):
         return format.find('extension').text
-    
+
     def print_matches(self, fullname, matches, delta_t, matchtype=''):
         """The default match handler.  Prints out information for each match in the list.
            @param fullname is name of the file being matched
@@ -386,7 +385,7 @@ class Fido:
                 apple_uti = f.find('apple_uid')
                 obj.apple_uti = apple_uti.text if apple_uti != None else None
                 sys.stdout.write(self.printmatch % { "info.time" : obj.time, "info.puid" : obj.puid, "info.formatname" : obj.formatname, "info.signaturename" : obj.signaturename, "info.filesize" : obj.filesize, "info.filename" : obj.filename, "info.mimetype" : obj.mimetype, "info.matchtype" : obj.matchtype, "info.version" : obj.version, "info.alias" : obj.alias, "info.apple_uti" : obj.apple_uti, "info.group_size" : obj.group_size, "info.group_index" : obj.group_index, "info.count" : obj.count })
-        
+
     def print_summary(self, secs):
         """Print summary information on the number of matches and time taken.
         """
@@ -395,9 +394,9 @@ class Fido:
             rate = (int(round(count / secs)) if secs != 0 else 9999)
             #print >> sys.stderr, 'FIDO: Processed %6d files in %6.2f msec, %2d files/sec' %  (count, secs * 1000, rate)
             sys.stderr.write('FIDO: Processed %6d files in %6.2f msec, %2d files/sec\n' %  (count, secs * 1000, rate))
-                    
+
     def identify_file(self, filename):
-        """Identify the type of @param filename.  
+        """Identify the type of @param filename.
            Call self.handle_matches instead of returning a value.
         """
         self.current_file = filename
@@ -410,7 +409,7 @@ class Fido:
             if self.current_filesize == 0:
                 sys.stderr.write("FIDO: Zero byte file (empty): Path is: {0}\n".format(filename))
             bofbuffer, eofbuffer = self.get_buffers(f, size, seekable=True)
-            matches = self.match_formats(bofbuffer, eofbuffer)               
+            matches = self.match_formats(bofbuffer, eofbuffer)
             container_type = self.container_type(matches)
             if container_type in ("zip", "ole"):
                 container_file = ET.parse(os.path.join(os.path.abspath(self.conf_dir), self.containersignature_file))
@@ -451,7 +450,7 @@ class Fido:
             self.walk_tar(filename, fileobj)
         else: # TODO: ouch!
             raise RuntimeError("Unknown container type: " + repr(type))
-                
+
     def identify_multi_object_stream(self, stream):
         """Does not work!
            Stream may contain one or more objects each with an HTTP style header that must include content-length.
@@ -473,7 +472,7 @@ class Fido:
                     content_length = int(pair[1])
             if content_length == -1:
                 return
-            # Consume exactly content-length bytes        
+            # Consume exactly content-length bytes
             self.current_file = 'STDIN!(at ' + str(offset) + ' bytes)'
             self.current_filesize = content_length
             bofbuffer, eofbuffer = self.get_buffers(stream, content_length)
@@ -484,9 +483,9 @@ class Fido:
             elif len(matches) == 0 or self.current_filesize == 0:
                 matches = self.match_extensions(self.current_file)
                 self.handle_matches(self.current_file, matches, time.clock() - t0, "extension")
-                
+
     def identify_stream(self, stream, filename):
-        """Identify the type of @param stream.  
+        """Identify the type of @param stream.
            Call self.handle_matches instead of returning a value.
            Does not close stream.
         """
@@ -517,7 +516,7 @@ class Fido:
             if (os.name != "nt"):
                 self.current_file = 'STDIN'
             self.handle_matches(self.current_file, matches, time.clock() - t0, "extension")
-                    
+
     def container_type(self, matches):
         """Determine if one of the @param matches is the format of a container that we can look inside of (e.g., zip, tar).
            @return False, zip, or tar.
@@ -533,7 +532,7 @@ class Fido:
             if puid is not None and puid.text == 'fmt/111':
                 return 'ole'
         return False
-    
+
     def blocking_read(self, file, bytes_to_read):
         bytes_read = 0
         buffer = ''
@@ -545,12 +544,12 @@ class Fido:
             if readbuffer == '':
                 break
         return buffer
-                                  
+
     def get_buffers(self, stream, length=None, seekable=False):
         """Return buffers from the beginning and end of stream and the number of bytes read
-           if there may be more bytes in the stream.  
-        
-           If length is None, return the length as found. 
+           if there may be more bytes in the stream.
+
+           If length is None, return the length as found.
            If seekable is False, the steam does not support a seek operation.
         """
         bytes_to_read = self.bufsize if length == None else min(length, self.bufsize)
@@ -581,7 +580,7 @@ class Fido:
                 stream.seek(length - self.bufsize)
                 eofbuffer = self.blocking_read(stream, self.bufsize)
             else:
-                # We have more to read and know how much.    
+                # We have more to read and know how much.
                 # n*bufsize + r = length
                 (n, r) = divmod(bytes_unread, self.bufsize)
                 # skip n-1*bufsize bytes
@@ -592,10 +591,10 @@ class Fido:
                 # and read the remaining bufsize bytes into the eofbuffer
                 eofbuffer = self.blocking_read(stream, self.bufsize)
             return bofbuffer, eofbuffer
-    
+
     def walk_zip(self, filename, fileobj=None):
-        """Identify the type of each item in the zip 
-           @param fileobj.  If fileobj is not provided, open 
+        """Identify the type of each item in the zip
+           @param fileobj.  If fileobj is not provided, open
            @param filename.
            Call self.handle_matches instead of returning a value.
         """
@@ -603,7 +602,7 @@ class Fido:
         import zipfile, tempfile
         try:
             zipstream = None
-            zipstream = zipfile.ZipFile((fileobj if fileobj != None else filename), 'r')    
+            zipstream = zipfile.ZipFile((fileobj if fileobj != None else filename), 'r')
             for item in zipstream.infolist():
                 if item.file_size == 0:
                     continue           #TODO: Find a better test for isdir
@@ -640,13 +639,13 @@ class Fido:
             sys.stderr.write("FIDO: ZipError {0}\n".format(filename))
         except zipfile.BadZipfile:
             sys.stderr.write("FIDO: ZipError {0}\n".format(filename))
-            
+
         finally:
             if zipstream != None: zipstream.close()
 
     def walk_tar(self, filename, fileobj):
-        """Identify the type of each item in the tar 
-           @param fileobj.  If fileobj is not provided, open 
+        """Identify the type of each item in the tar
+           @param fileobj.  If fileobj is not provided, open
            @param filename.
            Call self.handle_matches instead of returning a value.
         """
@@ -684,7 +683,7 @@ class Fido:
                 elif f1_puid in self.puid_has_priority_over_map[self.get_puid(f2)]:
                     return False
         return True
-    
+
     def buffered_read(self, file_pos, overlap):
         """Buffered read of data chunks
         """
@@ -705,7 +704,7 @@ class Fido:
 
     def match_formats(self, bofbuffer, eofbuffer):
         """Apply the patterns for formats to the supplied buffers.
-           @return a match list of (format, signature) tuples. 
+           @return a match list of (format, signature) tuples.
            The list has inferior matches removed.
         """
         self.current_count += 1
@@ -734,11 +733,11 @@ class Fido:
                                     break
                             elif pos == 'VAR':
                                 if not re.search(regex, bofbuffer):
-                                    success = False 
+                                    success = False
                                     break
                             elif pos == 'IFB':
                                 if not re.search(regex, bofbuffer):
-                                    success = False 
+                                    success = False
                                     break
                         if success:
                             result.append((format, sig.findtext("name")))
@@ -748,13 +747,13 @@ class Fido:
             # TODO: MdR: needs some <3
             #print "Unexpected error:", sys.exc_info()[0], e
             #sys.stdout.write('***', self.get_puid(format), regex)
-            
+
         #        t1 = time.clock()
         #        if t1 - t0 > 0.02:
         #            print >> sys.stderr, "FIDO: Slow ID", self.current_file
         result = [match for match in result if self.as_good_as_any(match[0], result)]
         return result
-    
+
     def match_extensions(self, filename):
         "Return the list of (format, self.externalsig) for every format whose extension matches the filename."
         myext = os.path.splitext(filename)[1].lower().lstrip(".")
@@ -768,14 +767,14 @@ class Fido:
                             break
         result = [match for match in result if self.as_good_as_any(match[0], result)]
         return result
-    
+
     def copy_stream(self, source, target):
         while True:
             buf = source.read(self.bufsize)
             if len(buf) == 0:
                 break
             target.write(buf)
-             
+
 def list_files(roots, recurse=False):
     "Return the files one at a time.  Roots could be a fileobj or a list."
     for root in roots:
@@ -789,13 +788,13 @@ def list_files(roots, recurse=False):
                     yield os.path.join(path, f)
                 if recurse == False:
                     break
-            
+
 def main(arglist=None):
-    t0 = time.clock() 
+    t0 = time.clock()
     if arglist == None:
         arglist = sys.argv[1:]
     if len(arglist) == False:
-        arglist.append("-h")        
+        arglist.append("-h")
     parser = ArgumentParser(description=defaults['description'], epilog=defaults['epilog'], fromfile_prefix_chars='@', formatter_class=RawTextHelpFormatter)
     parser.add_argument('-v', default=False, action='store_true', help='show version information')
     parser.add_argument('-q', default=False, action='store_true', help='run (more) quietly')
@@ -813,11 +812,11 @@ def main(arglist=None):
     parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use if no match. See README.txt')
     parser.add_argument('-bufsize', type=int, default=None, help='size (in bytes) of the buffer to match against (default='+str(defaults['bufsize'])+' bytes)')
     parser.add_argument('-container_bufsize', type=int, default=None, help='size (in bytes) of the buffer to match against (default='+str(defaults['container_bufsize'])+' bytes)')
-    
+
     parser.add_argument('-loadformats', default=None, metavar='XML1,...,XMLn', help='comma separated string of XML format files to add.')
     parser.add_argument('-confdir', default=None, help='configuration directory to load_fido_xml, for example, the format specifications from.')
-    
-    # what is this doing here only once?   
+
+    # what is this doing here only once?
     #mydir = os.path.abspath(os.path.dirname(__file__))
 
     # PROCESS ARGUMENTS
@@ -847,7 +846,7 @@ def main(arglist=None):
     else:
         versionHeader = "FIDO v{0} ({1}, {2}, {3})\n".format(__version__,defaults['xml_pronomSignature'],defaults['containersignature_file'],defaults['xml_fidoExtensionSignature'])
         defaults['format_files'].append(defaults['xml_fidoExtensionSignature'])
-    
+
     if args.v :
         sys.stdout.write(versionHeader)
         sys.exit(0)
@@ -857,12 +856,12 @@ def main(arglist=None):
         args.nomatchprintf = args.nomatchprintf.decode('string_escape')
     fido = Fido(quiet=args.q, bufsize=args.bufsize, container_bufsize=args.container_bufsize,
                 printmatch=args.matchprintf, printnomatch=args.nomatchprintf, zip=args.zip, nocontainer = args.nocontainer, conf_dir=args.confdir)
-    
+
     #TODO: Allow conf options to be dis-included
     if args.loadformats:
         for file in args.loadformats.split(','):
             fido.load_fido_xml(file)
-        
+
     #TODO: remove from maps
     if args.useformats:
         args.useformats = args.useformats.split(',')
@@ -870,13 +869,13 @@ def main(arglist=None):
     elif args.nouseformats:
         args.nouseformats = args.nouseformats.split(',')
         fido.formats = [f for f in fido.formats if f.find('puid').text not in args.nouseformats]
- 
+
     # Set up to use stdin, or open input files:
     if args.input == '-':
         args.files = sys.stdin
     elif args.input:
         args.files = open(args.input, 'r')
-    
+
     # RUN
     try:
         if not args.q:
@@ -896,7 +895,7 @@ def main(arglist=None):
         msg = "FIDO: Interrupt while identifying file {0}"
         sys.stderr.write(msg.format(fido.current_file))
         sys.exit(1)
-        
+
     if not args.q:
         sys.stdout.flush()
         fido.print_summary(time.clock() - t0)
