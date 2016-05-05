@@ -32,7 +32,7 @@ defaults = {
         'formats-v75.xml',
         'format_extensions.xml'
     ],
-    'containersignature_file': 'container-signature-20130501.xml',
+    'containersignature_file': 'container-signature-20160121.xml',
     'versions_file': 'versions.xml',  # versions.xml is where fido.py reads version information about which xml to load
     'container_bufsize': 512 * 1024,  # (bytes)
     'description': """Format Identification for Digital Objects (fido).
