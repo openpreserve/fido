@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Format Identification for Digital Objects
+"""Format Identification for Digital Objects."""
 
 from __future__ import print_function
 
@@ -26,15 +26,20 @@ sys.setdefaultencoding("utf-8")
 class NS:
     """
     Helper class for XML name spaces in ElementTree.
+
     Use like MYNS=NS("{http://some/uri}") and then MYNS(tag1/tag2).
     """
+
     def __init__(self, uri):
+        """Instantiate class with `uri` argument."""
         self.uri = uri
 
     def __getattr__(self, tag):
+        """Append URI to the class attributes."""
         return self.uri + tag
 
     def __call__(self, path):
+        """Define behavior when the instant is used as a function."""
         return "/".join(getattr(self, tag) for tag in path.split("/"))
 
 
@@ -43,9 +48,7 @@ TNA = NS("{http://pronom.nationalarchives.gov.uk}")  # TNA namespace
 
 
 def get_text_tna(element, tag, default=''):
-    """
-    Helper function to return the text for a tag or path using the TNA namespace.
-    """
+    """Helper function to return the text for a tag or path using the TNA namespace."""
     part = element.find(TNA(tag))
     if part is None or part.text is None:
         return default
@@ -53,26 +56,25 @@ def get_text_tna(element, tag, default=''):
 
 
 def prettify(elem):
-    """
-    Return a pretty-printed XML string for the Element.
-    """
+    """Return a pretty-printed XML string for the Element."""
     rough_string = ET.tostring(elem, 'UTF-8')
     reparsed = minidom.parseString(rough_string)
     return reparsed.toprettyxml(indent="  ")
 
 
 class FormatInfo:
+    """Convert PRONOM formats into FIDO signatures."""
+
     def __init__(self, pronom_files, format_list=[]):
+        """Instantiate class, take a list of PRONOM files and an optional list of formats."""
         self.info = {}
         self.formats = []
         self.pronom_files = pronom_files
         for f in format_list:
-            self.add_format(f)
+            self.add_format(f)  # FIXME: add_format is undefined!
 
     def save(self, dst=sys.stdout):
-        """
-        Write the fido XML format definitions to @param dst.
-        """
+        """Write the fido XML format definitions to @param dst."""
         tree = ET.ElementTree(ET.Element('formats', {
             'version': '0.3',
             'xmlns:xsi': "http://www.w3.org/2001/XMLSchema-instance",
@@ -92,6 +94,7 @@ class FormatInfo:
             print(ET.tostring(root), file=file_)
 
     def indent(self, elem, level=0):
+        """Indent output."""
         i = "\n" + level * "  "
         if len(elem):
             if not elem.text or not elem.text.strip():
@@ -109,6 +112,7 @@ class FormatInfo:
     def load_pronom_xml(self, puid_filter=None):
         """
         Load the pronom XML from self.pronom_files and convert it to fido XML.
+
         As a side-effect, set self.formats to a list of ElementTree.Element.
         If a @param puid is specified, only that one will be loaded.
         """
@@ -152,9 +156,10 @@ class FormatInfo:
 
     def parse_pronom_xml(self, source, puid_filter=None):
         """
-        Read a pronom XML from @param source, convert it to fido XML and
-        @return ET.ElementTree Element representing it.
+        Parse PRONOM XML and convert into FIDO XML.
+
         If a @param puid is specified, only that one will be loaded.
+        @return ET.ElementTree Element representing it.
         """
         pronom_xml = ET.parse(source)
         pronom_root = pronom_xml.getroot()
@@ -290,9 +295,7 @@ class FormatInfo:
 
     # FIXME: I don't think that this quite works yet!
     def _sort_formats(self, formatlist):
-        """Sort the format list based on their priority relationships so higher priority
-           formats appear earlier in the list.
-        """
+        """Sort the format list based on their priority relationships so higher priority formats appear earlier in the list."""
         def compare_formats(f1, f2):
             f1ID = f1.find('puid').text
             f2ID = f2.find('puid').text
@@ -312,9 +315,7 @@ class FormatInfo:
 
 
 def fido_position(pronom_position):
-    """
-    @return BOF/EOF/VAR instead of the more verbose pronom position names.
-    """
+    """Return BOF/EOF/VAR instead of the more verbose pronom position names."""
     if pronom_position == 'Absolute from BOF':
         return 'BOF'
     elif pronom_position == 'Absolute from EOF':
@@ -335,6 +336,7 @@ def _convert_err_msg(msg, c, i, chars):
 def doByte(chars, i, littleendian):
     """
     Convert two chars[i] and chars[i+1] into a byte.
+
     @return a tuple (byte, 2)
     """
     c1 = '0123456789ABCDEF'.find(chars[i].upper())
@@ -368,19 +370,12 @@ def _escape_char(c):
 
 
 def escape(string):
-    """
-    Escape characters in pattern that are non-printable, non-ascii, or special for regexes.
-    """
+    """Escape characters in pattern that are non-printable, non-ascii, or special for regexes."""
     return ''.join(c if c in _ordinary else _escape_char(c) for c in string)
 
 
 def calculate_repetition(char, pos, offset, maxoffset):
-    """
-    Recursively calculates offset/maxoffset repetition,
-    when one or both offsets is greater than 65535 bytes (64KB)
-    see: bugs.python.org/issue13169
-    Otherwise it returns the {offset,maxoffset}
-    """
+    """Recursively calculates offset/maxoffset repetition, when one or both offsets is greater than 65535 bytes (64KB). See: https://bugs.python.org/issue13169."""
     calcbuf = cStringIO.StringIO()
 
     calcremain = False
@@ -426,11 +421,13 @@ def calculate_repetition(char, pos, offset, maxoffset):
 
 def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
     """
+    Convert to regular expression.
+
     Endianness is not used.
+
     @param chars, a pronom bytesequence, into a
     @return regular expression.
     """
-
     if 'Big' in endianness:
         littleendian = False
     else:
@@ -612,6 +609,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
 
 
 def main(arg=None):
+    """Convert PRONOM formats into FIDO signatures."""
     if arg:
         arglist = arg
     else:

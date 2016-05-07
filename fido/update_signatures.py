@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-# FIDO SIGNATURE UPDATER
-#
-# Open Planets Foundation (http://www.openplanetsfoundation.org)
-# See License.txt for license information.
-# Download from: https://github.com/openplanets/fido/releases
-# Author: Maurice de Rooij (NANETH), 2012
-#
-# FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions .
-# PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
-#
+
+"""
+FIDO SIGNATURE UPDATER.
+
+Open Planets Foundation (http://www.openplanetsfoundation.org)
+See License.txt for license information.
+Download from: https://github.com/openplanets/fido/releases
+Author: Maurice de Rooij (NANETH), 2012
+
+FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions.
+PRONOM is available from http://www.nationalarchives.gov.uk/pronom/.
+"""
 
 from __future__ import print_function
 
@@ -44,7 +45,8 @@ defaults = {
 
 def main(defaults=defaults):
     """
-    Updates PRONOM signatures.
+    Update PRONOM signatures.
+
     Interactive script, requires keyboard input.
     """
     try:

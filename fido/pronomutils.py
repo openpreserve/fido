@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
-#
-# PRONOM UTILS
-#
-# PYTHON FUNCTION TO QUERY PRONOM VERSION
-# AND DOWNLOAD SIGNATUREFILE
-# USES PRONOM SOAP SERVICE
-#
-# Open Planets Foundation (http://www.openplanetsfoundation.org)
-# See License.txt for license information.
-# Download from: http://github.com/openplanets/fido/downloads
-# Author: Maurice de Rooij (OPF/NANETH), 2012
-#
-# PRONOM UTILS is a library used by FIDO
-# FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions.
-# PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
-#
+
+"""
+PRONOM UTILS.
+
+PYTHON FUNCTION TO QUERY PRONOM VERSION
+AND DOWNLOAD SIGNATUREFILE
+USES PRONOM SOAP SERVICE
+
+Open Planets Foundation (http://www.openplanetsfoundation.org)
+See License.txt for license information.
+Download from: http://github.com/openplanets/fido/downloads
+Author: Maurice de Rooij (OPF/NANETH), 2012
+
+PRONOM UTILS is a library used by FIDO.
+FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions.
+PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
+"""
 
 from __future__ import absolute_import
 
@@ -22,21 +23,23 @@ import httplib
 import os
 import re
 import sys
-import xml.parsers.expat
+from xml.parsers.expat import ExpatError, ParserCreate
 
 from . import __version__
 
 
 def check_well_formedness(filename, error=False):
     """
-    Arguments:
-    filename: returns true if filename is a valid XML file
-    error: whether or not print to stderr upon error
+    Check if a given file contains valid XML.
+
+    :param filename: file from which the XML is read.
+    :param error: whether or not print to `stderr` upon error.
+    :returns: whether the file contains valid XML.
     """
-    parser = xml.parsers.expat.ParserCreate()
+    parser = ParserCreate()
     try:
         parser.ParseFile(open(filename, "r"))
-    except Exception as e:
+    except ExpatError as e:
         if error is not False:
             sys.stderr.write("check_well_formedness: %s: %s;\n" % (filename, e))
         return False
@@ -45,11 +48,11 @@ def check_well_formedness(filename, error=False):
 
 def get_pronom_signature(type_):
     """
-        usage: get_pronom_signature(version|file)
-        arguments:
-        "version": returns latest signature file version number as int
-        "file": returns latest signature XML file as string
-        upon error: writes to stderr and returns false
+    Get PRONOM signature.
+
+    Return latest signature file version number as int when `type_` equals
+    "version" or return latest signature XML file as string when `type_` equals
+    "file". Upon error, write to `stderr` and returls `False`.
     """
     try:
         soapVersionContainer = """<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><getSignatureFileVersionV1 xmlns="http://pronom.nationalarchives.gov.uk" /></soap:Body></soap:Envelope>"""

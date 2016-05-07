@@ -1,21 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-# FIDO csv output to XML
-# Author: Maurice de Rooij <maurice.de.rooij@nationaalarchief.nl>, september 2011
-#
-# Usage in combination with FIDO:
-# Windows: python fido.py [ARGS] | python toxml.py > output.xml
-# Linux: fido.py [ARGS] | toxml.py > output.xml
-#
-# Usage afterwards:
-# Windows: type output.csv | toxml.py > output.xml
-# Linux: cat output.csv | toxml.py > output.xml
-#
-# for difference in usage, see:
-# http://bugs.python.org/issue9390
-# http://support.microsoft.com/default.aspx?kbid=321788
-#
+
+"""
+FIDO CSV output to XML.
+
+Author: Maurice de Rooij <maurice.de.rooij@nationaalarchief.nl>, September 2011
+
+Usage in combination with FIDO:
+- Windows: python fido.py [ARGS] | python toxml.py > output.xml
+- Linux: fido.py [ARGS] | toxml.py > output.xml
+
+Usage afterwards:
+- Windows: type output.csv | toxml.py > output.xml
+- Linux: cat output.csv | toxml.py > output.xml
+
+For difference in usage, see:
+- http://bugs.python.org/issue9390
+- http://support.microsoft.com/default.aspx?kbid=321788
+"""
 
 from __future__ import absolute_import
 
@@ -25,11 +27,12 @@ import csv
 from . import __version__
 
 
-# define PRONOM signature version
+# Define PRONOM signature version
 signatureVersion = '56'
 
 
 def main():
+    """Generate XML as read from CSV and send it to the standard output stream."""
     sys.stdout.write("""<?xml version="1.0" encoding="utf-8"?>
 <fido_output>
     <versions>

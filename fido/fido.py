@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+Format Identification for Digital Objects (FIDO).
+
+FIDO is a command-line tool to identify the file formats of digital objects.
+It is designed for simple integration into automated work-flows.
+"""
+
 from __future__ import absolute_import
 
 from argparse import ArgumentParser, RawTextHelpFormatter
