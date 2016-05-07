@@ -11,11 +11,12 @@ import sys
 import tarfile
 import tempfile
 import time
-import zipfile
-
 from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
 from xml.etree import ElementTree as VET
+import zipfile
+
+from six.moves import range
 
 import olefile
 
@@ -631,7 +632,7 @@ class Fido:
                 # n*bufsize + r = length
                 (n, r) = divmod(bytes_unread, self.bufsize)
                 # skip n-1*bufsize bytes
-                for unused_i in xrange(1, n):
+                for unused_i in range(1, n):
                     self.blocking_read(stream, self.bufsize)
                 # skip r bytes
                 self.blocking_read(stream, r)
@@ -726,13 +727,13 @@ class Fido:
         else:
             bufsize = self.container_bufsize + self.overlap_range
         file_end = self.current_filesize
-        file_handle = file(self.current_file, 'rb')
-        file_handle.seek(file_pos)
-        if file_end - file_pos < bufsize:
-            file_read = file_end - file_pos
-        else:
-            file_read = self.bufsize
-        buf = file_handle.read(file_read)
+        with open(self.current_file, 'rb') as file_handle:
+            file_handle.seek(file_pos)
+            if file_end - file_pos < bufsize:
+                file_read = file_end - file_pos
+            else:
+                file_read = self.bufsize
+            buf = file_handle.read(file_read)
         return buf
 
     def match_formats(self, bofbuffer, eofbuffer):

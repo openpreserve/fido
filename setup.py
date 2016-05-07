@@ -21,8 +21,9 @@ def find_version(*file_paths):
 
 
 install_requires = [
-    'setuptools',
     'olefile >= 0.4, < 1',
+    'setuptools',
+    'six == 1.10.0',
 ]
 
 
