@@ -19,11 +19,12 @@ PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
 
 from __future__ import absolute_import
 
-import httplib
 import os
 import re
 import sys
 from xml.parsers.expat import ExpatError, ParserCreate
+
+from six.moves import http_client
 
 from . import __version__
 
@@ -68,7 +69,7 @@ def get_pronom_signature(type_):
         else:
             sys.stderr.write("get_pronom_signature(): unknown type: " + type_)
             return False
-        webservice = httplib.HTTP("apps.nationalarchives.gov.uk")
+        webservice = http_client.HTTP("apps.nationalarchives.gov.uk")
         webservice.putrequest("POST", "/pronom/service.asmx")
         webservice.putheader("Host", "www.nationalarchives.gov.uk")
         webservice.putheader("User-Agent", "PRONOM UTILS v{0} (OPF)".format(__version__))

@@ -23,6 +23,7 @@ from xml.etree import ElementTree as CET
 from xml.etree import ElementTree as VET
 import zipfile
 
+from six import iteritems
 from six.moves import range
 
 import olefile
@@ -62,7 +63,7 @@ PRONOM is available from http://www.nationalarchives.gov.uk/pronom/""",
 class Package(object):
     def _process_puid_map(self, data, puid_map):
         results = []
-        for puid, signatures in puid_map.iteritems():
+        for puid, signatures in iteritems(puid_map):
             results.extend(self._process_matches(data, puid, signatures))
 
         return results
@@ -88,7 +89,7 @@ class OlePackage(Package):
             return []
 
         results = []
-        for path, puid_map in self.signatures.iteritems():
+        for path, puid_map in iteritems(self.signatures):
             # Each OLE container signature lists the path of the file inside the OLE
             # on which it operates; if the file is missing, there can be no match.
             # This is not a precise match because the name of the stream may slightly
@@ -123,7 +124,7 @@ class ZipPackage(Package):
             return []
 
         results = []
-        for path, puid_map in self.signatures.iteritems():
+        for path, puid_map in iteritems(self.signatures):
             # Each ZIP container signature lists the path of the file inside the ZIP
             # on which it operates; if the file is missing, there can be no match.
             if path not in zip.namelist():

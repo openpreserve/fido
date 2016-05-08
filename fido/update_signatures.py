@@ -18,11 +18,11 @@ from __future__ import print_function
 import os
 import sys
 import time
-import urllib
 from xml.etree import ElementTree as CET
 import zipfile
 
-from six.moves import input
+from six.moves import input as rinput
+from six.moves.urllib.request import urlopen
 
 from . import __version__
 from .prepare import main as prepare_main
@@ -63,7 +63,7 @@ def main(defaults=defaults):
         signatureFile = os.path.join(os.path.abspath(defaults['conf_dir']), defaults['signatureFileName'].format(currentVersion))
         if os.path.isfile(signatureFile):
             print("You already have the latest PRONOM signature file, version", currentVersion)
-            ask = input("Update anyway? (yes/no): ")
+            ask = rinput("Update anyway? (yes/no): ")
             if ask.lower() not in answers:
                 sys.exit()
         print("Downloading signature file version {}...".format(currentVersion))
@@ -82,14 +82,14 @@ def main(defaults=defaults):
         numberPuids = len(puids)
         print("Found {} PRONOM PUID's".format(numberPuids))
         print("Downloading signatures can take a while")
-        ask = input("Continue and download signatures? (yes/no): ")
+        ask = rinput("Continue and download signatures? (yes/no): ")
         if ask.lower() not in answers:
             print("Aborting update...")
             sys.exit()
         tmpdir = os.path.join(os.path.abspath(defaults['conf_dir']), defaults['tmp_dir'])
         if os.path.isdir(tmpdir):
             print("Found previously created temporary folder for download:", tmpdir)
-            ask = input("Resume download (yes) or start over (no)?: ")
+            ask = rinput("Resume download (yes) or start over (no)?: ")
             if ask.lower() in answers:
                 print("Resuming download...")
                 resume_download = True
@@ -116,7 +116,7 @@ def main(defaults=defaults):
                 continue
             puidUrl = "http://www.nationalarchives.gov.uk/pronom/{}.xml".format(puid)
             try:
-                filehandle = urllib.urlopen(puidUrl)
+                filehandle = urlopen(puidUrl)
             except Exception as e:
                 print("Failed to download signature file:", puidUrl)
                 print("Error:", str(e))

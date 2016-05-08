@@ -26,7 +26,6 @@ import os
 import sys
 import xml.etree.ElementTree as xml
 
-
 from . import __version__
 
 

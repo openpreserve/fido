@@ -6,15 +6,16 @@
 from __future__ import print_function
 
 from argparse import ArgumentParser
-import cStringIO
 import hashlib
 import os
 import sys
-import urllib
 from xml.dom import minidom
 from xml.etree import ElementTree as ET
 from xml.etree import ElementTree as VET  # versions.xml
 import zipfile
+
+from six.moves import cStringIO
+from six.moves.urllib.request import urlopen
 
 
 # MdR: 'reload(sys)' and 'setdefaultencoding("utf-8")' needed to fix utf-8 encoding errors
@@ -273,7 +274,7 @@ class FormatInfo:
                     ET.SubElement(rf, 'dc:identifier').text = url
                     # And calculate the checksum of this resource:
                     m = hashlib.md5()
-                    sock = urllib.urlopen(url)
+                    sock = urlopen(url)
                     m.update(sock.read())
                     sock.close()
                     checksum = m.hexdigest()
@@ -376,7 +377,7 @@ def escape(string):
 
 def calculate_repetition(char, pos, offset, maxoffset):
     """Recursively calculates offset/maxoffset repetition, when one or both offsets is greater than 65535 bytes (64KB). See: https://bugs.python.org/issue13169."""
-    calcbuf = cStringIO.StringIO()
+    calcbuf = cStringIO()
 
     calcremain = False
     offsetremain = 0
@@ -438,7 +439,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
         maxoffset = None
     # make buf global so we can print it @'_convert_err_msg' while debugging (MdR)
     global buf
-    buf = cStringIO.StringIO()
+    buf = cStringIO()
     buf.write("(?s)")  # If a regex starts with (?s), it is equivalent to DOTALL.
     i = 0
     state = 'start'
@@ -608,7 +609,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
     return val
 
 
-def main(arg=None):
+def main(arg):
     """Convert PRONOM formats into FIDO signatures."""
     if arg:
         arglist = arg

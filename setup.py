@@ -51,6 +51,5 @@ setup(
         'fido-prepare = fido.prepare:main',
         'fido-update-signatures = fido.update_signatures:main',
         'fido-toxml = fido.toxml:main',
-    ]},
-    **extra
+    ]}
 )
