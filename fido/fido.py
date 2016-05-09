@@ -22,12 +22,10 @@ from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
 import zipfile
 
-from six import iteritems
 from six.moves import range
 
-import olefile
-
 from . import __version__, CONFIG_DIR
+from .package import OlePackage, ZipPackage
 from .pronomutils import get_local_pronom_versions
 
 
@@ -56,85 +54,6 @@ FIDO uses the UK National Archives (TNA) PRONOM File Format
 and Container descriptions.
 PRONOM is available from http://www.nationalarchives.gov.uk/pronom/""",
 }
-
-
-class Package(object):
-    def _process_puid_map(self, data, puid_map):
-        results = []
-        for puid, signatures in iteritems(puid_map):
-            results.extend(self._process_matches(data, puid, signatures))
-
-        return results
-
-    def _process_matches(self, data, puid, signatures):
-        results = []
-        for signature in signatures:
-            if re.search(signature["signature"], data):
-                results.append(puid)
-
-        return results
-
-
-class OlePackage(Package):
-    def __init__(self, ole, signatures):
-        self.ole = ole
-        self.signatures = signatures
-
-    def detect_formats(self):
-        try:
-            ole = olefile.OleFileIO(self.ole)
-        except IOError:
-            return []
-
-        results = []
-        for path, puid_map in iteritems(self.signatures):
-            # Each OLE container signature lists the path of the file inside the OLE
-            # on which it operates; if the file is missing, there can be no match.
-            # This is not a precise match because the name of the stream may slightly
-            # differ; for example, \x01CompObj instead of CompObj
-            filepath = None
-            for paths in ole.listdir():
-                p = '/'.join(paths)
-                if p == path or p[1:] == path:
-                    filepath = p
-                    break
-
-            # Path to match isn't in the container at all
-            if filepath is None:
-                continue
-
-            with ole.openstream(filepath) as stream:
-                contents = stream.read()
-                results.extend(self._process_puid_map(contents, puid_map))
-
-        return results
-
-
-class ZipPackage(Package):
-    def __init__(self, zip, signatures):
-        self.zip = zip
-        self.signatures = signatures
-
-    def detect_formats(self):
-        try:
-            zip = zipfile.ZipFile(self.zip)
-        except zipfile.BadZipfile:
-            return []
-
-        results = []
-        for path, puid_map in iteritems(self.signatures):
-            # Each ZIP container signature lists the path of the file inside the ZIP
-            # on which it operates; if the file is missing, there can be no match.
-            if path not in zip.namelist():
-                continue
-
-            # Extract the requested file from the ZIP only once, and pass the same
-            # data to each signature that requires it.
-            with zip.open(path) as id_file:
-                contents = id_file.read()
-                results.extend(self._process_puid_map(contents, puid_map))
-
-        return results
 
 
 class Fido:

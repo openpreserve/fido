@@ -4,6 +4,8 @@
 /MANIFEST
 /dist
 /build
+/.cache
+/.eggs
 
 /fmtinfo.csv
 /exp
