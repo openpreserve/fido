@@ -155,9 +155,8 @@ def main(defaults=defaults):
         prepare_pronom_to_fido()
         print("FIDO signatures successfully updated")
 
-    except ValueError:
+    except KeyboardInterrupt:
         sys.exit('Aborting update...')
-        raise
 
 
 if __name__ == '__main__':
