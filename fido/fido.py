@@ -20,7 +20,6 @@ import tempfile
 import time
 from xml.etree import cElementTree as ET
 from xml.etree import ElementTree as CET
-from xml.etree import ElementTree as VET
 import zipfile
 
 from six import iteritems
@@ -28,13 +27,13 @@ from six.moves import range
 
 import olefile
 
-from . import __version__
+from . import __version__, CONFIG_DIR
+from .pronomutils import get_local_pronom_versions
 
 
 defaults = {
     'bufsize': 128 * 1024,  # (bytes)
     'regexcachesize': 2084,  # (bytes)
-    'conf_dir': os.path.join(os.path.dirname(__file__), 'conf'),
     'printmatch': "OK,%(info.time)s,%(info.puid)s,\"%(info.formatname)s\",\"%(info.signaturename)s\",%(info.filesize)s,\"%(info.filename)s\",\"%(info.mimetype)s\",\"%(info.matchtype)s\"\n",
     'printnomatch': "KO,%(info.time)s,,,,%(info.filesize)s,\"%(info.filename)s\",,\"%(info.matchtype)s\"\n",
     'format_files': [
@@ -42,7 +41,6 @@ defaults = {
         'format_extensions.xml'
     ],
     'containersignature_file': 'container-signature-20160121.xml',
-    'versions_file': 'versions.xml',  # versions.xml is where fido.py reads version information about which xml to load
     'container_bufsize': 512 * 1024,  # (bytes)
     'description': """Format Identification for Digital Objects (fido).
 FIDO is a command-line tool to identify the file formats of digital objects.
@@ -140,7 +138,7 @@ class ZipPackage(Package):
 
 
 class Fido:
-    def __init__(self, quiet=False, bufsize=None, container_bufsize=None, printnomatch=None, printmatch=None, zip=False, nocontainer=False, handle_matches=None, conf_dir=None, format_files=None, containersignature_file=None):
+    def __init__(self, quiet=False, bufsize=None, container_bufsize=None, printnomatch=None, printmatch=None, zip=False, nocontainer=False, handle_matches=None, conf_dir=CONFIG_DIR, format_files=None, containersignature_file=None):
         global defaults
         self.quiet = quiet
         self.bufsize = defaults['bufsize'] if bufsize is None else bufsize
@@ -150,7 +148,7 @@ class Fido:
         self.handle_matches = self.print_matches if handle_matches is None else handle_matches
         self.zip = zip
         self.nocontainer = nocontainer
-        self.conf_dir = defaults['conf_dir'] if conf_dir is None else conf_dir
+        self.conf_dir = conf_dir
         self.format_files = defaults['format_files'] if format_files is None else format_files
         self.containersignature_file = defaults['containersignature_file']
         self.formats = []
@@ -837,12 +835,10 @@ def list_files(roots, recurse=False):
                     break
 
 
-def main(arglist=None):
-    t0 = time.clock()
-    if not arglist:
-        arglist = sys.argv[1:]
-    if not len(arglist):
-        arglist.append("-h")
+def main(args=None):
+    if not args:
+        args = sys.argv[1:]
+
     parser = ArgumentParser(description=defaults['description'], epilog=defaults['epilog'], fromfile_prefix_chars='@', formatter_class=RawTextHelpFormatter)
     parser.add_argument('-v', default=False, action='store_true', help='show version information')
     parser.add_argument('-q', default=False, action='store_true', help='run (more) quietly')
@@ -863,33 +859,22 @@ def main(arglist=None):
     parser.add_argument('-bufsize', type=int, default=None, help='size (in bytes) of the buffer to match against (default=' + str(defaults['bufsize']) + ' bytes)')
     parser.add_argument('-container_bufsize', type=int, default=None, help='size (in bytes) of the buffer to match against (default=' + str(defaults['container_bufsize']) + ' bytes)')
     parser.add_argument('-loadformats', default=None, metavar='XML1,...,XMLn', help='comma separated string of XML format files to add.')
-    parser.add_argument('-confdir', default=None, help='configuration directory to load_fido_xml, for example, the format specifications from.')
+    parser.add_argument('-confdir', default=CONFIG_DIR, help='configuration directory to load_fido_xml, for example, the format specifications from.')
 
-    # what is this doing here only once?
-    # mydir = os.path.abspath(os.path.dirname(__file__))
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(1)
+    args = parser.parse_args(args)
 
-    # PROCESS ARGUMENTS
-    args = parser.parse_args(arglist)
-    # print args
-    # sys.exit()
-    # process confdir
-    # load versions.xml
-    # and stick it in defaults
-    if args.confdir:
-        versionsFile = os.path.join(os.path.abspath(args.confdir), defaults['versions_file'])
-    else:
-        versionsFile = os.path.join(os.path.abspath(defaults['conf_dir']), defaults['versions_file'])
-    try:
-        versions = VET.parse(versionsFile)
-    except Exception as e:
-        sys.stderr.write("An error occured loading versions.xml:\n{0}".format(e))
-        sys.exit()
-    defaults['xml_pronomSignature'] = versions.find("pronomSignature").text
-    # defaults['xml_pronomContainerSignature'] = versions.find("pronomContainerSignature").text
-    defaults['containersignature_file'] = versions.find("pronomContainerSignature").text
-    defaults['xml_fidoExtensionSignature'] = versions.find("fidoExtensionSignature").text
-    defaults['format_files'] = []
-    defaults['format_files'].append(defaults['xml_pronomSignature'])
+    t0 = time.clock()
+
+    versions = get_local_pronom_versions(args.confdir)
+
+    defaults['xml_pronomSignature'] = versions.pronom_signature
+    defaults['containersignature_file'] = versions.pronom_container_signature
+    defaults['xml_fidoExtensionSignature'] = versions.fido_extension_signature
+    defaults['format_files'] = [defaults['xml_pronomSignature']]
+
     if args.pronom_only:
         versionHeader = "FIDO v{0} ({1}, {2})\n".format(__version__, defaults['xml_pronomSignature'], defaults['containersignature_file'])
     else:
@@ -899,12 +884,21 @@ def main(arglist=None):
     if args.v:
         sys.stdout.write(versionHeader)
         sys.exit(0)
+
     if args.matchprintf:
         args.matchprintf = args.matchprintf.decode('string_escape')
     if args.nomatchprintf:
         args.nomatchprintf = args.nomatchprintf.decode('string_escape')
-    fido = Fido(quiet=args.q, bufsize=args.bufsize, container_bufsize=args.container_bufsize,
-                printmatch=args.matchprintf, printnomatch=args.nomatchprintf, zip=args.zip, nocontainer=args.nocontainer, conf_dir=args.confdir)
+
+    fido = Fido(
+        quiet=args.q,
+        bufsize=args.bufsize,
+        container_bufsize=args.container_bufsize,
+        printmatch=args.matchprintf,
+        printnomatch=args.nomatchprintf,
+        zip=args.zip,
+        nocontainer=args.nocontainer,
+        conf_dir=args.confdir)
 
     # TODO: Allow conf options to be dis-included
     if args.loadformats:

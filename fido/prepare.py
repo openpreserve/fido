@@ -7,15 +7,15 @@ from __future__ import print_function
 
 from argparse import ArgumentParser
 import hashlib
-import os
 import sys
 from xml.dom import minidom
 from xml.etree import ElementTree as ET
-from xml.etree import ElementTree as VET  # versions.xml
 import zipfile
 
 from six.moves import cStringIO
 from six.moves.urllib.request import urlopen
+
+from .pronomutils import get_local_pronom_versions
 
 
 # MdR: 'reload(sys)' and 'setdefaultencoding("utf-8")' needed to fix utf-8 encoding errors
@@ -609,29 +609,19 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
     return val
 
 
-def main(arg):
+def main(args=None):
     """Convert PRONOM formats into FIDO signatures."""
-    if arg:
-        arglist = arg
-    else:
-        arglist = sys.argv[1:]
-    mydir = os.path.abspath(os.path.dirname(__file__))
-    # Parse version file to fetch versions
-    versionsFile = os.path.join(mydir, 'conf', 'versions.xml')
-    try:
-        versions = VET.parse(versionsFile)
-    except Exception as e:
-        print("An error occured loading versions.xml:\n{0}".format(e), file=sys.stderr)
-        sys.exit()
-    xml_pronomSignature = os.path.join(mydir, 'conf', versions.find('pronomSignature').text)
-    xml_pronomZipFile = os.path.join(mydir, 'conf', "pronom-xml-v{0}.zip".format(versions.find('pronomVersion').text))
-    parser = ArgumentParser(description='Produce the fido format xml that is loaded at run-time')
-    parser.add_argument('-input', default=xml_pronomZipFile, help='input file, a zip containing Pronom xml files')
-    parser.add_argument('-output', default=xml_pronomSignature, help='output file')
-    parser.add_argument('-puid', default=None, help='a particular PUID record to extract')
-    # PROCESS ARGUMENTS
-    args = parser.parse_args(arglist)
-    # print os.path.abspath(args.input), os.path.abspath(args.output)
+    if args is None:
+        args = sys.argv[1:]
+
+    versions = get_local_pronom_versions()
+
+    parser = ArgumentParser(description='Produce the FIDO format XML that is loaded at run-time')
+    parser.add_argument('-input', default=versions.get_zip_file(), help='Input file, a Zip containing PRONOM XML files')
+    parser.add_argument('-output', default=versions.get_signature_file(), help='Ouptut file')
+    parser.add_argument('-puid', default=None, help='A particular PUID record to extract')
+    args = parser.parse_args(args)
+
     info = FormatInfo(args.input)
     info.load_pronom_xml(args.puid)
     info.save(args.output)

@@ -22,18 +22,10 @@ For difference in usage, see:
 from __future__ import absolute_import
 
 import csv
-import os
 import sys
-import xml.etree.ElementTree as xml
 
 from . import __version__
-
-
-def get_signature_version():
-    """Return PRONOM signature version."""
-    current_dir = os.path.dirname(os.path.realpath(__file__))
-    versions_file = os.path.join(current_dir, 'conf', 'versions.xml')
-    return xml.parse(versions_file).getroot().find('pronomVersion').text
+from .pronomutils import get_local_pronom_versions
 
 
 def main():
@@ -43,7 +35,7 @@ def main():
     <versions>
         <fido_version>{0}</fido_version>
         <signature_version>{1}</signature_version>
-    </versions>""".format(__version__, get_signature_version()))
+    </versions>""".format(__version__, get_local_pronom_versions().pronom_version))
 
     reader = csv.reader(sys.stdin)
 
