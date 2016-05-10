@@ -1,171 +1,163 @@
-#!python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-# FIDO SIGNATURE UPDATER  
-#
-# Open Planets Foundation (http://www.openplanetsfoundation.org)
-# See License.txt for license information.
-# Download from: https://github.com/openplanets/fido/releases
-# Author: Maurice de Rooij (NANETH), 2012
-#        
-# FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions .
-# PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
-#
-import sys, os, urllib, time, zipfile, shutil
 
+"""
+FIDO SIGNATURE UPDATER.
+
+Open Planets Foundation (http://www.openplanetsfoundation.org)
+See License.txt for license information.
+Download from: https://github.com/openplanets/fido/releases
+Author: Maurice de Rooij (NANETH), 2012
+
+FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions.
+PRONOM is available from http://www.nationalarchives.gov.uk/pronom/.
+"""
+
+from __future__ import print_function
+
+import os
+from shutil import rmtree
+import sys
+import time
 from xml.etree import ElementTree as CET
-from xml.etree import ElementTree as VET
-from pronomutils import getPronomSignature, checkWellFormedness
-import prepare
+import zipfile
+
+from six.moves.urllib.request import urlopen
+
+from . import __version__, CONFIG_DIR, query_yes_no
+from .prepare import main as prepare_pronom_to_fido
+from .pronomutils import check_well_formedness, get_local_pronom_versions, get_pronom_signature
+
 
 defaults = {
-    'version': '1.2.2',
-    'conf_dir': os.path.join(os.path.dirname(__file__), 'conf'),
-    'tmp_dir': 'tmp', 
-    'signatureFileName' : 'DROID_SignatureFile-v{0}.xml',
-    'pronomZipFileName' : 'pronom-xml-v{0}.zip',
-    'fidoSignatureVersion' : 'format_extensions.xml', 
-    'versionsFileName' : 'versions.xml',
-    'http_throttle' : 0.5, # in secs, to prevent DoS of PRONOM server
-    'containerVersion' : 'container-signature-20130501.xml', # container version is frozen and needs human attention before updating
-    'versionXML' : """<?xml version="1.0" encoding="UTF-8"?>\n<versions>\n\t<pronomVersion>{0}</pronomVersion>\n\t<pronomSignature>{1}</pronomSignature>\n\t<pronomContainerSignature>{2}</pronomContainerSignature>\n\t<fidoExtensionSignature>{3}</fidoExtensionSignature>\n\t<updateScript>{4}</updateScript>\n</versions>"""
-    }
+    'tmp_dir': os.path.join(CONFIG_DIR, 'tmp'),
+    'signatureFileName': 'DROID_SignatureFile-v{0}.xml',
+    'pronomZipFileName': 'pronom-xml-v{0}.zip',
+    'fidoSignatureVersion': 'format_extensions.xml',
+    'http_throttle': 0.5,  # in secs, to prevent DoS of PRONOM server
+    'containerVersion': 'container-signature-20160121.xml',  # container version is frozen and needs human attention before updating
+}
 
-def main(defaults):
+
+def main(defaults=defaults):
     """
-        Updates PRONOM signatures
-        Interactive script, requires keyboard input
+    Update PRONOM signatures.
+
+    Interactive script, requires keyboard input.
     """
+    print("FIDO signature updater v{}".format(__version__))
+
     try:
-        resume_download = False
-        answers = ['y','yes']
-        versionXML = defaults['versionXML'].format("{0}","{1}",defaults['containerVersion'],defaults['fidoSignatureVersion'],defaults['version'])
-        #print versionXML
-        print "FIDO signature updater v"+defaults['version']
-        print "Contacting PRONOM..."
-        currentVersion = getPronomSignature("version")
-        if currentVersion == False:
-            print "Failed to obtain PRONOM signature file version number, please try again"
-            sys.exit()
-        print "Querying latest signaturefile version..."
-        signatureFile = os.path.join(os.path.abspath(defaults['conf_dir']), defaults['signatureFileName'].format(currentVersion))
+        print("Contacting PRONOM...")
+        currentVersion = get_pronom_signature("version")
+        if not currentVersion:
+            sys.exit('Failed to obtain PRONOM signature file version number, please try again.')
+
+        print("Querying latest signaturefile version...")
+        signatureFile = os.path.join(CONFIG_DIR, defaults['signatureFileName'].format(currentVersion))
         if os.path.isfile(signatureFile):
-            print "You already have the latest PRONOM signature file, version "+str(currentVersion)
-            ask = raw_input("Update anyway? (yes/no): ")
-            if ask.lower() not in answers:
-                sys.exit()
-        print "Downloading signature file version "+str(currentVersion)+"..."
-        currentFile = getPronomSignature("file")
-        if currentFile == False:
-            print "Failed to obtain PRONOM signature file, please try again"
-            exit()
-        sigfile = open(signatureFile,'wb')
-        sigfile.write(currentFile)
-        sigfile.close()
-        print "Writing {0}...".format(defaults['signatureFileName'].format(currentVersion))
-        print "Extracting PRONOM PUID's from signature file..."
+            print("You already have the latest PRONOM signature file, version", currentVersion)
+            if not query_yes_no("Update anyway?"):
+                sys.exit('Aborting update...')
+
+        print("Downloading signature file version {}...".format(currentVersion))
+        currentFile = get_pronom_signature("file")
+        if not currentFile:
+            sys.exit('Failed to obtain PRONOM signature file, please try again.')
+        print("Writing {0}...".format(defaults['signatureFileName'].format(currentVersion)))
+        with open(signatureFile, 'wb') as file_:
+            file_.write(currentFile)
+
+        print("Extracting PRONOM PUID's from signature file...")
         tree = CET.parse(signatureFile)
         puids = []
         for node in tree.iter("{http://www.nationalarchives.gov.uk/pronom/SignatureFile}FileFormat"):
             puids.append(node.get("PUID"))
         numberPuids = len(puids)
-        print "Found "+str(numberPuids)+" PRONOM PUID's"
-        print "Downloading signatures can take a while"
-        ask = raw_input("Continue and download signatures? (yes/no): ")
-        if ask.lower() not in answers:
-            print "Aborting update..."
-            sys.exit()
-        tmpdir = os.path.join(os.path.abspath(defaults['conf_dir']), defaults['tmp_dir'])
+        print("Found {} PRONOM PUID's".format(numberPuids))
+
+        print("Downloading signatures can take a while")
+        if not query_yes_no("Continue and download signatures?"):
+            sys.exit('Aborting update...')
+        tmpdir = defaults['tmp_dir']
         if os.path.isdir(tmpdir):
-            print "Found previously created temporary folder for download:", tmpdir
-            ask = raw_input("Resume download (yes) or start over (no)?: ")
-            if ask.lower() in answers:
-                print "Resuming download..."
-                resume_download = True
-            else:
-                resume_download = False
+            print("Found previously created temporary folder for download:", tmpdir)
+            resume_download = query_yes_no('Do you want to resume download (yes) or start over (no)?')
+            if resume_download:
+                print("Resuming download...")
         else:
-            print "Creating temporary folder for download:", tmpdir
+            print("Creating temporary folder for download:", tmpdir)
             try:
                 os.mkdir(tmpdir)
             except:
                 pass
         if not os.path.isdir(tmpdir):
-            tmpdir = os.path.join(os.path.abspath(defaults['conf_dir']))
-            print "Failed to create temporary folder for PUID's, using", tmpdir
-        print "Downloading signatures, one moment please..."
+            print("Failed to create temporary folder for PUID's, using", tmpdir)
+
+        print("Downloading signatures, one moment please...")
         one_percent = (float(numberPuids) / 100)
         numfiles = 0
         for puid in puids:
             puidType, puidNum = puid.split("/")
-            puidFileName = "puid."+puidType+"."+puidNum+".xml"
+            puidFileName = "puid." + puidType + "." + puidNum + ".xml"
             filename = os.path.join(tmpdir, puidFileName)
-            if os.path.isfile(filename) and checkWellFormedness(filename) and resume_download is not False:
+            if os.path.isfile(filename) and check_well_formedness(filename) and resume_download:
                 numfiles += 1
                 continue
-            puidUrl = "http://www.nationalarchives.gov.uk/pronom/"+puid+".xml"
+            puid_url = "http://www.nationalarchives.gov.uk/pronom/{}.xml".format(puid)
             try:
-                filehandle = urllib.urlopen(puidUrl)
-            except Exception, e:
-                print "Failed to download signaturefile:", puidUrl
-                print "Error:", str(e)
-                print "Please restart and resume download"
-                sys.exit()
-            puidfile = open(filename,'wb')
-            for lines in filehandle.readlines():
-                    puidfile.write(lines)
-            puidfile.close()
+                filehandle = urlopen(puid_url)
+            except Exception as e:
+                print("Failed to download signature file:", puid_url)
+                print("Error:", str(e))
+                sys.exit('Please restart and resume download.')
+            with open(filename, 'wb') as file_:
+                for lines in filehandle.readlines():
+                    file_.write(lines)
             filehandle.close()
-            if not checkWellFormedness(filename):
+            if not check_well_formedness(filename):
                 os.unlink(filename)
                 continue
             numfiles += 1
             percent = int(float(numfiles) / one_percent)
-            print "\r",
-            print str(percent)+"%",
+            print(r"{}/{} files [{}%]".format(numfiles, numberPuids, percent))
             time.sleep(defaults['http_throttle'])
-        print "100%"
-        try:
-            import zlib
-            compression = zipfile.ZIP_DEFLATED
-        except:
-            compression = zipfile.ZIP_STORED
+        print("100%")
+
+        print("Creating PRONOM zip...")
+        compression = zipfile.ZIP_DEFLATED if 'zlib' in sys.modules else zipfile.ZIP_STORED
         modes = {zipfile.ZIP_DEFLATED: 'deflated', zipfile.ZIP_STORED: 'stored'}
-        print "Creating PRONOM zip,",
-        zf = zipfile.ZipFile(os.path.join(os.path.abspath(defaults['conf_dir']), defaults['pronomZipFileName'].format(currentVersion)), mode='w')
-        print "adding files with compression mode '"+modes[compression]+"'"
+        zf = zipfile.ZipFile(os.path.join(CONFIG_DIR, defaults['pronomZipFileName'].format(currentVersion)), mode='w')
+        print("Adding files with compression mode", modes[compression])
         for puid in puids:
             puidType, puidNum = puid.split("/")
-            puidFileName = "puid."+puidType+"."+puidNum+".xml"
-            filename = os.path.join(os.path.abspath(defaults['conf_dir']), defaults['tmp_dir'], puidFileName)
+            puidFileName = "puid.{}.{}.xml".format(puidType, puidNum)
+            filename = os.path.join(tmpdir, puidFileName)
             if os.path.isfile(filename):
                 zf.write(filename, arcname=puidFileName, compress_type=compression)
                 os.unlink(filename)
         zf.close()
-        print "Deleting temporary folder and files..."
-        try:
-            for root, dirs, files in os.walk(tmpdir, topdown=False):
-                for name in files:
-                    os.remove(os.path.join(root, name))
-                for name in dirs:
-                    os.rmdir(os.path.join(root, name))
-                os.rmdir(tmpdir)
-        except:
-            pass
-        # update versions.xml
-        versionsFile = os.path.join(os.path.abspath(defaults['conf_dir']), defaults['versionsFileName'])
-        print "Updating {0}...".format(defaults['versionsFileName'])
-        xmlversionsfile = open(versionsFile,'wb')
-        xmlversionsfile.write(versionXML.format(str(currentVersion),"formats-v"+str(currentVersion)+".xml"))
-        xmlversionsfile.close()
-        print "Preparing to convert PRONOM formats to FIDO signatures..."
-        # there should be a check here to handle prepare.main exit() signal (-1/0/1/...)
-        prepare.main()
-        print "FIDO signatures successfully updated"
-        sys.exit()
+
+        print("Deleting temporary folder and files...")
+        rmtree(tmpdir, ignore_errors=True)
+
+        print('Updating versions.xml...')
+        versions = get_local_pronom_versions()
+        versions.pronom_version = str(currentVersion)
+        versions.pronom_signature = "formats-v" + str(currentVersion) + ".xml"
+        versions.pronom_container_signature = defaults['containerVersion']
+        versions.fido_extension_signature = defaults['fidoSignatureVersion']
+        versions.update_script = __version__
+        versions.write()
+
+        # TODO: there should be a check here to handle prepare.main exit() signal (-1/0/1/...)
+        print("Preparing to convert PRONOM formats to FIDO signatures...")
+        prepare_pronom_to_fido()
+        print("FIDO signatures successfully updated")
+
     except KeyboardInterrupt:
-        print "\nAborting update"
-        sys.exit()
+        sys.exit('Aborting update...')
+
 
 if __name__ == '__main__':
     main(defaults)

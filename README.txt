@@ -39,9 +39,9 @@ optional arguments:
                         comma separated string of XML format files to add.
   -confdir CONFDIR      configuration directory to load_fido_xml, for example, the format specifications from.
 
-    Open Planets Foundation (http://www.openplanetsfoundation.org)
+    Open Preservation Foundation (http://www.openpreservation.org)
     See License.txt for license information.
-    Download from: https://github.com/openplanets/fido/releases
+    Download from: https://github.com/openpreserve/fido/releases
     Usage guide: http://wiki.opf-labs.org/display/KB/FIDO+usage+guide
     Author: Adam Farquhar (BL), 2010
     Maintainer: Maurice de Rooij (OPF/NANETH), 2011, 2012, 2013
@@ -55,7 +55,7 @@ Installation
 (also see: http://wiki.opf-labs.org/display/KB/FIDO+usage+guide)
 
 Any platform
-1. Download the latest zip release from https://github.com/openplanets/fido/releases
+1. Download the latest zip release from https://github.com/openpreserve/fido/releases
 2. Unzip into some directory
 3. Open a command shell, cd to the directory that you placed the zip contents into and cd into folder 'fido'
 4. You should now be able to see the help text: 

@@ -18140,6 +18140,7 @@ Variable bytes: /GTS_PDFXVersion(PDF/X-3:2003)</note>
   </format>
   <format>
     <puid>fmt/151</puid>
+    <mime>image/jpx</mime>
     <name>JPX (JPEG 2000 part 2)</name>
     <version />
     <alias>JPF</alias>
@@ -18184,6 +18185,7 @@ Variable bytes: /GTS_PDFXVersion(PDF/X-3:2003)</note>
     <has_priority_over>x-fmt/387</has_priority_over>
     <has_priority_over>x-fmt/388</has_priority_over>
     <has_priority_over>x-fmt/399</has_priority_over>
+    <has_priority_over>fmt/202</has_priority_over>
     <has_priority_over>fmt/353</has_priority_over>
     <signature>
       <name>DNG 1.1 (little-endian, BOF)</name>
@@ -25610,6 +25612,7 @@ DATA: VERSION:160 SECURITY: ENCODING: CHARSET: COMPRESSION: OLDFILEUID: NEWFILEU
       <is_supertype_of>1223</is_supertype_of>
       <is_supertype_of>1224</is_supertype_of>
       <is_supertype_of>1225</is_supertype_of>
+      <is_supertype_of>1529</is_supertype_of>
       <content_type>Image (Raster)</content_type>
       <reference>
         <dc:title>TIFF Revision 6.0</dc:title>
@@ -28588,6 +28591,7 @@ Version 7.0 includes: tabbed dockable palettes, transform palette, align palette
     <has_priority_over>x-fmt/388</has_priority_over>
     <has_priority_over>x-fmt/399</has_priority_over>
     <has_priority_over>fmt/154</has_priority_over>
+    <has_priority_over>fmt/202</has_priority_over>
     <has_priority_over>fmt/353</has_priority_over>
     <signature>
       <name>DNG 1.0 (little-endian, BOF)</name>
@@ -28663,6 +28667,7 @@ This initial version accompanied the launch of DNG and related products. It was 
     <has_priority_over>x-fmt/388</has_priority_over>
     <has_priority_over>x-fmt/399</has_priority_over>
     <has_priority_over>fmt/154</has_priority_over>
+    <has_priority_over>fmt/202</has_priority_over>
     <has_priority_over>fmt/353</has_priority_over>
     <signature>
       <name>DNG 1.2 (little-endian, BOF)</name>
@@ -28739,6 +28744,7 @@ This version, published May 2008, was based on experience and feedback from othe
     <has_priority_over>x-fmt/388</has_priority_over>
     <has_priority_over>x-fmt/399</has_priority_over>
     <has_priority_over>fmt/154</has_priority_over>
+    <has_priority_over>fmt/202</has_priority_over>
     <has_priority_over>fmt/353</has_priority_over>
     <signature>
       <name>DNG 1.3 (big-endian, BOF)</name>
@@ -28836,14 +28842,14 @@ This version, published June 2009, added various improvements, but the major cha
   </format>
   <format>
     <puid>fmt/440</puid>
-    <mime>application/vnd.openxmlformats-officedocument.presentationml.presentation</mime>
+    <mime>application/vnd.ms-project</mime>
     <name>Microsoft Project</name>
     <version>2007</version>
     <alias />
     <pronom_id>1227</pronom_id>
     <extension>mpp</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>Microsoft Project is a project management software program developed by Microsoft. The .mpp format produced by Microsoft Project 2007 is based upon Microsoft's OLE2 Compound Document Format.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -38103,7 +38109,7 @@ The creating software version number can be found at hex position 0x28-29, and t
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D2E4B2E</pronom_pattern>
-        <regex>(?s)\A.{1080,}M\.K\.</regex>
+        <regex>(?s)\A.{1080}M\.K\.</regex>
       </pattern>
     </signature>
     <details>
@@ -38134,7 +38140,7 @@ The creating software version number can be found at hex position 0x28-29, and t
       <pattern>
         <position>BOF</position>
         <pronom_pattern>2153637265616D211A</pronom_pattern>
-        <regex>(?s)\A.{20,}\!Scream\!\x1a</regex>
+        <regex>(?s)\A.{20}\!Scream\!\x1a</regex>
       </pattern>
     </signature>
     <details>
@@ -38165,7 +38171,7 @@ The creating software version number can be found at hex position 0x28-29, and t
       <pattern>
         <position>BOF</position>
         <pronom_pattern>1A100000{12}5343524D</pronom_pattern>
-        <regex>(?s)\A.{28,}\x1a\x10\x00\x00.{12}SCRM</regex>
+        <regex>(?s)\A.{28}\x1a\x10\x00\x00.{12}SCRM</regex>
       </pattern>
     </signature>
     <details>
@@ -38348,6 +38354,954 @@ Full specifications available at: http://www.opengeospatial.org/standards/kml</d
         <dcterms:created>18 Feb 2015</dcterms:created>
         <dcterms:modified>18 Feb 2015</dcterms:modified>
         <dc:description>This format can be identified via a container signature in DROID version 6 or later. The PRONOM database cannot currently represent container signatures.</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/725</puid>
+    <mime>application/vnd.ms-project</mime>
+    <name>Microsoft Project</name>
+    <version>2010</version>
+    <alias />
+    <pronom_id>1524</pronom_id>
+    <extension>mpp</extension>
+    <details>
+      <dc:description>Microsoft Project is a project management software program developed by Microsoft. The .mpp format produced by Microsoft Project 2010 is based upon Microsoft's OLE2 Compound Document Format.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description>This format can be identified via a container signature in DROID version 6 or later. The PRONOM database cannot currently represent container signatures.</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/726</puid>
+    <name>Virtual Disk Image</name>
+    <version />
+    <alias />
+    <pronom_id>1525</pronom_id>
+    <extension>vdi</extension>
+    <signature>
+      <name>Virtual Disk Image</name>
+      <note>64 byte offset: 7F 10 DA BE magic number (..&#218;&#190;)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>7F10DABE</pronom_pattern>
+        <regex>(?s)\A.{64}\x7f\x10\xda\xbe</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>VDI (Virtual Disk Image) is the native format used for storage by VirtualBox virtual machines.</dc:description>
+      <dcterms:available />
+      <dc:creator>Oracle</dc:creator>
+      <dcterms:publisher>Oracle</dcterms:publisher>
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/727</puid>
+    <name>Cartesian Perceptual Compression image format</name>
+    <version />
+    <alias />
+    <pronom_id>1526</pronom_id>
+    <extension>cpi</extension>
+    <extension>cpc</extension>
+    <signature>
+      <name>Cartesian Perceptual Compression</name>
+      <note>BOF: CPC&#178;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>435043B2</pronom_pattern>
+        <regex>(?s)\A.{0,0}CPC\xb2</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Cartesian Perceptual Compression is a proprietary image file format designed for high compression of black-and-white raster document imaging for archival scans.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/728</puid>
+    <name>RealLegal E-Transcript</name>
+    <version />
+    <alias />
+    <pronom_id>1527</pronom_id>
+    <extension>ptx</extension>
+    <signature>
+      <name>RealLegal E-Transcript</name>
+      <note>BOF: (offset 10) 0x000002
+VAR: .This transcript created and delivered by..&lt;COMPANY&gt;...Ph:</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>000002</pronom_pattern>
+        <regex>(?s)\A.{10}\x00\x00\x02</regex>
+      </pattern>
+      <pattern>
+        <position>VAR</position>
+        <pronom_pattern>0054686973207472616E736372697074206372656174656420616E642064656C6976657265642062790D0A3C434F4D50414E593E2E0D0A50683A</pronom_pattern>
+        <regex>(?s)\x00This transcript created and delivered by\r\n\x3cCOMPANY\x3e\.\r\nPh:</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/729</puid>
+    <mime>application/x-sqlite3</mime>
+    <name>SQLite Database File Format</name>
+    <version />
+    <alias />
+    <pronom_id>1528</pronom_id>
+    <extension>sqlite</extension>
+    <extension>db</extension>
+    <extension>db3</extension>
+    <extension>sqlite3</extension>
+    <signature>
+      <name>SQLite Database</name>
+      <note>BOF: SQLite format 3.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>53514C69746520666F726D6174203300</pronom_pattern>
+        <regex>(?s)\A.{0,0}SQLite format 3\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>SQLite is a relational database management system. SQLite does not define a formal file extension, but .sqlite, .db, and .db3 are commonly used.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Database</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>State Records New South Wales / State Records New South Wales</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/730</puid>
+    <mime>image/tiff</mime>
+    <name>Digital Negative Format (DNG)</name>
+    <version>1.4</version>
+    <alias />
+    <pronom_id>1529</pronom_id>
+    <extension>dng</extension>
+    <has_priority_over>x-fmt/387</has_priority_over>
+    <has_priority_over>x-fmt/388</has_priority_over>
+    <has_priority_over>x-fmt/399</has_priority_over>
+    <has_priority_over>fmt/154</has_priority_over>
+    <has_priority_over>fmt/202</has_priority_over>
+    <has_priority_over>fmt/353</has_priority_over>
+    <signature>
+      <name>DNG 1.4 (big-endian, BOF)</name>
+      <note>TIFF header plus DNGVersion tag near BOF</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D4D002A{0-4080}C61200010000000401040000</pronom_pattern>
+        <regex>(?s)\A.{0,0}MM\x00\*.{0,4080}\xc6\x12\x00\x01\x00\x00\x00\x04\x01\x04\x00\x00</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>DNG 1.4 (little-endian, BOF)</name>
+      <note>TIFF header plus DNGVersion tag near BOF</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>49492A00{0-4080}12C601000400000001040000</pronom_pattern>
+        <regex>(?s)\A.{0,0}II\*\x00.{0,4080}\x12\xc6\x01\x00\x04\x00\x00\x00\x01\x04\x00\x00</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>DNG 1.4 (little-endian, BOF+EOF)</name>
+      <note>TIFF header plus DNGVersion tag near EOF</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>49492A00</pronom_pattern>
+        <regex>(?s)\A.{0,0}II\*\x00</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <pronom_pattern>12C601000400000001040000</pronom_pattern>
+        <regex>(?s)\x12\xc6\x01\x00\x04\x00\x00\x00\x01\x04\x00\x00.{0,4084}\Z</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>DNG 1.4 (big-endian, BOF+EOF)</name>
+      <note>TIFF header plus DNGVersion tag near EOF</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D4D002A</pronom_pattern>
+        <regex>(?s)\A.{0,0}MM\x00\*</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <pronom_pattern>C61200010000000401040000</pronom_pattern>
+        <regex>(?s)\xc6\x12\x00\x01\x00\x00\x00\x04\x01\x04\x00\x00.{0,4084}\Z</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The Digital Negative (DNG) Specification describes a non-proprietary file format for storing camera raw files that can be used by a wide range of hardware and software vendors. DNG is an extension of the TIFF 6.0 format, and is compatible with the TIFF-EP standard. This version was published June 2012.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <is_subtype_of>1099</is_subtype_of>
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/731</puid>
+    <name>Bink Video format</name>
+    <version>1</version>
+    <alias />
+    <pronom_id>1530</pronom_id>
+    <extension>bik</extension>
+    <signature>
+      <name>Bink Video 1</name>
+      <note>BOF 3 byte magic, 1 byte codec revision: BIK(b|d|f|g|h|i)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>42494B(62|64|66|67|68|69)</pronom_pattern>
+        <regex>(?s)\A.{0,0}BIK(?:b|d|f|g|h|i)</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Bink is a proprietary video file format developed by RAD Game Tools.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Video</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/732</puid>
+    <name>Bink Video format</name>
+    <version>2</version>
+    <alias />
+    <pronom_id>1531</pronom_id>
+    <extension>bik2</extension>
+    <extension>bk2</extension>
+    <signature>
+      <name>Bink Video 2</name>
+      <note>BOF 3 byte magic, 1 byte codec revision: KB2(a|d|f|g|h|i)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4B4232(61|64|66|67|68|69)</pronom_pattern>
+        <regex>(?s)\A.{0,0}KB2(?:a|d|f|g|h|i)</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Bink is a proprietary video file format developed by RAD Game Tools.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Video</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/733</puid>
+    <name>FL Studio project file (FLP)</name>
+    <version />
+    <alias />
+    <pronom_id>1532</pronom_id>
+    <extension>flp</extension>
+    <signature>
+      <name>FL Studio FLP</name>
+      <note>BOF: FLhd</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>464C6864</pronom_pattern>
+        <regex>(?s)\A.{0,0}FLhd</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>FLP is the native project format for the FL Studio Digital Audio Workstation, developed by Image Line. It contains all data related to a project, but does not contain any wave samples.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Audio</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/734</puid>
+    <name>SuperScape Virtual Reality format</name>
+    <version />
+    <alias />
+    <pronom_id>1533</pronom_id>
+    <extension>svr</extension>
+    <signature>
+      <name>SuperScape VR</name>
+      <note>BOF: SVR.....&#236;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>5356520800000001EC</pronom_pattern>
+        <regex>(?s)\A.{0,0}SVR\x08\x00\x00\x00\x01\xec</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>SuperScape was a company that created virtual 3D modelling software. .svr was the native, proprietary format for the software, and it can be viewed with the SuperScape Viscape viewer browser plugin.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/735</puid>
+    <name>Dolby Digital AC-3</name>
+    <version />
+    <alias />
+    <pronom_id>1534</pronom_id>
+    <extension>ac3</extension>
+    <signature>
+      <name>Dolby Digital AC-3</name>
+      <note>The file consists of repeated frames of audio data. Each frame begins with the 0x0B77 syncword. The size of the frame is determined by the nominal bit rate and sample rate as per Table 5.18 of the Digital Audio Compression Standard specification http://www.atsc.org/cms/standards/a_52-2010.pdf</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>0B77</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x0bw</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>AC-3 (backronymed to Audio Codec 3 or Advanced Codec 3) is the common version of Dolby Laboratories' Dolby Digital audio compression technology.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Audio</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/736</puid>
+    <name>ClarisWorks</name>
+    <version>1 (generic)</version>
+    <alias />
+    <pronom_id>1535</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 1 Generic</name>
+      <note>(Version){3}BOBO</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>01{3}424F424F</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x01.{3}BOBO</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>ClarisWorks was a productivity suite developed by the Apple subsidiary, Claris, which was later renamed AppleWorks as of version 5. ClarisWorks included a drawing program, a word processor, a spreadsheet program, a database program, and a painting program. With further research it may be possible to distinguish between files produced by each program. Please contact PRONOM if you are able to provide samples of ClarisWorks files, versions 1-3.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Database, Image (Raster), Image (Vector), Spreadsheet, Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/737</puid>
+    <name>ClarisWorks</name>
+    <version>2-3 (generic)</version>
+    <alias />
+    <pronom_id>1536</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 2-3 Generic</name>
+      <note>(Version){3}BOBO</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>02{3}424F424F</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x02.{3}BOBO</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>ClarisWorks was a productivity suite developed by the Apple subsidiary, Claris, which was later renamed AppleWorks as of version 5. ClarisWorks included a drawing program, a word processor, a spreadsheet program, a database program, and a painting program. With further research it may be possible to distinguish between files produced by each program. Please contact PRONOM if you are able to provide samples of ClarisWorks files, versions 1-3.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Database, Image (Raster), Image (Vector), Spreadsheet, Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/738</puid>
+    <name>ClarisWorks Drawing</name>
+    <version>4</version>
+    <alias />
+    <pronom_id>1537</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 4 Drawing</name>
+      <note>(Version){3}BOBO{248}(format type 0x00 = drawing)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>04{3}424F424F{248}00</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x04.{3}BOBO.{248}\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>ClarisWorks was a productivity suite developed by the Apple subsidiary, Claris, which was later renamed AppleWorks as of version 5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/739</puid>
+    <name>ClarisWorks Word Processor</name>
+    <version>4</version>
+    <alias />
+    <pronom_id>1538</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 4 Word Processor</name>
+      <note>(Version){3}BOBO{248}(format type 0x01 = word processor document)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>04{3}424F424F{248}01</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x04.{3}BOBO.{248}\x01</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>ClarisWorks was a productivity suite developed by the Apple subsidiary, Claris, which was later renamed AppleWorks as of version 5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/740</puid>
+    <name>ClarisWorks Spreadsheet</name>
+    <version>4</version>
+    <alias />
+    <pronom_id>1539</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 4 Spreadsheet</name>
+      <note>(Version){3}BOBO{248}(format type 0x02 = spreadsheet)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>04{3}424F424F{248}02</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x04.{3}BOBO.{248}\x02</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>ClarisWorks was a productivity suite developed by the Apple subsidiary, Claris, which was later renamed AppleWorks as of version 5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Spreadsheet</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/741</puid>
+    <name>ClarisWorks Database</name>
+    <version>4</version>
+    <alias />
+    <pronom_id>1540</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 4 Database</name>
+      <note>(Version){3}BOBO{248}(format type 0x03 = database)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>04{3}424F424F{248}03</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x04.{3}BOBO.{248}\x03</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>ClarisWorks was a productivity suite developed by the Apple subsidiary, Claris, which was later renamed AppleWorks as of version 5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Database</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/742</puid>
+    <name>ClarisWorks Painting</name>
+    <version>4</version>
+    <alias />
+    <pronom_id>1541</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 4 Painting</name>
+      <note>(Version){3}BOBO{248}(format type 0x04 = painting)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>04{3}424F424F{248}04</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x04.{3}BOBO.{248}\x04</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>ClarisWorks was a productivity suite developed by the Apple subsidiary, Claris, which was later renamed AppleWorks as of version 5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/743</puid>
+    <name>ClarisWorks/AppleWorks Drawing</name>
+    <version>5</version>
+    <alias />
+    <pronom_id>1542</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 5 Drawing</name>
+      <note>(Version){3}BOBO{260}(format type 0x00 = drawing)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>05{3}424F424F{260}00</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x05.{3}BOBO.{260}\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>ClarisWorks was a productivity suite developed by the Apple subsidiary, Claris, which was later renamed AppleWorks as of version 5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/744</puid>
+    <name>ClarisWorks/AppleWorks Word Processor</name>
+    <version>5</version>
+    <alias />
+    <pronom_id>1543</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 5 Word Processor</name>
+      <note>(Version){3}BOBO{260}(format type 0x01 = word processor document)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>05{3}424F424F{260}01</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x05.{3}BOBO.{260}\x01</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>ClarisWorks was a productivity suite developed by the Apple subsidiary, Claris, which was later renamed AppleWorks as of version 5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/745</puid>
+    <name>ClarisWorks/AppleWorks Spreadsheet</name>
+    <version>5</version>
+    <alias />
+    <pronom_id>1544</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 5 Spreadsheet</name>
+      <note>(Version){3}BOBO{260}(format type 0x02 = spreadsheet)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>05{3}424F424F{260}02</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x05.{3}BOBO.{260}\x02</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>ClarisWorks was a productivity suite developed by the Apple subsidiary, Claris, which was later renamed AppleWorks as of version 5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Spreadsheet</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/746</puid>
+    <name>ClarisWorks/AppleWorks Database</name>
+    <version>5</version>
+    <alias />
+    <pronom_id>1545</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 5 Database</name>
+      <note>(Version){3}BOBO{260}(format type 0x03 = database)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>05{3}424F424F{260}03</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x05.{3}BOBO.{260}\x03</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>ClarisWorks was a productivity suite developed by the Apple subsidiary, Claris, which was later renamed AppleWorks as of version 5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Database</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/747</puid>
+    <name>ClarisWorks/AppleWorks Painting</name>
+    <version>5</version>
+    <alias />
+    <pronom_id>1546</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 5 Painting</name>
+      <note>(Version){3}BOBO{260}(format type 0x04 = painting)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>05{3}424F424F{260}04</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x05.{3}BOBO.{260}\x04</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>ClarisWorks was a productivity suite developed by the Apple subsidiary, Claris, which was later renamed AppleWorks as of version 5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/748</puid>
+    <name>AppleWorks Drawing</name>
+    <version>6</version>
+    <alias />
+    <pronom_id>1547</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 6 Drawing</name>
+      <note>(Version){3}BOBO{270}(format type 0x00 = drawing)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>06{3}424F424F{270}00</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x06.{3}BOBO.{270}\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>AppleWorks was a productivity suite developed by the Apple subsidiary, Claris, that was originally called ClarisWorks and was renamed AppleWorks as of version 5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/749</puid>
+    <name>AppleWorks Word Processor</name>
+    <version>6</version>
+    <alias />
+    <pronom_id>1548</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 6 Word Processor</name>
+      <note>(Version){3}BOBO{270}(format type 0x01 = word processor document)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>06{3}424F424F{270}01</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x06.{3}BOBO.{270}\x01</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>AppleWorks was a productivity suite developed by the Apple subsidiary, Claris, that was originally called ClarisWorks and was renamed AppleWorks as of version 5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/750</puid>
+    <name>AppleWorks Spreadsheet</name>
+    <version>6</version>
+    <alias />
+    <pronom_id>1549</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 6 Spreadsheet</name>
+      <note>(Version){3}BOBO{270}(format type 0x02 = spreadsheet)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>06{3}424F424F{270}02</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x06.{3}BOBO.{270}\x02</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>AppleWorks was a productivity suite developed by the Apple subsidiary, Claris, that was originally called ClarisWorks and was renamed AppleWorks as of version 5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Spreadsheet</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/751</puid>
+    <name>AppleWorks Database</name>
+    <version>6</version>
+    <alias />
+    <pronom_id>1550</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 6 Database</name>
+      <note>(Version){3}BOBO{270}(format type 0x03 = database)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>06{3}424F424F{270}03</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x06.{3}BOBO.{270}\x03</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>AppleWorks was a productivity suite developed by the Apple subsidiary, Claris, that was originally called ClarisWorks and was renamed AppleWorks as of version 5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Database</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/752</puid>
+    <name>AppleWorks Painting</name>
+    <version>6</version>
+    <alias />
+    <pronom_id>1551</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 6 Painting</name>
+      <note>(Version){3}BOBO{270}(format type 0x04 = painting)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>06{3}424F424F{270}04</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x06.{3}BOBO.{270}\x04</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>AppleWorks was a productivity suite developed by the Apple subsidiary, Claris, that was originally called ClarisWorks and was renamed AppleWorks as of version 5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/753</puid>
+    <name>AppleWorks Presentation</name>
+    <version>6</version>
+    <alias />
+    <pronom_id>1552</pronom_id>
+    <extension>cwk</extension>
+    <signature>
+      <name>CWK 6 Presentation</name>
+      <note>(Version){3}BOBO{270}(format type 0x05 = presentation)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>06{3}424F424F{270}05</pronom_pattern>
+        <regex>(?s)\A.{0,0}\x06.{3}BOBO.{270}\x05</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>AppleWorks was a productivity suite developed by the Apple subsidiary, Claris, that was originally called ClarisWorks and was renamed AppleWorks as of version 5.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Mar 2015</dcterms:created>
+        <dcterms:modified>27 Mar 2015</dcterms:modified>
+        <dc:description />
       </record_metadata>
     </details>
   </format>
