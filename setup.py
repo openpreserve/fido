@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import codecs
 import os
 import re
@@ -38,12 +41,16 @@ tests_require = [
 
 
 setup(
-    name='fido',
+    name='opf-fido',
     version=find_version('fido', '__init__.py'),
+    description='Format Identification for Digital Objects (FIDO).',
+    long_description='A command-line tool to identify the file formats of digital objects. FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions.',
+    author='Adam Farquhar (BL), 2010',
+    url='http://openpreservation.org/technology/products/fido/',
+    license='Apache License 2.0',
     install_requires=install_requires,
     setup_requires=setup_requires,
     tests_require=tests_require,
-    description='Format Identification for Digital Objects (FIDO)',
     packages=['fido'],
     package_data={'fido': ['*.*', 'conf/*.*']},
     entry_points={'console_scripts': [
@@ -51,5 +58,12 @@ setup(
         'fido-prepare = fido.prepare:main',
         'fido-update-signatures = fido.update_signatures:main',
         'fido-toxml = fido.toxml:main',
-    ]}
+    ]},
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: Console',
+        'License :: OSI Approved :: Apache Software License',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+    ]
 )
