@@ -372,7 +372,7 @@ class Fido:
             self.current_filesize = size
             if self.current_filesize == 0:
                 sys.stderr.write("FIDO: Zero byte file (empty): Path is: {0}\n".format(filename))
-            bofbuffer, eofbuffer = self.get_buffers(f, size, seekable=True)
+            bofbuffer, eofbuffer, _ = self.get_buffers(f, size, seekable=True)
             matches = self.match_formats(bofbuffer, eofbuffer)
             container_type = self.container_type(matches)
             if container_type in ("zip", "ole"):
@@ -444,7 +444,7 @@ class Fido:
             # Consume exactly content-length bytes
             self.current_file = 'STDIN!(at ' + str(offset) + ' bytes)'
             self.current_filesize = content_length
-            bofbuffer, eofbuffer = self.get_buffers(stream, content_length)
+            bofbuffer, eofbuffer, _ = self.get_buffers(stream, content_length)
             matches = self.match_formats(bofbuffer, eofbuffer)
             # MdR: this needs attention
             if len(matches) > 0:
@@ -563,7 +563,7 @@ class Fido:
                 self.blocking_read(stream, r)
                 # and read the remaining bufsize bytes into the eofbuffer
                 eofbuffer = self.blocking_read(stream, self.bufsize)
-            return bofbuffer, eofbuffer
+            return bofbuffer, eofbuffer, bytes_to_read
 
     def walk_zip(self, filename, fileobj=None):
         """
@@ -584,7 +584,7 @@ class Fido:
                         self.current_filesize = item.file_size
                         if self.current_filesize == 0:
                             sys.stderr.write("FIDO: Zero byte file (empty): Path is: {0}\n".format(item_name))
-                        bofbuffer, eofbuffer = self.get_buffers(f, item.file_size)
+                        bofbuffer, eofbuffer, _ = self.get_buffers(f, item.file_size)
                     matches = self.match_formats(bofbuffer, eofbuffer)
                     if len(matches) > 0 and self.current_filesize > 0:
                         self.handle_matches(item_name, matches, time.clock() - t0, "signature")
@@ -619,7 +619,7 @@ class Fido:
                         tar_item_name = filename + '!' + item.name
                         self.current_file = tar_item_name
                         self.current_filesize = item.size
-                        bofbuffer, eofbuffer = self.get_buffers(f, item.size)
+                        bofbuffer, eofbuffer, _ = self.get_buffers(f, item.size)
                         matches = self.match_formats(bofbuffer, eofbuffer)
                         self.handle_matches(tar_item_name, matches, time.clock() - t0)
                         if self.container_type(matches):
