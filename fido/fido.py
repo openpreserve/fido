@@ -395,9 +395,11 @@ class Fido:
             elif len(matches) == 0 or self.current_filesize == 0:
                 matches = self.match_extensions(filename)
                 self.handle_matches(filename, matches, time.clock() - t0, "extension")
+            # only recurse into certain containers, like ZIP or TAR
+            container = self.container_type(matches)
             # till here matey!
-            if self.zip:
-                self.identify_contents(filename, type=self.container_type(matches))
+            if self.zip and self.can_recurse_into_container(container):
+                self.identify_contents(filename, type=container)
         except IOError:
             # print >> sys.stderr, "FIDO: Error in identify_file: Path is {0}".format(filename)
             sys.stderr.write("FIDO: Error in identify_file: Path is {0}\n".format(filename))
@@ -504,6 +506,18 @@ class Fido:
             if puid is not None and puid.text == 'fmt/111':
                 return 'ole'
         return False
+
+    def can_recurse_into_container(self, container_type):
+        """
+        Determine if the passed container type can:
+        a) be extracted, and
+        b) contain individual files which can be identified separately.
+
+        This function is useful for filtering out containers such as OLE,
+        which are usually most interesting as compound objects rather than
+        for their contents.
+        """
+        return container_type in ('zip', 'tar')
 
     def blocking_read(self, file, bytes_to_read):
         bytes_read = 0
