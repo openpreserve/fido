@@ -525,10 +525,10 @@ class Fido:
         If length is None, return the length as found.
         If seekable is False, the steam does not support a seek operation.
         """
-        bytes_to_read = self.bufsize if not length else min(length, self.bufsize)
+        bytes_to_read = self.bufsize if length is None else min(length, self.bufsize)
         bofbuffer = self.blocking_read(stream, bytes_to_read)
         bytes_read = len(bofbuffer)
-        if not length:
+        if length is None:
             # A stream with unknown length; have to keep two buffers around
             prevbuffer = bofbuffer
             while True:
