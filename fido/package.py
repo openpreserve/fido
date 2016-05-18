@@ -77,7 +77,7 @@ class ZipPackage(Package):
         """Detect available formats inside the ZIP container."""
         try:
             zip_ = zipfile.ZipFile(self.zip)
-        except zipfile.BadZipfile:
+        except (zipfile.BadZipfile, RuntimeError):
             return []
 
         results = []

@@ -13,3 +13,9 @@ def test_bad_zip():
     p = ZipPackage(os.path.join(FIXTURES_DIR, 'bad.zip'), {})
     r = p.detect_formats()
     assert isinstance(r, list) and len(r) == 0
+
+
+def test_worse_zip():
+    p = ZipPackage(os.path.join(FIXTURES_DIR, 'worse.zip'), {})
+    r = p.detect_formats()
+    assert isinstance(r, list) and len(r) == 0
