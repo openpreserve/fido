@@ -1,0 +1,16 @@
+{% include header.html %}
+<body role="document">
+{% include navbar.html nav=site.data.docnav %}
+<section class="main-content">
+    <div class="container">
+      <div class="row">
+        <div id="content" class="main-content-inner col-sm-12">
+          <article>
+{{ content }}
+          </article><!-- #post-## -->
+        </div><!-- close .*-inner (main-content or sidebar, depending if sidebar is used) -->
+    </div><!-- close .row -->
+  </div><!-- close .container -->
+</section><!-- close .main-content -->
+{% include footer.html %}
+</body>
