@@ -2,9 +2,6 @@
 layout: page
 title: FIDO Home
 ---
-FIDO Home
-=========
-
 Usage
 -----
     fido.py [-h] [-v] [-q] [-recurse] [-zip] [-nocontainer] [-pronom_only]
