@@ -114,7 +114,8 @@ class Fido:
         Parse the PRONOM container sequences and convert to regular
         expressions.
         """
-        seq = '(?s)'
+        # The sequence is regex matching bytes from a file so the sequence must also be bytes
+        seq = b'(?s)'
         inq = False
         byt = False
         rng = False
@@ -127,41 +128,41 @@ class Fido:
                 if sig[i] == " ":
                     continue
                 if sig[i] == "[":
-                    seq += "("
+                    seq += b"("
                     rng = True
                     continue
                 if not byt:
-                    seq += "\\x" + sig[i].lower()
+                    seq += b"\\x" + sig[i].lower().encode('utf8')
                     byt = True
                     continue
                 if byt:
-                    seq += sig[i].lower()
+                    seq += sig[i].lower().encode('utf8')
                     byt = False
                     continue
             if inq:
                 if sig[i] == "'" and not rng:
                     inq = False
                     continue
-                seq += self.escape(sig[i])
+                seq += self.escape(sig[i]).encode('utf8')
                 continue
             if rng:
                 if sig[i] == "]":
-                    seq += ")"
+                    seq += b")"
                     rng = False
                     continue
                 if sig[i] != "-" and sig[i] != "'" and ror:
-                    seq += self.escape(sig[i])
+                    seq += self.escape(sig[i]).encode('utf8')
                     continue
                 if sig[i] != "-" and sig[i] != "'" and sig[i] != " " and sig[i] != ":" and not ror and not byt:
-                    seq += "\\x" + sig[i].lower()
+                    seq += b"\\x" + sig[i].lower().encode('utf8')
                     byt = True
                     continue
                 if sig[i] != "-" and sig[i] != "'" and sig[i] != " " and not ror and byt:
-                    seq += sig[i].lower()
+                    seq += sig[i].lower().encode('utf8')
                     byt = False
                     continue
                 if sig[i] == "-" or sig[i] == " ":
-                    seq += "|"
+                    seq += b"|"
                     continue
                 if sig[i] == "'" and not ror:
                     ror = True
@@ -285,7 +286,8 @@ class Fido:
         return pat.find('position').text
 
     def get_regex(self, pat):
-        return pat.find('regex').text
+        # The regex is matching bytes from a file so regex must also be bytes
+        return pat.find('regex').text.encode('utf8')
 
     def get_extension(self, format):
         return format.find('extension').text
@@ -521,7 +523,7 @@ class Fido:
 
     def blocking_read(self, file, bytes_to_read):
         bytes_read = 0
-        buffer = ''
+        buffer = b''
         while bytes_read < bytes_to_read:
             readbuffer = file.read(bytes_to_read - bytes_read)
             buffer += readbuffer
