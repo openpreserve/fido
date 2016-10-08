@@ -11,3 +11,5 @@
 /exp
 /.settings
 /.externalToolBuilders
+
+!*.zip
