@@ -18,12 +18,6 @@ from six.moves.urllib.request import urlopen
 from .pronomutils import get_local_pronom_versions
 
 
-# MdR: 'reload(sys)' and 'setdefaultencoding("utf-8")' needed to fix utf-8 encoding errors
-# when converting from PRONOM to FIDO format
-reload(sys)
-sys.setdefaultencoding("utf-8")
-
-
 class NS:
     """
     Helper class for XML name spaces in ElementTree.
