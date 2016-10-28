@@ -57,17 +57,21 @@ Installation
 Any platform
 1. Download the latest zip release from https://github.com/openpreserve/fido/releases
 2. Unzip into some directory
-3. Open a command shell, cd to the directory that you placed the zip contents into and cd into folder 'fido'
-4. You should now be able to see the help text:
-   python fido.py -h
-5. Before identifying files with FIDO for the first time, please update signatures first
-   using the 'update_signatures.py' script (see below for instructions).
+3. Open a command shell, cd to the directory that you placed the zip contents into
+4. Run `python setup.py install` to install FIDO and dependencies.  This may require sudo on Linux/OSX or admin privileges on Windows.
+5. You should now be able to see the help text:
+   fido -h
+
+Using pip
+1. Run `pip install opf-fido`  This may require sudo on Linux/OSX or admin privileges on Windows.
+2. You should now be able to see the help text:
+   fido -h
 
 Updating signatures
 -------------------
 
 To update FIDO with the latest PRONOM file format definitions, run:
-   python update_signatures.py
+   fido-update-signatures
 This is an interactive CLI script which downloads the latest PRONOM signature file and signatures. Please note that it can take a while to download all PUID signatures.
 
 If you are having trouble running the script due to firewall restrictions, see OPF wiki: http://wiki.opf-labs.org/display/PT/Command+Line+Interface+proxy+usage
@@ -80,7 +84,11 @@ for the PRONOM container signature file it will show up in a next commit.
 Dependencies
 ------------
 
-FIDO 1.0 and later will run on Python 2.7 with no other dependencies.
+FIDO 1.0 through 1.3.3 will run on Python 2.7 with no other dependencies.
+
+FIDO 1.3.4 and later requires the python dependency 'olefile'.  This can be
+installed using `pip install olefile`, by running `python setup.py install`,
+or a pip installation will handle dependencies.
 
 Format Definitions
 ------------------
