@@ -9,7 +9,7 @@ usage: fido.py [-h] [-v] [-q] [-recurse] [-zip] [-nocontainer] [-pronom_only]
     Format Identification for Digital Objects (fido).
     FIDO is a command-line tool to identify the file formats of digital objects.
     It is designed for simple integration into automated work-flows.
-    
+
 
 positional arguments:
   FILE                  files to check. If the file is -, then read content from stdin. In this case, python must be invoked with -u or it may convert the line terminators.
@@ -58,9 +58,9 @@ Any platform
 1. Download the latest zip release from https://github.com/openpreserve/fido/releases
 2. Unzip into some directory
 3. Open a command shell, cd to the directory that you placed the zip contents into and cd into folder 'fido'
-4. You should now be able to see the help text: 
+4. You should now be able to see the help text:
    python fido.py -h
-5. Before identifying files with FIDO for the first time, please update signatures first 
+5. Before identifying files with FIDO for the first time, please update signatures first
    using the 'update_signatures.py' script (see below for instructions).
 
 Updating signatures
@@ -73,8 +73,8 @@ This is an interactive CLI script which downloads the latest PRONOM signature fi
 If you are having trouble running the script due to firewall restrictions, see OPF wiki: http://wiki.opf-labs.org/display/PT/Command+Line+Interface+proxy+usage
 
 Please note that this WILL NOT update the container signature file located in the 'conf' folder.
-The reason for this that the PRONOM container signature file contains special types 
-of sequences which need to be tested before FIDO can use them. If there is an update available 
+The reason for this that the PRONOM container signature file contains special types
+of sequences which need to be tested before FIDO can use them. If there is an update available
 for the PRONOM container signature file it will show up in a next commit.
 
 Dependencies
@@ -87,7 +87,7 @@ Format Definitions
 
 By default, FIDO loads format information from two files conf/formats.xml
 and conf/format_extensions.xml. Addition format files can be specified using
-the -loadformats command line argument.  They should use the same syntax as 
+the -loadformats command line argument.  They should use the same syntax as
 conf/format_extensions.xml. If more than one format file needs to be specified,
 then they should be comma separated as with the -formats argument.
 
@@ -103,13 +103,13 @@ printmatch: info.version (file format version X), info.alias (format also called
 printnomatch: info.count (file N)
 
 The defaults for FIDO 1.0 are:
-  printmatch: 
+  printmatch:
     "OK,%(info.time)s,%(info.puid)s,%(info.formatname)s,%(info.signaturename)s,%(info.filesize)s,\"%(info.filename)s\",\"%(info.mimetype)s\",\"%(info.matchtype)s\"\n"
 
   printnomatch:
     "KO,%(info.time)s,,,,%(info.filesize)s,\"%(info.filename)s\",,\"%(info.matchtype)s\"\n"
 
-It can be useful to provide an empty string for either, for example to ignore all failed matches, or all successful ones (see examples below). 
+It can be useful to provide an empty string for either, for example to ignore all failed matches, or all successful ones (see examples below).
 Note that a newline needs to be added to the end of the string using \n.
 
 Matchtypes
@@ -162,8 +162,8 @@ When identifying big files, this behaviour can cause FIDO to slow down sigifican
 You can disable deep scanning by invoking FIDO with the '-nocontainer' argument.
 While disabling deep scan speeds up identification, it may reduce accuracy.
 
-At the moment (version 1.0) FIDO is not yet able to perform scanning containers which are 
-passed through STDIN. A workaround would be to save the stream to a temporary file and have 
+At the moment (version 1.0) FIDO is not yet able to perform scanning containers which are
+passed through STDIN. A workaround would be to save the stream to a temporary file and have
 FIDO identify this file.
 
 License information
