@@ -371,7 +371,10 @@ class Fido:
             size = os.stat(filename)[6]
             self.current_filesize = size
             if self.current_filesize == 0:
-                sys.stderr.write("FIDO: Zero byte file (empty): Path is: {0}\n".format(filename))
+                try:
+                    sys.stderr.write("FIDO: Zero byte file (empty): Path is {0}\n".format(filename))
+                except UnicodeEncodeError:
+                    sys.stderr.write(u"FIDO: Zero byte file (empty): Path is {0}\n".format(filename))
             bofbuffer, eofbuffer, _ = self.get_buffers(f, size, seekable=True)
             matches = self.match_formats(bofbuffer, eofbuffer)
             container_type = self.container_type(matches)
@@ -597,7 +600,10 @@ class Fido:
                         self.current_file = item_name
                         self.current_filesize = item.file_size
                         if self.current_filesize == 0:
-                            sys.stderr.write("FIDO: Zero byte file (empty): Path is: {0}\n".format(item_name))
+                            try:
+                                sys.stderr.write("FIDO: Zero byte file (empty): Path is {0}\n".format(item_name))
+                            except UnicodeEncodeError:
+                                sys.stderr.write(u"FIDO: Zero byte file (empty): Path is {0}\n".format(item_name))
                         bofbuffer, eofbuffer, _ = self.get_buffers(f, item.file_size)
                     matches = self.match_formats(bofbuffer, eofbuffer)
                     if len(matches) > 0 and self.current_filesize > 0:
