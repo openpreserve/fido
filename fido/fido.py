@@ -324,13 +324,13 @@ class Fido:
             obj.formatname = f.find('name').text
             obj.signaturename = sig_name
             mime = f.find('mime')
-            obj.mimetype = mime.text if mime else None
+            obj.mimetype = mime.text if mime is not None else None
             version = f.find('version')
-            obj.version = version.text if version else None
+            obj.version = version.text if version is not None else None
             alias = f.find('alias')
-            obj.alias = alias.text if alias else None
+            obj.alias = alias.text if alias is not None else None
             apple_uti = f.find('apple_uid')
-            obj.apple_uti = apple_uti.text if apple_uti else None
+            obj.apple_uti = apple_uti.text if apple_uti is not None else None
             sys.stdout.write(self.printmatch % {
                 "info.time": obj.time,
                 "info.puid": obj.puid,
