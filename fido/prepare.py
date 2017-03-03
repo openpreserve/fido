@@ -133,7 +133,7 @@ class FormatInfo:
                     # Work is done here!
                     # if item.filename != 'github/fido/fido/conf/pronom-xml/puid.fmt.11.xml':
                     format_ = self.parse_pronom_xml(stream, puid_filter)
-                    if len(format_):
+                    if format_ is not None:
                         formats.append(format_)
                 finally:
                     stream.close()
@@ -144,15 +144,16 @@ class FormatInfo:
                 print("An error occured loading '{0}' (exception: {1})".format(self.pronom_files, e), file=sys.stderr)
                 sys.exit()
         # Replace the formatID with puids in has_priority_over
-        id_map = {}
-        for element in formats:
-            puid = element.find('puid').text
-            # print "working on puid:",puid
-            pronom_id = element.find('pronom_id').text
-            id_map[pronom_id] = puid
-        for element in formats:
-            for rel in element.findall('has_priority_over'):
-                rel.text = id_map[rel.text]
+        if puid_filter is None:
+            id_map = {}
+            for element in formats:
+                puid = element.find('puid').text
+                # print "working on puid:",puid
+                pronom_id = element.find('pronom_id').text
+                id_map[pronom_id] = puid
+            for element in formats:
+                for rel in element.findall('has_priority_over'):
+                    rel.text = id_map[rel.text]
 
         self._sort_formats(formats)
         self.formats = formats
@@ -378,11 +379,11 @@ def calculate_repetition(char, pos, offset, maxoffset):
     offsetremain = 0
     maxoffsetremain = 0
 
-    if offset and int(offset) > 65535:
+    if offset is not None and int(offset) > 65535:
         offsetremain = str(int(offset) - 65535)
         offset = '65535'
         calcremain = True
-    if maxoffset and int(maxoffset) > 65535:
+    if maxoffset is not None and int(maxoffset) > 65535:
         maxoffsetremain = str(int(maxoffset) - 65535)
         maxoffset = '65535'
         calcremain = True
@@ -390,21 +391,21 @@ def calculate_repetition(char, pos, offset, maxoffset):
     if pos == "BOF" or pos == "EOF":
         if offset != '0':
             calcbuf.write(char + '{' + str(offset))
-            if maxoffset:
+            if maxoffset is not None:
                 calcbuf.write(',' + maxoffset)
             calcbuf.write('}')
-        elif maxoffset:
+        elif maxoffset is not None:
             calcbuf.write(char + '{0,' + maxoffset + '}')
 
     if pos == "IFB":
         if offset != '0':
             calcbuf.write(char + '{' + str(offset))
-            if maxoffset:
+            if maxoffset is not None:
                 calcbuf.write(',' + maxoffset)
             calcbuf.write('}')
-            if maxoffset:
+            if maxoffset is not None:
                 calcbuf.write(',}')
-        elif maxoffset:
+        elif maxoffset is not None:
             calcbuf.write(char + '{0,' + maxoffset + '}')
 
     if calcremain:  # recursion happens here
@@ -431,6 +432,8 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
     if len(offset) == 0:
         offset = '0'
     if len(maxoffset) == 0:
+        maxoffset = None
+    if maxoffset == '0':
         maxoffset = None
     # make buf global so we can print it @'_convert_err_msg' while debugging (MdR)
     global buf
