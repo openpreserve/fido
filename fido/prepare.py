@@ -14,6 +14,7 @@ import zipfile
 
 from six.moves import cStringIO
 from six.moves.urllib.request import urlopen
+from six.moves.urllib.parse import urlparse
 
 from .pronomutils import get_local_pronom_versions
 
@@ -272,7 +273,11 @@ class FormatInfo:
             for id in x.findall(TNA('ReferenceFileIdentifier')):
                 type = get_text_tna(id, 'IdentifierType')
                 if type == 'URL':
-                    url = "http://" + get_text_tna(id, 'Identifier')
+                    # Starting with PRONOM 89, some URLs contain http://
+                    # and others do not.
+                    url = get_text_tna(id, 'Identifier')
+                    if not urlparse(url).scheme:
+                        url = "http://" + url
                     ET.SubElement(rf, 'dc:identifier').text = url
                     # And calculate the checksum of this resource:
                     m = hashlib.md5()
