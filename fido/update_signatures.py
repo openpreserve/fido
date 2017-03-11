@@ -26,7 +26,7 @@ import zipfile
 from six.moves.urllib.request import urlopen
 
 from . import __version__, CONFIG_DIR, query_yes_no
-from .prepare import main as prepare_pronom_to_fido
+from .prepare import run as prepare_pronom_to_fido
 from .pronomutils import check_well_formedness, get_local_pronom_versions, get_pronom_signature
 
 

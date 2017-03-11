@@ -612,23 +612,33 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
     return val
 
 
-def main(args=None):
+def run(input=None, output=None, puid=None):
     """Convert PRONOM formats into FIDO signatures."""
+    versions = get_local_pronom_versions()
+
+    if input is None:
+        input = versions.get_zip_file()
+    if output is None:
+        output = versions.get_signature_file()
+
+    info = FormatInfo(input)
+    info.load_pronom_xml(puid)
+    info.save(output)
+    print('Converted {0} PRONOM formats to FIDO signatures'.format(len(info.formats)), file=sys.stderr)
+
+
+def main(args=None):
+    """Main CLI entrypoint."""
     if args is None:
         args = sys.argv[1:]
 
-    versions = get_local_pronom_versions()
-
     parser = ArgumentParser(description='Produce the FIDO format XML that is loaded at run-time')
-    parser.add_argument('-input', default=versions.get_zip_file(), help='Input file, a Zip containing PRONOM XML files')
-    parser.add_argument('-output', default=versions.get_signature_file(), help='Ouptut file')
+    parser.add_argument('-input', default=None, help='Input file, a Zip containing PRONOM XML files')
+    parser.add_argument('-output', default=None, help='Ouptut file')
     parser.add_argument('-puid', default=None, help='A particular PUID record to extract')
     args = parser.parse_args(args)
 
-    info = FormatInfo(args.input)
-    info.load_pronom_xml(args.puid)
-    info.save(args.output)
-    print('Converted {0} PRONOM formats to FIDO signatures'.format(len(info.formats)), file=sys.stderr)
+    run(input=args.input, output=args.output, puid=args.puid)
 
 
 if __name__ == '__main__':
