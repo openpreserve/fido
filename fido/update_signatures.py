@@ -15,6 +15,7 @@ PRONOM is available from http://www.nationalarchives.gov.uk/pronom/.
 
 from __future__ import print_function
 
+from argparse import ArgumentParser
 import os
 from shutil import rmtree
 import sys
@@ -30,17 +31,20 @@ from .pronomutils import check_well_formedness, get_local_pronom_versions, get_p
 
 
 defaults = {
-    'tmp_dir': os.path.join(CONFIG_DIR, 'tmp'),
     'signatureFileName': 'DROID_SignatureFile-v{0}.xml',
     'pronomZipFileName': 'pronom-xml-v{0}.zip',
     'fidoSignatureVersion': 'format_extensions.xml',
-    'http_throttle': 0.5,  # in secs, to prevent DoS of PRONOM server
     'containerVersion': 'container-signature-20160121.xml',  # container version is frozen and needs human attention before updating,
+}
+
+options = {
+    'http_throttle': 0.5,  # in secs, to prevent DoS of PRONOM server
+    'tmp_dir': os.path.join(CONFIG_DIR, 'tmp'),
     'deleteTempDirectory': True,
 }
 
 
-def main(defaults=defaults):
+def run(defaults=defaults):
     """
     Update PRONOM signatures.
 
@@ -162,5 +166,18 @@ def main(defaults=defaults):
         sys.exit('Aborting update...')
 
 
+def main():
+    """Main CLI entrypoint."""
+    parser = ArgumentParser(description='Download and convert the latest PRONOM signatures')
+    parser.add_argument('-tmpdir', default=options['tmp_dir'], help='Location to store temporary files', dest='tmp_dir')
+    parser.add_argument('-keep_tmp', default=options['deleteTempDirectory'], help='Do not delete temporary files after completion', dest='deleteTempDirectory', action='store_false')
+    parser.add_argument('-http_throttle', default=options['http_throttle'], help='Time (in seconds) to wait between downloads', type=float, dest='http_throttle')
+    args = parser.parse_args()
+    opts = defaults.copy()
+    opts.update(vars(args))
+
+    run(opts)
+
+
 if __name__ == '__main__':
-    main(defaults)
+    main()
