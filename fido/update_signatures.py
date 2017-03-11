@@ -35,7 +35,8 @@ defaults = {
     'pronomZipFileName': 'pronom-xml-v{0}.zip',
     'fidoSignatureVersion': 'format_extensions.xml',
     'http_throttle': 0.5,  # in secs, to prevent DoS of PRONOM server
-    'containerVersion': 'container-signature-20160121.xml',  # container version is frozen and needs human attention before updating
+    'containerVersion': 'container-signature-20160121.xml',  # container version is frozen and needs human attention before updating,
+    'deleteTempDirectory': True,
 }
 
 
@@ -135,11 +136,13 @@ def main(defaults=defaults):
             filename = os.path.join(tmpdir, puidFileName)
             if os.path.isfile(filename):
                 zf.write(filename, arcname=puidFileName, compress_type=compression)
-                os.unlink(filename)
+                if defaults['deleteTempDirectory']:
+                    os.unlink(filename)
         zf.close()
 
-        print("Deleting temporary folder and files...")
-        rmtree(tmpdir, ignore_errors=True)
+        if defaults['deleteTempDirectory']:
+            print("Deleting temporary folder and files...")
+            rmtree(tmpdir, ignore_errors=True)
 
         print('Updating versions.xml...')
         versions = get_local_pronom_versions()
