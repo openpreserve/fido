@@ -209,7 +209,7 @@ class FormatInfo:
             fido_sig = ET.SubElement(fido_format, 'signature')
             ET.SubElement(fido_sig, 'name').text = get_text_tna(pronom_sig, 'SignatureName')
             # There are some funny chars in the notes, which caused me trouble and it is a unicode string,
-            ET.SubElement(fido_sig, 'note').text = get_text_tna(pronom_sig, 'SignatureNote').encode('UTF-8')
+            ET.SubElement(fido_sig, 'note').text = get_text_tna(pronom_sig, 'SignatureNote')
             for pronom_pat in pronom_sig.findall(TNA('ByteSequence')):
                 fido_pat = ET.SubElement(fido_sig, 'pattern')
                 pos = fido_position(get_text_tna(pronom_pat, 'PositionType'))
@@ -234,7 +234,7 @@ class FormatInfo:
                 ET.SubElement(fido_pat, 'regex').text = regex
         # Get the format details
         fido_details = ET.SubElement(fido_format, 'details')
-        ET.SubElement(fido_details, 'dc:description').text = get_text_tna(pronom_format, 'FormatDescription').encode('utf8')
+        ET.SubElement(fido_details, 'dc:description').text = get_text_tna(pronom_format, 'FormatDescription')
         ET.SubElement(fido_details, 'dcterms:available').text = get_text_tna(pronom_format, 'ReleaseDate')
         ET.SubElement(fido_details, 'dc:creator').text = get_text_tna(pronom_format, 'Developers/DeveloperCompoundName')
         ET.SubElement(fido_details, 'dcterms:publisher').text = get_text_tna(pronom_format, 'Developers/OrganisationName')
@@ -298,7 +298,7 @@ class FormatInfo:
         ET.SubElement(md, 'dc:creator').text = get_text_tna(pronom_format, 'ProvenanceName')
         ET.SubElement(md, 'dcterms:created').text = get_text_tna(pronom_format, 'ProvenanceSourceDate')
         ET.SubElement(md, 'dcterms:modified').text = get_text_tna(pronom_format, 'LastUpdatedDate')
-        ET.SubElement(md, 'dc:description').text = get_text_tna(pronom_format, 'ProvenanceDescription').encode('utf8')
+        ET.SubElement(md, 'dc:description').text = get_text_tna(pronom_format, 'ProvenanceDescription')
         return fido_format
 
     # FIXME: I don't think that this quite works yet!
