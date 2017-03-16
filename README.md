@@ -93,6 +93,8 @@ FIDO 1.3.4 and later requires the python dependency 'olefile'.  This can be
 installed using `pip install olefile`, by running `python setup.py install`,
 or a pip installation will handle dependencies.
 
+FIDO 1.3.3 and later have experimental Python 3 support.
+
 Format Definitions
 ------------------
 
