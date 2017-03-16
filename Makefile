@@ -1,7 +1,7 @@
 .PHONY: clean package package-deps package-source package-upload package-wheel
 
 package-deps:
-	pip install --upgrade twine wheel
+	pip install --upgrade -r requirements/packaging.txt
 
 package-source:
 	python setup.py sdist
