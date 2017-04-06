@@ -15,7 +15,7 @@ script:
   - "flake8 --ignore=E501 ./fido"
   # pep257: fido.py is WIP
   - 'pep257 --match="(?!fido).*\.py" ./fido'
-  - "pytest --cov=corptest"
+  - "pytest --cov=fido"
 
 after_success:
   - "coverage xml"
