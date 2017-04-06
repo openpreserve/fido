@@ -6,13 +6,18 @@ python:
   - "3.5"
 
 install:
-  - "pip install -U pip flake8 pep257"
+  - "pip install -U pip flake8 pep257 pytest-cov codecov codacy-coverage"
   - "python setup.py build"
   - "python setup.py bdist --formats=zip"
-  - "sudo python setup.py install"
+  - "python setup.py install"
 
 script:
   - "flake8 --ignore=E501 ./fido"
   # pep257: fido.py is WIP
   - 'pep257 --match="(?!fido).*\.py" ./fido'
-  - "python setup.py test"
+  - "pytest --cov=fido"
+
+after_success:
+  - "coverage xml"
+  - "codecov"
+  - "python-codacy-coverage -r coverage.xml"
