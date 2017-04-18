@@ -43,8 +43,8 @@ We use Github pull requests for code review.
 After a pull request is submitted, a maintainer will review the code for content, style & suitability of the new feature.
 After the reviewer is satisfied with the changes, they will approve it on Github.
 If at least two maintainers approve and there are no disapprovals for a week, the branch can be merged.
-If the original committer is a maintainer, they can merged the branch.
-For external contributors, a maintainer wire merge the commits.
+If the original committer is a maintainer, they can merge the branch.
+For external contributors, a maintainer will merge the commits.
 
 
 ## Release process
