@@ -2,7 +2,7 @@
 <versions>
 	<pronomVersion>90</pronomVersion>
 	<pronomSignature>formats-v90.xml</pronomSignature>
-	<pronomContainerSignature>container-signature-20160121.xml</pronomContainerSignature>
+	<pronomContainerSignature>container-signature-20170330.xml</pronomContainerSignature>
 	<fidoExtensionSignature>format_extensions.xml</fidoExtensionSignature>
 	<updateScript>1.3.6</updateScript>
 </versions>
