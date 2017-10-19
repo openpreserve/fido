@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?> 
 
-<ContainerSignatureMapping schemaVersion="1.0" signatureVersion="20"> 
+<ContainerSignatureMapping schemaVersion="1.0" signatureVersion="21"> 
     <ContainerSignatures>
-
         <ContainerSignature Id="1000" ContainerType="OLE2">
             <Description>Microsoft Word 6.0/95 OLE2</Description>
             <Files>
@@ -2837,7 +2836,7 @@
 	                        <InternalSignature ID="24100">
 	                            <ByteSequence Reference="BOFoffset">
 	                                <SubSequence Position="1" SubSeqMinOffset="0" SubSeqMaxOffset="0">
-	                                    <Sequence>'ÿWPC'</Sequence>
+	                                    <Sequence>FF 'WPC'</Sequence>
 	                                </SubSequence>
 	                            </ByteSequence>
 	                            <ByteSequence Reference="BOFoffset">
@@ -2862,7 +2861,7 @@
 	                        <InternalSignature ID="24200">
 	                            <ByteSequence Reference="BOFoffset">
 	                                <SubSequence Position="1" SubSeqMinOffset="0" SubSeqMaxOffset="0">
-	                                    <Sequence>'ÿWPC'</Sequence>
+	                                    <Sequence>FF 'WPC'</Sequence>
 	                                </SubSequence>
 	                            </ByteSequence>
 	                            <ByteSequence Reference="BOFoffset">
@@ -3235,7 +3234,27 @@
                      </BinarySignatures>
                  </File>
              </Files>
-         </ContainerSignature> 
+         </ContainerSignature>
+
+        <ContainerSignature Id="33000" ContainerType="OLE2">
+            <Description>Hangul Word Processor Document 5</Description>
+            <Files>
+                <File>
+                    <Path>FileHeader</Path>
+                    <BinarySignatures>
+                        <InternalSignatureCollection>
+	                        <InternalSignature ID="33000">
+	                            <ByteSequence Reference="BOFoffset">
+	                                <SubSequence Position="1" SubSeqMinOffset="0" SubSeqMaxOffset="0">
+	                                    <Sequence>'HWP Document File'</Sequence>
+	                                </SubSequence>
+	                            </ByteSequence>
+	                        </InternalSignature>
+	                    </InternalSignatureCollection>
+                    </BinarySignatures>
+                </File>
+            </Files>
+        </ContainerSignature> 
 
        
     </ContainerSignatures>
@@ -3572,6 +3591,9 @@
 	<FileFormatMapping signatureId="32000" Puid="fmt/998"/>
 	<!--  Krita Document Format(ZIP)-->
 	<FileFormatMapping signatureId="32010" Puid="fmt/999"/>
+
+	<!--  Hangul Word Processor Document 5(OLE2)--> 
+	<FileFormatMapping signatureId="33000" Puid="fmt/1084"/> 
 
    </FileFormatMappings>
   
