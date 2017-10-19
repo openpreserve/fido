@@ -35,10 +35,10 @@ defaults = {
     'printmatch': "OK,%(info.time)s,%(info.puid)s,\"%(info.formatname)s\",\"%(info.signaturename)s\",%(info.filesize)s,\"%(info.filename)s\",\"%(info.mimetype)s\",\"%(info.matchtype)s\"\n",
     'printnomatch': "KO,%(info.time)s,,,,%(info.filesize)s,\"%(info.filename)s\",,\"%(info.matchtype)s\"\n",
     'format_files': [
-        'formats-v88.xml',
+        'formats-v92.xml',
         'format_extensions.xml'
     ],
-    'containersignature_file': 'container-signature-20170330.xml',
+    'containersignature_file': 'container-signature-20170920.xml',
     'container_bufsize': 512 * 1024,  # (bytes)
     'description': """Format Identification for Digital Objects (fido).
 FIDO is a command-line tool to identify the file formats of digital objects.
