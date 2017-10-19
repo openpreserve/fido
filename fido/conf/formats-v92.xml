@@ -523,7 +523,7 @@
     <pronom_id>48</pronom_id>
     <extension>3ds</extension>
     <signature>
-      <name>3D Studio</name>
+      <name>3D Studio (V1)</name>
       <note>Primary chunk ID, chunk length, version subchunk ID, chunk length, version, 3D-editor chunk ID.</note>
       <pattern>
         <position>BOF</position>
@@ -531,17 +531,26 @@
         <regex>(?s)\AMM.{4}\x02\x00\n\x00\x00\x00(?:\x03|\x04).{3}==</regex>
       </pattern>
     </signature>
+    <signature>
+      <name>3D Studio (V2)</name>
+      <note>Primary chunk ID, chunk length, 3D-editor chunk ID</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D4D{4}3D3D</pronom_pattern>
+        <regex>(?s)\AMM.{4}==</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>3DS is one of the file formats used by the Autodesk 3ds Max 3D modeling, animation and rendering software.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Autodesk Corporation</dc:creator>
+      <dcterms:publisher>Autodesk Corporation</dcterms:publisher>
       <content_type>Model</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>06 Nov 2014</dcterms:modified>
+        <dcterms:modified>17 Jul 2017</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -6312,7 +6321,7 @@ Full specifications can be found at http://www.opengeospatial.org/standards/gml<
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
-      <content_type>Text (Mark-up)</content_type>
+      <content_type>GIS, Text (Mark-up)</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
@@ -6856,12 +6865,12 @@ http://www.esri.com/library/whitepapers/pdfs/shapefile.pdf</dc:description>
       <note>Jet 3 DB header plus variably-positioned AccessVersion 07. Two byte sequences. Sequence one character sequence, Standard Jet DB. Sequence two character sequence AccessVersion{1-1024}07.[0:9][0:9]</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>000100005374616e64617264204a65742044420000000000</pronom_pattern>
+        <pronom_pattern>000100005374616E64617264204A65742044420000000000</pronom_pattern>
         <regex>(?s)\A\x00\x01\x00\x00Standard Jet DB\x00\x00\x00\x00\x00</regex>
       </pattern>
       <pattern>
         <position>VAR</position>
-        <pronom_pattern>41636365737356657273696f6e{0-1024}30372e[30:39][30:39]</pronom_pattern>
+        <pronom_pattern>41636365737356657273696F6E{0-1024}30372E[30:39][30:39]</pronom_pattern>
         <regex>(?s)AccessVersion.{0,1024}07\.[0-9][0-9]</regex>
       </pattern>
     </signature>
@@ -7561,7 +7570,7 @@ It should be possible to write a simple decoder application for WS4 files, howev
   </format>
   <format>
     <puid>x-fmt/266</puid>
-    <mime>application/x-gzip</mime>
+    <mime>application/gzip</mime>
     <name>GZIP Format</name>
     <version />
     <alias />
@@ -8007,6 +8016,7 @@ The 2 byte file type identifier BM indicates that the BMP was created by OS/2 or
     <extension>xsd</extension>
     <has_priority_over>x-fmt/227</has_priority_over>
     <has_priority_over>fmt/101</has_priority_over>
+    <has_priority_over>fmt/1047</has_priority_over>
     <signature>
       <name>XML Schema Definition</name>
       <note>ASCII header: &lt;?xml version="1.0". ASCII footer: &lt;/xsd:schema&gt; or &lt;/xs:schema&gt; or &lt;/schema&gt;. Signature will only identify against xsd files which do not have any comments inserted either before the xml declaration, or at the very end of the file.</note>
@@ -11687,6 +11697,7 @@ The identification byte is followed by four or more bytes that are all equal to 
       <is_supertype_of>1700</is_supertype_of>
       <is_supertype_of>1737</is_supertype_of>
       <is_supertype_of>1770</is_supertype_of>
+      <is_supertype_of>1852</is_supertype_of>
       <content_type>Text (Mark-up)</content_type>
       <reference>
         <dc:title>W3C Recommendation: Extensible Markup Language (XML) 1.0 (Third Edition) W3C Recommendation 04 February 2004</dc:title>
@@ -15417,13 +15428,13 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       <note>Header section with $ACADVER group code, EOF marker</note>
       <pattern>
         <position>VAR</position>
-        <pronom_pattern>300D0A53454354494F4E0D0A2020320D0A4845414445520D0A*390D0A24414341445645520D0A2020310D0A4143313031320D0A*300D0A454E445345430D0A</pronom_pattern>
-        <regex>(?s)0\r\nSECTION\r\n  2\r\nHEADER\r\n.*9\r\n\$ACADVER\r\n  1\r\nAC1012\r\n.*0\r\nENDSEC\r\n</regex>
+        <pronom_pattern>30(0D0A|0A|0D)53454354494F4E(0D0A|0A|0D)202032(0D0A|0A|0D)484541444552*39(0D0A|0A|0D)2441434144564552(0D0A|0A|0D)202031(0D0A|0A|0D)414331303132*30(0D0A|0A|0D)454E44534543</pronom_pattern>
+        <regex>(?s)0(?:\r\n|\n|\r)SECTION(?:\r\n|\n|\r)  2(?:\r\n|\n|\r)HEADER.*9(?:\r\n|\n|\r)\$ACADVER(?:\r\n|\n|\r)  1(?:\r\n|\n|\r)AC1012.*0(?:\r\n|\n|\r)ENDSEC</regex>
       </pattern>
       <pattern>
         <position>EOF</position>
-        <pronom_pattern>300D0A454F460D0A</pronom_pattern>
-        <regex>(?s)0\r\nEOF\r\n\Z</regex>
+        <pronom_pattern>30(0D0A|0A|0D)454F46</pronom_pattern>
+        <regex>(?s)0(?:\r\n|\n|\r)EOF.{0,2}\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -15466,13 +15477,13 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       <note>Header section with $ACADVER group code, EOF marker</note>
       <pattern>
         <position>VAR</position>
-        <pronom_pattern>300D0A53454354494F4E0D0A2020320D0A4845414445520D0A*390D0A24414341445645520D0A2020310D0A4143313031340D0A*300D0A454E445345430D0A</pronom_pattern>
-        <regex>(?s)0\r\nSECTION\r\n  2\r\nHEADER\r\n.*9\r\n\$ACADVER\r\n  1\r\nAC1014\r\n.*0\r\nENDSEC\r\n</regex>
+        <pronom_pattern>30(0D0A|0A|0D)53454354494F4E(0D0A|0A|0D)202032(0D0A|0A|0D)484541444552*39(0D0A|0A|0D)2441434144564552(0D0A|0A|0D)202031(0D0A|0A|0D)414331303134*30(0D0A|0A|0D)454E44534543</pronom_pattern>
+        <regex>(?s)0(?:\r\n|\n|\r)SECTION(?:\r\n|\n|\r)  2(?:\r\n|\n|\r)HEADER.*9(?:\r\n|\n|\r)\$ACADVER(?:\r\n|\n|\r)  1(?:\r\n|\n|\r)AC1014.*0(?:\r\n|\n|\r)ENDSEC</regex>
       </pattern>
       <pattern>
         <position>EOF</position>
-        <pronom_pattern>300D0A454F460D0A</pronom_pattern>
-        <regex>(?s)0\r\nEOF\r\n\Z</regex>
+        <pronom_pattern>30(0D0A|0D|0A)454F46</pronom_pattern>
+        <regex>(?s)0(?:\r\n|\r|\n)EOF.{0,2}\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -15515,13 +15526,13 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       <note>Header section with $ACADVER group code, EOF marker</note>
       <pattern>
         <position>VAR</position>
-        <pronom_pattern>300D0A53454354494F4E0D0A2020320D0A4845414445520D0A*390D0A24414341445645520D0A2020310D0A4143313031350D0A*300D0A454E445345430D0A</pronom_pattern>
-        <regex>(?s)0\r\nSECTION\r\n  2\r\nHEADER\r\n.*9\r\n\$ACADVER\r\n  1\r\nAC1015\r\n.*0\r\nENDSEC\r\n</regex>
+        <pronom_pattern>30(0D0A|0A|0D)53454354494F4E(0D0A|0A|0D)202032(0D0A|0A|0D)484541444552*39(0D0A|0A|0D)2441434144564552(0D0A|0A|0D)202031(0D0A|0A|0D)414331303135*30(0D0A|0A|0D)454E44534543</pronom_pattern>
+        <regex>(?s)0(?:\r\n|\n|\r)SECTION(?:\r\n|\n|\r)  2(?:\r\n|\n|\r)HEADER.*9(?:\r\n|\n|\r)\$ACADVER(?:\r\n|\n|\r)  1(?:\r\n|\n|\r)AC1015.*0(?:\r\n|\n|\r)ENDSEC</regex>
       </pattern>
       <pattern>
         <position>EOF</position>
-        <pronom_pattern>300D0A454F460D0A</pronom_pattern>
-        <regex>(?s)0\r\nEOF\r\n\Z</regex>
+        <pronom_pattern>30(0D0A|0A|0D)454F46</pronom_pattern>
+        <regex>(?s)0(?:\r\n|\n|\r)EOF.{0,2}\Z</regex>
       </pattern>
     </signature>
     <signature>
@@ -16099,15 +16110,15 @@ Windows bitmap 2.0 and OS/2 bitmap 1.0 are effectively the same format - the onl
     <extension>wpg</extension>
     <signature>
       <name>WordPerfect Graphics 1.0</name>
-      <note>WPG Header (Version=1.0)</note>
+      <note>4 byte magic (-1, 'WPC'), {4 byte offset to document start}, Product type (01 = wordperfect), File type (0x16 = graphic), Major/minor version=0100</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>FF5750431000000001160100{2}0000</pronom_pattern>
-        <regex>(?s)\A\xffWPC\x10\x00\x00\x00\x01\x16\x01\x00.{2}\x00\x00</regex>
+        <pronom_pattern>FF575043{4}01160100</pronom_pattern>
+        <regex>(?s)\A\xffWPC.{4}\x01\x16\x01\x00</regex>
       </pattern>
     </signature>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>The WordPerfect Graphic file format (WPG) is primarily a vector graphic format, but it can store both bitmap and vector data. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -17438,7 +17449,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
   </format>
   <format>
     <puid>x-fmt/411</puid>
-    <mime>application/octet-stream</mime>
+    <mime>application/vnd.microsoft.portable-executable</mime>
     <name>Windows Portable Executable</name>
     <version />
     <alias>Common Object File Format, COFF, EXE</alias>
@@ -18530,6 +18541,7 @@ This version was published in February 2005 and corrected the flaws in the first
   </format>
   <format>
     <puid>x-fmt/414</puid>
+    <mime>application/vnd.ms-cab-compressed</mime>
     <name>Windows Cabinet File</name>
     <version />
     <alias />
@@ -18545,10 +18557,10 @@ This version was published in February 2005 and corrected the flaws in the first
       </pattern>
     </signature>
     <details>
-      <dc:description>Archive format native to Microsoft Windows that contains compressed data.</dc:description>
+      <dc:description>An archive format native to Microsoft Windows that contains compressed data.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
       <content_type />
       <record_metadata>
         <status>unknown</status>
@@ -18566,6 +18578,7 @@ This version was published in February 2005 and corrected the flaws in the first
     <alias />
     <pronom_id>802</pronom_id>
     <extension>class</extension>
+    <has_priority_over>fmt/1092</has_priority_over>
     <signature>
       <name>Java Compiled Object Code</name>
       <note>Header</note>
@@ -19727,7 +19740,6 @@ This version was published in February 2005 and corrected the flaws in the first
   </format>
   <format>
     <puid>x-fmt/451</puid>
-    <mime>application/octet-stream</mime>
     <name>SketchUp Document</name>
     <version />
     <alias />
@@ -19735,7 +19747,16 @@ This version was published in February 2005 and corrected the flaws in the first
     <extension>skb</extension>
     <extension>skp</extension>
     <signature>
-      <name>Google SketchUp Document</name>
+      <name>SketchUp Document (older version)</name>
+      <note>BOF: 0x0E, 'SketchUp Model', 0x08</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>0E536B657463685570204D6F64656C08</pronom_pattern>
+        <regex>(?s)\A\x0eSketchUp Model\x08</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>SketchUp Document</name>
       <note />
       <pattern>
         <position>BOF</position>
@@ -19744,16 +19765,16 @@ This version was published in February 2005 and corrected the flaws in the first
       </pattern>
     </signature>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>SketchUp is a 3D content creation tool. PRONOM currently does not distinguish between different versions of SketchUp documents but the ability to distinguish between different file format versions may be desirable and possible with a better understanding of the format.</dc:description>
       <dcterms:available />
       <dc:creator>Google</dc:creator>
       <dcterms:publisher>Google</dcterms:publisher>
-      <content_type />
+      <content_type>Model</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>Digital Library Research Group / MIT Libraries</dc:creator>
+        <dc:creator>Datable / Datable</dc:creator>
         <dcterms:created>06 Apr 2009</dcterms:created>
-        <dcterms:modified>25 Oct 2012</dcterms:modified>
+        <dcterms:modified>10 Jul 2017</dcterms:modified>
         <dc:description>An .skp file is a SketchUp document. An .skb is a SketchUp document backup.</dc:description>
       </record_metadata>
     </details>
@@ -20680,17 +20701,27 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
     <alias />
     <pronom_id>917</pronom_id>
     <extension>dcr</extension>
+    <has_priority_over>fmt/353</has_priority_over>
+    <signature>
+      <name>Kodak DCR Raw</name>
+      <note>BOF: Big endian TIFF header MM 0x002A {4-16384} IFD tag 0xFDE8 {4-16384} 'Kodak' {4-256} IFD tag 0xFDE8</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D4D002A{4-16384}FDE8{4-16384}4B6F64616B{4-256}FDE8</pronom_pattern>
+        <regex>(?s)\AMM\x00\*.{4,16384}\xfd\xe8.{4,16384}Kodak.{4,256}\xfd\xe8</regex>
+      </pattern>
+    </signature>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>Kodak DCR is the raw image generated by some models of Kodak DCS camera. The format is based upon the Tagged Image File Format.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
-      <content_type />
+      <content_type>Image (Raster)</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dc:creator>Historic Environment Scotland / Historic Environment Scotland</dc:creator>
         <dcterms:created>27 Oct 2009</dcterms:created>
-        <dcterms:modified>27 Oct 2009</dcterms:modified>
+        <dcterms:modified>13 Jul 2017</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -20737,14 +20768,14 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
   </format>
   <format>
     <puid>fmt/194</puid>
-    <name>FileMaker Pro Ver. 7+ Database Document</name>
-    <version>7</version>
+    <name>FileMaker Pro Database</name>
+    <version>7+</version>
     <alias />
     <pronom_id>919</pronom_id>
     <extension>fp7</extension>
     <signature>
       <name>FP7</name>
-      <note>Looking for this '&#192;HBAM7' at an offset of 14 and then this 'HBAM2101OCT99&#193;.H.Pro 7.0&#192;&#192;' at a 525 offset.</note>
+      <note>Looking for '&#192;HBAM7' at an offset of 14 and then  'HBAM2101OCT99&#193;.H.Pro 7.0&#192;&#192;' at a 525 offset.</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>C04842414D37{505}4842414D323130314F43543939C102480750726F20372E30C0C0</pronom_pattern>
@@ -20752,7 +20783,7 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
       </pattern>
     </signature>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>FileMaker Pro is a cross-platform relational database application from FileMaker Inc.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -22147,7 +22178,6 @@ Full specifications available at: http://www.opengeospatial.org/standards/kml</d
     <version />
     <alias />
     <pronom_id>977</pronom_id>
-    <extension />
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
@@ -22956,6 +22986,7 @@ SPSS creates an SPSS Output File which represents data in a two dimensional form
   </format>
   <format>
     <puid>fmt/279</puid>
+    <mime>audio/flac</mime>
     <name>FLAC (Free Lossless Audio Codec)</name>
     <version>1.2.1</version>
     <alias />
@@ -23200,7 +23231,7 @@ http://flac.sourceforge.net/documentation_format_overview.html</dc:description>
     <version>1</version>
     <alias />
     <pronom_id>1026</pronom_id>
-    <extension>hdf5</extension>
+    <extension>hdf</extension>
     <extension>h5</extension>
     <extension>hdf5</extension>
     <signature>
@@ -24488,7 +24519,7 @@ DATA: VERSION:160 SECURITY: ENCODING: CHARSET: COMPRESSION: OLDFILEUID: NEWFILEU
       <pattern>
         <position>EOF</position>
         <pronom_pattern>5D5D</pronom_pattern>
-        <regex>(?s)\]\]\Z</regex>
+        <regex>(?s)\]\].{0,2}\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -24501,7 +24532,7 @@ DATA: VERSION:160 SECURITY: ENCODING: CHARSET: COMPRESSION: OLDFILEUID: NEWFILEU
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>24 Jan 2011</dcterms:created>
-        <dcterms:modified>24 Jan 2011</dcterms:modified>
+        <dcterms:modified>19 Sep 2017</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -27318,8 +27349,8 @@ Internet standard: https://tools.ietf.org/html/rfc6350</note>
       <note>'StuffIt!' starts BOF sequence, plus 3 bytes EOF</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>5374756666497421A136F7DC0AA2A29BDD4215F7DC0AA2A23399</pronom_pattern>
-        <regex>(?s)\AStuffIt\!\xa16\xf7\xdc\n\xa2\xa2\x9b\xddB\x15\xf7\xdc\n\xa2\xa23\x99</regex>
+        <pronom_pattern>5374756666497421</pronom_pattern>
+        <regex>(?s)\AStuffIt\!</regex>
       </pattern>
       <pattern>
         <position>EOF</position>
@@ -27354,7 +27385,7 @@ Internet standard: https://tools.ietf.org/html/rfc6350</note>
       <note>ASCII text 'FreeHAnd 11' in BOF sequence, 'FlateDecode' in EOF sequence</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>1c0100000200041c0114000200141c0116000200091c011e000a4672656548616e6431311C01280008{6}30301C014600083230</pronom_pattern>
+        <pronom_pattern>1C0100000200041C0114000200141C0116000200091C011E000A4672656548616E6431311C01280008{6}30301C014600083230</pronom_pattern>
         <regex>(?s)\A\x1c\x01\x00\x00\x02\x00\x04\x1c\x01\x14\x00\x02\x00\x14\x1c\x01\x16\x00\x02\x00\x09\x1c\x01\x1e\x00\nFreeHand11\x1c\x01\(\x00\x08.{6}00\x1c\x01F\x00\x0820</regex>
       </pattern>
       <pattern>
@@ -28039,6 +28070,20 @@ documents. A PostScript language document description that minimally conforms to
         <regex>(?s)\A%\!PS-Adobe-3\.0.{16,512}%%DocumentSuppliedResources:.{1,512}%%\+ procset Adobe_Illustrator(?:_AI3|A_AI3)</regex>
       </pattern>
     </signature>
+    <signature>
+      <name>Adobe Illustrator 3.x v5</name>
+      <note>The first line of the file is a unique comment that declares the file contains a Postscript program and identifies the version of the Document Structuring Conventions to which the document conforms as 2.0 or 3.0. The prolog did not contain %%DocumentNeededResources:  but did contain %%DocumentSuppliedResources: and the continuation %%+ procset Adobe_Illustrator_AI3 or %%+procset Adobe_IllustratorA_AI3</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>C5D0D3C6</pronom_pattern>
+        <regex>(?s)\A\xc5\xd0\xd3\xc6</regex>
+      </pattern>
+      <pattern>
+        <position>VAR</position>
+        <pronom_pattern>252150532D41646F62652D332E30{16-512}2525446F63756D656E74537570706C6965645265736F75726365733A{1-512}25252B2070726F637365742041646F62655F496C6C7573747261746F72(5F414933|415F414933)</pronom_pattern>
+        <regex>(?s)%\!PS-Adobe-3\.0.{16,512}%%DocumentSuppliedResources:.{1,512}%%\+ procset Adobe_Illustrator(?:_AI3|A_AI3)</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>The documents (files) created by Adobe Illustrator are PostScript language
 documents. A PostScript language document description that minimally conforms to the Document Structuring Conventions has two main parts: a prolog and a script. The prolog encapsulates information needed by other programs to interpret the file. The script describes the graphic elements on the page.
@@ -28185,7 +28230,7 @@ documents. A PostScript language document description that minimally conforms to
       <pattern>
         <position>BOF</position>
         <pronom_pattern>252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D61742032</pronom_pattern>
-        <regex>(?s)\A%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 2</regex>
+        <regex>(?s)\A.{0,64}%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 2</regex>
       </pattern>
     </signature>
     <details>
@@ -29693,7 +29738,6 @@ EOF: }..}..</note>
     <version />
     <alias />
     <pronom_id>1249</pronom_id>
-    <extension />
     <signature>
       <name>MS DOS Compression (SZDD)</name>
       <note>BOF: SZDD&#710;&#240;'3A</note>
@@ -33369,8 +33413,8 @@ Beginning with version 9, the Adobe Illustrated ai file format included both a p
       <note>Header PDF-1.5. Comment %!PS-Adobe-3.0 declares that the file contains a Postscript program. The comment &#8220;%AI5_FileFormat 9&#8221; indicates that the format is that of a version 13.0 Adobe Illustrator file.</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>255044462D312E35{1-32000}252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D61742039</pronom_pattern>
-        <regex>(?s)\A%PDF-1\.5.{1,32000}%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 9</regex>
+        <pronom_pattern>255044462D312E35{1-1024000}252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D61742039</pronom_pattern>
+        <regex>(?s)\A%PDF-1\.5.{1,1024000}%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 9</regex>
       </pattern>
     </signature>
     <details>
@@ -33406,8 +33450,8 @@ Beginning with version 9, the Adobe Illustrated ai file format included both a p
       <note>Header PDF-1.5. Comment %!PS-Adobe-3.0 declares that the file contains a Postscript program. The comment &#8220;%AI5_FileFormat 10&#8221; indicates that the format is that of a version 14.0 Adobe Illustrator file.</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>255044462D312E35{1-32000}252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D6174203130</pronom_pattern>
-        <regex>(?s)\A%PDF-1\.5.{1,32000}%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 10</regex>
+        <pronom_pattern>255044462D312E35{1-1024000}252150532D41646F62652D332E30{128-1024}254149355F46696C65466F726D6174203130</pronom_pattern>
+        <regex>(?s)\A%PDF-1\.5.{1,1024000}%\!PS-Adobe-3\.0.{128,1024}%AI5_FileFormat 10</regex>
       </pattern>
     </signature>
     <details>
@@ -33627,7 +33671,7 @@ The EBML specifications are work-in-progress, and can be found here: https://git
         <dc:identifier>http://www.matroska.org/downloads/test_w1.html</dc:identifier>
         <dcterms:license />
         <dc:rights />
-        <checksum type="md5">7f4e491d211bf48750bc4f79e88c6341</checksum>
+        <checksum type="md5">4c32e11998abeee0cf2c4ab5a150326b</checksum>
       </example_file>
       <record_metadata>
         <status>unknown</status>
@@ -37067,6 +37111,7 @@ This format can be identified via a container signature in DROID version 6 or la
   </format>
   <format>
     <puid>fmt/682</puid>
+    <mime>application/vnd.microsoft.windows.thumbnail-cache</mime>
     <name>Thumbs DB file</name>
     <version>XP</version>
     <alias />
@@ -41429,12 +41474,13 @@ Operational Pattern &#8220;OP-Atom&#8221; is intended to satisfy the demands of 
   </format>
   <format>
     <puid>fmt/798</puid>
-    <name>The Neuroimaging Informatics Technology Initiative File format</name>
-    <version />
-    <alias />
+    <name>The Neuroimaging Informatics Technology Initiative File Format</name>
+    <version>1</version>
+    <alias>NIfTI-1 Data Format</alias>
     <pronom_id>1598</pronom_id>
+    <extension>nii</extension>
     <signature>
-      <name>The Neuroimaging Informatics Technology Initiative File format variant1</name>
+      <name>The Neuroimaging Informatics Technology Initiative File Format V1 variant1</name>
       <note>Offset 344: ni1.</note>
       <pattern>
         <position>BOF</position>
@@ -41442,17 +41488,26 @@ Operational Pattern &#8220;OP-Atom&#8221; is intended to satisfy the demands of 
         <regex>(?s)\A.{344}ni1\x00</regex>
       </pattern>
     </signature>
+    <signature>
+      <name>The Neuroimaging Informatics Technology Initiative File Format V1 variant2</name>
+      <note>Offset 344: n+1.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>6E2B3100</pronom_pattern>
+        <regex>(?s)\A.{344}n\+1\x00</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>A Neuroimaging format used in medical industry for the analysis of scans of x-rays.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
-      <content_type />
+      <content_type>Dataset</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>University of Edinburgh / University of Edinburgh</dc:creator>
         <dcterms:created>26 Nov 2015</dcterms:created>
-        <dcterms:modified>26 Nov 2015</dcterms:modified>
+        <dcterms:modified>19 Sep 2017</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -41705,6 +41760,8 @@ The format is used to store media images for forensic purposes. They are a type 
     <alias />
     <pronom_id>1607</pronom_id>
     <extension>h5</extension>
+    <extension>hdf</extension>
+    <extension>hdf5</extension>
     <signature>
       <name>HDF5 version 0</name>
       <note>HDF5 Header + Version 00</note>
@@ -42273,7 +42330,7 @@ The format is used to store media images for forensic purposes. They are a type 
   </format>
   <format>
     <puid>fmt/829</puid>
-    <mime>application/vnd.ms-package.3dmanufacturing-3dmodel+xml</mime>
+    <mime>application/vnd.ms-3mfdocument</mime>
     <name>3MF 3D Manufacturing Format</name>
     <version />
     <alias />
@@ -42337,11 +42394,11 @@ http://3mf.io/what-is-3mf/3mf-specification/</dc:description>
     <extension>ply</extension>
     <signature>
       <name>PLY</name>
-      <note>BOF: ply.format (ascii|binary_little_endian|binary_big_endian) 1.0</note>
+      <note>BOF: ply [line break] format (ascii|binary_little_endian|binary_big_endian) 1.0</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>706C790A666F726D617420(6173636969|62696E6172795F6C6974746C655F656E6469616E|62696E6172795F6269675F656E6469616E)20312E30</pronom_pattern>
-        <regex>(?s)\Aply\nformat (?:ascii|binary_little_endian|binary_big_endian) 1\.0</regex>
+        <pronom_pattern>706C79(0A|0D|0D0A)666F726D617420(6173636969|62696E6172795F6C6974746C655F656E6469616E|62696E6172795F6269675F656E6469616E)20312E30</pronom_pattern>
+        <regex>(?s)\Aply(?:\n|\r|\r\n)format (?:ascii|binary_little_endian|binary_big_endian) 1\.0</regex>
       </pattern>
     </signature>
     <details>
@@ -44402,7 +44459,7 @@ https://github.com/lovasoa/ZIF/</note>
   </format>
   <format>
     <puid>fmt/899</puid>
-    <mime>application/octet-stream</mime>
+    <mime>application/vnd.microsoft.portable-executable</mime>
     <name>Windows Portable Executable</name>
     <version>32 bit</version>
     <alias>Common Object File Format, COFF, EXE</alias>
@@ -44431,7 +44488,7 @@ https://github.com/lovasoa/ZIF/</note>
   </format>
   <format>
     <puid>fmt/900</puid>
-    <mime>application/octet-stream</mime>
+    <mime>application/vnd.microsoft.portable-executable</mime>
     <name>Windows Portable Executable</name>
     <version>64 bit</version>
     <alias>Common Object File Format, COFF, EXE</alias>
@@ -45960,15 +46017,15 @@ Due to the age of the format, WP4.x files may lack a format extension, however .
     <has_priority_over>fmt/278</has_priority_over>
     <signature>
       <name>MIME Email</name>
-      <note>MIME-Version: 1.0 or Mime-Version: 1.0
+      <note>MIME-(V|v)ersion: 1.0 or Mime-(V|v)ersion: 1.0
 To: 
 From: 
 Date: 
-Content-Type:</note>
+Content-(T|t)ype:</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>4D(494D45|696D65)2D56657273696F6E3A20312E30</pronom_pattern>
-        <regex>(?s)\A.{0,16384}M(?:IME|ime)-Version: 1\.0</regex>
+        <pronom_pattern>4D(494D45|696D65)2D(56|76)657273696F6E3A20312E30</pronom_pattern>
+        <regex>(?s)\A.{0,16384}M(?:IME|ime)-(?:V|v)ersion: 1\.0</regex>
       </pattern>
       <pattern>
         <position>BOF</position>
@@ -48869,6 +48926,2000 @@ https://msdn.microsoft.com/en-us/library/windows/desktop/bb943991(v=vs.85).aspx#
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>29 Mar 2017</dcterms:created>
         <dcterms:modified>29 Mar 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1041</puid>
+    <name>HDF</name>
+    <version>1-4</version>
+    <alias>NCSA Hierarchical Data Format</alias>
+    <pronom_id>1846</pronom_id>
+    <extension>hdf</extension>
+    <extension>h4</extension>
+    <signature>
+      <name>HDF 1-4</name>
+      <note>BOF: (magic) 0x0E031301
+https://support.hdfgroup.org/release4/doc/Dspec_html/DS.pdf</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>0E031301</pronom_pattern>
+        <regex>(?s)\A\x0e\x03\x13\x01</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>HDF is a data model, library, and file format for storing and managing data.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>11 Apr 2017</dcterms:created>
+        <dcterms:modified>11 Apr 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1042</puid>
+    <name>WordPerfect Graphics Metafile</name>
+    <version>2.0</version>
+    <alias />
+    <pronom_id>1847</pronom_id>
+    <extension>wpg</extension>
+    <signature>
+      <name>WordPerfect Graphics 2.0</name>
+      <note>4 byte magic (-1, 'WPC'), {4 byte offset to document start}, Product type (01 = wordperfect), File type (0x16 = graphic), Major/minor version=0200</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>FF575043{4}01160200</pronom_pattern>
+        <regex>(?s)\A\xffWPC.{4}\x01\x16\x02\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The WordPerfect Graphic file format (WPG) is primarily a vector graphic format, but it can store both bitmap and vector data. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dcterms:available />
+      <dc:creator>Corel Corporation</dc:creator>
+      <dcterms:publisher>Corel Corporation</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>11 Apr 2017</dcterms:created>
+        <dcterms:modified>11 Apr 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1043</puid>
+    <name>Microsoft PRX File</name>
+    <version />
+    <alias />
+    <pronom_id>1848</pronom_id>
+    <extension>prx</extension>
+    <signature>
+      <name>Microsoft PRX</name>
+      <note>BOF: &#255;&#254;&lt;.P.R.X.&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>FFFE3C005000520058003E</pronom_pattern>
+        <regex>(?s)\A\xff\xfe\x3c\x00P\x00R\x00X\x00\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>PRX files are media encoding configuration preset files used by Microsoft products including Microsoft Expression Encoder and Windows Media Encoder.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>11 Apr 2017</dcterms:created>
+        <dcterms:modified>11 Apr 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1044</puid>
+    <name>AutoShade Rendering Slide</name>
+    <version />
+    <alias />
+    <pronom_id>1849</pronom_id>
+    <extension>rnd</extension>
+    <signature>
+      <name>AutoShade RND</name>
+      <note>BOF: 'AutoShade Rendering Slide' &lt;Carriage return, line feed&gt; 'Written by:'
+Format described here:
+https://github.com/AnimatorPro/Animator-Pro/blob/master/text/pro/RND.DOC</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4175746F53686164652052656E646572696E6720536C6964650D0A5772697474656E2062793A</pronom_pattern>
+        <regex>(?s)\AAutoShade Rendering Slide\r\nWritten by:</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>AutoShade was an early 3D rendering package for use with AutoCAD. AutoShade wrote the rendering to an .RND file as a 2D vector image.</dc:description>
+      <dcterms:available />
+      <dc:creator>Autodesk Corporation</dc:creator>
+      <dcterms:publisher>Autodesk Corporation</dcterms:publisher>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>11 Apr 2017</dcterms:created>
+        <dcterms:modified>11 Apr 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1045</puid>
+    <name>Q&amp;A Word Processor Document</name>
+    <version />
+    <alias />
+    <pronom_id>1850</pronom_id>
+    <signature>
+      <name>Q&amp;A Write Word Processor (WP)</name>
+      <note>BOF: TBWP or TBTX, followed by null. TB stands for TouchBase, Symantec's original internal name for the product. WP = Word Processor including header/footer. TX = Text only.
+Format is described here:
+https://books.google.co.uk/books?id=YfkUKcyI7KIC&amp;pg=PT439</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>5442575000</pronom_pattern>
+        <regex>(?s)\ATBWP\x00</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Q&amp;A Write Word Processor (TX)</name>
+      <note>BOF: TBWP or TBTX, followed by null. TB stands for TouchBase, Symantec's original internal name for the product. WP = Word Processor including header/footer. TX = Text only.
+Format is described here:
+https://books.google.co.uk/books?id=YfkUKcyI7KIC&amp;pg=PT439</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>5442545800</pronom_pattern>
+        <regex>(?s)\ATBTX\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Q&amp;A was a database and word processing software program for IBM PC-compatible computers published by Symantec and partners from 1985 to 1998. Due to their age, Q&amp;A files may lack an extension.</dc:description>
+      <dcterms:available />
+      <dc:creator>Symantec Corporation</dc:creator>
+      <dcterms:publisher>Symantec Corporation</dcterms:publisher>
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>11 Apr 2017</dcterms:created>
+        <dcterms:modified>11 Apr 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1046</puid>
+    <name>Draco File Format</name>
+    <version />
+    <alias />
+    <pronom_id>1851</pronom_id>
+    <extension>drc</extension>
+    <signature>
+      <name>Draco</name>
+      <note>BOF: 'DRACO', major version 1
+Header defined in code: https://github.com/google/draco/blob/master/compression/config/compression_shared.h</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>445241434F01</pronom_pattern>
+        <regex>(?s)\ADRACO\x01</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Draco is a library for compressing and decompressing 3D geometric meshes and point clouds. It is intended to provide efficient storage and transmission of 3D graphics.</dc:description>
+      <dcterms:available />
+      <dc:creator>Google</dc:creator>
+      <dcterms:publisher>Google</dcterms:publisher>
+      <content_type>Model</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>10 May 2017</dcterms:created>
+        <dcterms:modified>10 May 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1047</puid>
+    <mime>application/gml+xml</mime>
+    <name>Geography Markup Language</name>
+    <version>3.2</version>
+    <alias />
+    <pronom_id>1852</pronom_id>
+    <extension>gml</extension>
+    <has_priority_over>x-fmt/227</has_priority_over>
+    <has_priority_over>fmt/101</has_priority_over>
+    <signature>
+      <name>Geography Markup Language 3.2</name>
+      <note>ASCII header: &lt;?xml version="1.0" , followed by gml namespace declaration xmlns:gml='http://www.opengis.net/gml/3.2</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F786D6C2076657273696F6E3D(22|27)312E30(22|27){0-320}786D6C6E733A676D6C3D(22|27)687474703A2F2F7777772E6F70656E6769732E6E65742F676D6C2F332E3222</pronom_pattern>
+        <regex>(?s)\A\x3c\?xml version=(?:"|')1\.0(?:"|').{0,320}xmlns:gml=(?:"|')http://www\.opengis\.net/gml/3\.2"</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The Geography Markup Language (GML) is the XML grammar defined by the Open Geospatial Consortium (OGC) to express geographical features. GML serves as a modeling language for geographic systems as well as an open interchange format for geographic transactions on the Internet.
+Version 3.2 introduced a new GML XML namespace and represents ISO standard 19136. Full specifications can be found at http://www.opengeospatial.org/standards/gml</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <is_subtype_of>638</is_subtype_of>
+      <content_type>GIS, Text (Mark-up)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Archaeology Data Service / Archaeology Data Service</dc:creator>
+        <dcterms:created>18 May 2017</dcterms:created>
+        <dcterms:modified>18 May 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1048</puid>
+    <name>OGR GFS File</name>
+    <version />
+    <alias />
+    <pronom_id>1853</pronom_id>
+    <extension>gfs</extension>
+    <signature>
+      <name>OGR GFS File</name>
+      <note>BOF: &lt;GMLFeatureClassList&gt;
+EOF: &lt;/GMLFeatureClassList&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C474D4C46656174757265436C6173734C6973743E</pronom_pattern>
+        <regex>(?s)\A\x3cGMLFeatureClassList\x3e</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <pronom_pattern>3C2F474D4C46656174757265436C6173734C6973743E</pronom_pattern>
+        <regex>(?s)\x3c/GMLFeatureClassList\x3e.{0,16}\Z</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The GFS file is used by the OGR Geography Markup Language reader to predefine dataset level information in the absense of an XML Schema definition for the feature classes within the GML file. Its purpose and syntax is described here: http://www.gdal.org/drv_gml.html</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Mark-up)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Archaeology Data Service / Archaeology Data Service</dc:creator>
+        <dcterms:created>18 May 2017</dcterms:created>
+        <dcterms:modified>18 May 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1049</puid>
+    <name>QuickDraw 3D Metafile (ASCII)</name>
+    <version />
+    <alias />
+    <pronom_id>1854</pronom_id>
+    <extension>3dmf</extension>
+    <signature>
+      <name>3DMF ASCII</name>
+      <note>BOF: '3DMetafile ('
+https://hwiegman.home.xs4all.nl/fileformats/3dmf/3DMF.pdf</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>33444D65746166696C652028</pronom_pattern>
+        <regex>(?s)\A3DMetafile \(</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>3DMF is the interchange format for the QuickDraw 3D software package originally created in 1995 for the Apple Macintosh. It is a three-dimensional image format which may be a representation of an individual object or a complete three-dimensional scene, which can be viewed from different angles with supporting 3D programs.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Model</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Datable / Datable</dc:creator>
+        <dcterms:created>18 May 2017</dcterms:created>
+        <dcterms:modified>18 May 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1050</puid>
+    <name>QuickDraw 3D Metafile (Binary)</name>
+    <version>1</version>
+    <alias />
+    <pronom_id>1855</pronom_id>
+    <extension>3dmf</extension>
+    <signature>
+      <name>3DMF Binary</name>
+      <note>'3DMF' Header size = 0x00000010, major version = 0x0001
+https://hwiegman.home.xs4all.nl/fileformats/3dmf/3DMF.pdf</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>33444D46000000100001</pronom_pattern>
+        <regex>(?s)\A3DMF\x00\x00\x00\x10\x00\x01</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>3DMF is the interchange format for the QuickDraw 3D software package originally created in 1995 for the Apple Macintosh. It is a three-dimensional image format which may be a representation of an individual object or a complete three-dimensional scene, which can be viewed from different angles with supporting 3D programs.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Model</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Datable / Datable</dc:creator>
+        <dcterms:created>18 May 2017</dcterms:created>
+        <dcterms:modified>18 May 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1051</puid>
+    <name>Windows Journal Format</name>
+    <version />
+    <alias />
+    <pronom_id>1856</pronom_id>
+    <extension>jnt</extension>
+    <extension>jtp</extension>
+    <signature>
+      <name>Windows Journal</name>
+      <note>BOF: 'NB*' 0x00 {4} 0x500100100200000 based on observation from a wide pool of samples</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4E422A00{4}5001001002000000</pronom_pattern>
+        <regex>(?s)\ANB\*\x00.{4}P\x01\x00\x10\x02\x00\x00\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>JNT is the native format of Windows Journal, a notetaking application created by Microsoft for Windows operating systems starting with Windows XP. Due to security concerns Microsoft advise against using the format and have supplied a patch for removal of the application (https://support.microsoft.com/en-gb/help/3161102/update-for-windows-journal-component-removal). Microsoft also provide an update that re-installs a version of Windows Journal that highlights the security concerns (https://support.microsoft.com/en-us/help/3162655/windows-journal-application-for-windows). A JTP is a Windows Journal Template file, however this appears to be structurally identical to a JNT file.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator />
+        <dcterms:created>18 May 2017</dcterms:created>
+        <dcterms:modified>18 May 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1052</puid>
+    <name>BKNAS Seismic Data Format</name>
+    <version>1.0</version>
+    <alias>Blacknest ASCII format</alias>
+    <pronom_id>1857</pronom_id>
+    <extension>bknas</extension>
+    <signature>
+      <name>BKNAS</name>
+      <note>BOF: 'BKNAS  ' version = '1.0'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>424B4E41532020312E30</pronom_pattern>
+        <regex>(?s)\ABKNAS  1\.0</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>BKNAS is an ASCII data format created to allow easy transfer of seismic data.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>19 May 2017</dcterms:created>
+        <dcterms:modified>19 May 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1053</puid>
+    <name>Adobe Audio Waveform</name>
+    <version />
+    <alias>Adobe Peak Waveform</alias>
+    <pronom_id>1858</pronom_id>
+    <extension>pek</extension>
+    <signature>
+      <name>Adobe .pek</name>
+      <note>BOF: 0x11542367</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>11542367</pronom_pattern>
+        <regex>(?s)\A\x11T#g</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Within Adobe Premiere and Adobe Audition, graphical waveform files may be created during the editing process. These are typically found alongside 'Conformed Audio' files that contain audio data. .pek files may sometimes be found to contain no data and have a size of zero bytes - PRONOM will be unable to automatically identify such files.</dc:description>
+      <dcterms:available />
+      <dc:creator>Adobe Systems Incorporated</dc:creator>
+      <dcterms:publisher>Adobe Systems Incorporated</dcterms:publisher>
+      <content_type>Audio</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of Scotland / National Library of Scotland</dc:creator>
+        <dcterms:created>07 Jul 2017</dcterms:created>
+        <dcterms:modified>07 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1054</puid>
+    <name>AVCHD Clip Information File</name>
+    <version />
+    <alias />
+    <pronom_id>1859</pronom_id>
+    <extension>cpi</extension>
+    <extension>clpi</extension>
+    <signature>
+      <name>AVCHD Clip Information File</name>
+      <note>BOF: HDMV0100</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>48444D5630313030</pronom_pattern>
+        <regex>(?s)\AHDMV0100</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>AVCHD (Advanced Video Coding High Definition) is a file-based format for the digital recording and playback of high-definition video. The Clip Information File may be created by some AVCHD video recorders and contains metadata describing the AVCHD stream.</dc:description>
+      <dcterms:available />
+      <dc:creator>Sony / Sony</dc:creator>
+      <dcterms:publisher>Sony</dcterms:publisher>
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of Scotland / National Library of Scotland</dc:creator>
+        <dcterms:created>07 Jul 2017</dcterms:created>
+        <dcterms:modified>07 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1055</puid>
+    <name>M2TS</name>
+    <version />
+    <alias />
+    <pronom_id>1860</pronom_id>
+    <extension>mts</extension>
+    <extension>m2ts</extension>
+    <signature>
+      <name>M2TS</name>
+      <note>BOF: offset 4, 0x47 sync byte appearing every 192 bytes from hereon. https://www.google.ch/patents/US7106946</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>47{191}47{191}47{191}47{191}47{191}47{191}47{191}47</pronom_pattern>
+        <regex>(?s)\A.{4}G.{191}G.{191}G.{191}G.{191}G.{191}G.{191}G.{191}G</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>M2TS is the video stream packet format used on Blu-ray discs. M2TS is similar to fmt/585 - MPEG-2 Transport Stream, but instead features 192 byte packets, with a 4 byte TP_extra_header preceeding each 188 byte transport packet. Filenames usually take the form 'xxxxx.mts' or xxxxx.m2ts' where xxxxx represents a numeric value, beginning with 00000 and incrementing by 1 for each stream.</dc:description>
+      <dcterms:available />
+      <dc:creator>Sony / Sony</dc:creator>
+      <dcterms:publisher>Sony</dcterms:publisher>
+      <content_type>Video</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of Scotland / National Library of Scotland</dc:creator>
+        <dcterms:created>10 Jul 2017</dcterms:created>
+        <dcterms:modified>10 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1056</puid>
+    <name>SNAP Main Data File</name>
+    <version />
+    <alias />
+    <pronom_id>1861</pronom_id>
+    <extension>mdf</extension>
+    <signature>
+      <name>SNAP Main data file</name>
+      <note>SNAP Main data file</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>534E4150204D61696E20646174612066696C65</pronom_pattern>
+        <regex>(?s)\ASNAP Main data file</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Snap Survey provides a selection of software which allows users to design surveys. The SNAP Meta Data file is generated and is used to build and manage the survey.</dc:description>
+      <dcterms:available />
+      <dc:creator>Snap Survey Enterprise</dc:creator>
+      <dcterms:publisher>Snap Survey Enterprise</dcterms:publisher>
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>11 Jul 2017</dcterms:created>
+        <dcterms:modified>11 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1057</puid>
+    <name>SNAP Archive Data File</name>
+    <version />
+    <alias />
+    <pronom_id>1862</pronom_id>
+    <extension>adf</extension>
+    <signature>
+      <name>SNAP Archive data file</name>
+      <note>S.u.r.v.e.y{0-64}.a.r.c.h.i.v.e. .f.i.l.e.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>530075007200760065007900{0-64}0061007200630068006900760065002000660069006C006500</pronom_pattern>
+        <regex>(?s)\AS\x00u\x00r\x00v\x00e\x00y\x00.{0,64}\x00a\x00r\x00c\x00h\x00i\x00v\x00e\x00 \x00f\x00i\x00l\x00e\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Snap Survey provides a selection of software which allows users to design surveys. The SNAP Survey archive file is an compressed version of the SNAP Meta Data and if one is present a SNAP Raw Data file. If it is a survey with email invitations, and responses, it also compresses system files about the current state of the mailing.</dc:description>
+      <dcterms:available />
+      <dc:creator>Snap Survey Enterprise</dc:creator>
+      <dcterms:publisher>Snap Survey Enterprise</dcterms:publisher>
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>11 Jul 2017</dcterms:created>
+        <dcterms:modified>11 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1058</puid>
+    <name>SNAP Processed Data File</name>
+    <version />
+    <alias />
+    <pronom_id>1863</pronom_id>
+    <extension>snpdf</extension>
+    <signature>
+      <name>SNAP Processed data file</name>
+      <note>SNAP Processed data file</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>534E41502050726F63657373656420646174612066696C65</pronom_pattern>
+        <regex>(?s)\ASNAP Processed data file</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Snap Survey provides a selection of software which allows users to design surveys.</dc:description>
+      <dcterms:available />
+      <dc:creator>Snap Survey Enterprise</dc:creator>
+      <dcterms:publisher>Snap Survey Enterprise</dcterms:publisher>
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>11 Jul 2017</dcterms:created>
+        <dcterms:modified>11 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1059</puid>
+    <name>FileMaker Pro Database</name>
+    <version>2</version>
+    <alias />
+    <pronom_id>1864</pronom_id>
+    <extension>fm</extension>
+    <signature>
+      <name>FileMaker Pro 2</name>
+      <note>Offset 525: HBAM2001MAY84*E.Pro 2.0F!
+This signature may be improved with a better understanding of the format.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4842414D323030314D41593834*450750726F20322E304621</pronom_pattern>
+        <regex>(?s)\A.{525}HBAM2001MAY84.*E\x07Pro 2\.0F\!</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>FileMaker Pro is a cross-platform relational database application from FileMaker Inc. Early FileMaker files may lack a file format extension, particularly those created in an Apple Macintosh environment.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Database</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator />
+        <dcterms:created>12 Jul 2017</dcterms:created>
+        <dcterms:modified>12 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1060</puid>
+    <name>Phase One Raw Image</name>
+    <version />
+    <alias>Capture One Raw Image</alias>
+    <pronom_id>1866</pronom_id>
+    <extension>cap</extension>
+    <extension>capture</extension>
+    <signature>
+      <name>Phase One Raw big endian</name>
+      <note>BOF: MMMMRawT</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D4D4D4D52617754</pronom_pattern>
+        <regex>(?s)\AMMMMRawT</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Phase One Raw little endian</name>
+      <note>BOF: IIIITwaR</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4949494954776152</pronom_pattern>
+        <regex>(?s)\AIIIITwaR</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Phase One is a camera manufacturer and Capture One is the accompanying software. This format contains the raw image data captured by the camera's image sensor.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Historic Environment Scotland / Historic Environment Scotland</dc:creator>
+        <dcterms:created>12 Jul 2017</dcterms:created>
+        <dcterms:modified>12 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1061</puid>
+    <name>Phase One IIQ Raw Image</name>
+    <version />
+    <alias />
+    <pronom_id>1867</pronom_id>
+    <extension>iiq</extension>
+    <has_priority_over>x-fmt/387</has_priority_over>
+    <has_priority_over>x-fmt/388</has_priority_over>
+    <has_priority_over>x-fmt/399</has_priority_over>
+    <has_priority_over>fmt/353</has_priority_over>
+    <signature>
+      <name>Phase One IIQ Raw</name>
+      <note>BOF: II*.{4}IIIICwaR</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>49492A00{4}4949494943776152</pronom_pattern>
+        <regex>(?s)\AII\*\x00.{4}IIIICwaR</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Phase One is a camera manufacturer and Capture One is the accompanying software. This format contains the raw image data captured by the camera's image sensor. IIQ stands for Intelligent Image Quality, a compressed version of the raw image data captured by Phase One camera equipment. IIQ has a choice of a 'Large' (lossless) or 'Small' (lossy) options. With further research it may be possible to distinguish between these outputs.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Historic Environment Scotland / Historic Environment Scotland</dc:creator>
+        <dcterms:created>12 Jul 2017</dcterms:created>
+        <dcterms:modified>12 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1062</puid>
+    <name>Hasselblad 3FR Raw Image</name>
+    <version />
+    <alias />
+    <pronom_id>1868</pronom_id>
+    <extension>3fr</extension>
+    <has_priority_over>x-fmt/387</has_priority_over>
+    <has_priority_over>x-fmt/388</has_priority_over>
+    <has_priority_over>x-fmt/399</has_priority_over>
+    <has_priority_over>fmt/353</has_priority_over>
+    <signature>
+      <name>Hasselblad 3FR</name>
+      <note>BOF: II*0x00 {4-128} TIFF Make tag (0x0F01) {8-512} 'Hasselblad'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>49492A00{4-128}0F01{8-512}48617373656C626C6164</pronom_pattern>
+        <regex>(?s)\AII\*\x00.{4,128}\x0f\x01.{8,512}Hasselblad</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>3FR is the raw image format produced by some models of Hasselblad camera equipment. The format conforms to the EXIF standard.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Historic Environment Scotland / Historic Environment Scotland</dc:creator>
+        <dcterms:created>13 Jul 2017</dcterms:created>
+        <dcterms:modified>13 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1063</puid>
+    <name>Leaf Mosaic Raw Image</name>
+    <version />
+    <alias />
+    <pronom_id>1870</pronom_id>
+    <extension>mos</extension>
+    <has_priority_over>fmt/353</has_priority_over>
+    <signature>
+      <name>Leaf Mosaic Raw</name>
+      <note>BOF: Tiff big endian header 'MM' 0x002A {4-36864} 'PKTS' 0x00000001</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D4D002A{4-36864}504B545300000001</pronom_pattern>
+        <regex>(?s)\AMM\x00\*.{4,36864}PKTS\x00\x00\x00\x01</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>MOS is the raw image format created by some models of Mamiya Leaf camera equipment. The format is based upon the Tagged Image File Format.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Historic Environment Scotland / Historic Environment Scotland</dc:creator>
+        <dcterms:created>13 Jul 2017</dcterms:created>
+        <dcterms:modified>13 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1064</puid>
+    <name>Portable Database</name>
+    <version>1</version>
+    <alias />
+    <pronom_id>1871</pronom_id>
+    <extension>pdb</extension>
+    <signature>
+      <name>Portable Database 1</name>
+      <note>BOF: !&lt;&gt;&lt;PDB&gt;&lt;&gt;!</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>213C3E3C5044423E3C3E21</pronom_pattern>
+        <regex>(?s)\A\!\x3c\x3e\x3cPDB\x3e\x3c\x3e\!</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>PDBLib is a small library of file management routines for storing and retrieving binary data in a portable format, created by the Lawrence Livermore National Laboratory. https://wci.llnl.gov/codes/pact/pdb.html</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Database</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>14 Jul 2017</dcterms:created>
+        <dcterms:modified>14 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1065</puid>
+    <name>Portable Database</name>
+    <version>2</version>
+    <alias />
+    <pronom_id>1872</pronom_id>
+    <extension>pdb</extension>
+    <signature>
+      <name>Portable Database 2</name>
+      <note>BOF: !&lt;&lt;PDB:II&gt;&gt;!</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>213C3C5044423A49493E3E21</pronom_pattern>
+        <regex>(?s)\A\!\x3c\x3cPDB:II\x3e\x3e\!</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>PDBLib is a small library of file management routines for storing and retrieving binary data in a portable format, created by the Lawrence Livermore National Laboratory. https://wci.llnl.gov/codes/pact/pdb.html</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Database</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>14 Jul 2017</dcterms:created>
+        <dcterms:modified>14 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1066</puid>
+    <name>Portable Database</name>
+    <version>3</version>
+    <alias />
+    <pronom_id>1873</pronom_id>
+    <extension>pdb</extension>
+    <signature>
+      <name>Portable Database 3</name>
+      <note>BOF: !&lt;&lt;PDB:3&gt;&gt;!
+https://wci.llnl.gov/codes/pact/pdb.html</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>213C3C5044423A333E3E21</pronom_pattern>
+        <regex>(?s)\A\!\x3c\x3cPDB:3\x3e\x3e\!</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>PDBLib is a small library of file management routines for storing and retrieving binary data in a portable format, created by the Lawrence Livermore National Laboratory. https://wci.llnl.gov/codes/pact/pdb.html</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Database</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>14 Jul 2017</dcterms:created>
+        <dcterms:modified>14 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1067</puid>
+    <name>Silo</name>
+    <version>PDB Variant</version>
+    <alias />
+    <pronom_id>1874</pronom_id>
+    <extension>silo</extension>
+    <has_priority_over>fmt/1064</has_priority_over>
+    <has_priority_over>fmt/1065</has_priority_over>
+    <signature>
+      <name>SILO PDB 1</name>
+      <note>BOF: !&lt;&gt;&lt;PDB&gt;&lt;&gt;!
+VAR: _silolibinfo
+https://wci.llnl.gov/codes/silo/media/pdf/LLNL-SM-453191.pdf</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>213C3E3C5044423E3C3E21</pronom_pattern>
+        <regex>(?s)\A\!\x3c\x3e\x3cPDB\x3e\x3c\x3e\!</regex>
+      </pattern>
+      <pattern>
+        <position>VAR</position>
+        <pronom_pattern>5F73696C6F6C6962696E666F</pronom_pattern>
+        <regex>(?s)_silolibinfo</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>SILO PDB 2</name>
+      <note>BOF: !&lt;&lt;PDB:II&gt;&gt;!
+VAR: _silolibinfo
+https://wci.llnl.gov/codes/silo/media/pdf/LLNL-SM-453191.pdf</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>213C3C5044423A49493E3E21</pronom_pattern>
+        <regex>(?s)\A\!\x3c\x3cPDB:II\x3e\x3e\!</regex>
+      </pattern>
+      <pattern>
+        <position>VAR</position>
+        <pronom_pattern>5F73696C6F6C6962696E666F</pronom_pattern>
+        <regex>(?s)_silolibinfo</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Silo is a scientific data library created by the Lawrence Livermore National Laboratory. Silo can produce files based on the Portable Database format, or HDF5.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>14 Jul 2017</dcterms:created>
+        <dcterms:modified>14 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1068</puid>
+    <name>Silo</name>
+    <version>HDF5 Variant</version>
+    <alias />
+    <pronom_id>1875</pronom_id>
+    <extension>silo</extension>
+    <has_priority_over>fmt/286</has_priority_over>
+    <has_priority_over>fmt/287</has_priority_over>
+    <has_priority_over>fmt/807</has_priority_over>
+    <signature>
+      <name>SILO HDF5</name>
+      <note>BOF: &#8240;HDF
+VAR: _silolibinfo
+https://wci.llnl.gov/codes/silo/media/pdf/LLNL-SM-453191.pdf</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>89484446</pronom_pattern>
+        <regex>(?s)\A\x89HDF</regex>
+      </pattern>
+      <pattern>
+        <position>VAR</position>
+        <pronom_pattern>5F73696C6F6C6962696E666F</pronom_pattern>
+        <regex>(?s)_silolibinfo</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Silo is a scientific data library created by the Lawrence Livermore National Laboratory. Silo can produce files based on the Portable Database format, or HDF5.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>14 Jul 2017</dcterms:created>
+        <dcterms:modified>14 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1069</puid>
+    <name>Cue Sheet</name>
+    <version />
+    <alias />
+    <pronom_id>1876</pronom_id>
+    <extension>cue</extension>
+    <signature>
+      <name>CUE Sheet</name>
+      <note>BOF max offset 1024: seeking 'FILE', '  TRACK 01', '  INDEX 01 ' minutes 00-99 [30:39][30:39] ':' seconds 00-59 - [30:35][30:39] ':' frames 00-75 - [30:37][30:39]. Currently set to up to 1024 bytes between each element. These offsets and indents are not strictly defined and may need to be refined further as we encounter further examples.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>46494C45{0-1024}2020545241434B203031{0-1024}494E44455820303120[30:39][30:39]3A[30:35][30:39]3A[30:37][30:39]</pronom_pattern>
+        <regex>(?s)\A.{0,1024}FILE.{0,1024}  TRACK 01.{0,1024}INDEX 01 [0-9][0-9]:[0-5][0-9]:[0-7][0-9]</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>A cue sheet file is used to describe how the tracks within optical media are laid out and may contain further metadata. They are plain text files.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator />
+        <dcterms:created>17 Jul 2017</dcterms:created>
+        <dcterms:modified>17 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1070</puid>
+    <name>Preferred Executable Format</name>
+    <version />
+    <alias>PEF</alias>
+    <pronom_id>1877</pronom_id>
+    <apple_uid>com.apple.pef-binary</apple_uid>
+    <signature>
+      <name>Preferred Executable Format</name>
+      <note>BOF: Joy!peff
+https://web.archive.org/web/20020219190852/http://developer.apple.com:80/techpubs/mac/runtimehtml/RTArch-91.html#HEADING=91-0</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4A6F792170656666</pronom_pattern>
+        <regex>(?s)\AJoy\!peff</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The Preferred Executable Format is a file format that specifies the format of executable files and other object code for the Apple Macintosh. Files of this type may lack a format extension.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Datable / Datable</dc:creator>
+        <dcterms:created>17 Jul 2017</dcterms:created>
+        <dcterms:modified>17 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1071</puid>
+    <mime>application/x-apple-diskimage</mime>
+    <name>Apple Disk Image</name>
+    <version />
+    <alias />
+    <pronom_id>1878</pronom_id>
+    <extension>dmg</extension>
+    <apple_uid>com.apple.disk-image</apple_uid>
+    <signature>
+      <name>Apple Disk Image</name>
+      <note>EOF, 512 offset - 'koly' block header, 4 byte version (0x00000004), 4 byte size of header (0x00000200)</note>
+      <pattern>
+        <position>EOF</position>
+        <pronom_pattern>6B6F6C790000000400000200</pronom_pattern>
+        <regex>(?s)koly\x00\x00\x00\x04\x00\x00\x02\x00.{500}\Z</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The Apple Disk Image is a disk image format commonly used by the macOS operating system, and is distinct from the earlier 	Apple Disk Copy Image 4.2. Please contact the PRONOM team if you are able to provide a more thorough description of this format.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Datable / Datable</dc:creator>
+        <dcterms:created>17 Jul 2017</dcterms:created>
+        <dcterms:modified>17 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1072</puid>
+    <name>FileMaker Pro Database</name>
+    <version>1</version>
+    <alias />
+    <pronom_id>1879</pronom_id>
+    <signature>
+      <name>FileMaker Pro 1</name>
+      <note>Offset 525: HBAM2001MAY84*E.Pro 1.0F!
+This signature may be improved with a better understanding of the format.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4842414D323030314D41593834*450750726F20312E304621</pronom_pattern>
+        <regex>(?s)\A.{525}HBAM2001MAY84.*E\x07Pro 1\.0F\!</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>FileMaker Pro is a cross-platform relational database application from FileMaker Inc. Early FileMaker files may lack a file format extension, particularly those created in an Apple Macintosh environment.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Database</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Datable / Datable</dc:creator>
+        <dcterms:created>18 Jul 2017</dcterms:created>
+        <dcterms:modified>18 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1073</puid>
+    <name>Google Document Link File</name>
+    <version />
+    <alias />
+    <pronom_id>1880</pronom_id>
+    <extension>gslides</extension>
+    <extension>gdoc</extension>
+    <extension>gsheet</extension>
+    <extension>gdraw</extension>
+    <extension>gmap</extension>
+    <extension>gsite</extension>
+    <extension>gform</extension>
+    <signature>
+      <name>Google Document Link File</name>
+      <note>{"url": "https://docs.google.com/open{52}doc_id{1-128}email{1-128}resource_id</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>7B2275726C223A202268747470733A2F2F646F63732E676F6F676C652E636F6D2F6F70656E{1-64}646F635F6964{1-128}656D61696C{1-128}7265736F757263655F6964</pronom_pattern>
+        <regex>(?s)\A\{"url": "https://docs\.google\.com/open.{1,64}doc_id.{1,128}email.{1,128}resource_id</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Google document link files are text based files written in the format of JSON (JavaScript Object Notation). They 
+
+provide a URL link to the Google document held in Google Drive.</dc:description>
+      <dcterms:available />
+      <dc:creator>Google</dc:creator>
+      <dcterms:publisher>Google</dcterms:publisher>
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>19 Jul 2017</dcterms:created>
+        <dcterms:modified>19 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1074</puid>
+    <name>AVCHD Playlist File</name>
+    <version />
+    <alias />
+    <pronom_id>1881</pronom_id>
+    <extension>mpl</extension>
+    <extension>mpls</extension>
+    <signature>
+      <name>AVCHD Playlist File 1</name>
+      <note>BOF: MPLS0100</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D504C5330313030</pronom_pattern>
+        <regex>(?s)\AMPLS0100</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>AVCHD Playlist File 2</name>
+      <note>BOF: MPLS0200</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D504C5330323030</pronom_pattern>
+        <regex>(?s)\AMPLS0200</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>AVCHD (Advanced Video Coding High Definition) is a file-based format for the digital recording and playback of high-definition video. The Playlist File may be created by some AVCHD video recorders and contains an ordered list of references to associated AVCHD streams.</dc:description>
+      <dcterms:available />
+      <dc:creator>Sony / Sony</dc:creator>
+      <dcterms:publisher>Sony</dcterms:publisher>
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator />
+        <dcterms:created>21 Jul 2017</dcterms:created>
+        <dcterms:modified>21 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1075</puid>
+    <name>AVCHD Movie Object File</name>
+    <version />
+    <alias />
+    <pronom_id>1882</pronom_id>
+    <extension>bdm</extension>
+    <extension>bdmv</extension>
+    <signature>
+      <name>AVCHD Movie Object File</name>
+      <note>BOF: MOBJ0100</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D4F424A30313030</pronom_pattern>
+        <regex>(?s)\AMOBJ0100</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>AVCHD (Advanced Video Coding High Definition) is a file-based format for the digital recording and playback of high-definition video. The Movie Object file manages the play order of playlists.</dc:description>
+      <dcterms:available />
+      <dc:creator>Sony / Sony</dc:creator>
+      <dcterms:publisher>Sony</dcterms:publisher>
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator />
+        <dcterms:created>21 Jul 2017</dcterms:created>
+        <dcterms:modified>21 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1076</puid>
+    <name>AVCHD Index File</name>
+    <version />
+    <alias />
+    <pronom_id>1883</pronom_id>
+    <extension>bdm</extension>
+    <extension>bdmv</extension>
+    <signature>
+      <name>AVCHD Index File</name>
+      <note>BOF: INDX0100</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>494E445830313030</pronom_pattern>
+        <regex>(?s)\AINDX0100</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>AVCHD (Advanced Video Coding High Definition) is a file-based format for the digital recording and playback of high-definition video. The Index file manages the relationships between other AVCHD files.</dc:description>
+      <dcterms:available />
+      <dc:creator>Sony / Sony</dc:creator>
+      <dcterms:publisher>Sony</dcterms:publisher>
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator />
+        <dcterms:created>21 Jul 2017</dcterms:created>
+        <dcterms:modified>21 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1077</puid>
+    <name>AVCHD Thumbnail Index File</name>
+    <version />
+    <alias />
+    <pronom_id>1884</pronom_id>
+    <extension>tid</extension>
+    <signature>
+      <name>AVCHD Thumbnail Index File</name>
+      <note>BOF: TIDX0100</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>5449445830313030</pronom_pattern>
+        <regex>(?s)\ATIDX0100</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>AVCHD (Advanced Video Coding High Definition) is a file-based format for the digital recording and playback of high-definition video. The Thumbnail Index file stores an index to AVCHD thumbails, which are JPEG files with a .tdt extension.</dc:description>
+      <dcterms:available />
+      <dc:creator>Sony / Sony</dc:creator>
+      <dcterms:publisher>Sony</dcterms:publisher>
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator />
+        <dcterms:created>21 Jul 2017</dcterms:created>
+        <dcterms:modified>21 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1078</puid>
+    <name>Microsoft Program Database</name>
+    <version>2.00</version>
+    <alias />
+    <pronom_id>1886</pronom_id>
+    <extension>pdb</extension>
+    <signature>
+      <name>Microsoft PDB 2.00</name>
+      <note>BOF: 'Microsoft C/C++ program database 2.00'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D6963726F736F667420432F432B2B2070726F6772616D20646174616261736520322E3030</pronom_pattern>
+        <regex>(?s)\AMicrosoft C/C\+\+ program database 2\.00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>A Program Database File stores debugging information about a compiled executable, usually created at compile-time. It stores a list of all symbols in a module with their addresses and possibly the name of the file and the line on which the symbol was declared.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <content_type>Database</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of Scotland / National Library of Scotland</dc:creator>
+        <dcterms:created>24 Jul 2017</dcterms:created>
+        <dcterms:modified>24 Jul 2017</dcterms:modified>
+        <dc:description>An implementation can be found here: https://github.com/Microsoft/microsoft-pdb/blob/master/PDB/msf/msf.cpp</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1079</puid>
+    <name>Microsoft Program Database</name>
+    <version>7.00</version>
+    <alias />
+    <pronom_id>1887</pronom_id>
+    <extension>pdb</extension>
+    <signature>
+      <name>Microsoft PDB 7.00</name>
+      <note>BOF: 'Microsoft C/C++ MSF 7.00'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D6963726F736F667420432F432B2B204D534620372E3030</pronom_pattern>
+        <regex>(?s)\AMicrosoft C/C\+\+ MSF 7\.00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>A Program Database File stores debugging information about a compiled executable, usually created at compile-time. It stores a list of all symbols in a module with their addresses and possibly the name of the file and the line on which the symbol was declared.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <content_type>Database</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of Scotland / National Library of Scotland</dc:creator>
+        <dcterms:created>24 Jul 2017</dcterms:created>
+        <dcterms:modified>24 Jul 2017</dcterms:modified>
+        <dc:description>An implementation can be found here: https://github.com/Microsoft/microsoft-pdb/blob/master/PDB/msf/msf.cpp</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1080</puid>
+    <name>ASP Application Directive File</name>
+    <version />
+    <alias />
+    <pronom_id>1888</pronom_id>
+    <extension>asax</extension>
+    <signature>
+      <name>ASP Application Directive</name>
+      <note>BOF: &lt;%@ Application (CodeBehind|CompilerOptions|Description|Inherits|Language)=
+https://msdn.microsoft.com/en-us/library/es4ac4ek(v=vs.85).aspx</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C2540204170706C69636174696F6E20(436F6465426568696E64|436F6D70696C65724F7074696F6E73|4465736372697074696F6E|496E686572697473|4C616E6775616765)3D</pronom_pattern>
+        <regex>(?s)\A.{0,4}\x3c%@ Application (?:CodeBehind|CompilerOptions|Description|Inherits|Language)=</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Active Server Pages (ASP) is a Microsoft server-side script engine for dynamically generated web pages. The Application Directive file defines application-specific attributes used by the ASP.NET application compiler.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of Scotland / National Library of Scotland</dc:creator>
+        <dcterms:created>24 Jul 2017</dcterms:created>
+        <dcterms:modified>24 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1081</puid>
+    <name>ASP Control Directive File</name>
+    <version />
+    <alias />
+    <pronom_id>1889</pronom_id>
+    <extension>ascx</extension>
+    <signature>
+      <name>ASP Control Directive</name>
+      <note>BOF: &lt;%@ Control (AutoEventWireup|ClassName|CodeBehind|CodeFile|CodeFileBaseClass|CompilationMode|CompilerOptions|Debug|Description|EnableTheming|EnableViewState|Explicit|Inherits|Language|LinePragmas|Src|Strict|TargetSchema|WarningLevel)=
+https://msdn.microsoft.com/en-us/library/d19c0t4b(v=vs.85).aspx</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C254020436F6E74726F6C20(4175746F4576656E74576972657570|436C6173734E616D65|436F6465426568696E64|436F646546696C65|436F646546696C6542617365436C617373|436F6D70696C6174696F6E4D6F6465|436F6D70696C65724F7074696F6E73|4465627567|4465736372697074696F6E|456E61626C655468656D696E67|456E61626C65566965775374617465|4578706C69636974|496E686572697473|4C616E6775616765|4C696E65507261676D6173|537263|537472696374|546172676574536368656D61|5761726E696E674C6576656C)3D</pronom_pattern>
+        <regex>(?s)\A.{0,128}\x3c%@ Control (?:AutoEventWireup|ClassName|CodeBehind|CodeFile|CodeFileBaseClass|CompilationMode|CompilerOptions|Debug|Description|EnableTheming|EnableViewState|Explicit|Inherits|Language|LinePragmas|Src|Strict|TargetSchema|WarningLevel)=</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Active Server Pages (ASP) is a Microsoft server-side script engine for dynamically generated web pages. The Control Directive file defines user control specific attributes that are used by the ASP.NET page parser and compiler.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of Scotland / National Library of Scotland</dc:creator>
+        <dcterms:created>24 Jul 2017</dcterms:created>
+        <dcterms:modified>24 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1082</puid>
+    <name>ASP WebService Directive File</name>
+    <version />
+    <alias />
+    <pronom_id>1890</pronom_id>
+    <extension>asmx</extension>
+    <signature>
+      <name>ASP WebService Directive</name>
+      <note>BOF: &lt;%@ WebService (Class|CodeBehind|Debug|Language)=
+https://msdn.microsoft.com/en-us/library/yt16sxzt(v=vs.85).aspx</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C2540205765625365727669636520(436C617373|436F6465426568696E64|4465627567|4C616E6775616765)3D</pronom_pattern>
+        <regex>(?s)\A\x3c%@ WebService (?:Class|CodeBehind|Debug|Language)=</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Active Server Pages (ASP) is a Microsoft server-side script engine for dynamically generated web pages. The WebService Directive file defines XML Web service specific attributes used by the ASP.NET parser and compiler.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of Scotland / National Library of Scotland</dc:creator>
+        <dcterms:created>24 Jul 2017</dcterms:created>
+        <dcterms:modified>24 Jul 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1083</puid>
+    <name>Hangul Word Processor Document</name>
+    <version>3</version>
+    <alias />
+    <pronom_id>1891</pronom_id>
+    <extension>hwp</extension>
+    <signature>
+      <name>HWP 3</name>
+      <note>BOF: "HWP Document File V3.00 " 0x1A0102030405
+https://www.hancom.com/etc/hwpDownload.do</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>48575020446F63756D656E742046696C652056332E3030201A0102030405</pronom_pattern>
+        <regex>(?s)\AHWP Document File V3\.00 \x1a\x01\x02\x03\x04\x05</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Hangul is a Word Processor application created by South Korean software company Hancom. HWP is the native format. A link to the file format specification can be found here: https://www.hancom.com/etc/hwpDownload.do</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>18 Aug 2017</dcterms:created>
+        <dcterms:modified>18 Aug 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1084</puid>
+    <name>Hangul Word Processor Document</name>
+    <version>5</version>
+    <alias />
+    <pronom_id>1892</pronom_id>
+    <extension>hwp</extension>
+    <details>
+      <dc:description>Hangul is a Word Processor application created by South Korean software company Hancom. HWP is the native format. A link to the file format specification can be found here: https://www.hancom.com/etc/hwpDownload.do.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>18 Aug 2017</dcterms:created>
+        <dcterms:modified>18 Aug 2017</dcterms:modified>
+        <dc:description>This format is based on the OLE2 Compound Document Format and can be identified in DROID 6 and later via a container signature.</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1085</puid>
+    <name>TRIM Context Reference File</name>
+    <version />
+    <alias />
+    <pronom_id>1893</pronom_id>
+    <extension>tr5</extension>
+    <extension>txt</extension>
+    <signature>
+      <name>TRIM Context Reference File</name>
+      <note>BOF: [TRIM Context Reference]</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>5B5452494D20436F6E74657874205265666572656E63655D</pronom_pattern>
+        <regex>(?s)\A\[TRIM Context Reference\]</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>TRIM is an electronic document and records management system developed by Hewlett Packard. The TRIM Context Reference file contains metadata relating to a digital object and acts as a link to that object.</dc:description>
+      <dcterms:available />
+      <dc:creator>Hewlett Packard Company</dc:creator>
+      <dcterms:publisher>Hewlett Packard Company</dcterms:publisher>
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Public Record Office of Northern Ireland / Public Record Office of Northern Ireland</dc:creator>
+        <dcterms:created>18 Aug 2017</dcterms:created>
+        <dcterms:modified>18 Aug 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1086</puid>
+    <name>Monkey's Audio File</name>
+    <version />
+    <alias />
+    <pronom_id>1894</pronom_id>
+    <extension>ape</extension>
+    <signature>
+      <name>Monkey's Audio variant 1</name>
+      <note>"MAC " {48} Compression level (1000|2000|3000|4000|5000) representing (FAST|NORMAL|HIGH|EXTRA_HIGH|INSANE)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D414320{48}(E803|D007|B80B|A00F|8813)</pronom_pattern>
+        <regex>(?s)\AMAC .{48}(?:\xe8\x03|\xd0\x07|\xb8\x0b|\xa0\x0f|\x88\x13)</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Monkey's Audio variant 2</name>
+      <note>"MAC " {2} Compression level (1000|2000|3000|4000|5000) representing (FAST|NORMAL|HIGH|EXTRA_HIGH|INSANE)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D414320{2}(E803|D007|B80B|A00F|8813)</pronom_pattern>
+        <regex>(?s)\AMAC .{2}(?:\xe8\x03|\xd0\x07|\xb8\x0b|\xa0\x0f|\x88\x13)</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Monkey's Audio is a lossless audio file format created by Matt Ashland.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Audio</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>18 Aug 2017</dcterms:created>
+        <dcterms:modified>18 Aug 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1087</puid>
+    <name>FAT Disk Image</name>
+    <version />
+    <alias />
+    <pronom_id>1895</pronom_id>
+    <extension>img</extension>
+    <extension>ima</extension>
+    <extension>dsk</extension>
+    <signature>
+      <name>FAT Disk Image</name>
+      <note>BOF: Jump instruction bytes 1 and 3 - 0XEB{1}0x90, byte 14 = Sectors per cluster, any from 1, 2, 4, 8, 16, 32, 64, or 128</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>EB{1}90{10}(01|02|04|08|10|20|40|80)</pronom_pattern>
+        <regex>(?s)\A\xeb.{1}\x90.{10}(?:\x01|\x02|\x04|\x08|\x10| |@|\x80)</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The File Allocation Table is a file system architecture used across a range of computer systems. This entry aims to capture instances where the file system has been exported as a portable disk image. It may be possible and desirable to distinguish between different types of FAT image. Please contact the PRONOM team if you can assist with this.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of Scotland / National Library of Scotland</dc:creator>
+        <dcterms:created>21 Aug 2017</dcterms:created>
+        <dcterms:modified>21 Aug 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1088</puid>
+    <name>Visual Basic (VB) File</name>
+    <version />
+    <alias />
+    <pronom_id>1896</pronom_id>
+    <extension>vb</extension>
+    <details>
+      <dc:description>A .vb file is typically a source file written in the Visual Basic programming Language. It contains Visual Basic code but doesn't have a header or mandatory elements that can be used by PRONOM for identification purposes.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of Scotland / National Library of Scotland</dc:creator>
+        <dcterms:created>21 Aug 2017</dcterms:created>
+        <dcterms:modified>21 Aug 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1089</puid>
+    <name>VBScript (VBS) File</name>
+    <version />
+    <alias />
+    <pronom_id>1897</pronom_id>
+    <extension>vbs</extension>
+    <details>
+      <dc:description>VBScript is a scripting language based on Visual Basic, developed by Microsoft. A VBScript file contains code but doesn't have a formal structure or mandatory elements that can be used by PRONOM for identification purposes.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of Scotland / National Library of Scotland</dc:creator>
+        <dcterms:created>21 Aug 2017</dcterms:created>
+        <dcterms:modified>21 Aug 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1090</puid>
+    <name>Exclude File</name>
+    <version />
+    <alias />
+    <pronom_id>1898</pronom_id>
+    <extension>exclude</extension>
+    <details>
+      <dc:description>This entry aims to describe Exclude files that don't have a formal header or mandatory elements that can be used for automatic identification within PRONOM. The purpose of an Exclude file may be application-specific.
+In Visual Studio for example, the .exclude extension is added to files that are to be ignored or not included within a project. In this instance the extension .exclude is simply appended to the file and doesn't alter the internal structure of the file in any way.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of Scotland / National Library of Scotland</dc:creator>
+        <dcterms:created>21 Aug 2017</dcterms:created>
+        <dcterms:modified>21 Aug 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1091</puid>
+    <mime>application/vnd.scribus</mime>
+    <name>Scribus Document</name>
+    <version />
+    <alias />
+    <pronom_id>1899</pronom_id>
+    <extension>sla</extension>
+    <extension>scd</extension>
+    <has_priority_over>fmt/101</has_priority_over>
+    <signature>
+      <name>Scribus</name>
+      <note>BOF: '&lt;SCRIBUS' - this sequence captures the oldest variant to use XML tags, &lt;SCRIBUS&gt; approximately in use for versions 0.3-0.9.*, a later variant &lt;SCRIBUSUTF8 approximately in use for versions 1.0-1.2.*, and an even later variant &lt;SCRIBUSUTF8NEW approximately in use for versions 1.3 onwards. It may be desirable to split these into separate PUIDs.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C53435249425553</pronom_pattern>
+        <regex>(?s)\A\x3cSCRIBUS</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Scribus version with XML header</name>
+      <note>BOF: &lt;?xml version="1.0" encoding="UTF-8"?&gt;.&lt;SCRIBUSUTF8NEW - This variant appears to have been in use from approximately Scribus version 1.3 and later</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F786D6C2076657273696F6E3D22312E302220656E636F64696E673D225554462D38223F3E(0D|0A|0D0A)3C53435249425553555446384E4557</pronom_pattern>
+        <regex>(?s)\A\x3c\?xml version="1\.0" encoding="UTF-8"\?\x3e(?:\r|\n|\r\n)\x3cSCRIBUSUTF8NEW</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Scribus is an open source desktop publishing application originally created by Franz Schmid. Scribus document files may be compressed within a GZIP container. It may be desirable to distinguish between different versions of Scribus Document.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>23 Aug 2017</dcterms:created>
+        <dcterms:modified>23 Aug 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1092</puid>
+    <name>Alias Pix Image File</name>
+    <version />
+    <alias />
+    <pronom_id>1900</pronom_id>
+    <extension>pix</extension>
+    <signature>
+      <name>Alias Pix Image</name>
+      <note>BOF, offset 4: 0x0000 (representing offset to x coordinates from end of 10 byte header), {2}, 0x0018 representing 24 bits per pixel, [!00] representing number of contiguous bytes (greater than 0) that contain the following 3 byte RGB value - https://www.autodesk.com/techpubs/aliasstudio/2010/index.html?url=WS73099cc142f4875535a241551166ac8792f-7d76.htm,topicNumber=d0e246178</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>0000{2}0018[!00]</pronom_pattern>
+        <regex>(?s)\A.{4}\x00\x00.{2}\x00\x18(!\x00)</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Alias is a Computer Aided Design software family owned by Autodesk. The Pix Image file is a raster image format produced produced by Alias. Files of this type may lack a file extension.</dc:description>
+      <dcterms:available />
+      <dc:creator>Autodesk Corporation</dc:creator>
+      <dcterms:publisher>Autodesk Corporation</dcterms:publisher>
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Canadian Centre for Architecture / The Canadian Centre for Architecture</dc:creator>
+        <dcterms:created>18 Sep 2017</dcterms:created>
+        <dcterms:modified>18 Sep 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1093</puid>
+    <name>Alias Scene Description Language</name>
+    <version />
+    <alias />
+    <pronom_id>1901</pronom_id>
+    <extension>sdl</extension>
+    <signature>
+      <name>Alias Scene Description Language</name>
+      <note>BOF: DEFINITION{1-512}version*MODEL - This signature assumes the version is defined as a minimum but this assumption may need to be revised as further format examples are encountered. It may be desirable to distinguish between different versions. https://www.autodesk.com/techpubs/studiotools/13/PDFs/SDL</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>444546494E4954494F4E{1-512}76657273696F6E*4D4F44454C</pronom_pattern>
+        <regex>(?s)\ADEFINITION.{1,512}version.*MODEL</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Alias is a Computer Aided Design software family owned by Autodesk. The Scene Description Language file defines a 3D scene, including its models, shaders, lights, and animation. Files of this type may lack a file extension.</dc:description>
+      <dcterms:available />
+      <dc:creator>Autodesk Corporation</dc:creator>
+      <dcterms:publisher>Autodesk Corporation</dcterms:publisher>
+      <content_type>Model</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Canadian Centre for Architecture / The Canadian Centre for Architecture</dc:creator>
+        <dcterms:created>18 Sep 2017</dcterms:created>
+        <dcterms:modified>18 Sep 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1094</puid>
+    <name>The Neuroimaging Informatics Technology Initiative File Format</name>
+    <version>2</version>
+    <alias>NIfTI-2</alias>
+    <pronom_id>1902</pronom_id>
+    <extension>nii</extension>
+    <signature>
+      <name>The Neuroimaging Informatics Technology Initiative File Format V2 variant1</name>
+      <note>Offset 4: 'ni2 ' 0x0D0A1A0A
+https://www.nitrc.org/forum/forum.php?thread_id=2148&amp;forum_id=1941</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>6E6932000D0A1A0A</pronom_pattern>
+        <regex>(?s)\A.{4}ni2\x00\r\n\x1a\n</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>The Neuroimaging Informatics Technology Initiative File Format V2 variant2</name>
+      <note>Offset 4: 'n+2 ' 0x0D0A1A0A
+https://www.nitrc.org/forum/forum.php?thread_id=2148&amp;forum_id=1941</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>6E2B32000D0A1A0A</pronom_pattern>
+        <regex>(?s)\A.{4}n\+2\x00\r\n\x1a\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>A Neuroimaging format used in medical industry for the analysis of scans of x-rays. Version 2 is an extended version of NIfTI allowing 64 bit storage and addressing.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Bodleian Library, University of Oxford / Bodleian Library, University of Oxford</dc:creator>
+        <dcterms:created>19 Sep 2017</dcterms:created>
+        <dcterms:modified>19 Sep 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1095</puid>
+    <name>PEA Archive Format</name>
+    <version />
+    <alias />
+    <pronom_id>1903</pronom_id>
+    <extension>pea</extension>
+    <signature>
+      <name>PEA Archive</name>
+      <note>BOF: Magic 0xEA, 9 bytes include major/minor version which may be desirable to distinguish in the future. Stream Header 0x0000 'POD' 0x00
+https://hwiegman.home.xs4all.nl/fileformats/pea/pea_file_format.pdf</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>EA{9}0000504F4400</pronom_pattern>
+        <regex>(?s)\A\xea.{9}\x00\x00POD\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>PEA (an acronym of Pack Encrypt Authenticate) is the native format of PeaZip, an open source file archiver created by Giorgio Tani.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>19 Sep 2017</dcterms:created>
+        <dcterms:modified>19 Sep 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1096</puid>
+    <name>FreeArc Archive Format</name>
+    <version />
+    <alias />
+    <pronom_id>1904</pronom_id>
+    <extension>arc</extension>
+    <signature>
+      <name>FreeArc Archive Format</name>
+      <note>BOF: 'ArC' 0x01</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>41724301</pronom_pattern>
+        <regex>(?s)\AArC\x01</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>FreeArc is an open source file archiver developed by Bulat Ziganshin. The native .arc file format is not related to web archiving formats and is instead closer to a compressed zip type of archive file.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>19 Sep 2017</dcterms:created>
+        <dcterms:modified>19 Sep 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1097</puid>
+    <name>ZPAQ Archive Format</name>
+    <version />
+    <alias />
+    <pronom_id>1905</pronom_id>
+    <extension>zpaq</extension>
+    <signature>
+      <name>ZPAQ Archive Format variant 1</name>
+      <note>BOF: 7kSt{9}zpQ(0x01|0x02) - https://github.com/zpaq/zpaq/blob/master/zpaq.cpp</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>376B5374{9}7A5051(01|02)</pronom_pattern>
+        <regex>(?s)\A7kSt.{9}zPQ(?:\x01|\x02)</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>ZPAQ Archive Format variant 2</name>
+      <note>BOF: zpQ(0x01|0x02) - https://github.com/zpaq/zpaq/blob/master/zpaq.cpp</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>7A5051(01|02)</pronom_pattern>
+        <regex>(?s)\AzPQ(?:\x01|\x02)</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>ZPAQ is an open source command line file archiver developed by Matt Mahoney.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>19 Sep 2017</dcterms:created>
+        <dcterms:modified>19 Sep 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1099</puid>
+    <name>TCR eBook</name>
+    <version />
+    <alias />
+    <pronom_id>1906</pronom_id>
+    <extension>tcr</extension>
+    <signature>
+      <name>TCR eBook</name>
+      <note>BOF: !!8-Bit!!</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>2121382D4269742121</pronom_pattern>
+        <regex>(?s)\A\!\!8-Bit\!\!</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>TCR is an eBook format developed by Psion. Please contact the PRONOM team if you can provide a more detailed description.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>19 Sep 2017</dcterms:created>
+        <dcterms:modified>19 Sep 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1098</puid>
+    <name>XZ File Format</name>
+    <version />
+    <alias />
+    <pronom_id>1907</pronom_id>
+    <extension>xz</extension>
+    <signature>
+      <name>XZ File Format</name>
+      <note>BOF: 0xFD '7zXZ', 0x00
+EOF: YZ
+https://tukaani.org/xz/xz-file-format.txt</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>FD377A585A00</pronom_pattern>
+        <regex>(?s)\A\xfd7zXZ\x00</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <pronom_pattern>595A</pronom_pattern>
+        <regex>(?s)YZ\Z</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The XZ file format is intended as a single-file compression format, similar in utility to Gzip.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>19 Sep 2017</dcterms:created>
+        <dcterms:modified>19 Sep 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1100</puid>
+    <name>yEnc Encoded File</name>
+    <version />
+    <alias />
+    <pronom_id>1908</pronom_id>
+    <extension>yenc</extension>
+    <signature>
+      <name>yEnc File</name>
+      <note>BOF: =ybegin line=
+http://www.yenc.org/yEnc-draft-1.txt</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3D79626567696E206C696E653D</pronom_pattern>
+        <regex>(?s)\A=ybegin line=</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>yEnc is a binary-to-text encoding mechanism initially developed by J&#252;rgen Helbing for transferring binary files in messages, such as via Usenet or email.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>19 Sep 2017</dcterms:created>
+        <dcterms:modified>19 Sep 2017</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
