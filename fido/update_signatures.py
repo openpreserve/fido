@@ -94,7 +94,7 @@ def run(defaults=defaults):
             print("Creating temporary folder for download:", tmpdir)
             try:
                 os.mkdir(tmpdir)
-            except:
+            except OSError:
                 pass
         if not os.path.isdir(tmpdir):
             print("Failed to create temporary folder for PUID's, using", tmpdir)
