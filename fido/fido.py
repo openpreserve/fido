@@ -477,7 +477,7 @@ class Fido:
             if (os.name != "nt"):
                 try:
                     self.current_file = os.readlink("/proc/self/fd/0")
-                except:
+                except OSError:
                     if filename is not None:
                         self.current_file = filename
                     else:
