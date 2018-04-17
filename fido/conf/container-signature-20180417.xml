@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?> 
 
-<ContainerSignatureMapping schemaVersion="1.0" signatureVersion="21"> 
+<ContainerSignatureMapping schemaVersion="1.0" signatureVersion="22">
     <ContainerSignatures>
         <ContainerSignature Id="1000" ContainerType="OLE2">
             <Description>Microsoft Word 6.0/95 OLE2</Description>
