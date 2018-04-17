@@ -88,7 +88,7 @@
       <pattern>
         <position>BOF</position>
         <pronom_pattern>32BE000000AB0000000000000000{82}[!0000]</pronom_pattern>
-        <regex>(?s)\A2\xbe\x00\x00\x00\xab\x00\x00\x00\x00\x00\x00\x00\x00.{82}(!\x00\x00)</regex>
+        <regex>(?s)\A2\xbe\x00\x00\x00\xab\x00\x00\x00\x00\x00\x00\x00\x00.{82}(?!\x00\x00)</regex>
       </pattern>
     </signature>
     <details>
@@ -362,7 +362,7 @@
       <pattern>
         <position>BOF</position>
         <pronom_pattern>31BE000000AB0000000000000000{82}[!0000]</pronom_pattern>
-        <regex>(?s)\A1\xbe\x00\x00\x00\xab\x00\x00\x00\x00\x00\x00\x00\x00.{82}(!\x00\x00)</regex>
+        <regex>(?s)\A1\xbe\x00\x00\x00\xab\x00\x00\x00\x00\x00\x00\x00\x00.{82}(?!\x00\x00)</regex>
       </pattern>
     </signature>
     <details>
@@ -4255,7 +4255,7 @@ File format specifications available at http://standards.iso.org/ittf/PubliclyAv
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0004000000000000000000000A00[!00]{1009}03000200FFFFFFFFFFFFFFFF{1}01FFFF{2}0F0F{491}[41:5A]000A{502}2B00[0B:0F]0000002B00{512}[!00]00[!00]00FFFFFFFFFFFFFFFF</pronom_pattern>
-        <regex>(?s)\A\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\n\x00(!\x00).{1009}\x03\x00\x02\x00\xff\xff\xff\xff\xff\xff\xff\xff.{1}\x01\xff\xff.{2}\x0f\x0f.{491}[A-Z]\x00\n.{502}\+\x00[\x0b-\x0f]\x00\x00\x00\+\x00.{512}(!\x00)\x00(!\x00)\x00\xff\xff\xff\xff\xff\xff\xff\xff</regex>
+        <regex>(?s)\A\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\n\x00(?!\x00).{1009}\x03\x00\x02\x00\xff\xff\xff\xff\xff\xff\xff\xff.{1}\x01\xff\xff.{2}\x0f\x0f.{491}[A-Z]\x00\n.{502}\+\x00[\x0b-\x0f]\x00\x00\x00\+\x00.{512}(?!\x00)\x00(?!\x00)\x00\xff\xff\xff\xff\xff\xff\xff\xff</regex>
       </pattern>
     </signature>
     <details>
@@ -6197,7 +6197,7 @@ Known QuarkXpress file types are: qxd - QuarkXpress Document; qxl - QuarkXpress 
       <pattern>
         <position>BOF</position>
         <pronom_pattern>1991[!4001C80000000000]</pronom_pattern>
-        <regex>(?s)\A\x19\x91(!@\x01\xc8\x00\x00\x00\x00\x00)</regex>
+        <regex>(?s)\A\x19\x91(?!@\x01\xc8\x00\x00\x00\x00\x00)</regex>
       </pattern>
     </signature>
     <details>
@@ -9643,7 +9643,7 @@ Full specifications can be found at http://www.w3.org/TR/xmlschema-0/</dc:descri
       <pattern>
         <position>BOF</position>
         <pronom_pattern>00{3}000000[!00]{504}000000[00:02]{4}[!00]</pronom_pattern>
-        <regex>(?s)\A\x00.{3}\x00\x00\x00(!\x00).{504}\x00\x00\x00[\x00-\x02].{4}(!\x00)</regex>
+        <regex>(?s)\A\x00.{3}\x00\x00\x00(?!\x00).{504}\x00\x00\x00[\x00-\x02].{4}(?!\x00)</regex>
       </pattern>
     </signature>
     <signature>
@@ -9652,7 +9652,7 @@ Full specifications can be found at http://www.w3.org/TR/xmlschema-0/</dc:descri
       <pattern>
         <position>BOF</position>
         <pronom_pattern>00{3}000000[!00]{520}000000[00:02]{4}[!00]</pronom_pattern>
-        <regex>(?s)\A\x00.{3}\x00\x00\x00(!\x00).{520}\x00\x00\x00[\x00-\x02].{4}(!\x00)</regex>
+        <regex>(?s)\A\x00.{3}\x00\x00\x00(?!\x00).{520}\x00\x00\x00[\x00-\x02].{4}(?!\x00)</regex>
       </pattern>
     </signature>
     <signature>
@@ -9661,7 +9661,7 @@ Full specifications can be found at http://www.w3.org/TR/xmlschema-0/</dc:descri
       <pattern>
         <position>BOF</position>
         <pronom_pattern>00{3}000000[!00]{504}000000[00:02]000000010000000001000000[!00]</pronom_pattern>
-        <regex>(?s)\A\x00.{3}\x00\x00\x00(!\x00).{504}\x00\x00\x00[\x00-\x02]\x00\x00\x00\x01\x00\x00\x00\x00\x01\x00\x00\x00(!\x00)</regex>
+        <regex>(?s)\A\x00.{3}\x00\x00\x00(?!\x00).{504}\x00\x00\x00[\x00-\x02]\x00\x00\x00\x01\x00\x00\x00\x00\x01\x00\x00\x00(?!\x00)</regex>
       </pattern>
     </signature>
     <details>
@@ -12649,11 +12649,11 @@ Variants 2-8 cover the following pattern, which would be desirable to consolidat
     </signature>
     <signature>
       <name>QuickTime variant4</name>
-      <note>Offset 4: ftypqt  *moov{0-4096}(mvhd|cmov|rmra)</note>
+      <note>Offset 4: 'ftypqt  ' only - assumption is that format is QuickTime if FTYP define as 'qt  ' therefore no need to seek additional MOOV atom.</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>6674797071742020*6D6F6F76{0-4096}(6D766864|636D6F76|726D7261)</pronom_pattern>
-        <regex>(?s)\A.{4,4}ftypqt  .*moov.{0,4096}(?:mvhd|cmov|rmra)</regex>
+        <pronom_pattern>6674797071742020</pronom_pattern>
+        <regex>(?s)\A.{4,4}ftypqt  </regex>
       </pattern>
     </signature>
     <signature>
@@ -14009,11 +14009,11 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
     <apple_uid>public.mp3</apple_uid>
     <signature>
       <name>MPEG-1 Audio Layer 3 with ID3v2 Tag</name>
-      <note>Regularly-spaced frame headers should always be discoverable near EOF. An ID3v1 tag of up to 355 bytes may be present at EOF. NB. The signature byte sequence is currently massaged to steer around the known PRONOM bug in the area of right fragment matching when the longest fragment is not nearest EOF. A fragment of three null bytes has been appended to the signature to ensure it's the longest. These null bytes appear to be always present so will hopefully not cause any valid MP3 file to fail identification. When the PRONOM bug has been fixed, the "FFFB{10-50}000000{37-1782}" at the end of the byte sequence should be replaced by "FFFB(47-1795)" and this note curtailed. The BOF byte sequence represents the MP3 ID3 tag.</note>
+      <note>Regularly-spaced frame headers should always be discoverable near EOF. An ID3v1 tag of up to 355 bytes may be present at EOF.</note>
       <pattern>
         <position>EOF</position>
-        <pronom_pattern>FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{7-500}000000{36-1426}</pronom_pattern>
-        <regex>(?s)\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{7,500}\x00\x00\x00.{36,1426}\Z</regex>
+        <pronom_pattern>FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{47-1795}</pronom_pattern>
+        <regex>(?s)\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{47,1795}\Z</regex>
       </pattern>
       <pattern>
         <position>BOF</position>
@@ -14023,11 +14023,11 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
     </signature>
     <signature>
       <name>MPEG-2 Audio Layer 3 with ID3v2 Tag</name>
-      <note>Regularly-spaced frame headers should always be discoverable near EOF. An ID3v1 tag of up to 355 bytes may be present at EOF. NB. The signature byte sequence is currently massaged to steer around the known PRONOM bug in the area of right fragment matching when the longest fragment is not nearest EOF. A fragment of three null bytes has been appended to the signature to ensure it's the longest. These null bytes appear to be always present so will hopefully not cause any valid MP3 file to fail identification. When the PRONOM bug has been fixed, the "FFF3{10-50}000000{37-1782}" at the end of the byte sequence should be replaced by "FFF3(47-1795)" and this note curtailed. The BOF byte sequence represents the MP3 ID3 tag.</note>
+      <note>Regularly-spaced frame headers should always be discoverable near EOF. An ID3v1 tag of up to 355 bytes may be present at EOF.</note>
       <pattern>
         <position>EOF</position>
-        <pronom_pattern>FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{7-500}000000{36-1426}</pronom_pattern>
-        <regex>(?s)\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{7,500}\x00\x00\x00.{36,1426}\Z</regex>
+        <pronom_pattern>FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{47-1795}</pronom_pattern>
+        <regex>(?s)\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{47,1795}\Z</regex>
       </pattern>
       <pattern>
         <position>BOF</position>
@@ -14037,11 +14037,11 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
     </signature>
     <signature>
       <name>MPEG-1 Audio Layer 3 with ID3v2 Tag (protected)</name>
-      <note>Regularly-spaced frame headers should always be discoverable near EOF. Header has CRC bit off to indicate protected. An ID3v1 tag of up to 355 bytes may be present at EOF. NB. The signature byte sequence is currently massaged to steer around the known PRONOM bug in the area of right fragment matching when the longest fragment is not nearest EOF. A fragment of three null bytes has been appended to the signature to ensure it's the longest. These null bytes appear to be always present so will hopefully not cause any valid MP3 file to fail identification. When the PRONOM bug has been fixed, the "FFFA{10-50}000000{37-1782}" at the end of the byte sequence should be replaced by "FFFA(47-1795)" and this note curtailed. The BOF byte sequence represents the MP3 ID3 tag.</note>
+      <note>Regularly-spaced frame headers should always be discoverable near EOF. Header has CRC bit off to indicate protected. An ID3v1 tag of up to 355 bytes may be present at EOF.</note>
       <pattern>
         <position>EOF</position>
-        <pronom_pattern>FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{7-500}000000{36-1426}</pronom_pattern>
-        <regex>(?s)\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{7,500}\x00\x00\x00.{36,1426}\Z</regex>
+        <pronom_pattern>FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{47-1795}</pronom_pattern>
+        <regex>(?s)\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{47,1795}\Z</regex>
       </pattern>
       <pattern>
         <position>BOF</position>
@@ -14051,11 +14051,11 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
     </signature>
     <signature>
       <name>MPEG-2 Audio Layer 3 with ID3v2 Tag (protected)</name>
-      <note>Regularly-spaced frame headers should always be discoverable near EOF. Header has CRC bit off to indicate protected. An ID3v1 tag of up to 355 bytes may be present at EOF. NB. The signature byte sequence is currently massaged to steer around the known PRONOM bug in the area of right fragment matching when the longest fragment is not nearest EOF. A fragment of three null bytes has been appended to the signature to ensure it's the longest. These null bytes appear to be always present so will hopefully not cause any valid MP3 file to fail identification. When the PRONOM bug has been fixed, the "FFF2{10-50}000000{37-1782}" at the end of the byte sequence should be replaced by "FFF2(47-1795)" and this note curtailed. The BOF byte sequence represents the MP3 ID3 tag.</note>
+      <note>Regularly-spaced frame headers should always be discoverable near EOF. Header has CRC bit off to indicate protected. An ID3v1 tag of up to 355 bytes may be present at EOF.</note>
       <pattern>
         <position>EOF</position>
-        <pronom_pattern>FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{7-500}000000{36-1426}</pronom_pattern>
-        <regex>(?s)\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{7,500}\x00\x00\x00.{36,1426}\Z</regex>
+        <pronom_pattern>FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{47-1795}</pronom_pattern>
+        <regex>(?s)\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{47,1795}\Z</regex>
       </pattern>
       <pattern>
         <position>BOF</position>
@@ -14068,8 +14068,8 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       <note>Regularly-spaced frame headers should always be discoverable starting at BOF.</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}</pronom_pattern>
-        <regex>(?s)\A\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}</regex>
+        <pronom_pattern>FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]{46-1439}FFFB[10:EB]</pronom_pattern>
+        <regex>(?s)\A.{0,1795}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb].{46,1439}\xff\xfb[\x10-\xeb]</regex>
       </pattern>
     </signature>
     <signature>
@@ -14077,8 +14077,8 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       <note>Regularly-spaced frame headers should always be discoverable starting at BOF.</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}</pronom_pattern>
-        <regex>(?s)\A\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}</regex>
+        <pronom_pattern>FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]{46-1439}FFF3[10:EB]</pronom_pattern>
+        <regex>(?s)\A.{0,1795}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb].{46,1439}\xff\xf3[\x10-\xeb]</regex>
       </pattern>
     </signature>
     <signature>
@@ -14086,8 +14086,8 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       <note>Regularly-spaced frame headers should always be discoverable starting at BOF with each header having CRC bit set off to indicate file is protected.</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}</pronom_pattern>
-        <regex>(?s)\A\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}</regex>
+        <pronom_pattern>FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]{46-1439}FFFA[10:EB]</pronom_pattern>
+        <regex>(?s)\A.{0,1795}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb].{46,1439}\xff\xfa[\x10-\xeb]</regex>
       </pattern>
     </signature>
     <signature>
@@ -14095,8 +14095,8 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       <note>Regularly-spaced frame headers should always be discoverable starting at BOF with each header having CRC bit set off to indicate file is protected.</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}</pronom_pattern>
-        <regex>(?s)\A\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}</regex>
+        <pronom_pattern>FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]{46-1439}FFF2[10:EB]</pronom_pattern>
+        <regex>(?s)\A.{0,1795}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb].{46,1439}\xff\xf2[\x10-\xeb]</regex>
       </pattern>
     </signature>
     <details>
@@ -17862,7 +17862,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
       <pattern>
         <position>BOF</position>
         <pronom_pattern>52494646{4}57415645666D7420[!10]{3}[!FEFF]{16-*}64617461</pronom_pattern>
-        <regex>(?s)\ARIFF.{4}WAVEfmt (!\x10).{3}(!\xfe\xff).{16,}data</regex>
+        <regex>(?s)\ARIFF.{4}WAVEfmt (?!\x10).{3}(?!\xfe\xff).{16,}data</regex>
       </pattern>
     </signature>
     <details>
@@ -20674,22 +20674,32 @@ Documentation for FrameMaker 5.0 was integrated into the user manual that was bu
   </format>
   <format>
     <puid>fmt/191</puid>
-    <name>Sony RAW Image File</name>
-    <version />
+    <name>Sony ARW RAW Image File</name>
+    <version>1.x</version>
     <alias />
     <pronom_id>916</pronom_id>
     <extension>arw</extension>
+    <has_priority_over>fmt/353</has_priority_over>
+    <signature>
+      <name>Sony ARW 1.x</name>
+      <note>TIFF Header{0-512}"SONY"{0-2048} Maker Note data adjusted for endianness: Sony 'FileFormat' Exif tag 0xB000, 0x0001=byte, 0x00000004=four times, 0x01 = SR2 format, 02= ARW 1.x, 03= ARW 2.x. We can distinguish between minor versions if requested. Sony Maker Note tags described at https://sno.phy.queensu.ca/~phil/exiftool/TagNames/Sony.html</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>49492A00{0-512}534F4E59{0-2048}00B001000400000002</pronom_pattern>
+        <regex>(?s)\AII\*\x00.{0,512}SONY.{0,2048}\x00\xb0\x01\x00\x04\x00\x00\x00\x02</regex>
+      </pattern>
+    </signature>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>ARW is a raw image format produced by some makes of Sony cameras. The format is based upon TIFF.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
-      <content_type />
+      <dc:creator>Sony / Sony</dc:creator>
+      <dcterms:publisher>Sony</dcterms:publisher>
+      <content_type>Image (Raster)</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>27 Oct 2009</dcterms:created>
-        <dcterms:modified>27 Oct 2009</dcterms:modified>
+        <dcterms:modified>28 Nov 2017</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -26125,7 +26135,7 @@ Additional information regarding violations of PDF/A 1b conformance added Februa
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0000{15}[!00]{3}[!00]{2}(0100|00[01:08])</pronom_pattern>
-        <regex>(?s)\A.{3200}\x00\x00.{15}(!\x00).{3}(!\x00).{2}(?:\x01\x00|\x00[\x01-\x08])</regex>
+        <regex>(?s)\A.{3200}\x00\x00.{15}(?!\x00).{3}(?!\x00).{2}(?:\x01\x00|\x00[\x01-\x08])</regex>
       </pattern>
     </signature>
     <signature>
@@ -26139,7 +26149,7 @@ Additional information regarding violations of PDF/A 1b conformance added Februa
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0000{15}[!00]{3}[!00]{2}(0100|00[01:08])</pronom_pattern>
-        <regex>(?s)\A.{3600}\x00\x00.{15}(!\x00).{3}(!\x00).{2}(?:\x01\x00|\x00[\x01-\x08])</regex>
+        <regex>(?s)\A.{3600}\x00\x00.{15}(?!\x00).{3}(?!\x00).{2}(?:\x01\x00|\x00[\x01-\x08])</regex>
       </pattern>
     </signature>
     <details>
@@ -26549,7 +26559,7 @@ Specifications available at http://www.asprs.org/Committee-General/LASer-LAS-Fil
       <pattern>
         <position>BOF</position>
         <pronom_pattern>00??0000{8}0A00[!00]{487}(0000|0001){2}010000000100{512-4608}03{3}FFFFFFFFFFFFFFFF{2}FFFF{2}0F0F</pronom_pattern>
-        <regex>(?s)\A\x00.?\x00\x00.{8}\n\x00(!\x00).{487}(?:\x00\x00|\x00\x01).{2}\x01\x00\x00\x00\x01\x00.{512,4608}\x03.{3}\xff\xff\xff\xff\xff\xff\xff\xff.{2}\xff\xff.{2}\x0f\x0f</regex>
+        <regex>(?s)\A\x00.?\x00\x00.{8}\n\x00(?!\x00).{487}(?:\x00\x00|\x00\x01).{2}\x01\x00\x00\x00\x01\x00.{512,4608}\x03.{3}\xff\xff\xff\xff\xff\xff\xff\xff.{2}\xff\xff.{2}\x0f\x0f</regex>
       </pattern>
     </signature>
     <details>
@@ -26912,7 +26922,7 @@ Full specifications available at http://www-mipl.jpl.nasa.gov/external/VICAR_fil
       <pattern>
         <position>BOF</position>
         <pronom_pattern>52494646{4}41434F4E{0-*}616E69682400000024000000[!00]*4C495354{4}6672616D69636F6E</pronom_pattern>
-        <regex>(?s)\ARIFF.{4}ACON.{0,}anih\$\x00\x00\x00\$\x00\x00\x00(!\x00).*LIST.{4}framicon</regex>
+        <regex>(?s)\ARIFF.{4}ACON.{0,}anih\$\x00\x00\x00\$\x00\x00\x00(?!\x00).*LIST.{4}framicon</regex>
       </pattern>
     </signature>
     <details>
@@ -33671,7 +33681,7 @@ The EBML specifications are work-in-progress, and can be found here: https://git
         <dc:identifier>http://www.matroska.org/downloads/test_w1.html</dc:identifier>
         <dcterms:license />
         <dc:rights />
-        <checksum type="md5">4c32e11998abeee0cf2c4ab5a150326b</checksum>
+        <checksum type="md5">2ab1f10ce69a16e9a0081f58d537eefc</checksum>
       </example_file>
       <record_metadata>
         <status>unknown</status>
@@ -42252,11 +42262,11 @@ The format is used to store media images for forensic purposes. They are a type 
     <extension>sw3</extension>
     <signature>
       <name>Scriptware SW3</name>
-      <note>SW3C-Scriptware by Cinovation</note>
+      <note>SW3(A|C)-Scriptware by Cinovation</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>535733432D536372697074776172652062792043696E6F766174696F6E</pronom_pattern>
-        <regex>(?s)\ASW3C-Scriptware by Cinovation</regex>
+        <pronom_pattern>535733(41|43)2D536372697074776172652062792043696E6F766174696F6E</pronom_pattern>
+        <regex>(?s)\ASW3(?:A|C)-Scriptware by Cinovation</regex>
       </pattern>
     </signature>
     <details>
@@ -50629,7 +50639,7 @@ In Visual Studio for example, the .exclude extension is added to files that are 
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0000{2}0018[!00]</pronom_pattern>
-        <regex>(?s)\A.{4}\x00\x00.{2}\x00\x18(!\x00)</regex>
+        <regex>(?s)\A.{4}\x00\x00.{2}\x00\x18(?!\x00)</regex>
       </pattern>
     </signature>
     <details>
@@ -50920,6 +50930,979 @@ http://www.yenc.org/yEnc-draft-1.txt</note>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>19 Sep 2017</dcterms:created>
         <dcterms:modified>19 Sep 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1101</puid>
+    <mime>image/heif</mime>
+    <name>High Efficiency Image File Format</name>
+    <version />
+    <alias />
+    <pronom_id>1909</pronom_id>
+    <extension>heic</extension>
+    <signature>
+      <name>HEIF</name>
+      <note>BOF, offset4: ftyp(mif1|msf1|heic|heix|hevc|hevx) - http://nokiatech.github.io/heif/technical.html</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>66747970(6D696631|6D736631|68656963|68656978|68657663|68657678)</pronom_pattern>
+        <regex>(?s)\A.{4}ftyp(?:mif1|msf1|heic|heix|hevc|hevx)</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The High Efficiency Image File Format (HEIF) is an image format standard defined in ISO/IEC 23008-12 - MPEG-H Part 12. HEIF can store images, image properties, thumbnails and other derivatives, plus image metadata. It can support individual images and image sequences At this time the PRONOM identification signature does not distinguish between individual images and image sequences although this may be desirable.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>26 Sep 2017</dcterms:created>
+        <dcterms:modified>26 Sep 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1102</puid>
+    <name>Uuencoded File</name>
+    <version />
+    <alias />
+    <pronom_id>1910</pronom_id>
+    <extension>uue</extension>
+    <signature>
+      <name>Uuencoded File</name>
+      <note>BOF: 'begin '&lt;unix permissions mode&gt; ' ' &lt;file name&gt; newline character. 
+EOF, max offset 2: newline character 'end'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>626567696E20[30:37][30:37][30:37]20{1-256}0A</pronom_pattern>
+        <regex>(?s)\Abegin [0-7][0-7][0-7] .{1,256}\n</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <pronom_pattern>0A656E64</pronom_pattern>
+        <regex>(?s)\nend.{0,2}\Z</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Uuencoding, (Unix-to-Unix encoding) is a binary to text encoding mechanism created by Mary Ann Horton for encoding binary data for transmission in email systems.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Sep 2017</dcterms:created>
+        <dcterms:modified>27 Sep 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1103</puid>
+    <name>AutoCAD Hatch Pattern</name>
+    <version />
+    <alias />
+    <pronom_id>1911</pronom_id>
+    <extension>pat</extension>
+    <signature>
+      <name>AutoCAD Hatch Pattern</name>
+      <note>Top line: asterisk, then a filename (up to 31 characters) that will start with a minimum of one letter or number, followed by an optional description then a line-ending. Second line: A minimum of 5 numeric (integer or floating point) values, representing Angle, X-origin, Y-origin, Delta-x, Delta-y (further values may represent optional dashes). Origins and Deltas may be negative or positive. A comma will follow each numeric value and each line will be terminated with a line ending.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>2A([30:39]|[41:5A]|[61:7A]){0-80}0D0A{0-10}[30:39]2C20{0-10}[30:39]2C([30:39]|2D[30:39]|2E[30:39]){0-10}2C20{0-10}[30:39]2C([30:39]|2D[30:39]|2E[30:39]){0-128}0D0A</pronom_pattern>
+        <regex>(?s)\A\*(?:[0-9]|[A-Z]|[a-z]).{0,80}\r\n.{0,10}[0-9], .{0,10}[0-9],(?:[0-9]|-[0-9]|\.[0-9]).{0,10}, .{0,10}[0-9],(?:[0-9]|-[0-9]|\.[0-9]).{0,128}\r\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>A hatch pattern consists of a repeating pattern of lines, dashes, and dots, and is used within AutoCAD to represent materials to be used within the manufacture of the object defined in the CAD drawing</dc:description>
+      <dcterms:available />
+      <dc:creator>Autodesk Corporation</dc:creator>
+      <dcterms:publisher>Autodesk Corporation</dcterms:publisher>
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>27 Sep 2017</dcterms:created>
+        <dcterms:modified>27 Sep 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1104</puid>
+    <name>Seattle FilmWorks SFW Image Format</name>
+    <version />
+    <alias />
+    <pronom_id>1912</pronom_id>
+    <extension>sfw</extension>
+    <signature>
+      <name>Seattle FilmWorks Image</name>
+      <note>BOF: SFW94A</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>534657393441</pronom_pattern>
+        <regex>(?s)\ASFW94A</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Seattle FilmWorks was a mail order film processing company. Digitised photographs made by the company used a family of proprietary raster image formats known as SFW and PWP (PhotoWorks PhotoMail). The SFW format has a compressed version based on JPEG, and an uncompressed version based on BMP.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator />
+        <dcterms:created>28 Sep 2017</dcterms:created>
+        <dcterms:modified>28 Sep 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1105</puid>
+    <name>Hierarchical File System</name>
+    <version />
+    <alias />
+    <pronom_id>1913</pronom_id>
+    <extension>img</extension>
+    <signature>
+      <name>HFS</name>
+      <note>Offset 1024, magic 0x4244 {12}, first block of volume bitmap always 0x0003{6}, size (in bytes) of allocation blocks (4 byte multiple of 512 so byte 4 always 00, byte 3 has 'even' value)[!&amp;01]00</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4244{12}0003{6}[!&amp;01]00</pronom_pattern>
+        <regex>(?s)\A.{1024}BD.{12}\x00\x03.{6}(?!(\x01|\x03|\x05|\x07|\x09|\x0b|\x0d|\x0f|\x11|\x13|\x15|\x17|\x19|\x1b|\x1d|\x1f|\x21|\x23|\x25|\x27|\x29|\x2b|\x2d|\x2f|\x31|\x33|\x35|\x37|\x39|\x3b|\x3d|\x3f|\x41|\x43|\x45|\x47|\x49|\x4b|\x4d|\x4f|\x51|\x53|\x55|\x57|\x59|\x5b|\x5d|\x5f|\x61|\x63|\x65|\x67|\x69|\x6b|\x6d|\x6f|\x71|\x73|\x75|\x77|\x79|\x7b|\x7d|\x7f|\x81|\x83|\x85|\x87|\x89|\x8b|\x8d|\x8f|\x91|\x93|\x95|\x97|\x99|\x9b|\x9d|\x9f|\xa1|\xa3|\xa5|\xa7|\xa9|\xab|\xad|\xaf|\xb1|\xb3|\xb5|\xb7|\xb9|\xbb|\xbd|\xbf|\xc1|\xc3|\xc5|\xc7|\xc9|\xcb|\xcd|\xcf|\xd1|\xd3|\xd5|\xd7|\xd9|\xdb|\xdd|\xdf|\xe1|\xe3|\xe5|\xe7|\xe9|\xeb|\xed|\xef|\xf1|\xf3|\xf5|\xf7|\xf9|\xfb|\xfd|\xff))\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Hierarchical File System (HFS) is a file system developed by Apple primarily for Mac OS. Within HFS a storage volume is divided into logical blocks of 512 bytes. The Hierarchical File System groups these logical blocks into allocation blocks, which can contain one or more logical blocks, depending on the total size of the volume.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Artefactual Systems Inc / Artefactual Systems Inc</dc:creator>
+        <dcterms:created>07 Nov 2017</dcterms:created>
+        <dcterms:modified>07 Nov 2017</dcterms:modified>
+        <dc:description>This entry and identification for Hierarchical File System was a collaborative effort involving the Open Preservation Foundation, Artefactual Systems, New York Public Libraries, The University of California, Los Angeles and The National Archives.</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1106</puid>
+    <name>Python Compiled File</name>
+    <version>2.0</version>
+    <alias />
+    <pronom_id>1914</pronom_id>
+    <extension>pyc</extension>
+    <signature>
+      <name>PYC 2.0</name>
+      <note>87C60D0A - &#8225;&#198;..</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>87C60D0A</pronom_pattern>
+        <regex>(?s)\A\x87\xc6\r\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Python automatically compiles a python script before running it, the first time the script runs it will create a .pyc in the same directory as the .py file which will then be used if the script is run again to save time by not having to re-compile the code.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Nov 2017</dcterms:created>
+        <dcterms:modified>24 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1107</puid>
+    <name>Python Compiled File</name>
+    <version>2.1</version>
+    <alias />
+    <pronom_id>1915</pronom_id>
+    <extension>pyc</extension>
+    <signature>
+      <name>PYC 2.1</name>
+      <note>2AEB0D0A - *&#235;..</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>2AEB0D0A</pronom_pattern>
+        <regex>(?s)\A\*\xeb\r\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Python automatically compiles a python script before running it, the first time the script runs it will create a .pyc in the same directory as the .py file which will then be used if the script is run again to save time by not having to re-compile the code.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Nov 2017</dcterms:created>
+        <dcterms:modified>24 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1108</puid>
+    <name>Python Compiled File</name>
+    <version>2.2</version>
+    <alias />
+    <pronom_id>1916</pronom_id>
+    <extension>pyc</extension>
+    <signature>
+      <name>PYC 2.2</name>
+      <note>2DED0D0A - -&#237;..</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>2DED0D0A</pronom_pattern>
+        <regex>(?s)\A-\xed\r\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Python automatically compiles a python script before running it, the first time the script runs it will create a .pyc in the same directory as the .py file which will then be used if the script is run again to save time by not having to re-compile the code.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Nov 2017</dcterms:created>
+        <dcterms:modified>24 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1109</puid>
+    <name>Python Compiled File</name>
+    <version>2.3</version>
+    <alias />
+    <pronom_id>1917</pronom_id>
+    <extension>pyc</extension>
+    <signature>
+      <name>PYC 2.3</name>
+      <note>3BF20D0A - ;&#242;..</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3BF20D0A</pronom_pattern>
+        <regex>(?s)\A;\xf2\r\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Python automatically compiles a python script before running it, the first time the script runs it will create a .pyc in the same directory as the .py file which will then be used if the script is run again to save time by not having to re-compile the code.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Nov 2017</dcterms:created>
+        <dcterms:modified>24 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1110</puid>
+    <name>Python Compiled File</name>
+    <version>2.4</version>
+    <alias />
+    <pronom_id>1918</pronom_id>
+    <extension>pyc</extension>
+    <signature>
+      <name>PYC 2.4</name>
+      <note>6DF20D0A - m&#242;..</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>6DF20D0A</pronom_pattern>
+        <regex>(?s)\Am\xf2\r\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Python automatically compiles a python script before running it, the first time the script runs it will create a .pyc in the same directory as the .py file which will then be used if the script is run again to save time by not having to re-compile the code.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Nov 2017</dcterms:created>
+        <dcterms:modified>24 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1111</puid>
+    <name>Python Compiled File</name>
+    <version>2.5</version>
+    <alias />
+    <pronom_id>1919</pronom_id>
+    <extension>pyc</extension>
+    <signature>
+      <name>PYC 2.5</name>
+      <note>B3F20D0A - &#179;&#242;..</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>B3F20D0A</pronom_pattern>
+        <regex>(?s)\A\xb3\xf2\r\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Python automatically compiles a python script before running it, the first time the script runs it will create a .pyc in the same directory as the .py file which will then be used if the script is run again to save time by not having to re-compile the code.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Nov 2017</dcterms:created>
+        <dcterms:modified>24 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1112</puid>
+    <name>Python Compiled File</name>
+    <version>2.6</version>
+    <alias />
+    <pronom_id>1920</pronom_id>
+    <extension>pyc</extension>
+    <signature>
+      <name>PYC 2.6</name>
+      <note>D1F20D0A - &#209;&#242;..</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>D1F20D0A</pronom_pattern>
+        <regex>(?s)\A\xd1\xf2\r\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Python automatically compiles a python script before running it, the first time the script runs it will create a .pyc in the same directory as the .py file which will then be used if the script is run again to save time by not having to re-compile the code.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Nov 2017</dcterms:created>
+        <dcterms:modified>24 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1113</puid>
+    <name>Python Compiled File</name>
+    <version>3.0</version>
+    <alias />
+    <pronom_id>1921</pronom_id>
+    <extension>pyc</extension>
+    <signature>
+      <name>PYC 3.0</name>
+      <note>3B0C0D0A - ;&#8230;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3B0C0D0A</pronom_pattern>
+        <regex>(?s)\A;\x0c\r\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Python automatically compiles a python script before running it, the first time the script runs it will create a .pyc in the same directory as the .py file which will then be used if the script is run again to save time by not having to re-compile the code.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Nov 2017</dcterms:created>
+        <dcterms:modified>24 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1114</puid>
+    <name>Python Compiled File</name>
+    <version>3.1</version>
+    <alias />
+    <pronom_id>1922</pronom_id>
+    <extension>pyc</extension>
+    <signature>
+      <name>PYC 3.1</name>
+      <note>4F0C0D0A - O&#8230;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4F0C0D0A</pronom_pattern>
+        <regex>(?s)\AO\x0c\r\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Python automatically compiles a python script before running it, the first time the script runs it will create a .pyc in the same directory as the .py file which will then be used if the script is run again to save time by not having to re-compile the code.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Nov 2017</dcterms:created>
+        <dcterms:modified>24 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1115</puid>
+    <name>Python Compiled File</name>
+    <version>3.2</version>
+    <alias />
+    <pronom_id>1923</pronom_id>
+    <extension>pyc</extension>
+    <signature>
+      <name>PYC 3.2</name>
+      <note>6C0C0D0A - l&#8230;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>6C0C0D0A</pronom_pattern>
+        <regex>(?s)\Al\x0c\r\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Python automatically compiles a python script before running it, the first time the script runs it will create a .pyc in the same directory as the .py file which will then be used if the script is run again to save time by not having to re-compile the code.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Nov 2017</dcterms:created>
+        <dcterms:modified>24 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1116</puid>
+    <name>Python Compiled File</name>
+    <version>3.3</version>
+    <alias />
+    <pronom_id>1924</pronom_id>
+    <extension>pyc</extension>
+    <signature>
+      <name>PYC 3.3</name>
+      <note>9E0C0D0A - &#382;&#8230;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>9E0C0D0A</pronom_pattern>
+        <regex>(?s)\A\x9e\x0c\r\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Python automatically compiles a python script before running it, the first time the script runs it will create a .pyc in the same directory as the .py file which will then be used if the script is run again to save time by not having to re-compile the code.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Nov 2017</dcterms:created>
+        <dcterms:modified>24 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1117</puid>
+    <name>Python Compiled File</name>
+    <version>3.5</version>
+    <alias />
+    <pronom_id>1925</pronom_id>
+    <extension>pyc</extension>
+    <signature>
+      <name>PYC 3.5</name>
+      <note>160D0D0A - ....</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>160D0D0A</pronom_pattern>
+        <regex>(?s)\A\x16\r\r\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Python automatically compiles a python script before running it, the first time the script runs it will create a .pyc in the same directory as the .py file which will then be used if the script is run again to save time by not having to re-compile the code.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Nov 2017</dcterms:created>
+        <dcterms:modified>24 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1118</puid>
+    <name>Python Compiled File</name>
+    <version>3.6</version>
+    <alias />
+    <pronom_id>1926</pronom_id>
+    <extension>pyc</extension>
+    <signature>
+      <name>PYC 3.6</name>
+      <note>330D0D0A - 3&#8230;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>330D0D0A</pronom_pattern>
+        <regex>(?s)\A3\r\r\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Python automatically compiles a python script before running it, the first time the script runs it will create a .pyc in the same directory as the .py file which will then be used if the script is run again to save time by not having to re-compile the code.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Nov 2017</dcterms:created>
+        <dcterms:modified>24 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1119</puid>
+    <name>Jupyter Python Notebook</name>
+    <version />
+    <alias />
+    <pronom_id>1929</pronom_id>
+    <extension>ipynb</extension>
+    <details>
+      <dc:description>Notebook documents are files which are produced by the Jupyter Notebook application, they consist of Python computer code as well as rich text elements. They are both human readable documents as well as executable.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Nov 2017</dcterms:created>
+        <dcterms:modified>24 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1120</puid>
+    <name>DIFFRACplus Raw Data File Format</name>
+    <version>1</version>
+    <alias>Bruker XRD (1)</alias>
+    <pronom_id>1930</pronom_id>
+    <extension>raw</extension>
+    <signature>
+      <name>DIFFRACplus Raw Data File Format 1</name>
+      <note>BOF: "RAW1.00", 0x00 {8} MM/DD/YY. Signnature based on the format description in the Bruker Advanced X-Ray Solutions General Area Detector Diffraction System (GADDS) Reference Manual. Also see https://github.com/scattering/scattio/blob/master/python/scattio/bruker.py</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>524157312E303000{8}[30:31][30:39]2F[30:33][30:39]2F[30:39][30:39]</pronom_pattern>
+        <regex>(?s)\ARAW1\.00\x00.{8}[0-1][0-9]/[0-3][0-9]/[0-9][0-9]</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This format contains the raw data produced by Bruker X-ray Powder Diffraction (XRD) Instrumentation. Please contact the PRONOM team if you are able to provide a more detailed description.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>University of Edinburgh / University of Edinburgh</dc:creator>
+        <dcterms:created>27 Nov 2017</dcterms:created>
+        <dcterms:modified>27 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1121</puid>
+    <name>DIFFRACplus Raw Data File Format</name>
+    <version>2</version>
+    <alias>Bruker XRD (2)</alias>
+    <pronom_id>1931</pronom_id>
+    <extension>raw</extension>
+    <signature>
+      <name>DIFFRACplus Raw Data File Format 2</name>
+      <note>BOF: "RAW1.01", 0x00 {8} MM/DD/YY. Signnature based on the format description in the Bruker Advanced X-Ray Solutions General Area Detector Diffraction System (GADDS) Reference Manual. Also see https://github.com/scattering/scattio/blob/master/python/scattio/bruker.py</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>524157312E303100{8}[30:31][30:39]2F[30:33][30:39]2F[30:39][30:39]</pronom_pattern>
+        <regex>(?s)\ARAW1\.01\x00.{8}[0-1][0-9]/[0-3][0-9]/[0-9][0-9]</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>This format contains the raw data produced by Bruker X-ray Powder Diffraction (XRD) Instrumentation. Please contact the PRONOM team if you are able to provide a more detailed description.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>University of Edinburgh / University of Edinburgh</dc:creator>
+        <dcterms:created>27 Nov 2017</dcterms:created>
+        <dcterms:modified>27 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1122</puid>
+    <name>VAMAS Surface Chemical Analysis Standard Data Transfer Format</name>
+    <version />
+    <alias />
+    <pronom_id>1932</pronom_id>
+    <extension>vms</extension>
+    <signature>
+      <name>VAMAS Surface Chemical Analysis Standard Data Transfer Format</name>
+      <note>String near BOF: "VAMAS Surface Chemical Analysis Standard Data Transfer Format 1988 May 4"</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>56414D41532053757266616365204368656D6963616C20416E616C79736973205374616E646172642044617461205472616E7366657220466F726D61742031393838204D61792034</pronom_pattern>
+        <regex>(?s)\A.{0,16}VAMAS Surface Chemical Analysis Standard Data Transfer Format 1988 May 4</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The VAMAS Surface Chemical Analysis Standard Data Transfer Format is designed to facilitate interchange of chemical analysis data. The format is standaradised within ISO14976. Please contact the PRONOM team if you are able to provide a more detailed description.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>University of Edinburgh / University of Edinburgh</dc:creator>
+        <dcterms:created>27 Nov 2017</dcterms:created>
+        <dcterms:modified>27 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1123</puid>
+    <name>Origin Project Format</name>
+    <version>Non-Unicode</version>
+    <alias />
+    <pronom_id>1933</pronom_id>
+    <extension>opj</extension>
+    <extension>ogg</extension>
+    <extension>ogm</extension>
+    <extension>ogw</extension>
+    <signature>
+      <name>Origin Project Format Non-Unicode</name>
+      <note>BOF Header, "CPYA ", Major version, "." {Minor version, Build number}, "#". A 'W64' string is sometimes present between the build number and the terminating hash character which may indicate a 64 bit file version but further research is required to confirm.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4350594120[31:39]2E{7-13}230A</pronom_pattern>
+        <regex>(?s)\ACPYA [1-9]\..{7,13}#\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Origin is an advanced plotting, graphing and data-analysis application by OriginLab. An .opj file is a full Origin project file in the OPJ format. An .ogg file contains only a graph. An ogw file contains only a workbook. An ogm file contains only a matrixbook Please contact the PRONOM team if you can provide a more detailed description of this format.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>University of Edinburgh / University of Edinburgh</dc:creator>
+        <dcterms:created>27 Nov 2017</dcterms:created>
+        <dcterms:modified>27 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1124</puid>
+    <name>Origin Project Format</name>
+    <version>Unicode</version>
+    <alias />
+    <pronom_id>1934</pronom_id>
+    <extension>opju</extension>
+    <extension>oggu</extension>
+    <extension>ogmu</extension>
+    <extension>ogwu</extension>
+    <signature>
+      <name>Origin Project Format Unicode</name>
+      <note>BOF Header, "CPYUA ", Major version, "." {Minor version, Build number}, 0x0A".</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>435059554120[31:39]2E{7-13}0A</pronom_pattern>
+        <regex>(?s)\ACPYUA [1-9]\..{7,13}\n</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Origin is an advanced plotting, graphing and data-analysis application by OriginLab. An .opju file is a full Origin project file in the OPJ format. An .oggu file contains only a graph. An ogwu file contains only a workbook. An ogmu file contains only a matrixbook Please contact the PRONOM team if you can provide a more detailed description of this format.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>University of Edinburgh / University of Edinburgh</dc:creator>
+        <dcterms:created>27 Nov 2017</dcterms:created>
+        <dcterms:modified>27 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1125</puid>
+    <name>JASCO JWS Format</name>
+    <version>OLE2</version>
+    <alias />
+    <pronom_id>1935</pronom_id>
+    <extension>jws</extension>
+    <details>
+      <dc:description>JWS is a data format produced by JASCO Spectroscopy instruments. This entry relates to the version of the format based upon the OLE2 compound document format. Please contact the PRONOM team if you are able to provide a detailed description for this format.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>University of Edinburgh / University of Edinburgh</dc:creator>
+        <dcterms:created>28 Nov 2017</dcterms:created>
+        <dcterms:modified>28 Nov 2017</dcterms:modified>
+        <dc:description>This format can be identified via a container signature in DROID version 6 or later. The PRONOM database cannot currently represent container signatures. The identification mechanism for this format is based largely on the jwslib.py file with the jwsProcessor software created by V&#237;ctor M. Hern&#225;ndez-Rocamora - https://github.com/vhernandez/jwsProcessor</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1126</puid>
+    <name>Sony SR2 RAW Image File</name>
+    <version />
+    <alias />
+    <pronom_id>1936</pronom_id>
+    <extension>sr2</extension>
+    <has_priority_over>fmt/353</has_priority_over>
+    <signature>
+      <name>Sony SR2</name>
+      <note>TIFF Header{0-512}"SONY"{0-2048} Maker Note data adjusted for endianness: Sony 'FileFormat' Exif tag 0xB000, 0x0001=byte, 0x00000004=four times, 0x01 = SR2 format. Sony Maker Note tags described at https://sno.phy.queensu.ca/~phil/exiftool/TagNames/Sony.html</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>49492A00{0-512}534F4E59{0-2048}00B001000400000001</pronom_pattern>
+        <regex>(?s)\AII\*\x00.{0,512}SONY.{0,2048}\x00\xb0\x01\x00\x04\x00\x00\x00\x01</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>SR2 is a raw image format produced by some makes of Sony cameras. The format is based upon TIFF.</dc:description>
+      <dcterms:available />
+      <dc:creator>Sony / Sony</dc:creator>
+      <dcterms:publisher>Sony</dcterms:publisher>
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>KULeuven - LIBIS / KULeuven - LIBIS</dc:creator>
+        <dcterms:created>28 Nov 2017</dcterms:created>
+        <dcterms:modified>28 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1127</puid>
+    <name>Sony ARW RAW Image File</name>
+    <version>2.x</version>
+    <alias />
+    <pronom_id>1937</pronom_id>
+    <extension>arw</extension>
+    <has_priority_over>fmt/353</has_priority_over>
+    <signature>
+      <name>Sony ARW 2.x</name>
+      <note>TIFF Header{0-512}"SONY"{0-2048} Maker Note data adjusted for endianness: Sony 'FileFormat' Exif tag 0xB000, 0x0001=byte, 0x00000004=four times, 0x01 = SR2 format, 02= ARW 1.x, 03= ARW 2.x. We can distinguish between minor versions if requested. Sony Maker Note tags described at https://sno.phy.queensu.ca/~phil/exiftool/TagNames/Sony.html</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>49492A00{0-512}534F4E59{0-2048}00B001000400000003</pronom_pattern>
+        <regex>(?s)\AII\*\x00.{0,512}SONY.{0,2048}\x00\xb0\x01\x00\x04\x00\x00\x00\x03</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>ARW is a raw image format produced by some makes of Sony cameras. The format is based upon TIFF.</dc:description>
+      <dcterms:available />
+      <dc:creator>Sony / Sony</dc:creator>
+      <dcterms:publisher>Sony</dcterms:publisher>
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>KULeuven - LIBIS / KULeuven - LIBIS</dc:creator>
+        <dcterms:created>28 Nov 2017</dcterms:created>
+        <dcterms:modified>28 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1128</puid>
+    <name>Progressive Graphics File</name>
+    <version />
+    <alias />
+    <pronom_id>1938</pronom_id>
+    <extension>pgf</extension>
+    <signature>
+      <name>Progressive Graphics File</name>
+      <note>BOF: "PGF", Version = The source code suggests possible versions 2, 5, 6, 7, however samples available from the libpgf SourceForge project site are all version 6. http://libpgf.org/fileadmin/MEDIA/PGF_Details.pdf</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>504746(02|05|06|07)</pronom_pattern>
+        <regex>(?s)\APGF(?:\x02|\x05|\x06|\x07)</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Progressive Graphics File (PGF) is a raster image format developed by Christoph Stamm. Please contact the PRONOM team if you are able to provide a more detailed description.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>29 Nov 2017</dcterms:created>
+        <dcterms:modified>29 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1129</puid>
+    <mime>application/pdf</mime>
+    <name>PDF 2.0 - Portable Document Format</name>
+    <version>2.0</version>
+    <alias />
+    <pronom_id>1939</pronom_id>
+    <extension>pdf</extension>
+    <signature>
+      <name>PDF 2.0</name>
+      <note>PDF 2.0 allows an arbitrary amount of information to appear before the PDF 2.0 data starts. For now we are setting a max offset of 4096 bytes from the BOF before we expect to see the %PDF-2.0 tag as this should encompass most use-cases and also maintain processing efficiency for any identification tools using PRONOM data. If you find this offset is inadequate please contact the PRONOM team. Also seeking EOF sequence  %%EOF within final 1024 bytes. 
+
+This signature cannot currently identify files that were incrementally saved to PDF 2.0 from a previous PDF version (for example PDF 1.7), and this scenario will currently return an identification for the orignal format. Please contact the PRONOM team if you can assist with developing a signature that can account for such a use-case.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>255044462D322E30</pronom_pattern>
+        <regex>(?s)\A.{0,4096}%PDF-2\.0</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <pronom_pattern>2525454F46</pronom_pattern>
+        <regex>(?s)%%EOF.{0,1024}\Z</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Portable Document Format is a platform-independent format for representing formatted documents, originally developed by Adobe Systems Incorporated. PDF 2.0 is standardised by ISO 32000-2. A PDF file comprises a Header section, a Body section containing the objects which make up the document, a Cross Reference Table, and a Trailer section. PDF files can contain a wide variety of content, including text, images, video and audio.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Page Description</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>29 Nov 2017</dcterms:created>
+        <dcterms:modified>29 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1130</puid>
+    <name>C3D File Format</name>
+    <version />
+    <alias />
+    <pronom_id>1940</pronom_id>
+    <extension>c3d</extension>
+    <signature>
+      <name>C3D</name>
+      <note>BOF: 0x0250 (magic plus pointer to first block of parameter section), {22} a block of 270 null bytes - we're using the first ten here for signature brevity, byte at 0x203 is either 0x54, 0x55, 0x56 representing processor type. String beginning at 0x516 either POINT or ANALOG. Https://www.c3d.org/HTML/default.htm</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>0250{22}00000000000000000000{481}(54|55|56){2}(504F494E54|414E414C4F47)</pronom_pattern>
+        <regex>(?s)\A\x02P.{22}\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00.{481}(?:T|U|V).{2}(?:POINT|ANALOG)</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>C3D, or Coordinate 3D, is a biomechanics data file format that is a component of the family of file formats developed for the AMASS photogrammetry software system. C3D format provides a means for storing 3D coordinate and analog data, together with all associated parameters, for a single measurement trial.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>University of Edinburgh / University of Edinburgh</dc:creator>
+        <dcterms:created>29 Nov 2017</dcterms:created>
+        <dcterms:modified>29 Nov 2017</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1131</puid>
+    <name>Gatan Digital Micrograph File Format (DM3)</name>
+    <version>3</version>
+    <alias />
+    <pronom_id>1941</pronom_id>
+    <extension>dm3</extension>
+    <signature>
+      <name>Gatan Digital Micrograph 3</name>
+      <note>BOF version 3 {4} endianness 00 = big, 01 = little {6} (tag directory|tag) {2-256} (2 byte tag length value + tag name which can be of zero length. Theroetically tag name could be ~65k long but limiting to 256 bytes for signature efficiency as highly unlikely to be greater. Scope to extend if necessary though). String "%%%%"
+
+EOF: 8 null bytes</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>00000003{4}000000(00|01){6}(14|15){2-258}25252525</pronom_pattern>
+        <regex>(?s)\A\x00\x00\x00\x03.{4}\x00\x00\x00(?:\x00|\x01).{6}(?:\x14|\x15).{2,258}%%%%</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <pronom_pattern>0000000000000000</pronom_pattern>
+        <regex>(?s)\x00\x00\x00\x00\x00\x00\x00\x00\Z</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>DM3 is a file format produced by some Digital Micrography instruments created by Gatan. Please contact the PRONOM team if you are able to provide a more detailed description.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Bodleian Library, University of Oxford / Bodleian Library, University of Oxford</dc:creator>
+        <dcterms:created>29 Nov 2017</dcterms:created>
+        <dcterms:modified>29 Nov 2017</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
