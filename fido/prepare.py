@@ -342,7 +342,7 @@ def _convert_err_msg(msg, c, i, chars):
     return "Conversion: {0}: char='{1}', at pos {2} in \n  {3}\n  {4}^\nBuffer = {5}".format(msg, c, i, chars, i * ' ', buf.getvalue())
 
 
-def doByte(chars, i, littleendian):
+def doByte(chars, i, littleendian, esc=True):
     """
     Convert two chars[i] and chars[i+1] into a byte.
 
@@ -356,7 +356,9 @@ def doByte(chars, i, littleendian):
         val = chr(16 * c1 + c2)
     else:
         val = chr(c1 + 16 * c2)
-    return (escape(val), 2)
+    if esc:
+        return (escape(val), 2)
+    return (val, 2)
 
 
 def _escape_char(c):
@@ -421,6 +423,41 @@ def calculate_repetition(char, pos, offset, maxoffset):
     return val
 
 
+def do_op_bitmasks(chars, i, op, littleendian):
+    """Convert an "all/any bitmasks" string to a Python regex.
+
+    Whether the operator is "all" or "any" is determined by the supplied
+    function ``op``. As an example, '&07' means 'match bytes with all first
+    three bits set' or 'match all bytes where (byte & 0x07) == 0x07' or, in
+    Python, match this disjunctive regex::
+
+        >>> '0x7|0xf|0x17|0x1f|0x27|0x2f|0x37|0x3f|0x47|0x4f|0x57|0x5f|0x67|0x6f|0x77|0x7f|0x87|0x8f|0x97|0x9f|0xa7|0xaf|0xb7|0xbf|0xc7|0xcf|0xd7|0xdf|0xe7|0xef|0xf7|0xff'
+
+    See https://github.com/nishihatapalmer/byteseek/wiki/Regular-Expression-Syntax#all-bitmasks
+    and https://github.com/nishihatapalmer/byteseek/wiki/Regular-Expression-Syntax#any-bitmasks
+    """
+    byt, inc = doByte(chars, i + 1, littleendian, esc=False)
+    bitmask = ord(byt)
+    regex = '({})'.format(
+        '|'.join(['\\x' + hex(byt_)[2:].zfill(2) for byt_ in range(0x100)
+                  if op(byt_, bitmask)]))
+    return regex, inc + 1
+
+
+def do_all_bitmasks(chars, i, littleendian):
+    """(byte & bitmask) == bitmask."""
+    return do_op_bitmasks(
+        chars, i, lambda byt, bitmask: ((byt & bitmask) == bitmask),
+        littleendian)
+
+
+def do_any_bitmasks(chars, i, littleendian):
+    """(byte & bitmask) != 0."""
+    return do_op_bitmasks(
+        chars, i, lambda byt, bitmask: ((byt & bitmask) != 0),
+        littleendian)
+
+
 def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
     """
     Convert to regular expression.
@@ -461,6 +498,10 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
         if state == 'start':
             if chars[i].isalnum():
                 state = 'bytes'
+            elif chars[i] == '&':
+                state = 'all-bitmask'
+            elif chars[i] == '~':
+                state = 'any-bitmask'
             elif chars[i] == '[' and chars[i + 1] == '!':
                 state = 'non-match'
             elif chars[i] == '[':
@@ -478,12 +519,30 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
             buf.write(byt)
             i += inc
             state = 'start'
+        elif state == 'all-bitmask':
+            (byt, inc) = do_all_bitmasks(chars, i, littleendian)
+            buf.write(byt)
+            i += inc
+            state = 'start'
+        elif state == 'any-bitmask':
+            (byt, inc) = do_any_bitmasks(chars, i, littleendian)
+            buf.write(byt)
+            i += inc
+            state = 'start'
         elif state == 'non-match':
             buf.write('(?!')
             i += 2
             while True:
                 if chars[i].isalnum():
                     (byt, inc) = doByte(chars, i, littleendian)
+                    buf.write(byt)
+                    i += inc
+                elif chars[i] == '&':
+                    (byt, inc) = do_all_bitmasks(chars, i, littleendian)
+                    buf.write(byt)
+                    i += inc
+                elif chars[i] == '~':
+                    (byt, inc) = do_any_bitmasks(chars, i, littleendian)
                     buf.write(byt)
                     i += inc
                 elif chars[i] == ']':
