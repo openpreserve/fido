@@ -479,7 +479,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
             i += inc
             state = 'start'
         elif state == 'non-match':
-            buf.write('(!')
+            buf.write('(?!')
             i += 2
             while True:
                 if chars[i].isalnum():
