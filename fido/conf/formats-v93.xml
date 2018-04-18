@@ -13036,7 +13036,7 @@ Version 2.0 is the same file format as version 97</dc:description>
       <pattern>
         <position>EOF</position>
         <pronom_pattern>FFD9</pronom_pattern>
-        <regex>(?s)\xff\xd9.{0,65535}.{0,1}\Z</regex>
+        <regex>(?s)\xff\xd9.{0,65536}\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -13077,7 +13077,7 @@ Version 2.0 is the same file format as version 97</dc:description>
       <pattern>
         <position>EOF</position>
         <pronom_pattern>FFD9</pronom_pattern>
-        <regex>(?s)\xff\xd9.{0,65535}.{0,1}\Z</regex>
+        <regex>(?s)\xff\xd9.{0,65536}\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -13118,7 +13118,7 @@ Version 2.0 is the same file format as version 97</dc:description>
       <pattern>
         <position>EOF</position>
         <pronom_pattern>FFD9</pronom_pattern>
-        <regex>(?s)\xff\xd9.{0,65535}.{0,1}\Z</regex>
+        <regex>(?s)\xff\xd9.{0,65536}\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -13167,7 +13167,7 @@ Version 2.0 is the same file format as version 97</dc:description>
       <pattern>
         <position>EOF</position>
         <pronom_pattern>FFD9</pronom_pattern>
-        <regex>(?s)\xff\xd9.{0,65535}.{0,1}\Z</regex>
+        <regex>(?s)\xff\xd9.{0,65536}\Z</regex>
       </pattern>
     </signature>
     <signature>
@@ -13259,7 +13259,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       <pattern>
         <position>EOF</position>
         <pronom_pattern>900000070000000430323230</pronom_pattern>
-        <regex>(?s)\x90\x00\x00\x07\x00\x00\x00\x040220.{0,65535}.{0,65535}.{0,2}\Z</regex>
+        <regex>(?s)\x90\x00\x00\x07\x00\x00\x00\x040220.{0,131072}\Z</regex>
       </pattern>
     </signature>
     <signature>
@@ -13273,7 +13273,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       <pattern>
         <position>EOF</position>
         <pronom_pattern>009007000400000030323230</pronom_pattern>
-        <regex>(?s)\x00\x90\x07\x00\x04\x00\x00\x000220.{0,65535}.{0,65535}.{0,2}\Z</regex>
+        <regex>(?s)\x00\x90\x07\x00\x04\x00\x00\x000220.{0,131072}\Z</regex>
       </pattern>
     </signature>
     <signature>
@@ -13287,7 +13287,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       <pattern>
         <position>BOF</position>
         <pronom_pattern>900000070000000430323230</pronom_pattern>
-        <regex>(?s)\A.{10,65535}.{0,65535}.{0,2}\x90\x00\x00\x07\x00\x00\x00\x040220</regex>
+        <regex>(?s)\A.{10,131072}\x90\x00\x00\x07\x00\x00\x00\x040220</regex>
       </pattern>
     </signature>
     <signature>
@@ -13301,7 +13301,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       <pattern>
         <position>BOF</position>
         <pronom_pattern>009007000400000030323230</pronom_pattern>
-        <regex>(?s)\A.{10,65535}.{0,65535}.{0,2}\x00\x90\x07\x00\x04\x00\x00\x000220</regex>
+        <regex>(?s)\A.{10,131072}\x00\x90\x07\x00\x04\x00\x00\x000220</regex>
       </pattern>
     </signature>
     <details>
@@ -13553,7 +13553,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       <pattern>
         <position>EOF</position>
         <pronom_pattern>FFD9</pronom_pattern>
-        <regex>(?s)\xff\xd9.{0,65535}.{0,65535}.{0,2}\Z</regex>
+        <regex>(?s)\xff\xd9.{0,131072}\Z</regex>
       </pattern>
     </signature>
     <signature>
@@ -13567,7 +13567,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       <pattern>
         <position>EOF</position>
         <pronom_pattern>FFD9</pronom_pattern>
-        <regex>(?s)\xff\xd9.{0,65535}.{0,65535}.{0,2}\Z</regex>
+        <regex>(?s)\xff\xd9.{0,131072}\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -16669,7 +16669,7 @@ http://www.openoffice.org/xml/xml_specification.pdf</dc:description>
       <pattern>
         <position>EOF</position>
         <pronom_pattern>FFD9</pronom_pattern>
-        <regex>(?s)\xff\xd9.{0,65535}.{0,1}\Z</regex>
+        <regex>(?s)\xff\xd9.{0,65536}\Z</regex>
       </pattern>
     </signature>
     <signature>
@@ -24986,7 +24986,7 @@ DATA: VERSION:160 SECURITY: ENCODING: CHARSET: COMPRESSION: OLDFILEUID: NEWFILEU
       <pattern>
         <position>BOF</position>
         <pronom_pattern>786D6C6E733D22687474703A2F2F7777772E786D6C2D636D6C2E6F72672F736368656D6122</pronom_pattern>
-        <regex>(?s)\A.{0,65535}.{0,1}xmlns="http://www\.xml-cml\.org/schema"</regex>
+        <regex>(?s)\A.{0,65536}xmlns="http://www\.xml-cml\.org/schema"</regex>
       </pattern>
     </signature>
     <details>
@@ -25017,7 +25017,7 @@ DATA: VERSION:160 SECURITY: ENCODING: CHARSET: COMPRESSION: OLDFILEUID: NEWFILEU
       <pattern>
         <position>BOF</position>
         <pronom_pattern>205F61746F6D5F747970655F736361745F64697370657273696F6E5F7265616C</pronom_pattern>
-        <regex>(?s)\A.{0,65535}.{0,1} _atom_type_scat_dispersion_real</regex>
+        <regex>(?s)\A.{0,65536} _atom_type_scat_dispersion_real</regex>
       </pattern>
     </signature>
     <details>
@@ -33681,7 +33681,7 @@ The EBML specifications are work-in-progress, and can be found here: https://git
         <dc:identifier>http://www.matroska.org/downloads/test_w1.html</dc:identifier>
         <dcterms:license />
         <dc:rights />
-        <checksum type="md5">2ab1f10ce69a16e9a0081f58d537eefc</checksum>
+        <checksum type="md5">403e4814135b1f72b84570c20a050408</checksum>
       </example_file>
       <record_metadata>
         <status>unknown</status>
@@ -35996,7 +35996,7 @@ http://msdn.microsoft.com/en-us/library/dd951288(v=office.12).aspx</dc:descripti
       <pattern>
         <position>EOF</position>
         <pronom_pattern>FFD9</pronom_pattern>
-        <regex>(?s)\xff\xd9.{0,65535}.{0,1}\Z</regex>
+        <regex>(?s)\xff\xd9.{0,65536}\Z</regex>
       </pattern>
     </signature>
     <signature>
@@ -36010,7 +36010,7 @@ http://msdn.microsoft.com/en-us/library/dd951288(v=office.12).aspx</dc:descripti
       <pattern>
         <position>EOF</position>
         <pronom_pattern>FFD9</pronom_pattern>
-        <regex>(?s)\xff\xd9.{0,65535}.{0,1}\Z</regex>
+        <regex>(?s)\xff\xd9.{0,65536}\Z</regex>
       </pattern>
     </signature>
     <details>
