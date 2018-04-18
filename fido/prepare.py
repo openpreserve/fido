@@ -423,11 +423,25 @@ def calculate_repetition(char, pos, offset, maxoffset):
     return val
 
 
-def do_op_bitmasks(chars, i, op, littleendian):
-    """Convert an "all/any bitmasks" string to a Python regex.
+def do_all_bitmasks(chars, i, littleendian):
+    """(byte & bitmask) == bitmask."""
+    return do_any_all_bitmasks(
+        chars, i, lambda byt, bitmask: ((byt & bitmask) == bitmask),
+        littleendian)
 
-    Whether the operator is "all" or "any" is determined by the supplied
-    function ``op``. As an example, '&07' means 'match bytes with all first
+
+def do_any_bitmasks(chars, i, littleendian):
+    """(byte & bitmask) != 0."""
+    return do_any_all_bitmasks(
+        chars, i, lambda byt, bitmask: ((byt & bitmask) != 0),
+        littleendian)
+
+
+def do_any_all_bitmasks(chars, i, predicate, littleendian):
+    """Convert an all/any bitmask string (e.g., &07) to a Python regex.
+
+    Whether the bitmask is "all" (&) or "any" (~) is determined by the supplied
+    function ``predicate``. As an example, '&07' means 'match bytes with all first
     three bits set' or 'match all bytes where (byte & 0x07) == 0x07' or, in
     Python, match this disjunctive regex::
 
@@ -439,23 +453,9 @@ def do_op_bitmasks(chars, i, op, littleendian):
     byt, inc = doByte(chars, i + 1, littleendian, esc=False)
     bitmask = ord(byt)
     regex = '({})'.format(
-        '|'.join(['\\x' + hex(byt_)[2:].zfill(2) for byt_ in range(0x100)
-                  if op(byt_, bitmask)]))
+        '|'.join(['\\x' + hex(byte)[2:].zfill(2) for byte in range(0x100)
+                  if predicate(byte, bitmask)]))
     return regex, inc + 1
-
-
-def do_all_bitmasks(chars, i, littleendian):
-    """(byte & bitmask) == bitmask."""
-    return do_op_bitmasks(
-        chars, i, lambda byt, bitmask: ((byt & bitmask) == bitmask),
-        littleendian)
-
-
-def do_any_bitmasks(chars, i, littleendian):
-    """(byte & bitmask) != 0."""
-    return do_op_bitmasks(
-        chars, i, lambda byt, bitmask: ((byt & bitmask) != 0),
-        littleendian)
 
 
 def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
