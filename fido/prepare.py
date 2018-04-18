@@ -378,21 +378,30 @@ def escape(string):
     return ''.join(c if c in _ordinary else _escape_char(c) for c in string)
 
 
+# Python now allows regex repetitions to be max out somewhere between 4 and 4.3
+# billion, cf. https://bugs.python.org/issue13169#msg180499
+MAX_REGEX_REPS = 4e9
+
+
 def calculate_repetition(char, pos, offset, maxoffset):
-    """Recursively calculates offset/maxoffset repetition, when one or both offsets is greater than 65535 bytes (64KB). See: https://bugs.python.org/issue13169."""
+    """Recursively calculates offset/maxoffset repetition, when one or both
+    offsets is greater than MAX_REGEX_REPS bytes (4GB). See:
+    https://bugs.python.org/issue13169.
+    """
+
     calcbuf = cStringIO()
 
     calcremain = False
     offsetremain = 0
     maxoffsetremain = 0
 
-    if offset is not None and int(offset) > 65535:
-        offsetremain = str(int(offset) - 65535)
-        offset = '65535'
+    if offset is not None and int(offset) > MAX_REGEX_REPS:
+        offsetremain = str(int(offset) - MAX_REGEX_REPS)
+        offset = str(int(MAX_REGEX_REPS))
         calcremain = True
-    if maxoffset is not None and int(maxoffset) > 65535:
-        maxoffsetremain = str(int(maxoffset) - 65535)
-        maxoffset = '65535'
+    if maxoffset is not None and int(maxoffset) > MAX_REGEX_REPS:
+        maxoffsetremain = str(int(maxoffset) - MAX_REGEX_REPS)
+        maxoffset = str(int(MAX_REGEX_REPS))
         calcremain = True
 
     if pos == "BOF" or pos == "EOF":
