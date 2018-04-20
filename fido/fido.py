@@ -19,7 +19,6 @@ import tarfile
 import tempfile
 import time
 from xml.etree import cElementTree as ET
-from xml.etree import ElementTree as CET
 import zipfile
 
 from six.moves import range
@@ -76,7 +75,6 @@ class Fido:
         # load signatures
         for xml_file in self.format_files:
             self.load_fido_xml(os.path.join(os.path.abspath(self.conf_dir), xml_file))
-        self.load_container_signature(os.path.join(os.path.abspath(self.conf_dir), self.containersignature_file))
         self.current_file = ''
         self.current_filesize = 0
         self.current_format = None
@@ -172,31 +170,6 @@ class Fido:
                     continue
 
         return seq
-
-    def load_container_signature(self, containersignature_file):
-        """
-        Load the PRONOM container-signature file and convert sequences to
-        regular expressions.
-        """
-        tree = CET.parse(containersignature_file)
-        # load and have container signatures converted
-        self.sequenceSignature = {}
-        for signature in tree.getroot().findall('ContainerSignatures/ContainerSignature'):
-            signatureId = signature.get('Id')
-            signatureSequence = signature.findall('Files/File/BinarySignatures/InternalSignatureCollection/InternalSignature/ByteSequence/SubSequence')
-            self.sequenceSignature[signatureId] = []
-            for sequence in signatureSequence:
-                self.sequenceSignature[signatureId].append(self.convert_container_sequence(sequence[0].text))
-        # map PUID to container signatureId
-        self.puidMapping = {}
-        mappings = tree.find('FileFormatMappings')
-        for mapping in mappings.findall('FileFormatMapping'):
-            if mapping.get('signatureId') not in self.puidMapping:
-                self.puidMapping[mapping.get('signatureId')] = []
-            self.puidMapping[mapping.get('signatureId')].append(mapping.get('Puid'))
-        # print "sequences:\n",self.sequenceSignature
-        # print "mapping:\n",self.puidMapping
-        # exit()
 
     def extract_signatures(self, doc, signature_type="ZIP"):
         """
