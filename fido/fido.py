@@ -360,7 +360,7 @@ class Fido:
             # print >> sys.stderr, 'FIDO: Processed %6d files in %6.2f msec, %2d files/sec' %  (count, secs * 1000, rate)
             sys.stderr.write('FIDO: Processed %6d files in %6.2f msec, %2d files/sec\n' % (count, secs * 1000, rate))
 
-    def identify_file(self, filename):
+    def identify_file(self, filename, extension=True):
         """
         Identify the type of @param filename.
         Call self.handle_matches instead of returning a value.
@@ -394,19 +394,19 @@ class Fido:
             # in these cases we try to match the extension instead
             if len(matches) > 0 and self.current_filesize > 0:
                 self.handle_matches(filename, matches, time.clock() - t0, self.matchtype)
-            elif len(matches) == 0 or self.current_filesize == 0:
+            elif extension and (len(matches) == 0 or self.current_filesize == 0):
                 matches = self.match_extensions(filename)
                 self.handle_matches(filename, matches, time.clock() - t0, "extension")
             # only recurse into certain containers, like ZIP or TAR
             container = self.container_type(matches)
             # till here matey!
             if self.zip and self.can_recurse_into_container(container):
-                self.identify_contents(filename, type=container)
+                self.identify_contents(filename, type=container, extension=extension)
         except IOError:
             # print >> sys.stderr, "FIDO: Error in identify_file: Path is {0}".format(filename)
             sys.stderr.write("FIDO: Error in identify_file: Path is {0}\n".format(filename))
 
-    def identify_contents(self, filename, fileobj=None, type=False):
+    def identify_contents(self, filename, fileobj=None, type=False, extension=True):
         """
         Identify each item in a container (such as a zip or tar file). Call
         self.handle_matches on each item.
@@ -421,7 +421,7 @@ class Fido:
         else:  # TODO: ouch!
             raise RuntimeError("Unknown container type: " + repr(type))
 
-    def identify_multi_object_stream(self, stream):
+    def identify_multi_object_stream(self, stream, extension=True):
         """
         Does not work!
         Stream may contain one or more objects each with an HTTP style header
@@ -453,11 +453,11 @@ class Fido:
             # MdR: this needs attention
             if len(matches) > 0:
                 self.handle_matches(self.current_file, matches, time.clock() - t0, "signature")
-            elif len(matches) == 0 or self.current_filesize == 0:
+            elif extension and (len(matches) == 0 or self.current_filesize == 0):
                 matches = self.match_extensions(self.current_file)
                 self.handle_matches(self.current_file, matches, time.clock() - t0, "extension")
 
-    def identify_stream(self, stream, filename):
+    def identify_stream(self, stream, filename, extension=True):
         """
         Identify the type of @param stream.
         Call self.handle_matches instead of returning a value.
@@ -471,7 +471,7 @@ class Fido:
         # MdR: this needs attention
         if len(matches) > 0:
             self.handle_matches(self.current_file, matches, time.clock() - t0, "signature")
-        elif len(matches) == 0 or self.current_filesize == 0:
+        elif extension and (len(matches) == 0 or self.current_filesize == 0):
             # we can only determine the filename from the STDIN stream
             # on Linux, on Windows there is not a (simple) way to do that
             if (os.name != "nt"):
@@ -581,7 +581,7 @@ class Fido:
                 eofbuffer = self.blocking_read(stream, self.bufsize)
             return bofbuffer, eofbuffer, bytes_to_read
 
-    def walk_zip(self, filename, fileobj=None):
+    def walk_zip(self, filename, fileobj=None, extension=True):
         """
         Identify the type of each item in the zip
         @param fileobj.  If fileobj is not provided, open.
@@ -604,7 +604,7 @@ class Fido:
                     matches = self.match_formats(bofbuffer, eofbuffer)
                     if len(matches) > 0 and self.current_filesize > 0:
                         self.handle_matches(item_name, matches, time.clock() - t0, "signature")
-                    elif len(matches) == 0 or self.current_filesize == 0:
+                    elif extension and (len(matches) == 0 or self.current_filesize == 0):
                         matches = self.match_extensions(item_name)
                         self.handle_matches(item_name, matches, time.clock() - t0, "extension")
                     if self.container_type(matches):
@@ -612,13 +612,13 @@ class Fido:
                         with zipstream.open(item) as source:
                             self.copy_stream(source, target)
                             # target.seek(0)
-                            self.identify_contents(item_name, target, self.container_type(matches))
+                            self.identify_contents(item_name, target, self.container_type(matches), extension=extension)
         except IOError:
             sys.stderr.write("FIDO: ZipError {0}\n".format(filename))
         except zipfile.BadZipfile:
             sys.stderr.write("FIDO: ZipError {0}\n".format(filename))
 
-    def walk_tar(self, filename, fileobj):
+    def walk_tar(self, filename, fileobj, extension=True):
         """
         Identify the type of each item in the tar.
         @param fileobj.  If fileobj is not provided, open.
@@ -640,7 +640,7 @@ class Fido:
                         self.handle_matches(tar_item_name, matches, time.clock() - t0)
                         if self.container_type(matches):
                             f.seek(0)
-                            self.identify_contents(tar_item_name, f, self.container_type(matches))
+                            self.identify_contents(tar_item_name, f, self.container_type(matches), extension=extension)
         except tarfile.TarError:
             sys.stderr.write("FIDO: Error: TarError {0}\n".format(filename))
 
@@ -779,6 +779,7 @@ def main(args=None):
     parser.add_argument('-q', default=False, action='store_true', help='run (more) quietly')
     parser.add_argument('-recurse', default=False, action='store_true', help='recurse into subdirectories')
     parser.add_argument('-zip', default=False, action='store_true', help='recurse into zip and tar files')
+    parser.add_argument('-noextension', default=False, action='store_true', help='disable extension matching, reduces number of matches but may reduce false positives')
     parser.add_argument('-nocontainer', default=False, action='store_true', help='disable deep scan of container documents, increases speed but may reduce accuracy with big files')
     parser.add_argument('-pronom_only', default=False, action='store_true', help='disables loading of format extensions file, only PRONOM signatures are loaded, may reduce accuracy of results')
 
@@ -863,12 +864,12 @@ def main(args=None):
             if fido.zip:
                 raise RuntimeError("Multiple content read from stdin not yet supported.")
                 sys.exit(1)
-                fido.identify_multi_object_stream(sys.stdin)
+                fido.identify_multi_object_stream(sys.stdin, extension=not args.noextension)
             else:
-                fido.identify_stream(sys.stdin, args.filename)
+                fido.identify_stream(sys.stdin, args.filename, extension=not args.noextension)
         else:
             for file in list_files(args.files, args.recurse):
-                fido.identify_file(file)
+                fido.identify_file(file, extension=not args.noextension)
     except KeyboardInterrupt:
         msg = "FIDO: Interrupt while identifying file {0}"
         sys.stderr.write(msg.format(fido.current_file))
