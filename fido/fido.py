@@ -377,7 +377,7 @@ class Fido:
             bofbuffer, eofbuffer, _ = self.get_buffers(f, size, seekable=True)
             matches = self.match_formats(bofbuffer, eofbuffer)
             container_type = self.container_type(matches)
-            if container_type in ("zip", "ole"):
+            if not self.nocontainer and container_type in ("zip", "ole"):
                 container_file = ET.parse(os.path.join(os.path.abspath(self.conf_dir), self.containersignature_file))
                 if container_type == "zip":
                     container_matches = self.match_container("ZIP", ZipPackage, filename, container_file)
