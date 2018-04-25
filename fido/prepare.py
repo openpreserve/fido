@@ -384,11 +384,11 @@ MAX_REGEX_REPS = 4e9
 
 
 def calculate_repetition(char, pos, offset, maxoffset):
-    """Recursively calculates offset/maxoffset repetition, when one or both
-    offsets is greater than MAX_REGEX_REPS bytes (4GB). See:
-    https://bugs.python.org/issue13169.
-    """
+    """Recursively calculates offset/maxoffset repetition.
 
+    This function only has an effect when one or both offsets is greater than
+    MAX_REGEX_REPS bytes (4GB). See: https://bugs.python.org/issue13169.
+    """
     calcbuf = cStringIO()
 
     calcremain = False
