@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-FIDO CSV output to XML.
+"""FIDO CSV output to XML.
 
 Author: Maurice de Rooij <maurice.de.rooij@nationaalarchief.nl>, September 2011
 

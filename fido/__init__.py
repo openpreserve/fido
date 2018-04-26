@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""
-Format Identification for Digital Objects (FIDO).
+"""Format Identification for Digital Objects (FIDO).
 
 FIDO is a command-line tool to identify the file formats of digital objects.
 It is designed for simple integration into automated work-flows.
@@ -21,8 +20,7 @@ CONFIG_DIR = join(abspath(dirname(__file__)), 'conf')
 
 
 def query_yes_no(question, default='yes'):
-    """
-    Ask a yes/no question via input() and return their answer.
+    """Ask a yes/no question via input() and return their answer.
 
     `question` is a string that is presented to the user. `default` is the
     presumed answer if the user just hits <Enter>. It must be "yes" (the

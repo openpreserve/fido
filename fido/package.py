@@ -7,26 +7,22 @@ import olefile
 from six import iteritems
 
 
-class Package(object):
-    """Base class for container support."""
-
-    def _process_puid_map(self, data, puid_map):
-        results = []
-        for puid, signatures in iteritems(puid_map):
-            results.extend(self._process_matches(data, puid, signatures))
-
-        return results
-
-    def _process_matches(self, data, puid, signatures):
-        results = []
-        for signature in signatures:
-            if re.search(signature["signature"], data):
-                results.append(puid)
-
-        return results
+def _process_puid_map(data, puid_map):
+    results = []
+    for puid, signatures in iteritems(puid_map):
+        results.extend(_process_matches(data, puid, signatures))
+    return results
 
 
-class OlePackage(Package):
+def _process_matches(data, puid, signatures):
+    results = []
+    for signature in signatures:
+        if re.search(signature["signature"], data):
+            results.append(puid)
+    return results
+
+
+class OlePackage(object):
     """OlePackage supports OLE containers."""
 
     def __init__(self, ole, signatures):
@@ -60,12 +56,12 @@ class OlePackage(Package):
 
             with ole.openstream(filepath) as stream:
                 contents = stream.read()
-                results.extend(self._process_puid_map(contents, puid_map))
+                results.extend(_process_puid_map(contents, puid_map))
 
         return results
 
 
-class ZipPackage(Package):
+class ZipPackage(object):
     """ZipPackage supports Zip containers."""
 
     def __init__(self, zip_, signatures):
@@ -91,6 +87,6 @@ class ZipPackage(Package):
             # data to each signature that requires it.
             with zip_.open(path) as id_file:
                 contents = id_file.read()
-                results.extend(self._process_puid_map(contents, puid_map))
+                results.extend(_process_puid_map(contents, puid_map))
 
         return results
