@@ -388,9 +388,9 @@ class Fido:
         if not type:
             return
         elif type == 'zip':
-            self.walk_zip(filename, fileobj)
+            self.walk_zip(filename, fileobj, extension=extension)
         elif type == 'tar':
-            self.walk_tar(filename, fileobj)
+            self.walk_tar(filename, fileobj, extension=extension)
         else:  # TODO: ouch!
             raise RuntimeError("Unknown container type: " + repr(type))
 
