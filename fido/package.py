@@ -62,6 +62,7 @@ class OlePackage(Package):
                 contents = stream.read()
                 results.extend(self._process_puid_map(contents, puid_map))
 
+        ole.close()
         return results
 
 
@@ -93,4 +94,5 @@ class ZipPackage(Package):
                 contents = id_file.read()
                 results.extend(self._process_puid_map(contents, puid_map))
 
+        zip_.close()
         return results
