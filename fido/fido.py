@@ -794,9 +794,15 @@ def main(args=None):
         sys.exit(0)
 
     if args.matchprintf:
-        args.matchprintf = args.matchprintf.decode('string_escape')
+        try:
+            args.matchprintf = args.matchprintf.decode('string_escape')
+        except AttributeError:
+            args.matchprintf = bytes(args.matchprintf, "utf-8").decode('unicode_escape')  # python 3
     if args.nomatchprintf:
-        args.nomatchprintf = args.nomatchprintf.decode('string_escape')
+        try:
+            args.nomatchprintf = args.nomatchprintf.decode('string_escape')
+        except AttributeError:
+            args.nomatchprintf = bytes(args.nomatchprintf, "utf-8").decode('unicode_escape')  # python 3
 
     fido = Fido(
         quiet=args.q,
