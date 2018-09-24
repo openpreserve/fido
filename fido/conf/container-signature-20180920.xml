@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="UTF-8"?> 
+<?xml version="1.0" encoding="UTF-8"?> 
 
-<ContainerSignatureMapping schemaVersion="1.0" signatureVersion="23">
+<ContainerSignatureMapping schemaVersion="1.0" signatureVersion="24">
   <ContainerSignatures>
     <ContainerSignature Id="1000" ContainerType="OLE2">
       <Description>Microsoft Word 6.0/95 OLE2</Description>
@@ -2115,8 +2115,7 @@
                 <ByteSequence Reference="BOFoffset">
                   <SubSequence Position="1" SubSeqMinOffset="32"
                     SubSeqMaxOffset="32">
-                    <Sequence>'Microsoft Picture It! version 1
-                      Picture'</Sequence>
+                    <Sequence>'Microsoft Picture It! version 1 Picture'</Sequence>
                   </SubSequence>
                 </ByteSequence>
               </InternalSignature>
@@ -2365,8 +2364,7 @@
                 <ByteSequence>
                   <SubSequence Position="1" SubSeqMinOffset="0"
                     SubSeqMaxOffset="200">
-                    <Sequence>'xmlns:key="http://developer.apple.com/namespaces/keynote2"
-                      key:version="92008102400"'</Sequence>
+                    <Sequence>'xmlns:key="http://developer.apple.com/namespaces/keynote2" key:version="92008102400"'</Sequence>
                   </SubSequence>
                 </ByteSequence>
               </InternalSignature>
@@ -3433,8 +3431,7 @@
                 <ByteSequence Reference="BOFoffset">
                   <SubSequence Position="1" SubSeqMinOffset="0"
                     SubSeqMaxOffset="1024">
-                    <Sequence>33 64 73 20 4D 61 78 20 56 65 72 73 69 6F
-                      6E</Sequence>
+                    <Sequence>33 64 73 20 4D 61 78 20 56 65 72 73 69 6F 6E</Sequence>
                   </SubSequence>
                 </ByteSequence>
               </InternalSignature>
@@ -3455,8 +3452,7 @@
                 <ByteSequence Reference="BOFoffset">
                   <SubSequence Position="1" SubSeqMinOffset="0"
                     SubSeqMaxOffset="1024">
-                    <Sequence>33 00 64 00 73 00 20 00 4D 00 61 00 78 00 20 00 56
-                      00 65 00 72 00 73 00 69 00 6F 00 6E</Sequence>
+                    <Sequence>33 00 64 00 73 00 20 00 4D 00 61 00 78 00 20 00 56 00 65 00 72 00 73 00 69 00 6F 00 6E</Sequence>
                   </SubSequence>
                 </ByteSequence>
               </InternalSignature>
@@ -3477,8 +3473,7 @@
                 <ByteSequence Reference="BOFoffset">
                   <SubSequence Position="1" SubSeqMinOffset="0"
                     SubSeqMaxOffset="1024">
-                    <Sequence>33 64 73 20 6D 61 78 20 56 65 72 73 69 6F
-                      6E</Sequence>
+                    <Sequence>33 64 73 20 6D 61 78 20 56 65 72 73 69 6F 6E</Sequence>
                   </SubSequence>
                 </ByteSequence>
               </InternalSignature>
