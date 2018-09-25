@@ -37,7 +37,7 @@ defaults = {
         'formats-v93.xml',
         'format_extensions.xml'
     ],
-    'containersignature_file': 'container-signature-20180917.xml',
+    'containersignature_file': 'container-signature-20180920.xml',
     'container_bufsize': 512 * 1024,  # (bytes)
     'description': """Format Identification for Digital Objects (fido).
 FIDO is a command-line tool to identify the file formats of digital objects.
