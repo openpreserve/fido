@@ -123,7 +123,7 @@ class Fido:
                 if sig[i] == "'":
                     inq = True
                     continue
-                if sig[i] == " ":
+                if sig[i] == " " or sig[i] == "\n":
                     continue
                 if sig[i] == "[":
                     seq += b"("
