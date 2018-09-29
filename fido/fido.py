@@ -744,8 +744,6 @@ def list_files(roots, recurse=False):
 
 
 def main(args=None):
-    import ast
-
     if not args:
         args = sys.argv[1:]
 
