@@ -744,6 +744,8 @@ def list_files(roots, recurse=False):
 
 
 def main(args=None):
+    import ast
+
     if not args:
         args = sys.argv[1:]
 
@@ -797,12 +799,14 @@ def main(args=None):
         try:
             args.matchprintf = args.matchprintf.decode('string_escape')
         except AttributeError:
-            args.matchprintf = bytes(args.matchprintf, "utf-8").decode('unicode_escape')  # python 3
+            args.matchprintf = args.matchprintf.replace(r"\n", "\n")
+            args.matchprintf = args.matchprintf.replace(r"\t", "\t")
     if args.nomatchprintf:
         try:
             args.nomatchprintf = args.nomatchprintf.decode('string_escape')
         except AttributeError:
-            args.nomatchprintf = bytes(args.nomatchprintf, "utf-8").decode('unicode_escape')  # python 3
+            args.matchprintf = args.matchprintf.replace(r"\n", "\n")
+            args.matchprintf = args.matchprintf.replace(r"\t", "\t")
 
     fido = Fido(
         quiet=args.q,
