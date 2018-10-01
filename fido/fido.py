@@ -795,9 +795,17 @@ def main(args=None):
         sys.exit(0)
 
     if args.matchprintf:
-        args.matchprintf = args.matchprintf.decode('string_escape')
+        try:
+            args.matchprintf = args.matchprintf.decode('string_escape')
+        except AttributeError:
+            args.matchprintf = args.matchprintf.replace(r"\n", "\n")
+            args.matchprintf = args.matchprintf.replace(r"\t", "\t")
     if args.nomatchprintf:
-        args.nomatchprintf = args.nomatchprintf.decode('string_escape')
+        try:
+            args.nomatchprintf = args.nomatchprintf.decode('string_escape')
+        except AttributeError:
+            args.matchprintf = args.matchprintf.replace(r"\n", "\n")
+            args.matchprintf = args.matchprintf.replace(r"\t", "\t")
 
     fido = Fido(
         quiet=args.q,
