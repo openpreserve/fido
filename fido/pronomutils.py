@@ -72,7 +72,7 @@ def get_pronom_signature(type_):
         else:
             sys.stderr.write("get_pronom_signature(): unknown type: " + type_)
             return False
-        webservice = http_client.HTTP("www.nationalarchives.gov.uk")
+        webservice = http_client.HTTPClient("www.nationalarchives.gov.uk")
         webservice.putrequest("POST", "/pronom/service.asmx")
         webservice.putheader("Host", "www.nationalarchives.gov.uk")
         webservice.putheader("User-Agent", "PRONOM UTILS v{0} (OPF)".format(__version__))
