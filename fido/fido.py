@@ -743,21 +743,111 @@ def list_files(roots, recurse=False):
                     break
 
 
-def main(args=None):
-    if not args:
-        args = sys.argv[1:]
+def main(
+        version, quiet, recurse, recurse_compressed_archives, noextension, nocontainer, pronom_only, check_list, files,
+        filename, useformats, nouseformats, matchprintf, nomatchprintf, bufsize, container_bufsize, loadformats, confdir,
+        line_processor
+    ):
+
+    t0 = time.clock()
+
+    versions = get_local_pronom_versions(args.confdir)
+
+    defaults['xml_pronomSignature'] = versions.pronom_signature
+    defaults['containersignature_file'] = versions.pronom_container_signature
+    defaults['xml_fidoExtensionSignature'] = versions.fido_extension_signature
+    defaults['format_files'] = [defaults['xml_pronomSignature']]
+
+    if pronom_only:
+        versionHeader = "FIDO v{0} ({1}, {2})\n".format(__version__, defaults['xml_pronomSignature'], defaults['containersignature_file'])
+    else:
+        versionHeader = "FIDO v{0} ({1}, {2}, {3})\n".format(__version__, defaults['xml_pronomSignature'], defaults['containersignature_file'], defaults['xml_fidoExtensionSignature'])
+        defaults['format_files'].append(defaults['xml_fidoExtensionSignature'])
+
+    if matchprintf:
+        try:
+            matchprintf = matchprintf.decode('string_escape')
+        except AttributeError:
+            matchprintf = matchprintf.replace(r"\n", "\n")
+            matchprintf = matchprintf.replace(r"\t", "\t")
+            
+    if nomatchprintf:
+        try:
+            nomatchprintf = nomatchprintf.decode('string_escape')
+        except AttributeError:
+            matchprintf = matchprintf.replace(r"\n", "\n")
+            matchprintf = matchprintf.replace(r"\t", "\t")
+
+    fido = Fido(
+        quiet=quiet,
+        bufsize=bufsize,
+        container_bufsize=container_bufsize,
+        printmatch=matchprintf,
+        printnomatch=nomatchprintf,
+        zip=recurse_compressed_archives,
+        nocontainer=nocontainer,
+        conf_dir=confdir)
+
+    # TODO: Allow conf options to be dis-included
+    if loadformats:
+        for file in loadformats.split(','):
+            fido.load_fido_xml(file)
+
+    # TODO: remove from maps
+    if useformats:
+        useformats = useformats.split(',')
+        fido.formats = [f for f in fido.formats if f.find('puid').text in useformats]
+    elif nouseformats:
+        nouseformats = nouseformats.split(',')
+        fido.formats = [f for f in fido.formats if f.find('puid').text not in nouseformats]
+
+    # Set up to use stdin, or open input files:
+    if check_list == '-':
+        files = sys.stdin
+    elif args.input:
+        files = open(check_list, 'r')
+
+    # RUN
+    try:
+        if not quiet:
+            sys.stderr.write(versionHeader)
+            sys.stderr.flush()
+        if (not check_list) and len(files) == 1 and files[0] == '-':
+            if fido.zip:
+                raise RuntimeError("Multiple content read from stdin not yet supported.")
+                sys.exit(1)
+                fido.identify_multi_object_stream(sys.stdin, extension=not noextension)
+            else:
+                fido.identify_stream(sys.stdin, filename, extension=not noextension)
+        else:
+            for file in list_files(files, recurse):
+                fido.identify_file(file, extension=not noextension)
+                # TODO:
+                # print(line_processor(fido.identify
+    except KeyboardInterrupt:
+        msg = "FIDO: Interrupt while identifying file {0}"
+        sys.stderr.write(msg.format(fido.current_file))
+        sys.exit(1)
+
+    if not quiet:
+        sys.stdout.flush()
+        fido.print_summary(time.clock() - t0)
+        sys.stderr.flush()
+
+
+if __name__ == '__main__':
 
     parser = ArgumentParser(description=defaults['description'], epilog=defaults['epilog'], fromfile_prefix_chars='@', formatter_class=RawTextHelpFormatter)
-    parser.add_argument('-v', default=False, action='store_true', help='show version information')
-    parser.add_argument('-q', default=False, action='store_true', help='run (more) quietly')
+    parser.add_argument('-v', default=False, action='store_true', dest='version', help='show version information')
+    parser.add_argument('-q', default=False, action='store_true', dest='quiet', help='run (more) quietly')
     parser.add_argument('-recurse', default=False, action='store_true', help='recurse into subdirectories')
-    parser.add_argument('-zip', default=False, action='store_true', help='recurse into zip and tar files')
+    parser.add_argument('-zip', default=False, action='store_true', dest='recurse_compressed_archives', help='recurse into zip and tar files')
     parser.add_argument('-noextension', default=False, action='store_true', help='disable extension matching, reduces number of matches but may reduce false positives')
     parser.add_argument('-nocontainer', default=False, action='store_true', help='disable deep scan of container documents, increases speed but may reduce accuracy with big files')
     parser.add_argument('-pronom_only', default=False, action='store_true', help='disables loading of format extensions file, only PRONOM signatures are loaded, may reduce accuracy of results')
 
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('-input', default=False, help='file containing a list of files to check, one per line. - means stdin')
+    group.add_argument('-input', default=False, dest='check_list', help='file containing a list of files to check, one per line. - means stdin')
     group.add_argument('files', nargs='*', default=[], metavar='FILE', help='files to check. If the file is -, then read content from stdin. In this case, python must be invoked with -u or it may convert the line terminators.')
 
     parser.add_argument('-filename', default=None, help='filename if file contents passed through STDIN')
@@ -773,94 +863,10 @@ def main(args=None):
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
-    args = parser.parse_args(args)
+        
+    args = parser.parse_args()
 
-    t0 = time.clock()
-
-    versions = get_local_pronom_versions(args.confdir)
-
-    defaults['xml_pronomSignature'] = versions.pronom_signature
-    defaults['containersignature_file'] = versions.pronom_container_signature
-    defaults['xml_fidoExtensionSignature'] = versions.fido_extension_signature
-    defaults['format_files'] = [defaults['xml_pronomSignature']]
-
-    if args.pronom_only:
-        versionHeader = "FIDO v{0} ({1}, {2})\n".format(__version__, defaults['xml_pronomSignature'], defaults['containersignature_file'])
-    else:
-        versionHeader = "FIDO v{0} ({1}, {2}, {3})\n".format(__version__, defaults['xml_pronomSignature'], defaults['containersignature_file'], defaults['xml_fidoExtensionSignature'])
-        defaults['format_files'].append(defaults['xml_fidoExtensionSignature'])
-
-    if args.v:
+    if args.version:
         sys.stdout.write(versionHeader)
-        sys.exit(0)
-
-    if args.matchprintf:
-        try:
-            args.matchprintf = args.matchprintf.decode('string_escape')
-        except AttributeError:
-            args.matchprintf = args.matchprintf.replace(r"\n", "\n")
-            args.matchprintf = args.matchprintf.replace(r"\t", "\t")
-    if args.nomatchprintf:
-        try:
-            args.nomatchprintf = args.nomatchprintf.decode('string_escape')
-        except AttributeError:
-            args.matchprintf = args.matchprintf.replace(r"\n", "\n")
-            args.matchprintf = args.matchprintf.replace(r"\t", "\t")
-
-    fido = Fido(
-        quiet=args.q,
-        bufsize=args.bufsize,
-        container_bufsize=args.container_bufsize,
-        printmatch=args.matchprintf,
-        printnomatch=args.nomatchprintf,
-        zip=args.zip,
-        nocontainer=args.nocontainer,
-        conf_dir=args.confdir)
-
-    # TODO: Allow conf options to be dis-included
-    if args.loadformats:
-        for file in args.loadformats.split(','):
-            fido.load_fido_xml(file)
-
-    # TODO: remove from maps
-    if args.useformats:
-        args.useformats = args.useformats.split(',')
-        fido.formats = [f for f in fido.formats if f.find('puid').text in args.useformats]
-    elif args.nouseformats:
-        args.nouseformats = args.nouseformats.split(',')
-        fido.formats = [f for f in fido.formats if f.find('puid').text not in args.nouseformats]
-
-    # Set up to use stdin, or open input files:
-    if args.input == '-':
-        args.files = sys.stdin
-    elif args.input:
-        args.files = open(args.input, 'r')
-
-    # RUN
-    try:
-        if not args.q:
-            sys.stderr.write(versionHeader)
-            sys.stderr.flush()
-        if (not args.input) and len(args.files) == 1 and args.files[0] == '-':
-            if fido.zip:
-                raise RuntimeError("Multiple content read from stdin not yet supported.")
-                sys.exit(1)
-                fido.identify_multi_object_stream(sys.stdin, extension=not args.noextension)
-            else:
-                fido.identify_stream(sys.stdin, args.filename, extension=not args.noextension)
-        else:
-            for file in list_files(args.files, args.recurse):
-                fido.identify_file(file, extension=not args.noextension)
-    except KeyboardInterrupt:
-        msg = "FIDO: Interrupt while identifying file {0}"
-        sys.stderr.write(msg.format(fido.current_file))
-        sys.exit(1)
-
-    if not args.q:
-        sys.stdout.flush()
-        fido.print_summary(time.clock() - t0)
-        sys.stderr.flush()
-
-
-if __name__ == '__main__':
-    main()
+    else:
+        main(**vars(args))
