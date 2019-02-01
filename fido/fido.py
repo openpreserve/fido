@@ -744,9 +744,14 @@ def list_files(roots, recurse=False):
 
 
 def main(
-        version, quiet, recurse, recurse_compressed_archives, noextension, nocontainer, pronom_only, check_list, files,
-        filename, useformats, nouseformats, matchprintf, nomatchprintf, bufsize, container_bufsize, loadformats, confdir,
-        line_processor
+        version=False, quiet=False,
+        recurse=False, recurse_compressed_archives=False,
+        noextension=False, nocontainer=False, pronom_only=False,
+        check_list=None, files=None, filename=None,
+        useformats=None, nouseformats=None,
+        matchprintf=None, nomatchprintf=None,
+        bufsize=None, container_bufsize=None,
+        loadformats=None, confdir=None, handle_matches=None
     ):
 
     t0 = time.clock()
@@ -786,7 +791,9 @@ def main(
         printnomatch=nomatchprintf,
         zip=recurse_compressed_archives,
         nocontainer=nocontainer,
-        conf_dir=confdir)
+        conf_dir=confdir,
+        handle_matches=handle_matches
+    )
 
     # TODO: Allow conf options to be dis-included
     if loadformats:
@@ -804,7 +811,7 @@ def main(
     # Set up to use stdin, or open input files:
     if check_list == '-':
         files = sys.stdin
-    elif args.input:
+    elif check_list:
         files = open(check_list, 'r')
 
     # RUN
@@ -822,8 +829,6 @@ def main(
         else:
             for file in list_files(files, recurse):
                 fido.identify_file(file, extension=not noextension)
-                # TODO:
-                # print(line_processor(fido.identify
     except KeyboardInterrupt:
         msg = "FIDO: Interrupt while identifying file {0}"
         sys.stderr.write(msg.format(fido.current_file))
@@ -836,7 +841,7 @@ def main(
 
 
 if __name__ == '__main__':
-
+    # run as a command line tool instead of as a module
     parser = ArgumentParser(description=defaults['description'], epilog=defaults['epilog'], fromfile_prefix_chars='@', formatter_class=RawTextHelpFormatter)
     parser.add_argument('-v', default=False, action='store_true', dest='version', help='show version information')
     parser.add_argument('-q', default=False, action='store_true', dest='quiet', help='run (more) quietly')
