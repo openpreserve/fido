@@ -195,7 +195,7 @@ class FormatInfo:
         ET.SubElement(fido_format, 'pronom_id').text = get_text_tna(pronom_format, 'FormatID')
         # Get the extensions from the ExternalSignature
         for x in pronom_format.findall(TNA('ExternalSignature')):
-                ET.SubElement(fido_format, 'extension').text = get_text_tna(x, 'Signature')
+            ET.SubElement(fido_format, 'extension').text = get_text_tna(x, 'Signature')
         for id in pronom_format.findall(TNA('FileFormatIdentifier')):
             type = get_text_tna(id, 'IdentifierType')
             if type == 'Apple Uniform Type Identifier':
