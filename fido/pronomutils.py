@@ -89,7 +89,7 @@ def get_pronom_signature(type_):
         if statuscode == 200:
             xml = webservice.getfile()
             if type_ == "version":
-                exp = re.compile("\<Version\>([0-9]{1,4})\<\/Version\>")
+                exp = re.compile(r"\<Version\>([0-9]{1,4})\<\/Version\>")
                 sigxml = exp.search(xml.read())
                 if len(sigxml.group(1)) > 0:
                     return int(sigxml.group(1))
@@ -97,7 +97,7 @@ def get_pronom_signature(type_):
                     sys.stderr.write("get_pronom_signature(): could not parse VERSION from SOAP response: " + type_)
                     return False
             if type_ == "file":
-                exp = re.compile("\<SignatureFile\>.*\<\/SignatureFile\>")
+                exp = re.compile(r"\<SignatureFile\>.*\<\/SignatureFile\>")
                 sigxml = exp.search(xml.read())
                 sigtxt = sigxml.group(0) if sigxml else ''
                 if len(sigtxt) > 0:

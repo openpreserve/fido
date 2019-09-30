@@ -2,8 +2,8 @@
 language: "python"
 python:
   - "2.7"
-  - "3.4"
   - "3.5"
+  - "3.7"
 
 install:
   - "pip install -U pip flake8 pep257 pytest-cov codecov codacy-coverage"
