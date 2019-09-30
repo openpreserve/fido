@@ -37,32 +37,31 @@ class OlePackage(Package):
     def detect_formats(self):
         """Detect available formats inside the OLE container."""
         try:
-            ole = olefile.OleFileIO(self.ole)
+            with olefile.OleFileIO(self.ole) as ole:
+                results = []
+                for path, puid_map in iteritems(self.signatures):
+                    # Each OLE container signature lists the path of the file inside the OLE
+                    # on which it operates; if the file is missing, there can be no match.
+                    # This is not a precise match because the name of the stream may slightly
+                    # differ; for example, \x01CompObj instead of CompObj
+                    filepath = None
+                    for paths in ole.listdir():
+                        p = '/'.join(paths)
+                        if p == path or p[1:] == path:
+                            filepath = p
+                            break
+
+                    # Path to match isn't in the container at all
+                    if filepath is None:
+                        continue
+
+                    with ole.openstream(filepath) as stream:
+                        contents = stream.read()
+                        results.extend(self._process_puid_map(contents, puid_map))
+
+                return results
         except IOError:
             return []
-
-        results = []
-        for path, puid_map in iteritems(self.signatures):
-            # Each OLE container signature lists the path of the file inside the OLE
-            # on which it operates; if the file is missing, there can be no match.
-            # This is not a precise match because the name of the stream may slightly
-            # differ; for example, \x01CompObj instead of CompObj
-            filepath = None
-            for paths in ole.listdir():
-                p = '/'.join(paths)
-                if p == path or p[1:] == path:
-                    filepath = p
-                    break
-
-            # Path to match isn't in the container at all
-            if filepath is None:
-                continue
-
-            with ole.openstream(filepath) as stream:
-                contents = stream.read()
-                results.extend(self._process_puid_map(contents, puid_map))
-
-        return results
 
 
 class ZipPackage(Package):
@@ -76,21 +75,20 @@ class ZipPackage(Package):
     def detect_formats(self):
         """Detect available formats inside the ZIP container."""
         try:
-            zip_ = zipfile.ZipFile(self.zip)
+            with zipfile.ZipFile(self.zip) as zip_:
+                results = []
+                for path, puid_map in iteritems(self.signatures):
+                    # Each ZIP container signature lists the path of the file inside the ZIP
+                    # on which it operates; if the file is missing, there can be no match.
+                    if path not in zip_.namelist():
+                        continue
+
+                    # Extract the requested file from the ZIP only once, and pass the same
+                    # data to each signature that requires it.
+                    with zip_.open(path) as id_file:
+                        contents = id_file.read()
+                        results.extend(self._process_puid_map(contents, puid_map))
+
+                return results
         except (zipfile.BadZipfile, RuntimeError, UnicodeDecodeError):
             return []
-
-        results = []
-        for path, puid_map in iteritems(self.signatures):
-            # Each ZIP container signature lists the path of the file inside the ZIP
-            # on which it operates; if the file is missing, there can be no match.
-            if path not in zip_.namelist():
-                continue
-
-            # Extract the requested file from the ZIP only once, and pass the same
-            # data to each signature that requires it.
-            with zip_.open(path) as id_file:
-                contents = id_file.read()
-                results.extend(self._process_puid_map(contents, puid_map))
-
-        return results
