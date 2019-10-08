@@ -350,8 +350,9 @@ def doByte(chars, i, littleendian, esc=True):
     """
     c1 = '0123456789ABCDEF'.find(chars[i].upper())
     c2 = '0123456789ABCDEF'.find(chars[i + 1].upper())
+    buf = cStringIO()
     if (c1 < 0 or c2 < 0):
-        raise Exception(_convert_err_msg('bad byte sequence', chars[i:i + 2], i, chars, buf=None))
+        raise Exception(_convert_err_msg('bad byte sequence', chars[i:i + 2], i, chars, buf))
     if littleendian:
         val = chr(16 * c1 + c2)
     else:
