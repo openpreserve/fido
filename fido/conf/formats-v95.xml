@@ -6246,6 +6246,7 @@ Known QuarkXpress file types are: qxd - QuarkXpress Document; qxl - QuarkXpress 
     <version />
     <alias />
     <pronom_id>317</pronom_id>
+    <extension>mid</extension>
     <details>
       <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
       <dcterms:available />
@@ -6256,7 +6257,7 @@ Known QuarkXpress file types are: qxd - QuarkXpress Document; qxl - QuarkXpress 
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>18 Feb 2019</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -11699,6 +11700,7 @@ The identification byte is followed by four or more bytes that are all equal to 
       <is_supertype_of>1770</is_supertype_of>
       <is_supertype_of>1852</is_supertype_of>
       <is_supertype_of>1944</is_supertype_of>
+      <is_supertype_of>2029</is_supertype_of>
       <content_type>Text (Mark-up)</content_type>
       <reference>
         <dc:title>W3C Recommendation: Extensible Markup Language (XML) 1.0 (Third Edition) W3C Recommendation 04 February 2004</dc:title>
@@ -13492,6 +13494,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
     <alias>Exif Compressed Image (2.1)</alias>
     <pronom_id>675</pronom_id>
     <extension>jpg</extension>
+    <extension>jpeg</extension>
     <has_priority_over>fmt/41</has_priority_over>
     <signature>
       <name>EXIF Compressed Image 2.1 (big-endian)</name>
@@ -13555,6 +13558,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
     <alias>Exif Compressed Image (2.2)</alias>
     <pronom_id>676</pronom_id>
     <extension>jpg</extension>
+    <extension>jpeg</extension>
     <has_priority_over>fmt/41</has_priority_over>
     <signature>
       <name>EXIF Compressed Image 2.2 (big-endian)</name>
@@ -16671,6 +16675,7 @@ http://www.openoffice.org/xml/xml_specification.pdf</dc:description>
     <alias>Exif Compressed Image (2.0)</alias>
     <pronom_id>751</pronom_id>
     <extension>jpg</extension>
+    <extension>jpeg</extension>
     <has_priority_over>fmt/41</has_priority_over>
     <signature>
       <name>EXIF Compressed Image 2.0 (big-endian)</name>
@@ -27896,6 +27901,7 @@ http://www.dca.fee.unicamp.br/~martino/disciplinas/ea978/tgaffs.pdf</dc:descript
     <extension>aif</extension>
     <extension>aiff</extension>
     <has_priority_over>x-fmt/157</has_priority_over>
+    <has_priority_over>fmt/134</has_priority_over>
     <signature>
       <name>Audio Interchange File Format</name>
       <note>Starts like most IFF files (FORM) followed by four bytes that tell how many more bytes follow in the file followed by AIFF.</note>
@@ -27915,7 +27921,7 @@ http://www.dca.fee.unicamp.br/~martino/disciplinas/ea978/tgaffs.pdf</dc:descript
         <status>unknown</status>
         <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
         <dcterms:created>06 Nov 2012</dcterms:created>
-        <dcterms:modified>06 Nov 2012</dcterms:modified>
+        <dcterms:modified>18 Feb 2019</dcterms:modified>
         <dc:description>Specification available at http://www.music.mcgill.ca/~ich/classes/synth/AudioIFF1.2.1/AudioIFF1.2.1.html</dc:description>
       </record_metadata>
     </details>
@@ -33700,7 +33706,7 @@ The EBML specifications are work-in-progress, and can be found here: https://git
         <dc:identifier>http://www.matroska.org/downloads/test_w1.html</dc:identifier>
         <dcterms:license />
         <dc:rights />
-        <checksum type="md5">54a06d95b98895b51d84d6a22fcb5933</checksum>
+        <checksum type="md5">9296cafe51ef909cd09a2584a1ea7449</checksum>
       </example_file>
       <record_metadata>
         <status>unknown</status>
@@ -36003,6 +36009,7 @@ http://msdn.microsoft.com/en-us/library/dd951288(v=office.12).aspx</dc:descripti
     <alias />
     <pronom_id>1444</pronom_id>
     <extension>jpg</extension>
+    <extension>jpeg</extension>
     <has_priority_over>fmt/41</has_priority_over>
     <signature>
       <name>EXIF Compressed Image 2.2.1 (big-endian)</name>
@@ -43980,7 +43987,7 @@ The .acsm file is essentially a 'key' to allow the download of purchased content
       <pattern>
         <position>BOF</position>
         <pronom_pattern>7F20575332303030FF312E3030</pronom_pattern>
-        <regex>(?s)\A\x7f WS2000\xff1\.00</regex>
+        <regex>(?s)\A.{0,128}\x7f WS2000\xff1\.00</regex>
       </pattern>
     </signature>
     <details>
@@ -47259,8 +47266,8 @@ Specification: https://github.com/ephtracy/voxel-model/blob/master/MagicaVoxel-f
       <note>&lt;x:xmpmeta xmlns:x=("|')adobe:ns:meta/</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>3C783A786D706D65746120786D6C6E733A783D(22|25)61646F62653A6E733A6D6574612F(22|25)</pronom_pattern>
-        <regex>(?s)\A\x3cx:xmpmeta xmlns:x=(?:"|%)adobe:ns:meta/(?:"|%)</regex>
+        <pronom_pattern>3C783A786D706D65746120786D6C6E733A783D(22|27)61646F62653A6E733A6D6574612F(22|25)</pronom_pattern>
+        <regex>(?s)\A\x3cx:xmpmeta xmlns:x=(?:"|')adobe:ns:meta/(?:"|%)</regex>
       </pattern>
     </signature>
     <details>
@@ -54430,11 +54437,11 @@ f &lt;space&gt; 3+ integer values, can be negative, separated by space. Faces co
     <extension>mtl</extension>
     <signature>
       <name>Wavefront Material Template Library</name>
-      <note>BOF, offset 0-1024, 'newmtl' &lt;name&gt; {0-32} (Ka|Kd|Ks) &lt;space&gt;</note>
+      <note>BOF, offset 0-1024, 'newmtl' &lt;name&gt; {0-80} (Ka|Kd|Ks) &lt;space&gt;</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>6E65776D746C{0-32}(4B61|4B64|4B73)20</pronom_pattern>
-        <regex>(?s)\A.{0,1024}newmtl.{0,32}(?:Ka|Kd|Ks) </regex>
+        <pronom_pattern>6E65776D746C{0-80}(4B61|4B64|4B73)20</pronom_pattern>
+        <regex>(?s)\A.{0,1024}newmtl.{0,80}(?:Ka|Kd|Ks) </regex>
       </pattern>
     </signature>
     <details>
@@ -54635,6 +54642,521 @@ f &lt;space&gt; 3+ integer values, can be negative, separated by space. Faces co
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>22 Aug 2018</dcterms:created>
         <dcterms:modified>22 Aug 2018</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1218</puid>
+    <name>SubRip Subtitle File</name>
+    <version />
+    <alias />
+    <pronom_id>2028</pronom_id>
+    <extension>srt</extension>
+    <details>
+      <dc:description>SubRip subtitle files contain formatted lines of plain text in groups separated by a blank line. Subtitles are numbered sequentially, starting at 1. The timecode format used is hours:minutes:seconds,milliseconds, with time units fixed to two zero-padded digits and fractions fixed to three zero-padded digits, e.g. '00:00:00,000'. Currently PRONOM is able to provide an extension-only entry for this format.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of New Zealand / National Library of New Zealand</dc:creator>
+        <dcterms:created>07 Feb 2019</dcterms:created>
+        <dcterms:modified>07 Feb 2019</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1219</puid>
+    <mime>application/x-gnumeric</mime>
+    <name>Gnumeric</name>
+    <version />
+    <alias />
+    <pronom_id>2029</pronom_id>
+    <extension>gnumeric</extension>
+    <has_priority_over>fmt/101</has_priority_over>
+    <signature>
+      <name>Gnumeric variant 1</name>
+      <note>&lt;?xmlversion="1.0"{2-32}&lt;gnm:Workbook xmlns:gnm="http://www.gnumeric.org</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F786D6C2076657273696F6E3D22312E30{2-32}3C676E6D3A576F726B626F6F6B20786D6C6E733A676E6D3D22687474703A2F2F7777772E676E756D657269632E6F7267</pronom_pattern>
+        <regex>(?s)\A\x3c\?xml version="1\.0.{2,32}\x3cgnm:Workbook xmlns:gnm="http://www\.gnumeric\.org</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Gnumeric variant 2</name>
+      <note>&lt;?xmlversion="1.0"{2-32}&lt;gmr:Workbook xmlns:gmr="http://www.gnome.org/gnumeric/</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F786D6C2076657273696F6E3D22312E30{2-32}3C676D723A576F726B626F6F6B20786D6C6E733A676D723D22687474703A2F2F7777772E676E6F6D652E6F72672F676E756D657269632F</pronom_pattern>
+        <regex>(?s)\A\x3c\?xml version="1\.0.{2,32}\x3cgmr:Workbook xmlns:gmr="http://www\.gnome\.org/gnumeric/</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Gnumeric is an open source spreadsheet application. The native format is an XML-based format, that is typically compressed within a GZIP container. It may be desirable to distinguish between different versions of Gnumeric spreadsheet documents. Please contact the PRONOM team if this is the case.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <is_subtype_of>638</is_subtype_of>
+      <content_type>Spreadsheet</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>SLUB Dresden / S&#228;chsische Landesbibliothek &#8211; Staats- und Universit&#228;tsbibliothek Dresden</dc:creator>
+        <dcterms:created>11 Feb 2019</dcterms:created>
+        <dcterms:modified>11 Feb 2019</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1220</puid>
+    <mime>application/vnd.wordperfect</mime>
+    <name>WordPerfect for Macintosh Document</name>
+    <version>2.x</version>
+    <alias />
+    <pronom_id>2030</pronom_id>
+    <signature>
+      <name>WordPerfect for Mac 2.x</name>
+      <note>Word Perfect magic: 0xFF'WPC', {4} Product code 0x01=Word Perfect, File Type 0x2C=MAC WP, File Format Major Version 0x02=2 - http://www.columbia.edu/~em36/wpdos/WPMac4FileFormat.pdf</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>FF575043{4}012C02</pronom_pattern>
+        <regex>(?s)\A\xffWPC.{4}\x01,\x02</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>WordPerfect is a word processor application currently owned by Corel. Applications implementing the libwpd library should be able to render older WordPerfect documents. WordPerfect documents created within a Macintosh environment are likely to lack a format extension.</dc:description>
+      <dcterms:available />
+      <dc:creator>Corel Corporation</dc:creator>
+      <dcterms:publisher>Corel Corporation</dcterms:publisher>
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator />
+        <dcterms:created>18 Feb 2019</dcterms:created>
+        <dcterms:modified>18 Feb 2019</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1221</puid>
+    <mime>application/vnd.wordperfect</mime>
+    <name>WordPerfect for Macintosh Document</name>
+    <version>3.x</version>
+    <alias />
+    <pronom_id>2031</pronom_id>
+    <signature>
+      <name>WordPerfect for Mac 3.x</name>
+      <note>Word Perfect magic: 0xFF'WPC', {4} Product code 0x01=Word Perfect, File Type 0x2C=MAC WP, File Format Major Version 0x03=3 - http://www.columbia.edu/~em36/wpdos/WPMac4FileFormat.pdf</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>FF575043{4}012C03</pronom_pattern>
+        <regex>(?s)\A\xffWPC.{4}\x01,\x03</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>WordPerfect is a word processor application currently owned by Corel. Applications implementing the libwpd library should be able to render older WordPerfect documents. WordPerfect documents created within a Macintosh environment are likely to lack a format extension.</dc:description>
+      <dcterms:available />
+      <dc:creator>Corel Corporation</dc:creator>
+      <dcterms:publisher>Corel Corporation</dcterms:publisher>
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator />
+        <dcterms:created>18 Feb 2019</dcterms:created>
+        <dcterms:modified>18 Feb 2019</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1222</puid>
+    <mime>application/vnd.wordperfect</mime>
+    <name>WordPerfect for Macintosh Document</name>
+    <version>3.5-4.x</version>
+    <alias />
+    <pronom_id>2032</pronom_id>
+    <signature>
+      <name>WordPerfect for Mac 3.5-4.x</name>
+      <note>Word Perfect magic: 0xFF'WPC', {4} Product code 0x01=Word Perfect, File Type 0x2C=MAC WP, File Format Major Version 0x04=4 - http://www.columbia.edu/~em36/wpdos/WPMac4FileFormat.pdf</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>FF575043{4}012C04</pronom_pattern>
+        <regex>(?s)\A\xffWPC.{4}\x01,\x04</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>WordPerfect is a word processor application currently owned by Corel. Applications implementing the libwpd library should be able to render older WordPerfect documents. WordPerfect documents created within a Macintosh environment are likely to lack a format extension.</dc:description>
+      <dcterms:available />
+      <dc:creator>Corel Corporation</dc:creator>
+      <dcterms:publisher>Corel Corporation</dcterms:publisher>
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator />
+        <dcterms:created>18 Feb 2019</dcterms:created>
+        <dcterms:modified>18 Feb 2019</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1223</puid>
+    <name>PaperPort MAX</name>
+    <version>2</version>
+    <alias />
+    <pronom_id>2033</pronom_id>
+    <extension>max</extension>
+    <signature>
+      <name>PaperPort MAX 2</name>
+      <note>BOF: 'ViGBe' \n</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>56694742651A</pronom_pattern>
+        <regex>(?s)\AViGBe\x1a</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>MAX was the native image format of earlier versions of the PaperPort document management software. Although this has been subsequently superseded by PDF, newer versions retain the ability to read, but not write MAX files.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator />
+        <dcterms:created>18 Feb 2019</dcterms:created>
+        <dcterms:modified>18 Feb 2019</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1224</puid>
+    <name>PaperPort MAX</name>
+    <version>3-4</version>
+    <alias />
+    <pronom_id>2034</pronom_id>
+    <extension>max</extension>
+    <signature>
+      <name>PaperPort MAX 3-4</name>
+      <note>BOF: 'ViGCj' \n</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>566947436A1A</pronom_pattern>
+        <regex>(?s)\AViGCj\x1a</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>MAX was the native image format of earlier versions of the PaperPort document management software. Although this has been subsequently superseded by PDF, newer versions retain the ability to read, but not write MAX files.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Esri / Esri</dc:creator>
+        <dcterms:created>18 Feb 2019</dcterms:created>
+        <dcterms:modified>18 Feb 2019</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1225</puid>
+    <name>PaperPort MAX</name>
+    <version>5</version>
+    <alias />
+    <pronom_id>2035</pronom_id>
+    <extension>max</extension>
+    <signature>
+      <name>PaperPort MAX 5</name>
+      <note>BOF: 'ViGEm' \n</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>566947456D1A</pronom_pattern>
+        <regex>(?s)\AViGEm\x1a</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>MAX was the native image format of earlier versions of the PaperPort document management software. Although this has been subsequently superseded by PDF, newer versions retain the ability to read, but not write MAX files.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Esri / Esri</dc:creator>
+        <dcterms:created>18 Feb 2019</dcterms:created>
+        <dcterms:modified>18 Feb 2019</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1226</puid>
+    <name>Sparky</name>
+    <version>2</version>
+    <alias />
+    <pronom_id>2036</pronom_id>
+    <extension>ucsf</extension>
+    <signature>
+      <name>Sparky 2</name>
+      <note>BOF: Magic bytes &#8216;UCSF NMR&#8217; followed by null, In addition, the byte offset 13 (0x0D) should be the number 2 (unsigned char, for version 2).</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>55435346204E4D5200{4}02</pronom_pattern>
+        <regex>(?s)\AUCSF NMR\x00.{4}\x02</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Sparky is used in Nuclear Magnetic Resonance (NMR) Spectroscopy, particularly spectral analysis. Sparky is a graphical NMR assignment and integration program for proteins, nucleic acids, and other polymers.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>University of Illinois / University of Illinois</dc:creator>
+        <dcterms:created>18 Feb 2019</dcterms:created>
+        <dcterms:modified>18 Feb 2019</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1227</puid>
+    <name>NMRView</name>
+    <version />
+    <alias />
+    <pronom_id>2037</pronom_id>
+    <extension>nv</extension>
+    <signature>
+      <name>NMRView Big Endian</name>
+      <note>BOF: Magic number decimal &#8216;874032077&#8217; stored as big endian 32 bit integer. http://docs.nmrfx.org/processor/files/fformat</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3418ABCD</pronom_pattern>
+        <regex>(?s)\A4\x18\xab\xcd</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>NMRView Little Endian</name>
+      <note>BOF: Magic number decimal &#8216;874032077&#8217; stored as little endian 32 bit integer. http://docs.nmrfx.org/processor/files/fformat</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>CDAB1834</pronom_pattern>
+        <regex>(?s)\A\xcd\xab\x184</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>NMRView is a graphical Nuclear Magnetic Resonance (NMR) assignment and integration program for proteins, nucleic acids, and other polymers.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>University of Illinois / University of Illinois</dc:creator>
+        <dcterms:created>18 Feb 2019</dcterms:created>
+        <dcterms:modified>18 Feb 2019</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1228</puid>
+    <name>NMRPipe</name>
+    <version />
+    <alias />
+    <pronom_id>2040</pronom_id>
+    <extension>dat</extension>
+    <extension>pipe</extension>
+    <extension>ft2</extension>
+    <extension>ft3</extension>
+    <signature>
+      <name>NMRPipe Big Endian IEEE Float</name>
+      <note>0x00000000898888cd7b141640</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>00000000898888CD7B141640</pronom_pattern>
+        <regex>(?s)\A\x00\x00\x00\x00\x89\x88\x88\xcd\{\x14\x16@</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>NMRPipe Little Endian IEEE Float</name>
+      <note>0x000000004F6EEEEF4016147B</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>000000004F6EEEEF4016147B</pronom_pattern>
+        <regex>(?s)\A\x00\x00\x00\x00On\xee\xef@\x16\x14\{</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>NMRPipe is a suite of tools for Nuclear Magnetic Resonance (NMR) spectral reconstruction.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>University of Illinois / University of Illinois</dc:creator>
+        <dcterms:created>18 Feb 2019</dcterms:created>
+        <dcterms:modified>18 Feb 2019</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1229</puid>
+    <name>Sibelius Sound Set Definition</name>
+    <version />
+    <alias />
+    <pronom_id>2041</pronom_id>
+    <extension>set</extension>
+    <details>
+      <dc:description>A text-based file used by Sibelius music composition software to list the file system locations of sound files in use within a composition.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of New Zealand / National Library of New Zealand</dc:creator>
+        <dcterms:created>18 Feb 2019</dcterms:created>
+        <dcterms:modified>18 Feb 2019</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1230</puid>
+    <name>SK-XML</name>
+    <version>1.0</version>
+    <alias />
+    <pronom_id>2042</pronom_id>
+    <extension>ddoc</extension>
+    <has_priority_over>fmt/101</has_priority_over>
+    <signature>
+      <name>DigiDoc 1.0</name>
+      <note>XML Header + SignedDoc element attributes</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F786D6C2076657273696F6E3D(22|27)312E30(22|27)20656E636F64696E673D(22|27)5554462D38(22|27)3F3E{0-2}3C5369676E6564446F6320666F726D61743D(22|27)534B2D584D4C(22|27)2076657273696F6E3D(22|27)312E30(22|27)3E</pronom_pattern>
+        <regex>(?s)\A.{0,3}\x3c\?xml version=(?:"|')1\.0(?:"|') encoding=(?:"|')UTF-8(?:"|')\?\x3e.{0,2}\x3cSignedDoc format=(?:"|')SK-XML(?:"|') version=(?:"|')1\.0(?:"|')\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>DigiDoc is a digital signature format specific to Estonia. The format is based on the ETSI TS 101 903 Standard &#8216;XML Advanced Electronic Signatures (XAdES)&#8217;. DigiDoc corresponds to the XAdES profile &#8216;XAdES-X-L&#8217;. A DigiDoc container includes source files (the files that were signed) as well as signatures that are related to the signed file(s). Also every signature contains the certificate, validity confirmation and the validity confirmation service certificate. https://www.id.ee/?id=35780</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Mark-up)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives of Estonia / The National Archives of Estonia</dc:creator>
+        <dcterms:created>18 Feb 2019</dcterms:created>
+        <dcterms:modified>18 Feb 2019</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1231</puid>
+    <name>DIGIDOC-XML</name>
+    <version>1.1</version>
+    <alias />
+    <pronom_id>2044</pronom_id>
+    <extension>ddoc</extension>
+    <has_priority_over>fmt/101</has_priority_over>
+    <signature>
+      <name>DigiDoc 1.1</name>
+      <note>XML Header + SignedDoc element attributes - XML Schema https://www.id.ee/public/DigiDoc_1.1.xsd</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F786D6C2076657273696F6E3D(22|27)312E30(22|27)20656E636F64696E673D(22|27)5554462D38(22|27)3F3E{0-2}3C5369676E6564446F6320666F726D61743D(22|27)44494749444F432D584D4C(22|27)2076657273696F6E3D(22|27)312E31(22|27)3E</pronom_pattern>
+        <regex>(?s)\A.{0,3}\x3c\?xml version=(?:"|')1\.0(?:"|') encoding=(?:"|')UTF-8(?:"|')\?\x3e.{0,2}\x3cSignedDoc format=(?:"|')DIGIDOC-XML(?:"|') version=(?:"|')1\.1(?:"|')\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>DigiDoc is a digital signature format specific to Estonia. The format is based on the ETSI TS 101 903 Standard &#8216;XML Advanced Electronic Signatures (XAdES)&#8217;. DigiDoc corresponds to the XAdES profile &#8216;XAdES-X-L&#8217;. A DigiDoc container includes source files (the files that were signed) as well as signatures that are related to the signed file(s). Also every signature contains the certificate, validity confirmation and the validity confirmation service certificate. https://www.id.ee/?id=35780</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Mark-up)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives of Estonia / The National Archives of Estonia</dc:creator>
+        <dcterms:created>18 Feb 2019</dcterms:created>
+        <dcterms:modified>18 Feb 2019</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1232</puid>
+    <name>DIGIDOC-XML</name>
+    <version>1.2</version>
+    <alias />
+    <pronom_id>2045</pronom_id>
+    <extension>ddoc</extension>
+    <has_priority_over>fmt/101</has_priority_over>
+    <signature>
+      <name>DigiDoc 1.2</name>
+      <note>XML Header + SignedDoc element attributes - https://www.id.ee/public/DigiDoci_vorming_1.2.pdf (in Estonian). XML Schema https://www.id.ee/public/DigiDoc_1.2.xsd</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F786D6C2076657273696F6E3D(22|27)312E30(22|27)20656E636F64696E673D(22|27)5554462D38(22|27)3F3E{0-2}3C5369676E6564446F6320666F726D61743D(22|27)44494749444F432D584D4C(22|27)2076657273696F6E3D(22|27)312E32(22|27)3E</pronom_pattern>
+        <regex>(?s)\A.{0,3}\x3c\?xml version=(?:"|')1\.0(?:"|') encoding=(?:"|')UTF-8(?:"|')\?\x3e.{0,2}\x3cSignedDoc format=(?:"|')DIGIDOC-XML(?:"|') version=(?:"|')1\.2(?:"|')\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>DigiDoc is a digital signature format specific to Estonia. The format is based on the ETSI TS 101 903 Standard &#8216;XML Advanced Electronic Signatures (XAdES)&#8217;. DigiDoc corresponds to the XAdES profile &#8216;XAdES-X-L&#8217;. A DigiDoc container includes source files (the files that were signed) as well as signatures that are related to the signed file(s). Also every signature contains the certificate, validity confirmation and the validity confirmation service certificate. https://www.id.ee/?id=35780</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Mark-up)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives of Estonia / The National Archives of Estonia</dc:creator>
+        <dcterms:created>18 Feb 2019</dcterms:created>
+        <dcterms:modified>18 Feb 2019</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1233</puid>
+    <name>DIGIDOC-XML</name>
+    <version>1.3</version>
+    <alias />
+    <pronom_id>2046</pronom_id>
+    <extension>ddoc</extension>
+    <has_priority_over>fmt/101</has_priority_over>
+    <signature>
+      <name>DigiDoc 1.3</name>
+      <note>XML Header + SignedDoc element attributes - https://www.id.ee/public/DigiDoc_format_1.3.pdf . XML Schema https://www.id.ee/public/DigiDoc_1.3.xsd</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F786D6C2076657273696F6E3D(22|27)312E30(22|27)20656E636F64696E673D(22|27)5554462D38(22|27)3F3E{0-2}3C5369676E6564446F6320666F726D61743D(22|27)44494749444F432D584D4C(22|27)2076657273696F6E3D(22|27)312E33(22|27)20786D6C6E733D(22|27)687474703A2F2F7777772E736B2E65652F44696769446F632F76312E332E3023(22|27)3E</pronom_pattern>
+        <regex>(?s)\A.{0,3}\x3c\?xml version=(?:"|')1\.0(?:"|') encoding=(?:"|')UTF-8(?:"|')\?\x3e.{0,2}\x3cSignedDoc format=(?:"|')DIGIDOC-XML(?:"|') version=(?:"|')1\.3(?:"|') xmlns=(?:"|')http://www\.sk\.ee/DigiDoc/v1\.3\.0#(?:"|')\x3e</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>DigiDoc is a digital signature format specific to Estonia. The format is based on the ETSI TS 101 903 Standard &#8216;XML Advanced Electronic Signatures (XAdES)&#8217;. DigiDoc corresponds to the XAdES profile &#8216;XAdES-X-L&#8217;. A DigiDoc container includes source files (the files that were signed) as well as signatures that are related to the signed file(s). Also every signature contains the certificate, validity confirmation and the validity confirmation service certificate. https://www.id.ee/?id=35780</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Mark-up)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives of Estonia / The National Archives of Estonia</dc:creator>
+        <dcterms:created>18 Feb 2019</dcterms:created>
+        <dcterms:modified>18 Feb 2019</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
