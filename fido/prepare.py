@@ -338,7 +338,7 @@ def fido_position(pronom_position):
         return 'VAR'
 
 
-def _convert_err_msg(msg, c, i, chars):
+def _convert_err_msg(msg, c, i, chars, buf):
     return "Conversion: {0}: char='{1}', at pos {2} in \n  {3}\n  {4}^\nBuffer = {5}".format(msg, c, i, chars, i * ' ', buf.getvalue())
 
 
@@ -350,8 +350,9 @@ def doByte(chars, i, littleendian, esc=True):
     """
     c1 = '0123456789ABCDEF'.find(chars[i].upper())
     c2 = '0123456789ABCDEF'.find(chars[i + 1].upper())
+    buf = cStringIO()
     if (c1 < 0 or c2 < 0):
-        raise Exception(_convert_err_msg('bad byte sequence', chars[i:i + 2], i, chars))
+        raise Exception(_convert_err_msg('bad byte sequence', chars[i:i + 2], i, chars, buf))
     if littleendian:
         val = chr(16 * c1 + c2)
     else:
@@ -486,8 +487,6 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
         maxoffset = None
     if maxoffset == '0':
         maxoffset = None
-    # make buf global so we can print it @'_convert_err_msg' while debugging (MdR)
-    global buf
     buf = cStringIO()
     buf.write("(?s)")  # If a regex starts with (?s), it is equivalent to DOTALL.
     i = 0
@@ -522,7 +521,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
             elif chars[i] in '*+?':
                 state = 'specials'
             else:
-                raise Exception(_convert_err_msg('Illegal character in start', chars[i], i, chars))
+                raise Exception(_convert_err_msg('Illegal character in start', chars[i], i, chars, buf))
         elif state == 'bytes':
             (byt, inc) = doByte(chars, i, littleendian)
             buf.write(byt)
@@ -557,7 +556,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
                 elif chars[i] == ']':
                     break
                 else:
-                    raise Exception(_convert_err_msg('Illegal character in non-match', chars[i], i, chars))
+                    raise Exception(_convert_err_msg('Illegal character in non-match', chars[i], i, chars, buf))
             buf.write(')')
             i += 1
             state = 'start'
@@ -583,7 +582,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
                 buf.write(']')
                 i += 1
             except Exception:
-                print(_convert_err_msg('Illegal character in bracket', chars[i], i, chars))
+                print(_convert_err_msg('Illegal character in bracket', chars[i], i, chars, buf))
                 raise
             if i < len(chars) and chars[i] == '{':
                 state = 'curly-after-bracket'
@@ -624,7 +623,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
                     buf.write(']')
                     i += 1
                 else:
-                    raise Exception(_convert_err_msg(('Current state = \'{0}\' : Illegal character in paren').format(state), chars[i], i, chars))
+                    raise Exception(_convert_err_msg(('Current state = \'{0}\' : Illegal character in paren').format(state), chars[i], i, chars, buf))
             buf.write(')')
             i += 1
             state = 'start'
@@ -651,7 +650,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
                 elif chars[i] == '}':
                     break
                 else:
-                    raise Exception(_convert_err_msg('Illegal character in curly', chars[i], i, chars))
+                    raise Exception(_convert_err_msg('Illegal character in curly', chars[i], i, chars, buf))
             buf.write('}')
             i += 1                # skip the )
             state = 'start'
@@ -664,7 +663,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
                 i += 1
             elif chars[i] == '?':
                 if chars[i + 1] != '?':
-                    raise Exception(_convert_err_msg('Illegal character after ?', chars[i + 1], i + 1, chars))
+                    raise Exception(_convert_err_msg('Illegal character after ?', chars[i + 1], i + 1, chars, buf))
                 buf.write('.?')
                 i += 2
             state = 'start'
