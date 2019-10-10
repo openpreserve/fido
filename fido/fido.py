@@ -91,13 +91,12 @@ class Fido:
     def _escape_char(self, c):
         if c in '\n':
             return '\\n'
-        elif c == '\r':
+        if c == '\r':
             return '\\r'
-        elif c in self._special:
+        if c in self._special:
             return '\\' + c
-        else:
-            (high, low) = divmod(ord(c), 16)
-            return '\\x' + self._hex[high] + self._hex[low]
+        (high, low) = divmod(ord(c), 16)
+        return '\\x' + self._hex[high] + self._hex[low]
 
     def escape(self, string):
         """
@@ -387,7 +386,7 @@ class Fido:
         """
         if not type:
             return
-        elif type == 'zip':
+        if type == 'zip':
             self.walk_zip(filename, fileobj, extension=extension)
         elif type == 'tar':
             self.walk_tar(filename, fileobj, extension=extension)
@@ -460,7 +459,7 @@ class Fido:
                     self.current_file = filename
             matches = self.match_extensions(self.current_file)
             # we have to reset self.current_file if not on Windows
-            if (os.name != "nt"):
+            if os.name != "nt":
                 self.current_file = 'STDIN'
             self.handle_matches(self.current_file, matches, time.clock() - t0, "extension")
 
@@ -529,30 +528,29 @@ class Fido:
                     eofbuffer = prevbuffer if len(buffer) == 0 else prevbuffer[-(self.bufsize - len(buffer)):] + buffer
                     break
             return bofbuffer, eofbuffer, bytes_read
+        bytes_unread = length - len(bofbuffer)
+        if bytes_unread == 0:
+            eofbuffer = bofbuffer
+        elif bytes_unread < self.bufsize:
+            # The buffs overlap
+            eofbuffer = bofbuffer[bytes_unread:] + self.blocking_read(stream, bytes_unread)
+        elif bytes_unread == self.bufsize:
+            eofbuffer = self.blocking_read(stream, self.bufsize)
+        elif seekable:  # easy case when we can just seek!
+            stream.seek(length - self.bufsize)
+            eofbuffer = self.blocking_read(stream, self.bufsize)
         else:
-            bytes_unread = length - len(bofbuffer)
-            if bytes_unread == 0:
-                eofbuffer = bofbuffer
-            elif bytes_unread < self.bufsize:
-                # The buffs overlap
-                eofbuffer = bofbuffer[bytes_unread:] + self.blocking_read(stream, bytes_unread)
-            elif bytes_unread == self.bufsize:
-                eofbuffer = self.blocking_read(stream, self.bufsize)
-            elif seekable:  # easy case when we can just seek!
-                stream.seek(length - self.bufsize)
-                eofbuffer = self.blocking_read(stream, self.bufsize)
-            else:
-                # We have more to read and know how much.
-                # n*bufsize + r = length
-                (n, r) = divmod(bytes_unread, self.bufsize)
-                # skip n-1*bufsize bytes
-                for unused_i in range(1, n):
-                    self.blocking_read(stream, self.bufsize)
-                # skip r bytes
-                self.blocking_read(stream, r)
-                # and read the remaining bufsize bytes into the eofbuffer
-                eofbuffer = self.blocking_read(stream, self.bufsize)
-            return bofbuffer, eofbuffer, bytes_to_read
+            # We have more to read and know how much.
+            # n*bufsize + r = length
+            (n, r) = divmod(bytes_unread, self.bufsize)
+            # skip n-1*bufsize bytes
+            for unused_i in range(1, n):
+                self.blocking_read(stream, self.bufsize)
+            # skip r bytes
+            self.blocking_read(stream, r)
+            # and read the remaining bufsize bytes into the eofbuffer
+            eofbuffer = self.blocking_read(stream, self.bufsize)
+        return bofbuffer, eofbuffer, bytes_to_read
 
     def walk_zip(self, filename, fileobj=None, extension=True):
         """
@@ -627,7 +625,7 @@ class Fido:
             for (f2, _) in match_list:
                 if f1 == f2:
                     continue
-                elif f1_puid in self.puid_has_priority_over_map[self.get_puid(f2)]:
+                if f1_puid in self.puid_has_priority_over_map[self.get_puid(f2)]:
                     return False
         return True
 

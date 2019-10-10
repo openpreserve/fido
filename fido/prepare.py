@@ -316,10 +316,9 @@ class FormatInfo:
                     return 1
             if f1ID < f2ID:
                 return - 1
-            elif f1ID == f2ID:
+            if f1ID == f2ID:
                 return 0
-            else:
-                return 1
+            return 1
         return sorted(formatlist, cmp=compare_formats)
 
 
@@ -327,15 +326,15 @@ def fido_position(pronom_position):
     """Return BOF/EOF/VAR instead of the more verbose pronom position names."""
     if pronom_position == 'Absolute from BOF':
         return 'BOF'
-    elif pronom_position == 'Absolute from EOF':
+    if pronom_position == 'Absolute from EOF':
         return 'EOF'
-    elif pronom_position == 'Variable':
+    if pronom_position == 'Variable':
         return 'VAR'
-    elif pronom_position == 'Indirect From BOF':
+    if pronom_position == 'Indirect From BOF':
         return 'IFB'
-    else:  # to make sure FIDO does not crash (IFB aftermath)
-        sys.stderr.write("Unknown pronom PositionType:" + pronom_position)
-        return 'VAR'
+    # to make sure FIDO does not crash (IFB aftermath)
+    sys.stderr.write("Unknown pronom PositionType:" + pronom_position)
+    return 'VAR'
 
 
 def _convert_err_msg(msg, c, i, chars, buf):
@@ -365,13 +364,12 @@ def doByte(chars, i, littleendian, esc=True):
 def _escape_char(c):
     if c in '\n':
         return '\\n'
-    elif c == '\r':
+    if c == '\r':
         return '\\r'
-    elif c in _special:
+    if c in _special:
         return '\\' + c
-    else:
-        (high, low) = divmod(ord(c), 16)
-        return '\\x' + _hex[high] + _hex[low]
+    (high, low) = divmod(ord(c), 16)
+    return '\\x' + _hex[high] + _hex[low]
 
 
 def escape(string):
