@@ -7,7 +7,7 @@ import olefile
 from six import iteritems
 
 
-class Package(object):
+class Package():
     """Base class for container support."""
 
     def _process_puid_map(self, data, puid_map):
