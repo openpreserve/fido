@@ -392,7 +392,16 @@ class Fido:
         elif type == 'tar':
             self.walk_tar(filename, fileobj, extension=extension)
         else:  # TODO: ouch!
-            raise RuntimeError("Unknown container type: " + repr(type))
+            # TODO: Ouch indeed, this currently causes Fido to crash.
+            # propose that this should be report and return or similar
+            # the consequence is that fido fails to recurse containers that aren't
+            # zip or tar, that's acceptable behaviour particularly  if clearly documented.
+            # Was previously:
+            #
+            # raise RuntimeError("Unknown container type: " + repr(type))
+            #
+            # carl@openpreservation.org 10/10/2019
+            return
 
     def identify_multi_object_stream(self, stream, extension=True):
         """
