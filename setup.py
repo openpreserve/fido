@@ -1,21 +1,23 @@
 #!/usr/bin/env python
+"""Setup installer for Fido."""
 # -*- coding: utf-8 -*-
 
 import codecs
 import os
 import re
-import sys
 
 from setuptools import setup
 
 
 def read(*parts):
+    """Read the contents of files in parts and return contents."""
     path = os.path.join(os.path.dirname(__file__), *parts)
     with codecs.open(path, encoding='utf-8') as fobj:
         return fobj.read()
 
 
 def find_version(*file_paths):
+    """Search contents of files in file_paths for version number."""
     version_file = read(*file_paths)
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
     if version_match:

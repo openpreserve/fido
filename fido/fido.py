@@ -447,7 +447,7 @@ class Fido:
         elif extension and (len(matches) == 0 or self.current_filesize == 0):
             # we can only determine the filename from the STDIN stream
             # on Linux, on Windows there is not a (simple) way to do that
-            if (os.name != "nt"):
+            if os.name != "nt":
                 try:
                     self.current_file = os.readlink("/proc/self/fd/0")
                 except OSError:
@@ -470,7 +470,7 @@ class Fido:
         that we can look inside of (e.g., zip, tar).
         @return False, zip, or tar.
         """
-        for (format_, unused) in matches:
+        for (format_, _) in matches:
             container = format_.find('container')
             if container is not None:
                 return container.text
@@ -565,7 +565,7 @@ class Fido:
             with zipfile.ZipFile((fileobj if fileobj else filename), 'r') as zipstream:
                 for item in zipstream.infolist():
                     if item.file_size == 0:
-                        continue  # TODO: Find a better test for isdir
+                        continue  # TODO: Find a better test for isdir, Python 3.6 adds is_dir() test to ZipInfo class
                     t0 = time.clock()
                     with zipstream.open(item) as f:
                         item_name = filename + '!' + item.filename
@@ -624,7 +624,7 @@ class Fido:
         """
         if match_list != []:
             f1_puid = self.get_puid(f1)
-            for (f2, unused) in match_list:
+            for (f2, _) in match_list:
                 if f1 == f2:
                     continue
                 elif f1_puid in self.puid_has_priority_over_map[self.get_puid(f2)]:
@@ -736,7 +736,7 @@ def list_files(roots, recurse=False):
         if os.path.isfile(root):
             yield root
         else:
-            for path, unused, files in os.walk(root):
+            for path, _, files in os.walk(root):
                 for f in files:
                     yield os.path.join(path, f)
                 if not recurse:

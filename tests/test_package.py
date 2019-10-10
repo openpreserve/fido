@@ -1,7 +1,4 @@
 import os
-import zipfile
-
-import pytest
 
 from fido.package import ZipPackage
 
