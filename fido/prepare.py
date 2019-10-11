@@ -327,6 +327,7 @@ def _cmp_to_key(mycmp):
     # From https://docs.python.org/3/howto/sorting.html#sortinghowto
     class K:
         """Wrapper class for comparator function."""
+
         def __init__(self, obj, *_):
             self.obj = obj
 
@@ -349,6 +350,7 @@ def _cmp_to_key(mycmp):
             return mycmp(self.obj, other.obj) != 0
 
     return K
+
 
 def fido_position(pronom_position):
     """Return BOF/EOF/VAR instead of the more verbose pronom position names."""
