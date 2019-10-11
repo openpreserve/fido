@@ -42,7 +42,7 @@ def check_well_formedness(filename, error=False):
     """
     parser = ParserCreate()
     try:
-        parser.ParseFile(open(filename, "r"))
+        parser.ParseFile(open(filename, "rb"))
     except ExpatError as e:
         if error is not False:
             sys.stderr.write("check_well_formedness: %s: %s;\n" % (filename, e))
@@ -72,57 +72,57 @@ def get_pronom_signature(type_):
         else:
             sys.stderr.write("get_pronom_signature(): unknown type: " + type_)
             return False
-        webservice = http_client.HTTP("www.nationalarchives.gov.uk")
-        webservice.putrequest("POST", "/pronom/service.asmx")
-        webservice.putheader("Host", "www.nationalarchives.gov.uk")
-        webservice.putheader("User-Agent", "PRONOM UTILS v{0} (OPF)".format(__version__))
-        webservice.putheader("Content-type", "text/xml; charset=\"UTF-8\"")
-        webservice.putheader("Content-length", "%d" % len(soapStr))
-        webservice.putheader("SOAPAction", soapAction)
+        headers = {
+            "Host": "www.nationalarchives.gov.uk",
+            "User-Agent": "PRONOM UTILS v{0} (OPF)".format(__version__),
+            "Content-type": "text/xml; charset=\"UTF-8\"",
+            "Content-length": "%d" % len(soapStr),
+            "SOAPAction": soapAction
+            }
+        connection = http_client.HTTPConnection("www.nationalarchives.gov.uk")
         try:
-            webservice.endheaders()
+            connection.request("POST", "/pronom/service.asmx", soapStr, headers)
         except Exception as e:
             sys.stderr.write("get_pronom_signature(): failed to contact PRONOM;\n%s\n" % (e))
             sys.exit()
-        webservice.send(soapStr)
-        statuscode, statusmessage, header = webservice.getreply()
-        if statuscode == 200:
-            xml = webservice.getfile()
-            if type_ == "version":
-                exp = re.compile(r"\<Version\>([0-9]{1,4})\<\/Version\>")
-                sigxml = exp.search(xml.read())
-                if len(sigxml.group(1)) > 0:
-                    return int(sigxml.group(1))
-                else:
-                    sys.stderr.write("get_pronom_signature(): could not parse VERSION from SOAP response: " + type_)
-                    return False
-            if type_ == "file":
-                exp = re.compile(r"\<SignatureFile\>.*\<\/SignatureFile\>")
-                sigxml = exp.search(xml.read())
-                sigtxt = sigxml.group(0) if sigxml else ''
-                if len(sigtxt) > 0:
-                    tmpfile = "./tmp_getPronomSignature.xml"
-                    with open(tmpfile, 'wb') as file_:
-                        file_.write("""<?xml version="1.0" encoding="UTF-8"?>""" + "\n")
-                        file_.write(sigtxt)
-                    if not check_well_formedness(tmpfile):
-                        os.unlink(tmpfile)
-                        sys.stderr.write("get_pronom_signature(): signaturefile not well formed")
-                        return False
-                    else:
-                        os.unlink(tmpfile)
-                        return """<?xml version="1.0" encoding="UTF-8"?>""" + "\n" + sigtxt
-                else:
-                    sys.stderr.write("get_pronom_signature(): could not parse XML from SOAP response: " + type_)
-                    return False
-        else:
-            sys.stderr.write("get_pronom_signature(): webservice error: '" + str(statuscode) + " " + statusmessage + "'\n")
+        response = connection.getresponse()
+        if response.status != 200:
+            sys.stderr.write("get_pronom_signature(): webservice error: '" + str(response.status) + " " + response.reason + "'\n")
             return False
+        xml = response.read().decode("utf-8")
+        if type_ == "version":
+            exp = re.compile(r"\<Version\>([0-9]{1,4})\<\/Version\>")
+            sigxml = exp.search(xml)
+            if len(sigxml.group(1)) > 0:
+                return int(sigxml.group(1))
+            else:
+                sys.stderr.write("get_pronom_signature(): could not parse VERSION from SOAP response: " + type_)
+                return False
+        if type_ == "file":
+            exp = re.compile(r"\<SignatureFile\>.*\<\/SignatureFile\>")
+            sigxml = exp.search(xml)
+            sigtxt = sigxml.group(0) if sigxml else ''
+            if len(sigtxt) > 0:
+                tmpfile = "./tmp_getPronomSignature.xml"
+                with open(tmpfile, 'w') as file_:
+                    file_.write("""<?xml version="1.0" encoding="UTF-8"?>""" + "\n")
+                    file_.write(sigtxt)
+                if not check_well_formedness(tmpfile):
+                    os.unlink(tmpfile)
+                    sys.stderr.write("get_pronom_signature(): signaturefile not well formed")
+                    return False
+                else:
+                    os.unlink(tmpfile)
+                    return """<?xml version="1.0" encoding="UTF-8"?>""" + "\n" + sigtxt
+            else:
+                sys.stderr.write("get_pronom_signature(): could not parse XML from SOAP response: " + type_)
+                return False
+
         sys.stderr.write("get_pronom_signature(): unexpected return")
         return False
     except Exception as e:
         sys.stderr.write("get_pronom_signature(): unknown error: " + str(e))
-        return False
+        raise e
 
 
 class LocalPronomVersions(object):
