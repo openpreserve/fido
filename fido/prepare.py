@@ -323,7 +323,7 @@ class FormatInfo:
 
 # From https://docs.python.org/3/howto/sorting.html#sortinghowto
 def _cmp_to_key(mycmp):
-    'Convert a cmp= function into a key= function'
+    """Convert a cmp= function into a key= function."""
     class K:
         def __init__(self, obj, *_):
             self.obj = obj

@@ -117,6 +117,7 @@ def run(defaults=None):
         sys.exit('Aborting update...')
 
 def download_signatures(defaults, puids, resume_download, tmpdir):
+    """Download PRONOM signatures and write to individual files."""
     print("Downloading signatures, one moment please...")
     numberPuids = len(puids)
     one_percent = (float(numberPuids) / 100)
@@ -150,6 +151,7 @@ def download_signatures(defaults, puids, resume_download, tmpdir):
 
 
 def create_zip_file(defaults, puids, currentVersion, tmpdir):
+    """Create zip file of signatures."""
     print("Creating PRONOM zip...")
     compression = zipfile.ZIP_DEFLATED if 'zlib' in sys.modules else zipfile.ZIP_STORED
     modes = {zipfile.ZIP_DEFLATED: 'deflated', zipfile.ZIP_STORED: 'stored'}
@@ -166,6 +168,7 @@ def create_zip_file(defaults, puids, currentVersion, tmpdir):
     zf.close()
 
 def update_versions_xml(defaults, currentVersion):
+    """Create new versions identified sig XML file."""
     print('Updating versions.xml...')
     versions = get_local_pronom_versions()
     versions.pronom_version = str(currentVersion)
