@@ -52,7 +52,7 @@ def run(defaults=None):
     Interactive script, requires keyboard input.
     """
     print("FIDO signature updater v{}".format(__version__))
-    default = defaults or DEFAULTS
+    defaults = defaults or DEFAULTS
     try:
         print("Contacting PRONOM...")
         currentVersion = get_pronom_signature("version")
@@ -116,6 +116,7 @@ def run(defaults=None):
     except KeyboardInterrupt:
         sys.exit('Aborting update...')
 
+
 def download_signatures(defaults, puids, resume_download, tmpdir):
     """Download PRONOM signatures and write to individual files."""
     print("Downloading signatures, one moment please...")
@@ -166,6 +167,7 @@ def create_zip_file(defaults, puids, currentVersion, tmpdir):
             if defaults['deleteTempDirectory']:
                 os.unlink(filename)
     zf.close()
+
 
 def update_versions_xml(defaults, currentVersion):
     """Create new versions identified sig XML file."""

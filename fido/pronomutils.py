@@ -78,7 +78,7 @@ def get_pronom_signature(type_):
             "Content-type": "text/xml; charset=\"UTF-8\"",
             "Content-length": "%d" % len(soapStr),
             "SOAPAction": soapAction
-            }
+        }
         connection = http_client.HTTPConnection("www.nationalarchives.gov.uk")
         try:
             connection.request("POST", "/pronom/service.asmx", soapStr, headers)

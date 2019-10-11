@@ -321,24 +321,33 @@ class FormatInfo:
             return 1
         return sorted(formatlist, key=_cmp_to_key(compare_formats))
 
-# From https://docs.python.org/3/howto/sorting.html#sortinghowto
+
 def _cmp_to_key(mycmp):
     """Convert a cmp= function into a key= function."""
+    # From https://docs.python.org/3/howto/sorting.html#sortinghowto
     class K:
+        """Wrapper class for comparator function."""
         def __init__(self, obj, *_):
             self.obj = obj
+
         def __lt__(self, other):
             return mycmp(self.obj, other.obj) < 0
+
         def __gt__(self, other):
             return mycmp(self.obj, other.obj) > 0
+
         def __eq__(self, other):
             return mycmp(self.obj, other.obj) == 0
+
         def __le__(self, other):
             return mycmp(self.obj, other.obj) <= 0
+
         def __ge__(self, other):
             return mycmp(self.obj, other.obj) >= 0
+
         def __ne__(self, other):
             return mycmp(self.obj, other.obj) != 0
+
     return K
 
 def fido_position(pronom_position):
