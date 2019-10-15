@@ -43,9 +43,9 @@ defaults = {
 FIDO is a command-line tool to identify the file formats of digital objects.
 It is designed for simple integration into automated work-flows.""",
     'epilog': """
-Open Planets Foundation (http://www.openplanetsfoundation.org)
+Open Preservation Foundation (http://www.openpreservation.org)
 See License.txt for license information.
-Download from: https://github.com/openplanets/fido/releases
+Download from: https://github.com/openpreserve/fido/releases
 Usage guide: http://wiki.opf-labs.org/display/KB/FIDO+usage+guide
 Author: Adam Farquhar (BL), 2010
 Maintainer: Maurice de Rooij (OPF/NANETH), 2011, 2012, 2013
