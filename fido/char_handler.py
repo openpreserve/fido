@@ -10,6 +10,7 @@ ORDINARY = frozenset(' "#%&\',-/0123456789:;=@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefg
 SPECIAL = '$()*+.?![]^\\{|}'  # Before: '$*+.?![]^\\{|}'
 HEX = '0123456789abcdef'
 
+
 def escape_char(c):
     """Add appropriate escape sequence to passed character c."""
     if c in '\n':
@@ -20,6 +21,7 @@ def escape_char(c):
         return '\\' + c
     (high, low) = divmod(ord(c), 16)
     return '\\x' + HEX[high] + HEX[low]
+
 
 def escape(string):
     """Escape characters in pattern that are non-printable, non-ascii, or special for regexes."""

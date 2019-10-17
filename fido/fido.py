@@ -227,7 +227,6 @@ class Fido:
         # Build some structures to speed things up
         self.puid_has_priority_over_map[puid] = frozenset([puid_element.text for puid_element in element.findall('has_priority_over')])
 
-
     # To delete a format: (1) remove from self.formats, (2) remove from puid_format_map, (3) remove from selt.puid_has_priority_over_map
     def get_signatures(self, format):
         return format.findall('signature')
