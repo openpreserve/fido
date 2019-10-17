@@ -19,6 +19,7 @@ from six.moves.urllib.parse import urlparse
 from .pronomutils import get_local_pronom_versions
 from .char_handler import escape
 
+
 class NS:
     """
     Helper class for XML name spaces in ElementTree.
