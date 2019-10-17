@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-Character handling routines for Format Identification for Digital Objects (FIDO).
-"""
+"""Character handling routines for Format Identification for Digital Objects (FIDO)."""
 
 # \a\b\n\r\t\v
 # MdR: took out '<' and '>' out of _ordinary because they were converted to entities &lt;&gt;
@@ -24,8 +22,5 @@ def escape_char(c):
     return '\\x' + HEX[high] + HEX[low]
 
 def escape(string):
-    """
-    Escape characters in pattern that are non-printable, non-ascii, or
-    special for regexes.
-    """
+    """Escape characters in pattern that are non-printable, non-ascii, or special for regexes."""
     return ''.join(c if c in ORDINARY else escape_char(c) for c in string)
