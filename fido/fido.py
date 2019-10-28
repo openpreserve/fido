@@ -26,6 +26,7 @@ from six.moves import range
 from . import __version__, CONFIG_DIR
 from .package import OlePackage, ZipPackage
 from .pronomutils import get_local_pronom_versions
+from .char_handler import escape
 
 
 defaults = {
@@ -84,28 +85,6 @@ class Fido:
         re._MAXCACHE = defaults['regexcachesize']
         self.externalsig = ET.XML('<signature><name>External</name></signature>')
 
-    _ordinary = frozenset(' "#%&\',-/0123456789:;=@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~')
-    _special = '$()*+.?![]^\\{|}'  # Before: '$*+.?![]^\\{|}'
-    _hex = '0123456789abcdef'
-
-    def _escape_char(self, c):
-        if c in '\n':
-            return '\\n'
-        if c == '\r':
-            return '\\r'
-        if c in self._special:
-            return '\\' + c
-        (high, low) = divmod(ord(c), 16)
-        return '\\x' + self._hex[high] + self._hex[low]
-
-    def escape(self, string):
-        """
-        Escape characters in pattern that are non-printable, non-ascii, or
-        special for regexes.
-        """
-        escaped = ''.join(c if c in self._ordinary else self._escape_char(c) for c in string)
-        return escaped
-
     def convert_container_sequence(self, sig):
         """
         Parse the PRONOM container sequences and convert to regular
@@ -140,7 +119,7 @@ class Fido:
                 if sig[i] == "'" and not rng:
                     inq = False
                     continue
-                seq += self.escape(sig[i]).encode('utf8')
+                seq += escape(sig[i]).encode('utf8')
                 continue
             if rng:
                 if sig[i] == "]":
@@ -148,7 +127,7 @@ class Fido:
                     rng = False
                     continue
                 if sig[i] != "-" and sig[i] != "'" and ror:
-                    seq += self.escape(sig[i]).encode('utf8')
+                    seq += escape(sig[i]).encode('utf8')
                     continue
                 if sig[i] != "-" and sig[i] != "'" and sig[i] != " " and sig[i] != ":" and not ror and not byt:
                     seq += b"\\x" + sig[i].lower().encode('utf8')
@@ -224,22 +203,29 @@ class Fido:
         As a side-effect, set self.formats.
         @return list of ElementTree.Element, one for each format.
         """
-        tree = ET.parse(file)
-        # print "Loaded format specs in {0:>6.2f}ms".format((t1 - t0) * 1000)
-        # TODO: Handle empty regexes properly; perhaps remove from the format list
-        for element in tree.getroot().findall('./format'):
-            puid = self.get_puid(element)
-            # Handle over-writes in multiple file loads
-            existing = self.puid_format_map.get(puid, False)
-            if existing:
-                # Already have one, so replace old with new!
-                self.formats[self.formats.index(existing)] = element
-            else:
-                self.formats.append(element)
-            self.puid_format_map[puid] = element
-            # Build some structures to speed things up
-            self.puid_has_priority_over_map[puid] = frozenset([puid_element.text for puid_element in element.findall('has_priority_over')])
+        try:
+            tree = ET.parse(file)
+            for element in tree.getroot().findall('./format'):
+                self.process_format_element(element)
+        except ET.ParseError as parse_excep:
+            sys.stderr.write('Failed to parse signature file {}, exception: {}\n'.format(file, parse_excep))
+            sys.exit(1)
         return self.formats
+
+    def process_format_element(self, element):
+        """Process an individual sig file XML element."""
+        # TODO: Handle empty regexes properly; perhaps remove from the format list
+        puid = self.get_puid(element)
+        # Handle over-writes in multiple file loads
+        existing = self.puid_format_map.get(puid, False)
+        if existing:
+            # Already have one, so replace old with new!
+            self.formats[self.formats.index(existing)] = element
+        else:
+            self.formats.append(element)
+        self.puid_format_map[puid] = element
+        # Build some structures to speed things up
+        self.puid_has_priority_over_map[puid] = frozenset([puid_element.text for puid_element in element.findall('has_priority_over')])
 
     # To delete a format: (1) remove from self.formats, (2) remove from puid_format_map, (3) remove from selt.puid_has_priority_over_map
     def get_signatures(self, format):
@@ -374,9 +360,9 @@ class Fido:
             # till here matey!
             if self.zip and self.can_recurse_into_container(container):
                 self.identify_contents(filename, type=container, extension=extension)
-        except IOError:
+        except IOError as io_excep:
             # print >> sys.stderr, "FIDO: Error in identify_file: Path is {0}".format(filename)
-            sys.stderr.write("FIDO: Error in identify_file: Path is {0}\n".format(filename))
+            sys.stderr.write("FIDO: Error in identify_file: {}, exception: {}\n".format(filename, io_excep))
 
     def identify_contents(self, filename, fileobj=None, type=False, extension=True):
         """

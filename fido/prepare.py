@@ -17,14 +17,7 @@ from six.moves.urllib.request import urlopen
 from six.moves.urllib.parse import urlparse
 
 from .pronomutils import get_local_pronom_versions
-
-
-# \a\b\n\r\t\v
-# MdR: took out '<' and '>' out of _ordinary because they were converted to entities &lt;&gt;
-# MdR: moved '!' from _ordinary to _special because it means "NOT" in the regex world. At this time no regex in any sig has a negate set, did this to be on the safe side
-_ordinary = frozenset(' "#%&\',-/0123456789:;=@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~')
-_special = '$()*+.?![]^\\{|}'
-_hex = '0123456789abcdef'
+from .char_handler import escape
 
 
 class NS:
@@ -93,14 +86,14 @@ class FormatInfo:
             # if f.find('signature'):
             root.append(f)
         self.indent(root)
-        with open(dst, 'w') as file_:
+        with open(dst, 'wb') as file_:
             # print >>out, ET.tostring(root,encoding='utf-8')
-            print(ET.tostring(root), file=file_)
+            file_.write(ET.tostring(root))
 
     def indent(self, elem, level=0):
         """Indent output."""
         i = "\n" + level * "  "
-        if len(elem):
+        if elem:
             if not elem.text or not elem.text.strip():
                 elem.text = i + "  "
             if not elem.tail or not elem.tail.strip():
@@ -389,22 +382,6 @@ def doByte(chars, i, littleendian, esc=True):
     if esc:
         return (escape(val), 2)
     return (val, 2)
-
-
-def _escape_char(c):
-    if c in '\n':
-        return '\\n'
-    if c == '\r':
-        return '\\r'
-    if c in _special:
-        return '\\' + c
-    (high, low) = divmod(ord(c), 16)
-    return '\\x' + _hex[high] + _hex[low]
-
-
-def escape(string):
-    """Escape characters in pattern that are non-printable, non-ascii, or special for regexes."""
-    return ''.join(c if c in _ordinary else _escape_char(c) for c in string)
 
 
 # Python now allows regex repetitions to be max out somewhere between 4 and 4.3
