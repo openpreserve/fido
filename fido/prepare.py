@@ -706,7 +706,7 @@ def main(args=None):
 
     parser = ArgumentParser(description='Produce the FIDO format XML that is loaded at run-time')
     parser.add_argument('-input', default=None, help='Input file, a Zip containing PRONOM XML files')
-    parser.add_argument('-output', default=None, help='Ouptut file')
+    parser.add_argument('-output', default=None, help='Output file')
     parser.add_argument('-puid', default=None, help='A particular PUID record to extract')
     args = parser.parse_args(args)
 
