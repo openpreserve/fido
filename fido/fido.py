@@ -632,7 +632,7 @@ class Fido:
         if not overlap:
             bufsize = self.container_bufsize
         else:
-            bufsize = self.container_bufsize + self.overlap_range
+            bufsize = self.container_bufsize + overlap
         file_end = self.current_filesize
         with open(self.current_file, 'rb') as file_handle:
             file_handle.seek(file_pos)
