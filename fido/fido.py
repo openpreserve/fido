@@ -59,6 +59,7 @@ and Container descriptions.
 PRONOM is available from http://www.nationalarchives.gov.uk/pronom/""",
 }
 
+
 class PerfTimer:
     """Utility class that carries out simple process timings."""
     def __init__(self):
@@ -72,6 +73,7 @@ class PerfTimer:
     def duration(self):
         """Return the duration since instantiation or start() was last called."""
         return perf_counter() - self.start_time
+
 
 class Fido:
     def __init__(self, quiet=False, bufsize=None, container_bufsize=None, printnomatch=None, printmatch=None, zip=False, nocontainer=False, handle_matches=None, conf_dir=CONFIG_DIR, format_files=None, containersignature_file=None):
