@@ -17,7 +17,11 @@ import re
 import sys
 import tarfile
 import tempfile
-import time
+try:
+    from time import perf_counter
+except ImportError:
+    from time import clock as perf_counter
+
 from xml.etree import cElementTree as ET
 import zipfile
 
@@ -55,6 +59,19 @@ and Container descriptions.
 PRONOM is available from http://www.nationalarchives.gov.uk/pronom/""",
 }
 
+class PerfTimer:
+    """Utility class that carries out simple process timings."""
+    def __init__(self):
+        """New instance with start time running."""
+        self.start_time = perf_counter()
+
+    def start(self):
+        """Start new timer."""
+        self.start_time = perf_counter()
+
+    def duration(self):
+        """Return the duration since instantiation or start() was last called."""
+        return perf_counter() - self.start_time
 
 class Fido:
     def __init__(self, quiet=False, bufsize=None, container_bufsize=None, printnomatch=None, printmatch=None, zip=False, nocontainer=False, handle_matches=None, conf_dir=CONFIG_DIR, format_files=None, containersignature_file=None):
@@ -326,7 +343,7 @@ class Fido:
         self.current_file = filename
         self.matchtype = "signature"
         try:
-            t0 = time.perf_counter()
+            timer = PerfTimer()
             f = open(filename, 'rb')
             size = os.stat(filename)[6]
             self.current_filesize = size
@@ -342,7 +359,7 @@ class Fido:
                 else:
                     container_matches = self.match_container("OLE2", OlePackage, filename, container_file)
                 if len(container_matches) > 0:
-                    self.handle_matches(filename, container_matches, time.perf_counter() - t0, "container")
+                    self.handle_matches(filename, container_matches, timer.duration(), "container")
                     return
             # from here is also repeated in walk_zip
             # we should make this uniform in a next version!
@@ -351,10 +368,10 @@ class Fido:
             # are falsely characterised being 'rtf' (due to wacky sig)
             # in these cases we try to match the extension instead
             if len(matches) > 0 and self.current_filesize > 0:
-                self.handle_matches(filename, matches, time.perf_counter() - t0, self.matchtype)
+                self.handle_matches(filename, matches, timer.duration(), self.matchtype)
             elif extension and (len(matches) == 0 or self.current_filesize == 0):
                 matches = self.match_extensions(filename)
-                self.handle_matches(filename, matches, time.perf_counter() - t0, "extension")
+                self.handle_matches(filename, matches, timer.duration(), "extension")
             # only recurse into certain containers, like ZIP or TAR
             container = self.container_type(matches)
             # till here matey!
@@ -398,7 +415,7 @@ class Fido:
         """
         offset = 0
         while True:
-            t0 = time.perf_counter()
+            timer = PerfTimer()
             content_length = -1
             for line in stream:
                 offset += len(line)
@@ -419,10 +436,10 @@ class Fido:
             matches = self.match_formats(bofbuffer, eofbuffer)
             # MdR: this needs attention
             if len(matches) > 0:
-                self.handle_matches(self.current_file, matches, time.perf_counter() - t0, "signature")
+                self.handle_matches(self.current_file, matches, timer.duration(), "signature")
             elif extension and (len(matches) == 0 or self.current_filesize == 0):
                 matches = self.match_extensions(self.current_file)
-                self.handle_matches(self.current_file, matches, time.perf_counter() - t0, "extension")
+                self.handle_matches(self.current_file, matches, timer.duration(), "extension")
 
     def identify_stream(self, stream, filename, extension=True):
         """
@@ -430,14 +447,14 @@ class Fido:
         Call self.handle_matches instead of returning a value.
         Does not close stream.
         """
-        t0 = time.perf_counter()
+        timer = PerfTimer()
         bofbuffer, eofbuffer, bytes_read = self.get_buffers(stream, length=None)
         self.current_filesize = bytes_read
         self.current_file = 'STDIN'
         matches = self.match_formats(bofbuffer, eofbuffer)
         # MdR: this needs attention
         if len(matches) > 0:
-            self.handle_matches(self.current_file, matches, time.perf_counter() - t0, "signature")
+            self.handle_matches(self.current_file, matches, timer.duration(), "signature")
         elif extension and (len(matches) == 0 or self.current_filesize == 0):
             # we can only determine the filename from the STDIN stream
             # on Linux, on Windows there is not a (simple) way to do that
@@ -456,7 +473,7 @@ class Fido:
             # we have to reset self.current_file if not on Windows
             if os.name != "nt":
                 self.current_file = 'STDIN'
-            self.handle_matches(self.current_file, matches, time.perf_counter() - t0, "extension")
+            self.handle_matches(self.current_file, matches, timer.duration(), "extension")
 
     def container_type(self, matches):
         """
@@ -559,7 +576,7 @@ class Fido:
                 for item in zipstream.infolist():
                     if item.file_size == 0:
                         continue  # TODO: Find a better test for isdir, Python 3.6 adds is_dir() test to ZipInfo class
-                    t0 = time.perf_counter()
+                    timer = PerfTimer()
                     with zipstream.open(item) as f:
                         item_name = filename + '!' + item.filename
                         self.current_file = item_name
@@ -569,10 +586,10 @@ class Fido:
                         bofbuffer, eofbuffer, _ = self.get_buffers(f, item.file_size)
                     matches = self.match_formats(bofbuffer, eofbuffer)
                     if len(matches) > 0 and self.current_filesize > 0:
-                        self.handle_matches(item_name, matches, time.perf_counter() - t0, "signature")
+                        self.handle_matches(item_name, matches, timer.duration(), "signature")
                     elif extension and (len(matches) == 0 or self.current_filesize == 0):
                         matches = self.match_extensions(item_name)
-                        self.handle_matches(item_name, matches, time.perf_counter() - t0, "extension")
+                        self.handle_matches(item_name, matches, timer.duration(), "extension")
                     if self.container_type(matches):
                         target = tempfile.SpooledTemporaryFile(prefix='Fido')
                         with zipstream.open(item) as source:
@@ -596,14 +613,14 @@ class Fido:
                 for item in tarstream.getmembers():
                     if not item.isfile():
                         continue
-                    t0 = time.perf_counter()
+                    timer = PerfTimer()
                     with closing(tarstream.extractfile(item)) as f:
                         tar_item_name = filename + '!' + item.name
                         self.current_file = tar_item_name
                         self.current_filesize = item.size
                         bofbuffer, eofbuffer, _ = self.get_buffers(f, item.size)
                         matches = self.match_formats(bofbuffer, eofbuffer)
-                        self.handle_matches(tar_item_name, matches, time.perf_counter() - t0)
+                        self.handle_matches(tar_item_name, matches, timer.duration())
                         if self.container_type(matches):
                             f.seek(0)
                             self.identify_contents(tar_item_name, f, self.container_type(matches), extension=extension)
@@ -650,7 +667,6 @@ class Fido:
         The list has inferior matches removed.
         """
         self.current_count += 1
-        # t0 = time.perf_counter()
         result = []
         for format in self.formats:
             try:
@@ -689,9 +705,6 @@ class Fido:
             # print "Unexpected error:", sys.exc_info()[0], e
             # sys.stdout.write('***', self.get_puid(format), regex)
 
-        #        t1 = time.perf_counter()
-        #        if t1 - t0 > 0.02:
-        #            print >> sys.stderr, "FIDO: Slow ID", self.current_file
         result = [match for match in result if self.as_good_as_any(match[0], result)]
         return result
 
@@ -768,7 +781,7 @@ def main(args=None):
         sys.exit(1)
     args = parser.parse_args(args)
 
-    t0 = time.perf_counter()
+    timer = PerfTimer()
 
     versions = get_local_pronom_versions(args.confdir)
 
@@ -851,7 +864,7 @@ def main(args=None):
 
     if not args.q:
         sys.stdout.flush()
-        fido.print_summary(time.perf_counter() - t0)
+        fido.print_summary(timer.duration())
         sys.stderr.flush()
 
 
