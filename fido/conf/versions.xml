@@ -4,5 +4,5 @@
 	<pronomSignature>formats-v95.xml</pronomSignature>
 	<pronomContainerSignature>container-signature-20180920.xml</pronomContainerSignature>
 	<fidoExtensionSignature>format_extensions.xml</fidoExtensionSignature>
-	<updateScript>beta-1.4</updateScript>
+	<updateScript>1.4</updateScript>
 </versions>
