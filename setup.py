@@ -41,6 +41,10 @@ tests_require = [
     'pytest',
 ]
 
+EXTRAS = {
+    'testing': tests_require,
+    'setup': setup_requires,
+}
 
 setup(
     name='opf-fido',
@@ -53,6 +57,7 @@ setup(
     install_requires=install_requires,
     setup_requires=setup_requires,
     tests_require=tests_require,
+    extras_require=EXTRAS,
     packages=['fido'],
     package_data={'fido': ['*.*', 'conf/*.*']},
     entry_points={'console_scripts': [
