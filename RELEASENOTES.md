@@ -8,9 +8,9 @@ Copyright 2010 The Open Preservation Foundation
 Fido is made available under the Apache License, Version 2.0; see the file
 LICENSE.txt for details.
 
-Fido 1.4.0rc1
+Fido 1.4.0
 -------------
-2018-11-25
+2018-12-19
 
 - Python 3 support [[#156][]]
 - Update to PRONOM signatures v95 [[#159][]]
