@@ -35,7 +35,7 @@ DEFAULTS = {
     'signatureFileName': 'DROID_SignatureFile-v{0}.xml',
     'pronomZipFileName': 'pronom-xml-v{0}.zip',
     'fidoSignatureVersion': 'format_extensions.xml',
-    'containerVersion': 'container-signature-20160121.xml',  # container version is frozen and needs human attention before updating,
+    'containerVersion': 'container-signature-UPDATE-ME.xml',  # container version is frozen and needs human attention before updating,
 }
 
 OPTIONS = {
