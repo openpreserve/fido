@@ -251,7 +251,7 @@ class Fido:
         return format.findall('signature')
 
     def has_priority_over(self, format, possibly_inferior):
-        return self.get_puid(possibly_inferior)in self.puid_has_priority_over_map[self.get_puid(format)]
+        return self.get_puid(possibly_inferior) in self.puid_has_priority_over_map[self.get_puid(format)]
 
     def get_puid(self, format):
         return format.find('puid').text
