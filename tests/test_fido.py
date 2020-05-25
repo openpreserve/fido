@@ -3,7 +3,6 @@
 from __future__ import print_function
 
 import io
-import tempfile
 from time import sleep
 
 from fido import fido
@@ -18,23 +17,19 @@ def test_perf_timer():
     duration = timer.duration()
     assert duration > 0
 
-def test_file_identification():
+def test_file_identification(tmp_path):
     """Reference for Fido-based format identification
         1. Create a byte-stream with a known magic number and serialise to tempfile.
         2. Call identify_file(...) to identify the file against Fido's known formats.
     """
-    # Create a temporary file on the host operating system.
-    tmp = tempfile.mkstemp()
-    tmp_file = tmp[1]
-
-    # Write to the file our known magic-number.
-    with open(tmp_file, "wb") as new_file:
-        new_file.write(MAGIC)
+    # Create a temporary file and write our skeleton file out to it.
+    tmp_file = tmp_path / "tmp_file"
+    tmp_file.write_bytes(MAGIC)
 
     # Create a Fido instance and call identify_file. The identify_file function
     # will create and manage a file for itself.
     f = fido.Fido()
-    f.identify_file(tmp_file)
+    f.identify_file(str(tmp_file))
 
 def test_stream_identification():
     """Reference for Fido-based format identification
