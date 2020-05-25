@@ -11,11 +11,13 @@ from fido.fido import PerfTimer
 # Magic number for fmt/1000.
 MAGIC = b"\x5A\x58\x54\x61\x70\x65\x21\x1A\x01"
 
+
 def test_perf_timer():
     timer = PerfTimer()
     sleep(3.6)
     duration = timer.duration()
     assert duration > 0
+
 
 def test_file_identification(tmp_path):
     """Reference for Fido-based format identification
@@ -30,6 +32,7 @@ def test_file_identification(tmp_path):
     # will create and manage a file for itself.
     f = fido.Fido()
     f.identify_file(str(tmp_file))
+
 
 def test_stream_identification():
     """Reference for Fido-based format identification
