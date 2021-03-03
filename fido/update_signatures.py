@@ -26,10 +26,10 @@ import zipfile
 from six.moves.urllib.request import urlopen
 from six.moves.urllib.error import URLError
 
-from fido import __version__, CONFIG_DIR, query_yes_no
-from fido.prepare import run as prepare_pronom_to_fido
-from fido.pronomutils import get_local_pronom_versions
-from fido.pronom.soap import get_pronom_sig_version, get_pronom_signature
+from . import __version__, CONFIG_DIR, query_yes_no
+from .prepare import run as prepare_pronom_to_fido
+from .pronomutils import get_local_pronom_versions
+from .pronom.soap import get_pronom_sig_version, get_pronom_signature
 
 
 DEFAULTS = {
