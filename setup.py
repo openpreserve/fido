@@ -37,7 +37,7 @@ setup_requires = [
 
 
 tests_require = [
-    'pytest',
+    'pytest', 'flake8', 'pep257', 'pytest-cov', 'pylint'
 ]
 
 EXTRAS = {
