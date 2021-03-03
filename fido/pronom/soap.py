@@ -81,8 +81,7 @@ def get_pronom_signature():
             sys.stderr.write("get_pronom_signature(): could not parse XML from SOAP response: file")
             return [], False
         proc_inst = ET.ProcessingInstruction('xml', 'version=1.0')
-        return text_type(ET.tostring(proc_inst, encoding='utf-8')) + \
-               text_type(ET.tostring(sigfile_ele, encoding='utf-8')), format_ele_len
+        return text_type(ET.tostring(proc_inst, encoding='utf-8')) + text_type(ET.tostring(sigfile_ele, encoding='utf-8')), format_ele_len
     except Exception as e:
         sys.stderr.write("get_pronom_signature(): unknown error: " + str(e))
         raise e
