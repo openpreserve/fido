@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-FIDO: Format Identifier for Digital Objects
+FIDO: Format Identifier for Digital Objects.
 
 Copyright 2010 The Open Preservation Foundation
 
@@ -20,8 +20,9 @@ limitations under the License.
 PRONOM format signatures SOAP calls.
 """
 import sys
-import urllib.request
+import tempfile
 import xml.etree.ElementTree as ET
+from six.moves import urllib
 
 from fido import __version__
 ENCODING = 'utf-8'
@@ -45,6 +46,7 @@ HEADERS = {
     'Content-type': 'text/xml; charset="UTF-8"'
 }
 
+
 def get_pronom_sig_version():
     """
     Get PRONOM signature version.
@@ -52,13 +54,10 @@ def get_pronom_sig_version():
     Return latest signature file version number as an int.
     Raises an HTTPError if there are problems.
     """
-    try:
-        tree = _get_soap_ele_tree('getSignatureFileVersionV1')
-        ver_ele = tree.find('.//pronom:Version/pronom:Version', NS)
-        return int(ver_ele.text)
-    except Exception as e:
-        sys.stderr.write('get_pronom_sig_version(): unknown error: {}'.format(str(e)))
-        raise e
+    tree = _get_soap_ele_tree('getSignatureFileVersionV1')
+    ver_ele = tree.find('.//pronom:Version/pronom:Version', NS)
+    return int(ver_ele.text)
+
 
 def get_pronom_signature():
     """
@@ -68,19 +67,21 @@ def get_pronom_signature():
     of the FileFormat elements contained as an integer.
     Upon error, write to `stderr` and return the tuple [], False.
     """
-    try:
-        tree = _get_soap_ele_tree('getSignatureFileV1')
-        for prefix, uri in NS.items():
-            ET.register_namespace(prefix, uri)
-        sigfile_ele = tree.find('.//pronom:SignatureFile', NS)
-        format_ele_len = len(sigfile_ele.findall('.//sig:FileFormat', NS))
-        if format_ele_len < 1:
-            sys.stderr.write("get_pronom_signature(): could not parse XML from SOAP response: file")
-            return [], False
-        return '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(sigfile_ele, encoding='unicode'), format_ele_len
-    except Exception as e:
-        sys.stderr.write("get_pronom_signature(): unknown error: " + str(e))
-        raise e
+    tree = _get_soap_ele_tree('getSignatureFileV1')
+    for prefix, uri in NS.items():
+        ET.register_namespace(prefix, uri)
+    sigfile_ele = ET.ElementTree(tree.find('.//pronom:SignatureFile', NS))
+    format_ele_len = len(sigfile_ele.findall('.//sig:FileFormat', NS))
+    if format_ele_len < 1:
+        sys.stderr.write("get_pronom_signature(): could not parse XML from SOAP response: file")
+        return [], False
+    # proc_inst = ET.ProcessingInstruction('xml', 'version="1.0" encoding="UTF-8"')
+    with tempfile.TemporaryFile() as fp:
+        sigfile_ele.write(fp, encoding='utf-8', xml_declaration=True)
+        fp.seek(0)
+        xml = fp.read()
+    return xml, format_ele_len
+
 
 def _get_soap_ele_tree(soap_action):
     soap_string = '{}<soap:Envelope xmlns:xsi="{}" xmlns:xsd="{}" xmlns:soap="{}"><soap:Body><{} xmlns="{}" /></soap:Body></soap:Envelope>'.format(XML_PROC, NS.get('xsi'), NS.get('xsd'), NS.get('soap'), soap_action, PRONOM_NS).encode(ENCODING)
@@ -90,12 +91,12 @@ def _get_soap_ele_tree(soap_action):
         ET.register_namespace(prefix, uri)
     return ET.fromstring(xml)
 
+
 def _get_soap_response(soap_action, soap_string):
     req = urllib.request.Request('http://{}/pronom/service.asmx'.format(PRONOM_HOST), data=soap_string)
     for key, value in HEADERS.items():
         req.add_header(key, value)
     req.add_header('Content-length', '%d' % len(soap_string))
     req.add_header('SOAPAction', soap_action)
-    with urllib.request.urlopen(req) as response:
-        xml = response.read().decode(ENCODING)
-    return xml
+    response = urllib.request.urlopen(req)
+    return response.read().decode(ENCODING)

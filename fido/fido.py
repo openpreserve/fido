@@ -27,10 +27,10 @@ import zipfile
 
 from six.moves import range
 
-from . import __version__, CONFIG_DIR
-from .package import OlePackage, ZipPackage
-from .pronomutils import get_local_pronom_versions
-from .char_handler import escape
+from fido import __version__, CONFIG_DIR
+from fido.package import OlePackage, ZipPackage
+from fido.pronomutils import get_local_pronom_versions
+from fido.char_handler import escape
 
 
 defaults = {

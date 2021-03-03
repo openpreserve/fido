@@ -23,11 +23,11 @@ import time
 from xml.etree import ElementTree as CET
 import zipfile
 
-from fido import __version__, CONFIG_DIR, query_yes_no
-from fido.prepare import run as prepare_pronom_to_fido
-from fido.pronomutils import get_local_pronom_versions
-from fido.pronom.soap import get_pronom_sig_version, get_pronom_signature, NS
-from fido.pronom.http import get_sig_xml_for_puid
+from . import __version__, CONFIG_DIR, query_yes_no
+from .prepare import run as prepare_pronom_to_fido
+from .pronomutils import get_local_pronom_versions
+from .pronom.soap import get_pronom_sig_version, get_pronom_signature, NS
+from .pronom.http import get_sig_xml_for_puid
 
 
 DEFAULTS = {

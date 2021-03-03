@@ -26,7 +26,7 @@ def find_version(*file_paths):
 
 
 install_requires = [
-    'olefile >= 0.4, < 1',
+    'olefile >= 0.46, < 1',
     'six >= 1.10.0, < 2',
 ]
 
@@ -37,7 +37,7 @@ setup_requires = [
 
 
 tests_require = [
-    'pytest',
+    'pytest', 'flake8', 'pep257', 'pytest-cov', 'pylint'
 ]
 
 EXTRAS = {
