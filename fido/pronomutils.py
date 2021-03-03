@@ -25,7 +25,8 @@ from xml.etree.ElementTree import parse, ParseError
 
 import six
 
-from . import __version__, CONFIG_DIR
+from fido import CONFIG_DIR
+
 
 class LocalPronomVersions(object):
     """
