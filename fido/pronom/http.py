@@ -21,6 +21,7 @@ PRONOM format signatures HTTP calls.
 """
 from six.moves import urllib
 
+
 def get_sig_xml_for_puid(puid):
     """Return the full PRONOM signature XML for the passed PUID."""
     req = urllib.request.Request("http://www.nationalarchives.gov.uk/pronom/{}.xml".format(puid))
