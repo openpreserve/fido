@@ -76,7 +76,9 @@ def run(defaults=None):
     except KeyboardInterrupt:
         sys.exit('Aborting update...')
 
+
 def sig_version_check(defaults):
+    """Return a tuple consisting of current sig file version and the derived file name."""
     print("Contacting PRONOM...")
     currentVersion = get_pronom_sig_version()
     if not currentVersion:
@@ -90,16 +92,25 @@ def sig_version_check(defaults):
             sys.exit('Aborting update...')
     return currentVersion, signatureFile
 
-def download_sig_file(defaults, currentVersion, signatureFile):
-    print("Downloading signature file version {}...".format(currentVersion))
+
+def download_sig_file(defaults, version, signatureFile):
+    """Download the latest version of the PRONOM sigs to signatureFile."""
+    print("Downloading signature file version {}...".format(version))
     currentFile, _ = get_pronom_signature()
     if not currentFile:
         sys.exit('Failed to obtain PRONOM signature file, please try again.')
-    print("Writing {0}...".format(defaults['signatureFileName'].format(currentVersion)))
+    print("Writing {0}...".format(defaults['signatureFileName'].format(version)))
     with open(signatureFile, 'w') as file_:
         file_.write(currentFile)
 
+
 def init_sig_download(defaults):
+    """
+    Initialise the download of individual PRONOM signatures.
+
+    Handles user input and resumption of interupted downloads.
+    Return a tuple of the temp directory for writing and a boolean resume flag.
+    """
     print("Downloading signatures can take a while")
     if not query_yes_no("Continue and download signatures?"):
         sys.exit('Aborting update...')
@@ -120,6 +131,7 @@ def init_sig_download(defaults):
         sys.stderr.write("Failed to create temporary folder for PUID's, using: " + tmpdir)
     return tmpdir, resume
 
+
 def download_signatures(defaults, format_eles, resume, tmpdir):
     """Download PRONOM signatures and write to individual files."""
     print("Downloading signatures, one moment please...")
@@ -134,7 +146,12 @@ def download_signatures(defaults, format_eles, resume, tmpdir):
         time.sleep(defaults['http_throttle'])
     print("100%")
 
+
 def download_sig(format_ele, tmpdir, resume):
+    """
+    Download an individual PRONOM signature identified from the PRONOM sig
+    file FileFormat element. The downloaded signature is written to tmpdir.
+    """
     puid, puidFileName = get_puid_file_name(format_ele)
     filename = os.path.join(tmpdir, puidFileName)
     if os.path.isfile(filename) and resume:
@@ -147,6 +164,7 @@ def download_sig(format_ele, tmpdir, resume):
         sys.exit('Please restart and resume download.')
     with open(filename, 'wb') as file_:
         file_.write(xml)
+
 
 def create_zip_file(defaults, format_eles, currentVersion, tmpdir):
     """Create zip file of signatures."""
@@ -164,10 +182,13 @@ def create_zip_file(defaults, format_eles, currentVersion, tmpdir):
                 os.unlink(filename)
     zf.close()
 
+
 def get_puid_file_name(format_ele):
+    """Return a tupe of PUID and PUID file name derived from format_ele."""
     puid = format_ele.get('PUID')
     puidType, puidNum = puid.split("/")
     return puid, 'puid.{}.{}.xml'.format(puidType, puidNum)
+
 
 def update_versions_xml(defaults, currentVersion):
     """Create new versions identified sig XML file."""
@@ -180,6 +201,7 @@ def update_versions_xml(defaults, currentVersion):
     versions.update_script = __version__
     versions.write()
 
+
 def main():
     """Main CLI entrypoint."""
     parser = ArgumentParser(description='Download and convert the latest PRONOM signatures')
@@ -189,7 +211,6 @@ def main():
     args = parser.parse_args()
     opts = DEFAULTS.copy()
     opts.update(vars(args))
-
     run(opts)
 
 if __name__ == '__main__':
