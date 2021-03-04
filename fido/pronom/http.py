@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-FIDO: Format Identifier for Digital Objects
+FIDO: Format Identifier for Digital Objects.
 
 Copyright 2010 The Open Preservation Foundation
 

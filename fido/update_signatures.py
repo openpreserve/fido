@@ -149,8 +149,10 @@ def download_signatures(defaults, format_eles, resume, tmpdir):
 
 def download_sig(format_ele, tmpdir, resume):
     """
-    Download an individual PRONOM signature identified from the PRONOM sig
-    file FileFormat element. The downloaded signature is written to tmpdir.
+    Download an individual PRONOM signature.
+
+    The signature to be downloaded is identified by the FileFormat element
+    parameter format_ele. The downloaded signature is written to tmpdir.
     """
     puid, puidFileName = get_puid_file_name(format_ele)
     filename = os.path.join(tmpdir, puidFileName)
