@@ -25,7 +25,7 @@ import zipfile
 
 from . import __version__, CONFIG_DIR, query_yes_no
 from .prepare import run as prepare_pronom_to_fido
-from .pronomutils import get_local_pronom_versions
+from .versions import get_local_versions
 from .pronom.soap import get_pronom_sig_version, get_pronom_signature, NS
 from .pronom.http import get_sig_xml_for_puid
 
@@ -195,7 +195,7 @@ def get_puid_file_name(format_ele):
 def update_versions_xml(defaults, currentVersion):
     """Create new versions identified sig XML file."""
     print('Updating versions.xml...')
-    versions = get_local_pronom_versions()
+    versions = get_local_versions()
     versions.pronom_version = str(currentVersion)
     versions.pronom_signature = "formats-v" + str(currentVersion) + ".xml"
     versions.pronom_container_signature = defaults['containerVersion']

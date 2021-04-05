@@ -17,7 +17,7 @@ from six.moves.urllib.request import urlopen
 from six.moves.urllib.parse import urlparse
 from six.moves.urllib.error import HTTPError
 
-from .pronomutils import get_local_pronom_versions
+from .versions import get_local_versions
 from .char_handler import escape
 
 
@@ -694,7 +694,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
 
 def run(input=None, output=None, puid=None):
     """Convert PRONOM formats into FIDO signatures."""
-    versions = get_local_pronom_versions()
+    versions = get_local_versions()
 
     if input is None:
         input = versions.get_zip_file()
