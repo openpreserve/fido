@@ -58,7 +58,7 @@ setup(
     tests_require=tests_require,
     extras_require=EXTRAS,
     packages=['fido'],
-    package_data={'fido': ['*.*', 'conf/*.*']},
+    package_data={'fido': ['*.*', 'conf/*.*', 'signatures/*.*', 'pronom/*.*']},
     entry_points={'console_scripts': [
         'fido = fido.fido:main',
         'fido-prepare = fido.prepare:main',

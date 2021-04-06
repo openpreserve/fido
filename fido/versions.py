@@ -41,6 +41,7 @@ class LocalVersions(object):
         <pronomContainerSignature>container-signature-20160121.xml</pronomContainerSignature>
         <fidoExtensionSignature>format_extensions.xml</fidoExtensionSignature>
         <updateScript>1.2.2</updateScript>
+	    <updateSite>https://fidosigs.openpreservation.org</updateSite>
     </versions>
     """
 
@@ -50,6 +51,7 @@ class LocalVersions(object):
         'pronom_container_signature': 'pronomContainerSignature',
         'fido_extension_signature': 'fidoExtensionSignature',
         'update_script': 'updateScript',
+        'update_site': 'updateSite',
     }
 
     ROOT_ELEMENT = 'versions'

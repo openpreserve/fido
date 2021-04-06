@@ -17,6 +17,8 @@ import re
 import sys
 import tarfile
 import tempfile
+import importlib_resources
+import requests
 try:
     from time import perf_counter
 except ImportError:
@@ -774,6 +776,7 @@ def main(args=None):
     parser.add_argument('-matchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use on match. See nomatchprintf, README.txt.')
     parser.add_argument('-nomatchprintf', metavar='FORMATSTRING', default=None, help='format string (Python style) to use if no match. See README.txt')
     parser.add_argument('-bufsize', type=int, default=None, help='size (in bytes) of the buffer to match against (default=' + str(defaults['bufsize']) + ' bytes)')
+    parser.add_argument('-sigs', default=None, help='check for new signature files or update them if available.')
     parser.add_argument('-container_bufsize', type=int, default=None, help='size (in bytes) of the buffer to match against (default=' + str(defaults['container_bufsize']) + ' bytes)')
     parser.add_argument('-loadformats', default=None, metavar='XML1,...,XMLn', help='comma separated string of XML format files to add.')
     parser.add_argument('-confdir', default=CONFIG_DIR, help='configuration directory to load_fido_xml, for example, the format specifications from.')
@@ -800,6 +803,49 @@ def main(args=None):
 
     if args.v:
         sys.stdout.write(versionHeader)
+        sys.exit(0)
+
+    if args.sigs:
+        versions = get_local_versions()
+        sig_vers = versions.pronom_version
+        update_url = versions.update_site
+        if args.sigs.lower() == 'check':
+            resp = requests.get(update_url + 'format/latest/')
+            if resp.status_code != 200:
+                print('Error getting latest version info {}'.format(resp.status_code))
+                sys.exit(1)
+            digits = re.search('\d+|$', resp.text).group()
+            if digits > sig_vers:
+                print('Updated signatures v{} are available, current version is v{}'.format(digits, sig_vers))
+            else:
+                print('Your signature files are up to date, current version is v{}'.format(sig_vers))
+        elif args.sigs.lower() == 'update':
+            resp = requests.get(update_url + 'format/latest/')
+            if resp.status_code != 200:
+                print('Error getting latest version info {}'.format(resp.status_code))
+                sys.exit(1)
+            digits = re.search('\d+|$', resp.text).group()
+            if digits <= sig_vers:
+                print('Your signature files are up to date, current version is v{}'.format(sig_vers))
+                sys.exit(0)
+            print('Updated signatures v{} are available, current version is v{}'.format(digits, sig_vers))
+            print('Updating signatures')
+            resp = requests.get(update_url + 'format/latest/fido/')
+            filename = 'formats-v{}.xml'.format(digits)
+            sig_out = str(importlib_resources.files('fido').joinpath('conf', filename))
+            open(sig_out, 'wb').write(resp.content)
+            resp = requests.get(update_url + 'format/latest/droid/')
+            filename = 'DROID_SignatureFile-{}.xml'.format(digits)
+            sig_out = str(importlib_resources.files('fido').joinpath('conf', filename))
+            open(sig_out, 'wb').write(resp.content)
+            resp = requests.get(update_url + 'format/latest/pronom/')
+            filename = 'pronom-xml-{}.zip'.format(digits)
+            sig_out = str(importlib_resources.files('fido').joinpath('conf', filename))
+            open(sig_out, 'wb').write(resp.content)
+            versions.pronom_version = '{}'.format(digits)
+            versions.pronom_signature = filename
+            versions.write()
+
         sys.exit(0)
 
     if args.matchprintf:
