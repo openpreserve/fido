@@ -64,6 +64,7 @@ PRONOM is available from http://www.nationalarchives.gov.uk/pronom/""",
 
 class PerfTimer:
     """Utility class that carries out simple process timings."""
+
     def __init__(self):
         """New instance with start time running."""
         self.start_time = perf_counter()
@@ -78,7 +79,10 @@ class PerfTimer:
 
 
 class Fido:
+    """Main FIDO application class."""
+
     def __init__(self, quiet=False, bufsize=None, container_bufsize=None, printnomatch=None, printmatch=None, zip=False, nocontainer=False, handle_matches=None, conf_dir=CONFIG_DIR, format_files=None, containersignature_file=None):
+        """Initialise a FIDO class instance."""
         global defaults
         self.quiet = quiet
         self.bufsize = defaults['bufsize'] if bufsize is None else bufsize
@@ -107,10 +111,7 @@ class Fido:
         self.externalsig = ET.XML('<signature><name>External</name></signature>')
 
     def convert_container_sequence(self, sig):
-        """
-        Parse the PRONOM container sequences and convert to regular
-        expressions.
-        """
+        """Parse the PRONOM container sequences and convert to regular expressions."""
         # The sequence is regex matching bytes from a file so the sequence must also be bytes
         seq = b'(?s)'
         inq = False
@@ -210,6 +211,7 @@ class Fido:
         return signatures
 
     def match_container(self, signature_type, klass, file, signature_file):
+        """Return the signature matches for a container."""
         puids = klass(file, self.extract_signatures(signature_file, signature_type=signature_type)).detect_formats()
         results = []
         for puid in puids:
@@ -221,6 +223,7 @@ class Fido:
     def load_fido_xml(self, file):
         """
         Load the fido format information from @param file.
+
         As a side-effect, set self.formats.
         @return list of ElementTree.Element, one for each format.
         """
@@ -250,30 +253,38 @@ class Fido:
 
     # To delete a format: (1) remove from self.formats, (2) remove from puid_format_map, (3) remove from selt.puid_has_priority_over_map
     def get_signatures(self, format):
+        """Return the signatures for the format element."""
         return format.findall('signature')
 
     def has_priority_over(self, format, possibly_inferior):
+        """Return true if format has priority over possibly inferior."""
         return self.get_puid(possibly_inferior) in self.puid_has_priority_over_map[self.get_puid(format)]
 
     def get_puid(self, format):
+        """Return the PUID for the format."""
         return format.find('puid').text
 
     def get_patterns(self, signature):
+        """Return the patterns for a signature."""
         return signature.findall('pattern')
 
     def get_pos(self, pat):
+        """Return the position from a pattern."""
         return pat.find('position').text
 
     def get_regex(self, pat):
+        """Return the UTF-8 encoded regex from a pattern."""
         # The regex is matching bytes from a file so regex must also be bytes
         return pat.find('regex').text.encode('utf8')
 
     def get_extension(self, format):
+        """Return the extension for a format."""
         return format.find('extension').text
 
     def print_matches(self, fullname, matches, delta_t, matchtype=''):
         """
         The default match handler. Prints out information for each match in the list.
+
         @param fullname is name of the file being matched
         @param matches is a list of (format, signature)
         @param delta_t is the time taken for the match.
@@ -330,9 +341,7 @@ class Fido:
             })
 
     def print_summary(self, secs):
-        """
-        Print summary information on the number of matches and time taken.
-        """
+        """Print summary information on the number of matches and time taken."""
         count = self.current_count
         if not self.quiet:
             rate = (int(round(count / secs)) if secs != 0 else 9999)
@@ -342,6 +351,7 @@ class Fido:
     def identify_file(self, filename, extension=True):
         """
         Identify the type of @param filename.
+
         Call self.handle_matches instead of returning a value.
         """
         self.current_file = filename
@@ -387,8 +397,9 @@ class Fido:
 
     def identify_contents(self, filename, fileobj=None, type=False, extension=True):
         """
-        Identify each item in a container (such as a zip or tar file). Call
-        self.handle_matches on each item.
+        Identify each item in a container (such as a zip or tar file).
+
+        Call self.handle_matches on each item.
         @param fileobj could be a file, or a stream.
         """
         if not type:
@@ -411,7 +422,8 @@ class Fido:
 
     def identify_multi_object_stream(self, stream, extension=True):
         """
-        Does not work!
+        Method does not work.
+
         Stream may contain one or more objects each with an HTTP style header
         that must include content-length. The headers consist of keyword:value
         pairs terminated by a newline. There must be a newline following the
@@ -448,6 +460,7 @@ class Fido:
     def identify_stream(self, stream, filename, extension=True):
         """
         Identify the type of @param stream.
+
         Call self.handle_matches instead of returning a value.
         Does not close stream.
         """
@@ -481,6 +494,8 @@ class Fido:
 
     def container_type(self, matches):
         """
+        Return true if this is a container type.
+
         Determine if one of the @param matches is the format of a container
         that we can look inside of (e.g., zip, tar).
         @return False, zip, or tar.
@@ -499,6 +514,8 @@ class Fido:
 
     def can_recurse_into_container(self, container_type):
         """
+        Return true if it is possible to recursively process this container.
+
         Determine if the passed container type can:
         a) be extracted, and
         b) contain individual files which can be identified separately.
@@ -510,6 +527,7 @@ class Fido:
         return container_type in ('zip', 'tar')
 
     def blocking_read(self, file, bytes_to_read):
+        """Perform a blocking read and return the buffer."""
         bytes_read = 0
         buffer = b''
         while bytes_read < bytes_to_read:
@@ -523,8 +541,9 @@ class Fido:
 
     def get_buffers(self, stream, length=None, seekable=False):
         """
-        Return buffers from the beginning and end of stream and the number of
-        bytes read if there may be more bytes in the stream.
+        Return buffers from the beginning and end of stream.
+
+        Includes number of bytes read if there may be more bytes in the stream.
 
         If length is None, return the length as found.
         If seekable is False, the steam does not support a seek operation.
@@ -570,7 +589,8 @@ class Fido:
 
     def walk_zip(self, filename, fileobj=None, extension=True):
         """
-        Identify the type of each item in the zip
+        Identify the type of each item in the zip.
+
         @param fileobj.  If fileobj is not provided, open.
         @param filename.
         Call self.handle_matches instead of returning a value.
@@ -608,6 +628,7 @@ class Fido:
     def walk_tar(self, filename, fileobj, extension=True):
         """
         Identify the type of each item in the tar.
+
         @param fileobj.  If fileobj is not provided, open.
         @param filename.
         Call self.handle_matches instead of returning a value.
@@ -634,6 +655,7 @@ class Fido:
     def as_good_as_any(self, f1, match_list):
         """
         Return True if the proposed format is as good as any in the match_list.
+
         For example, if there is no format in the match_list that has priority over the proposed one
         """
         if match_list != []:
@@ -646,9 +668,7 @@ class Fido:
         return True
 
     def buffered_read(self, file_pos, overlap):
-        """
-        Buffered read of data chunks.
-        """
+        """Buffered read of data chunks."""
         buf = ""
         if not overlap:
             bufsize = self.container_bufsize
@@ -667,6 +687,7 @@ class Fido:
     def match_formats(self, bofbuffer, eofbuffer):
         """
         Apply the patterns for formats to the supplied buffers.
+
         @return a match list of (format, signature) tuples.
         The list has inferior matches removed.
         """
@@ -713,9 +734,7 @@ class Fido:
         return result
 
     def match_extensions(self, filename):
-        """
-        Return the list of (format, self.externalsig) for every format whose extension matches the filename.
-        """
+        """Return the list of (format, self.externalsig) for every format whose extension matches the filename."""
         myext = os.path.splitext(filename)[1].lower().lstrip(".")
         result = []
         if not myext:
@@ -729,6 +748,7 @@ class Fido:
         return result
 
     def copy_stream(self, source, target):
+        """Copy the stream from source to target."""
         while True:
             buf = source.read(self.bufsize)
             if len(buf) == 0:
@@ -737,9 +757,7 @@ class Fido:
 
 
 def list_files(roots, recurse=False):
-    """
-    Return the files one at a time. Roots could be a fileobj or a list.
-    """
+    """Return the files one at a time. Roots could be a fileobj or a list."""
     for root in roots:
         root = (root if root[-1] != '\n' else root[:-1])
         root = os.path.normpath(root)
@@ -754,6 +772,7 @@ def list_files(roots, recurse=False):
 
 
 def main(args=None):
+    """Main FIDO method."""
     if not args:
         args = sys.argv[1:]
 

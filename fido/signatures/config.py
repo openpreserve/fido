@@ -17,7 +17,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-Configuration for FIDO signature Flask app."""
+Configuration for FIDO signature Flask app.
+"""
 import os.path
 import tempfile
 
@@ -34,6 +35,7 @@ UPLOADS_TEMP = os.path.join(TEMP, 'ip-uploads')
 
 class BaseConfig():  # pylint: disable-msg=R0903
     """Base / default config, no debug logging and short log format."""
+
     NAME = 'Default'
     HOST = HOST
     DEBUG = False
@@ -46,6 +48,7 @@ class BaseConfig():  # pylint: disable-msg=R0903
 
 class DevConfig(BaseConfig):  # pylint: disable-msg=R0903
     """Developer level config, with debug logging and long log format."""
+
     NAME = 'Development'
     DEBUG = True
     TESTING = True
@@ -54,6 +57,7 @@ class DevConfig(BaseConfig):  # pylint: disable-msg=R0903
 
 class TestConfig(BaseConfig):  # pylint: disable-msg=R0903
     """Developer level config, with debug logging and long log format."""
+
     NAME = 'Testing'
 
 
@@ -65,7 +69,7 @@ CONFIGS = {
 
 
 def configure_app(app, profile_name='dev'):
-    """Grabs the environment variable for app config or defaults to dev."""
+    """Grab the environment variable for app config or defaults to dev."""
     config_name = os.getenv(ENV_CONF_PROFILE, profile_name)
     app.config.from_object(CONFIGS[config_name])
     if os.getenv(ENV_CONF_FILE):

@@ -17,7 +17,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-Flask application routes for E-ARK Python IP Validator. """
+Flask application routes for E-ARK Python IP Validator.
+"""
 import logging
 import os
 from xml.etree.ElementTree import Element, SubElement, tostring
