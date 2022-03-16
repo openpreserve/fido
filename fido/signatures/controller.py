@@ -26,12 +26,14 @@ import importlib_resources
 from flask import render_template, send_from_directory
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound, InternalServerError
 
-from fido.signatures.webapp import APP, __version__
+from fido.signatures.webapp import APP
 
 ROUTES = True
 
 XML_MIME = 'text/xml'
 XML_APP_MIME = 'application/xml'
+
+
 @APP.route("/")
 def services():
     """Return a list of the available services as XML."""
@@ -39,6 +41,7 @@ def services():
     SubElement(services_xml, 'format', url='format')
     SubElement(services_xml, 'container', url='container')
     return tostring(services_xml)
+
 
 @APP.route("/format/")
 def formats():
@@ -49,6 +52,7 @@ def formats():
         SubElement(sigs, 'signature', version=sigdir)
     return tostring(format_xml)
 
+
 @APP.route("/format/latest/")
 def latest_ver():
     """Return the latest sig file version number."""
@@ -57,17 +61,19 @@ def latest_ver():
         latest = _latest(latest, sigdir)
     return tostring(Element('signature', version=latest))
 
+
 @APP.route("/format/<string:version>/")
 def version_details(version):
     """Return a list of the available services as XML."""
     ver_dir = _get_sig_dir(version)
     if ver_dir is None:
-        return {'message' : 'No sig files found for version {}'.format(version)}, 404
+        return {'message': 'No sig files found for version {}'.format(version)}, 404
     version_xml = Element('signature', version=version)
     SubElement(version_xml, 'droid', url='DROID_SignatureFile-{}.xml'.format(version))
     SubElement(version_xml, 'formats', url='formats-{}.xml'.format(version))
     SubElement(version_xml, 'pronom', url='pronom-xml-{}.zip'.format(version))
     return tostring(version_xml)
+
 
 @APP.route("/format/<string:version>/<string:action>/")
 def version_collatoral(version, action):
@@ -83,17 +89,20 @@ def version_collatoral(version, action):
         return send_from_directory(ver_dir, 'pronom-xml-{}.zip'.format(version))
     if action.lower() == 'fido':
         return send_from_directory(ver_dir, 'formats-{}.xml'.format(version))
-    return {'message' : 'No resources found for version {}, action {}'.format(version, action)}, 404
+    return {'message': 'No resources found for version {}, action {}'.format(version, action)}, 404
+
 
 def _latest(latest, to_compare):
     lat_ver = _remove_prefix(latest, 'v')
     comp_ver = _remove_prefix(to_compare, 'v')
     return latest if lat_ver > comp_ver else to_compare
 
+
 def _remove_prefix(text, prefix):
     if text.startswith(prefix):
         return text[len(prefix):]
     return text
+
 
 def _get_sig_dirs():
     dirs = []
@@ -104,6 +113,7 @@ def _get_sig_dirs():
                 dirs.append(str(subdir))
     return dirs
 
+
 def _get_sig_dir(version):
     root = str(importlib_resources.files('fido.signatures.resources').joinpath('format'))
     for _, subdirs, _ in os.walk(root):
@@ -112,6 +122,7 @@ def _get_sig_dir(version):
                 return os.path.join(root, subdir)
     return None
 
+
 @APP.route("/containers/")
 def containers():
     """Return a list of the available services as XML."""
@@ -119,6 +130,7 @@ def containers():
     SubElement(services_xml, 'signature', url='signature')
     SubElement(services_xml, 'container', url='container')
     return tostring(services_xml)
+
 
 @APP.errorhandler(BadRequest)
 def bad_request_handler(bad_request):
@@ -129,6 +141,7 @@ def bad_request_handler(bad_request):
                            http_code=403,
                            http_error="Bad Request")
 
+
 @APP.errorhandler(NotFound)
 def not_found_handler(not_found):
     """Basic not found request handler."""
@@ -137,6 +150,7 @@ def not_found_handler(not_found):
                            message='Not resource found at this URL.',
                            http_code=404,
                            http_error="Not Found")
+
 
 @APP.errorhandler(Forbidden)
 def forbidden_handler(forbidden):
@@ -147,21 +161,23 @@ def forbidden_handler(forbidden):
                            http_code=403,
                            http_error="Forbidden")
 
+
 @APP.errorhandler(InternalServerError)
 def servererr_handler(servererr):
     """Basic not found request handler."""
     return render_template('except.html',
                            http_excep=servererr,
-                           message='Something\'s gone wrong with the application,' +\
-                                   ' do not adjust your set.',
+                           message='Something\'s gone wrong with the application',
                            http_code=500,
                            http_error="Internal Server Error")
+
 
 @APP.teardown_appcontext
 def shutdown_session(exception=None):
     """Tear down the database session."""
     if exception:
         logging.warning("Shutting down database session with exception.")
+
 
 if __name__ == "__main__":
     APP.run(host='0.0.0.0', threaded=True)

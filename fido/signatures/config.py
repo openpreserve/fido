@@ -30,7 +30,9 @@ TEMP = tempfile.gettempdir()
 HOME = os.path.expanduser('~')
 LOG_ROOT = TEMP
 UPLOADS_TEMP = os.path.join(TEMP, 'ip-uploads')
-class BaseConfig():# pylint: disable-msg=R0903
+
+
+class BaseConfig():  # pylint: disable-msg=R0903
     """Base / default config, no debug logging and short log format."""
     NAME = 'Default'
     HOST = HOST
@@ -41,22 +43,26 @@ class BaseConfig():# pylint: disable-msg=R0903
     SECRET_KEY = 'a5c020ced05af9ad3189304a41beb5c7b6f750b846dadad'
     FIDSIG_ROOT = TEMP
 
-class DevConfig(BaseConfig):# pylint: disable-msg=R0903
+
+class DevConfig(BaseConfig):  # pylint: disable-msg=R0903
     """Developer level config, with debug logging and long log format."""
     NAME = 'Development'
     DEBUG = True
     TESTING = True
     LOG_FORMAT = '[%(levelname)-8s %(filename)-15s:%(lineno)-5d %(funcName)-30s] %(message)s'
 
-class TestConfig(BaseConfig):# pylint: disable-msg=R0903
+
+class TestConfig(BaseConfig):  # pylint: disable-msg=R0903
     """Developer level config, with debug logging and long log format."""
     NAME = 'Testing'
+
 
 CONFIGS = {
     "dev": 'fido.signatures.config.DevConfig',
     "default": 'fido.signatures.config.BaseConfig',
     "test": 'fido.signatures.config.TestConfig'
 }
+
 
 def configure_app(app, profile_name='dev'):
     """Grabs the environment variable for app config or defaults to dev."""

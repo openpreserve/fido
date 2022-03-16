@@ -814,7 +814,7 @@ def main(args=None):
             if resp.status_code != 200:
                 print('Error getting latest version info {}'.format(resp.status_code))
                 sys.exit(1)
-            digits = re.search('\d+|$', resp.text).group()
+            digits = re.search('\d+|$', resp.text).group()  # noqa: W605
             if digits > sig_vers:
                 print('Updated signatures v{} are available, current version is v{}'.format(digits, sig_vers))
             else:
@@ -824,7 +824,7 @@ def main(args=None):
             if resp.status_code != 200:
                 print('Error getting latest version info {}'.format(resp.status_code))
                 sys.exit(1)
-            digits = re.search('\d+|$', resp.text).group()
+            digits = re.search('\d+|$', resp.text).group()  # noqa: W605
             if digits <= sig_vers:
                 print('Your signature files are up to date, current version is v{}'.format(sig_vers))
                 sys.exit(0)

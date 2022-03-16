@@ -19,4 +19,3 @@ limitations under the License.
 
 FIDO module to handle the distribution of signature files.
 """
-from .webapp import APP

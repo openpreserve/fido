@@ -28,12 +28,15 @@ E-ARK : Information Package REST Validation.
 Initialisation module for package, kicks of the flask app.
 """
 import logging
+
+from flask import Flask  # noqa: E402
+
+from .config import configure_app  # pylint: disable-msg=C0413
+
 __version__ = '0.0.1'
 # Load the application
-from flask import Flask
 APP = Flask(__name__)
 
-from .config import configure_app # pylint: disable-msg=C0413
 # Get the appropriate config
 configure_app(APP)
 
@@ -45,4 +48,4 @@ logging.debug("Configured logging.")
 
 # Import the application routes
 logging.info("Setting up application routes")
-from .controller import ROUTES # pylint: disable-msg=C0413, W0611
+from .controller import ROUTES  # noqa: F401 E402 # pylint: disable-msg=C0413, W0611
