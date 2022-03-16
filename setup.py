@@ -28,6 +28,7 @@ def find_version(*file_paths):
 install_requires = [
     'olefile >= 0.46, < 1',
     'six >= 1.10.0, < 2',
+    'importlib-resources >= 5.1.2 < 6',
 ]
 
 
