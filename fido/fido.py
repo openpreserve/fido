@@ -13,6 +13,7 @@ from __future__ import absolute_import
 from argparse import ArgumentParser, RawTextHelpFormatter
 from contextlib import closing
 import os
+import platform
 import re
 import sys
 import tarfile
@@ -25,12 +26,13 @@ except ImportError:
 from xml.etree import cElementTree as ET
 import zipfile
 
+from six import PY2
 from six.moves import range
 
-from . import __version__, CONFIG_DIR
-from .package import OlePackage, ZipPackage
-from .pronomutils import get_local_pronom_versions
-from .char_handler import escape
+from fido import __version__, CONFIG_DIR
+from fido.package import OlePackage, ZipPackage
+from fido.pronomutils import get_local_pronom_versions
+from fido.char_handler import escape
 
 
 defaults = {
@@ -751,7 +753,16 @@ def list_files(roots, recurse=False):
                     break
 
 
+def set_up_platform():
+    """Enable Unicode display when running Python from Windows console."""
+    if platform.system() == 'Windows' and PY2:
+        import win_unicode_console  # noqa: E402
+        win_unicode_console.enable(use_unicode_argv=True)
+
+
 def main(args=None):
+    set_up_platform()
+
     if not args:
         args = sys.argv[1:]
 

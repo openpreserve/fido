@@ -28,7 +28,8 @@ from six.moves.urllib.error import URLError
 
 from . import __version__, CONFIG_DIR, query_yes_no
 from .prepare import run as prepare_pronom_to_fido
-from .pronomutils import check_well_formedness, get_local_pronom_versions, get_pronom_signature
+from .pronomutils import get_local_pronom_versions
+from .pronom.soap import get_pronom_sig_version, get_pronom_signature
 
 
 DEFAULTS = {
@@ -55,7 +56,7 @@ def run(defaults=None):
     defaults = defaults or DEFAULTS
     try:
         print("Contacting PRONOM...")
-        currentVersion = get_pronom_signature("version")
+        currentVersion = get_pronom_sig_version()
         if not currentVersion:
             sys.exit('Failed to obtain PRONOM signature file version number, please try again.')
 
@@ -67,7 +68,7 @@ def run(defaults=None):
                 sys.exit('Aborting update...')
 
         print("Downloading signature file version {}...".format(currentVersion))
-        currentFile = get_pronom_signature("file")
+        currentFile, _ = get_pronom_signature()
         if not currentFile:
             sys.exit('Failed to obtain PRONOM signature file, please try again.')
         print("Writing {0}...".format(defaults['signatureFileName'].format(currentVersion)))
@@ -127,7 +128,7 @@ def download_signatures(defaults, puids, resume_download, tmpdir):
         puidType, puidNum = puid.split("/")
         puidFileName = "puid." + puidType + "." + puidNum + ".xml"
         filename = os.path.join(tmpdir, puidFileName)
-        if os.path.isfile(filename) and check_well_formedness(filename) and resume_download:
+        if os.path.isfile(filename) and resume_download:
             numfiles += 1
             continue
         puid_url = "http://www.nationalarchives.gov.uk/pronom/{}.xml".format(puid)
@@ -141,9 +142,6 @@ def download_signatures(defaults, puids, resume_download, tmpdir):
             for lines in filehandle.readlines():
                 file_.write(lines)
         filehandle.close()
-        if not check_well_formedness(filename):
-            os.unlink(filename)
-            continue
         numfiles += 1
         percent = int(float(numfiles) / one_percent)
         print(r"{}/{} files [{}%]".format(numfiles, numberPuids, percent))

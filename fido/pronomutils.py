@@ -20,109 +20,12 @@ PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
 from __future__ import absolute_import
 
 import os
-import re
-import sys
 from xml.etree import ElementTree as ET
 from xml.etree.ElementTree import parse, ParseError
-from xml.parsers.expat import ExpatError, ParserCreate
 
 import six
-from six.moves import http_client
 
-from . import __version__, CONFIG_DIR
-
-
-def check_well_formedness(filename, error=False):
-    """
-    Check if a given file contains valid XML.
-
-    :param filename: file from which the XML is read.
-    :param error: whether or not print to `stderr` upon error.
-    :returns: whether the file contains valid XML.
-    """
-    parser = ParserCreate()
-    try:
-        parser.ParseFile(open(filename, "rb"))
-    except ExpatError as e:
-        if error is not False:
-            sys.stderr.write("check_well_formedness: %s: %s;\n" % (filename, e))
-        return False
-    return True
-
-
-def get_pronom_signature(type_):
-    """
-    Get PRONOM signature.
-
-    Return latest signature file version number as int when `type_` equals
-    "version" or return latest signature XML file as string when `type_` equals
-    "file". Upon error, write to `stderr` and returls `False`.
-    """
-    try:
-        soapVersionContainer = """<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><getSignatureFileVersionV1 xmlns="http://pronom.nationalarchives.gov.uk" /></soap:Body></soap:Envelope>"""
-        soapFileContainer = """<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><getSignatureFileV1 xmlns="http://pronom.nationalarchives.gov.uk" /></soap:Body></soap:Envelope>"""
-        soapVersionHeader = """\"http://pronom.nationalarchives.gov.uk:getSignatureFileVersionV1In\""""
-        soapFileHeader = """\"http://pronom.nationalarchives.gov.uk:getSignatureFileV1In\""""
-        if type_ == "version":
-            soapAction = soapVersionHeader
-            soapStr = soapVersionContainer
-        elif type_ == "file":
-            soapAction = soapFileHeader
-            soapStr = soapFileContainer
-        else:
-            sys.stderr.write("get_pronom_signature(): unknown type: " + type_)
-            return False
-        headers = {
-            "Host": "www.nationalarchives.gov.uk",
-            "User-Agent": "PRONOM UTILS v{0} (OPF)".format(__version__),
-            "Content-type": "text/xml; charset=\"UTF-8\"",
-            "Content-length": "%d" % len(soapStr),
-            "SOAPAction": soapAction
-        }
-        connection = http_client.HTTPConnection("www.nationalarchives.gov.uk")
-        try:
-            connection.request("POST", "/pronom/service.asmx", soapStr, headers)
-        except Exception as e:
-            sys.stderr.write("get_pronom_signature(): failed to contact PRONOM;\n%s\n" % (e))
-            sys.exit()
-        response = connection.getresponse()
-        if response.status != 200:
-            sys.stderr.write("get_pronom_signature(): webservice error: '" + str(response.status) + " " + response.reason + "'\n")
-            return False
-        xml = response.read().decode("utf-8")
-        if type_ == "version":
-            exp = re.compile(r"\<Version\>([0-9]{1,4})\<\/Version\>")
-            sigxml = exp.search(xml)
-            if len(sigxml.group(1)) > 0:
-                return int(sigxml.group(1))
-            else:
-                sys.stderr.write("get_pronom_signature(): could not parse VERSION from SOAP response: " + type_)
-                return False
-        if type_ == "file":
-            exp = re.compile(r"\<SignatureFile\>.*\<\/SignatureFile\>")
-            sigxml = exp.search(xml)
-            sigtxt = sigxml.group(0) if sigxml else ''
-            if len(sigtxt) > 0:
-                tmpfile = "./tmp_getPronomSignature.xml"
-                with open(tmpfile, 'w') as file_:
-                    file_.write("""<?xml version="1.0" encoding="UTF-8"?>""" + "\n")
-                    file_.write(sigtxt)
-                if not check_well_formedness(tmpfile):
-                    os.unlink(tmpfile)
-                    sys.stderr.write("get_pronom_signature(): signaturefile not well formed")
-                    return False
-                else:
-                    os.unlink(tmpfile)
-                    return """<?xml version="1.0" encoding="UTF-8"?>""" + "\n" + sigtxt
-            else:
-                sys.stderr.write("get_pronom_signature(): could not parse XML from SOAP response: " + type_)
-                return False
-
-        sys.stderr.write("get_pronom_signature(): unexpected return")
-        return False
-    except Exception as e:
-        sys.stderr.write("get_pronom_signature(): unknown error: " + str(e))
-        raise e
+from fido import CONFIG_DIR
 
 
 class LocalPronomVersions(object):
