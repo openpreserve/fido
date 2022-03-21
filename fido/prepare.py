@@ -93,7 +93,7 @@ class FormatInfo:
     def indent(self, elem, level=0):
         """Indent output."""
         i = "\n" + level * "  "
-        if elem:
+        if len(elem):
             if not elem.text or not elem.text.strip():
                 elem.text = i + "  "
             if not elem.tail or not elem.tail.strip():
