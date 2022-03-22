@@ -29,6 +29,7 @@ install_requires = [
     'olefile >= 0.46, < 1',
     'six >= 1.10.0, < 2',
     'importlib-resources >= 5.1.2, < 6',
+    'win-unicode-console >= 0.5; python_version == "2.7" and platform_system == "Windows"',
 ]
 
 

@@ -13,6 +13,7 @@ from __future__ import absolute_import
 from argparse import ArgumentParser, RawTextHelpFormatter
 from contextlib import closing
 import os
+import platform
 import re
 import sys
 import tarfile
@@ -27,6 +28,7 @@ except ImportError:
 from xml.etree import cElementTree as ET
 import zipfile
 
+from six import PY2
 from six.moves import range
 
 from fido import __version__, CONFIG_DIR
@@ -44,7 +46,7 @@ defaults = {
         'formats-v96.xml',
         'format_extensions.xml'
     ],
-    'containersignature_file': 'container-signature-20180920.xml',
+    'containersignature_file': 'container-signature-20200121.xml',
     'container_bufsize': 512 * 1024,  # (bytes)
     'description': """Format Identification for Digital Objects (fido).
 FIDO is a command-line tool to identify the file formats of digital objects.
@@ -771,8 +773,17 @@ def list_files(roots, recurse=False):
                     break
 
 
+def set_up_platform():
+    """Enable Unicode display when running Python from Windows console."""
+    if platform.system() == 'Windows' and PY2:
+        import win_unicode_console  # noqa: E402
+        win_unicode_console.enable(use_unicode_argv=True)
+
+
 def main(args=None):
     """Main FIDO method."""
+    set_up_platform()
+
     if not args:
         args = sys.argv[1:]
 
