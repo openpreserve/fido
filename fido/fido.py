@@ -31,7 +31,7 @@ from six.moves import range
 
 from fido import __version__, CONFIG_DIR
 from fido.package import OlePackage, ZipPackage
-from fido.pronomutils import get_local_pronom_versions
+from fido.versions import get_local_versions
 from fido.char_handler import escape
 
 
@@ -796,7 +796,7 @@ def main(args=None):
 
     timer = PerfTimer()
 
-    versions = get_local_pronom_versions(args.confdir)
+    versions = get_local_versions(args.confdir)
 
     defaults['xml_pronomSignature'] = versions.pronom_signature
     defaults['containersignature_file'] = versions.pronom_container_signature

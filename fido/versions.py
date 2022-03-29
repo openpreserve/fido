@@ -28,11 +28,11 @@ import six
 from fido import CONFIG_DIR
 
 
-class LocalPronomVersions(object):
+class LocalVersions(object):
     """
-    Parse local PRONOM signature versions XML file.
+    Parse local versions XML file.
 
-    This is how the XML document should look like:
+    This is what the XML document should look like:
 
     <?xml version="1.0" encoding="UTF-8"?>
     <versions>
@@ -98,6 +98,6 @@ class LocalPronomVersions(object):
         self.tree.write(self.versions_file, xml_declaration=True, method='xml', encoding='utf-8')
 
 
-def get_local_pronom_versions(config_dir=CONFIG_DIR):
-    """Return an instance of LocalPronomVersions loaded with `conf/versions.xml`."""
-    return LocalPronomVersions(os.path.join(config_dir, 'versions.xml'))
+def get_local_versions(config_dir=CONFIG_DIR):
+    """Return an instance of LocalVersions loaded with `conf/versions.xml`."""
+    return LocalVersions(os.path.join(config_dir, 'versions.xml'))
