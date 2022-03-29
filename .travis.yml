@@ -7,9 +7,7 @@ python:
 
 install:
   - "pip install -U pip flake8 pep257 pytest-cov codecov codacy-coverage pluggy"
-  - "python setup.py build"
-  - "python setup.py bdist --formats=zip"
-  - "python setup.py install"
+  - "pip install ."
 
 script:
   - "flake8 ./fido"

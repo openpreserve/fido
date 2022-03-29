@@ -29,6 +29,7 @@ install_requires = [
     'olefile >= 0.46, < 1',
     'six >= 1.10.0, < 2',
     'win-unicode-console >= 0.5; python_version == "2.7" and platform_system == "Windows"',
+    'importlib-resources',
 ]
 
 
@@ -59,7 +60,7 @@ setup(
     tests_require=tests_require,
     extras_require=EXTRAS,
     packages=['fido'],
-    package_data={'fido': ['*.*', 'conf/*.*']},
+    package_data={'fido': ['*.*', 'conf/*.*', 'signatures/*.*', 'pronom/*.*']},
     entry_points={'console_scripts': [
         'fido = fido.fido:main',
         'fido-prepare = fido.prepare:main',
