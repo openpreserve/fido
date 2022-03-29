@@ -20,10 +20,14 @@ PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
 from __future__ import absolute_import
 
 import os
+import re
+import sys
 from xml.etree import ElementTree as ET
 from xml.etree.ElementTree import parse, ParseError
 
+import requests
 import six
+import importlib_resources
 
 from fido import CONFIG_DIR
 
@@ -99,7 +103,66 @@ class LocalVersions(object):
                 raise ValueError('Field {} has not been defined!'.format(key))
         self.tree.write(self.versions_file, xml_declaration=True, method='xml', encoding='utf-8')
 
-
 def get_local_versions(config_dir=CONFIG_DIR):
     """Return an instance of LocalVersions loaded with `conf/versions.xml`."""
     return LocalVersions(os.path.join(config_dir, 'versions.xml'))
+
+def sig_file_actions(sig_act):
+    versions = get_local_versions()
+    sig_vers = versions.pronom_version
+    update_url = versions.update_site
+    if not update_url.endswith('/'):
+        update_url+='/'
+    if sig_act == 'check':
+        is_new, latest = _version_check(sig_vers, update_url)
+        if is_new:
+            print('Updated signatures v{} are available, current version is v{}'.format(latest, sig_vers))
+        else:
+            print('Your signature files are up to date, current version is v{}'.format(sig_vers))
+    elif sig_act == 'list':
+        resp = requests.get(update_url + 'format/')
+        tree = ET.fromstring(resp.content)
+        print('Available signature versions')
+        for child in tree.iter('signature'):
+            print(child.get('version'))
+    elif sig_act == 'update':
+        is_new, latest = _version_check(sig_vers, update_url)
+        if not is_new:
+            print('Your signature files are up to date, current version is v{}'.format(sig_vers))
+            sys.exit(0)
+        print('Updated signatures v{} are available, current version is v{}'.format(latest, sig_vers))
+        _output_details(latest, update_url, versions)
+    else:
+        ver = sig_act
+        if not ver.startswith('v'):
+            ver = 'v' + sig_act
+        resp = requests.get(update_url + 'format/' + ver + '/')
+        if resp.status_code != 200:
+            print('No signature files found for {}, REST status {}'.format(sig_act, resp.status_code))
+            sys.exit(1)
+        _output_details(re.search('\d+|$', ver).group(), update_url, versions)
+
+
+def _output_details(version, update_url, versions):
+    print('Updating signatures')
+    _write_sigs(version, update_url, 'fido', 'formats-v{}.xml')
+    _write_sigs(version, update_url, 'droid', 'DROID_SignatureFile-{}.xml')
+    _write_sigs(version, update_url, 'fido', 'pronom-xml-{}.zip')
+    versions.pronom_version = '{}'.format(version)
+    versions.pronom_signature = 'pronom-xml-{}.zip'.format(version)
+    versions.write()
+
+def _version_check(sig_ver, update_url):
+    resp = requests.get(update_url + 'format/latest/')
+    if resp.status_code != 200:
+        print('Error getting latest version info {}'.format(resp.status_code))
+        sys.exit(1)
+    latest = re.search('\d+|$', resp.text).group()  # noqa: W605
+    return int(latest) > int(sig_ver), latest
+
+def _write_sigs(latest, update_url, type, name_template):
+    sig_out = str(importlib_resources.files('fido').joinpath('conf', name_template.format(latest)))
+    if os.path.exists(sig_out):
+        return
+    resp = requests.get(update_url + 'format/latest/{}/'.format(type))
+    open(sig_out, 'wb').write(resp.content)
