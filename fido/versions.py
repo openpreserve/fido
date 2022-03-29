@@ -28,6 +28,10 @@ from xml.etree.ElementTree import parse, ParseError
 import requests
 import six
 import importlib_resources
+from xml.etree import ElementTree as ET
+from xml.etree.ElementTree import parse, ParseError
+
+import six
 
 from fido import CONFIG_DIR
 
