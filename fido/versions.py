@@ -112,6 +112,7 @@ def get_local_versions(config_dir=CONFIG_DIR):
     return LocalVersions(os.path.join(config_dir, 'versions.xml'))
 
 def sig_file_actions(sig_act):
+    """Process signature file update actions."""
     versions = get_local_versions()
     sig_vers = versions.pronom_version
     update_url = versions.update_site
