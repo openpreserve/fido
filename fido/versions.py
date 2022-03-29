@@ -142,7 +142,7 @@ def sig_file_actions(sig_act):
         if resp.status_code != 200:
             print('No signature files found for {}, REST status {}'.format(sig_act, resp.status_code))
             sys.exit(1)
-        _output_details(re.search('\d+|$', ver).group(), update_url, versions) # noqa: W605
+        _output_details(re.search('\d+|$', ver).group(), update_url, versions)  # noqa: W605
 
 
 def _output_details(version, update_url, versions):
