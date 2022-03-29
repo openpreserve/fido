@@ -15,8 +15,9 @@ import zipfile
 from six.moves import cStringIO
 from six.moves.urllib.request import urlopen
 from six.moves.urllib.parse import urlparse
+from six.moves.urllib.error import HTTPError
 
-from .pronomutils import get_local_pronom_versions
+from .versions import get_local_versions
 from .char_handler import escape
 
 
@@ -62,8 +63,9 @@ def prettify(elem):
 class FormatInfo:
     """Convert PRONOM formats into FIDO signatures."""
 
-    def __init__(self, pronom_files, format_list=[]):
+    def __init__(self, pronom_files, format_list=None):
         """Instantiate class, take a list of PRONOM files and an optional list of formats."""
+        format_list = format_list if format_list else []
         self.info = {}
         self.formats = []
         self.pronom_files = pronom_files
@@ -93,7 +95,7 @@ class FormatInfo:
     def indent(self, elem, level=0):
         """Indent output."""
         i = "\n" + level * "  "
-        if elem:
+        if len(elem):
             if not elem.text or not elem.text.strip():
                 elem.text = i + "  "
             if not elem.tail or not elem.tail.strip():
@@ -192,7 +194,7 @@ class FormatInfo:
         for id in pronom_format.findall(TNA('FileFormatIdentifier')):
             type = get_text_tna(id, 'IdentifierType')
             if type == 'Apple Uniform Type Identifier':
-                ET.SubElement(fido_format, 'apple_uid').text = get_text_tna(id, 'Identifier')
+                ET.SubElement(fido_format, 'apple_uti').text = get_text_tna(id, 'Identifier')
         # Handle the relationships
         for x in pronom_format.findall(TNA('RelatedFormat')):
             rel = get_text_tna(x, 'RelationshipType')
@@ -275,9 +277,15 @@ class FormatInfo:
                     ET.SubElement(rf, 'dc:identifier').text = url
                     # And calculate the checksum of this resource:
                     m = hashlib.md5()
-                    sock = urlopen(url)
-                    m.update(sock.read())
-                    sock.close()
+                    try:
+                        sock = urlopen(url)
+                        m.update(sock.read())
+                        sock.close()
+                    except HTTPError as http_excep:
+                        sys.stderr.write('HTTP {} error loading resource {}\n'.format(http_excep.code, url))
+                        if http_excep.code == 404:
+                            continue
+
                     checksum = m.hexdigest()
                 else:
                     ET.SubElement(rf, 'dc:identifier').text = get_text_tna(id, 'IdentifierType') + ":" + get_text_tna(id, 'Identifier')
@@ -686,7 +694,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
 
 def run(input=None, output=None, puid=None):
     """Convert PRONOM formats into FIDO signatures."""
-    versions = get_local_pronom_versions()
+    versions = get_local_versions()
 
     if input is None:
         input = versions.get_zip_file()
