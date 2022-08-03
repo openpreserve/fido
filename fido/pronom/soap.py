@@ -21,6 +21,7 @@ PRONOM format signatures SOAP calls.
 """
 import sys
 import tempfile
+from urllib.error import HTTPError, URLError
 import xml.etree.ElementTree as ET
 from six.moves import urllib
 
@@ -58,30 +59,24 @@ def get_pronom_sig_version():
     ver_ele = tree.find('.//pronom:Version/pronom:Version', NS)
     return int(ver_ele.text)
 
-
-def get_pronom_signature():
+def get_droid_signatures(version):
     """
-    Get PRONOM signature.
+    Get a DROID signature file by version.
 
-    Return a tuple comprising the latest signature XML file as string and a count
-    of the FileFormat elements contained as an integer.
+    Return a tuple comprising the requested signature XML file as string
+    and a count of the FileFormat elements contained as an integer.
     Upon error, write to `stderr` and return the tuple [], False.
     """
-    tree = _get_soap_ele_tree('getSignatureFileV1')
-    for prefix, uri in NS.items():
-        ET.register_namespace(prefix, uri)
-    sigfile_ele = ET.ElementTree(tree.find('.//pronom:SignatureFile', NS))
-    format_ele_len = len(sigfile_ele.findall('.//sig:FileFormat', NS))
-    if format_ele_len < 1:
-        sys.stderr.write("get_pronom_signature(): could not parse XML from SOAP response: file")
-        return [], False
-    # proc_inst = ET.ProcessingInstruction('xml', 'version="1.0" encoding="UTF-8"')
-    with tempfile.TemporaryFile() as fp:
-        sigfile_ele.write(fp, encoding='utf-8', xml_declaration=True)
-        fp.seek(0)
-        xml = fp.read()
-    return xml, format_ele_len
-
+    xml = []
+    format_count = False
+    try:
+        with urllib.request.urlopen('https://www.nationalarchives.gov.uk/documents/DROID_SignatureFile_V{}.xml'.format(version)) as f:
+            xml = f.read().decode('utf-8')
+            root_ele = ET.fromstring(xml)
+            format_count = len(root_ele.findall('FileFormat'))
+    except HTTPError as httpe:
+        sys.stderr.write("get_droid_signatures(): could not download signature file v{} due to exception: {}\n".format(version, httpe))    
+    return xml, format_count
 
 def _get_soap_ele_tree(soap_action):
     soap_string = '{}<soap:Envelope xmlns:xsi="{}" xmlns:xsd="{}" xmlns:soap="{}"><soap:Body><{} xmlns="{}" /></soap:Body></soap:Envelope>'.format(XML_PROC, NS.get('xsi'), NS.get('xsd'), NS.get('soap'), soap_action, PRONOM_NS).encode(ENCODING)
@@ -93,7 +88,12 @@ def _get_soap_ele_tree(soap_action):
 
 
 def _get_soap_response(soap_action, soap_string):
-    req = urllib.request.Request('http://{}/pronom/service.asmx'.format(PRONOM_HOST), data=soap_string)
+    try:
+        req = urllib.request.Request('http://{}/pronom/service.asmx'.format(PRONOM_HOST), data=soap_string)
+    except URLError:
+        print('There was a problem contacting the PRONOM service at http://{}/pronom/service.asmx.'.format(PRONOM_HOST))
+        print('Please check your network connection and try again.')
+        sys.exit(1)
     for key, value in HEADERS.items():
         req.add_header(key, value)
     req.add_header('Content-length', '%d' % len(soap_string))

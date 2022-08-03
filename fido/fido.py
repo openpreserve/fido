@@ -886,7 +886,6 @@ def main(args=None):
         if (not args.input) and len(args.files) == 1 and args.files[0] == '-':
             if fido.zip:
                 raise RuntimeError("Multiple content read from stdin not yet supported.")
-                sys.exit(1)
                 fido.identify_multi_object_stream(sys.stdin, extension=not args.noextension)
             else:
                 fido.identify_stream(sys.stdin, args.filename, extension=not args.noextension)
@@ -894,9 +893,9 @@ def main(args=None):
             for file in list_files(args.files, args.recurse):
                 fido.identify_file(file, extension=not args.noextension)
     except KeyboardInterrupt:
-        msg = "FIDO: Interrupt while identifying file {0}"
-        sys.stderr.write(msg.format(fido.current_file))
-        sys.exit(1)
+        sys.stdout.flush()
+        sys.stderr.flush()
+        sys.exit('FIDO: Interrupt while identifying file {0}'.format(fido.current_file))
 
     if not args.q:
         sys.stdout.flush()

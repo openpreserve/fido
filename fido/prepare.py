@@ -20,7 +20,7 @@ from six.moves.urllib.error import HTTPError
 from .versions import get_local_versions
 from .char_handler import escape
 
-
+FLG_INCOMPATIBLE = '__INCOMPATIBLE_SIG__'
 class NS:
     """
     Helper class for XML name spaces in ElementTree.
@@ -89,24 +89,29 @@ class FormatInfo:
             root.append(f)
         self.indent(root)
         with open(dst, 'wb') as file_:
-            # print >>out, ET.tostring(root,encoding='utf-8')
             file_.write(ET.tostring(root))
 
     def indent(self, elem, level=0):
         """Indent output."""
-        i = "\n" + level * "  "
         if len(elem):
-            if not elem.text or not elem.text.strip():
-                elem.text = i + "  "
-            if not elem.tail or not elem.tail.strip():
-                elem.tail = i
-            for elem in elem:
-                self.indent(elem, level + 1)
-            if not elem.tail or not elem.tail.strip():
-                elem.tail = i
+            self._indent_ele(elem, level)
         else:
             if level and (not elem.tail or not elem.tail.strip()):
-                elem.tail = i
+                elem.tail = self._indent_text(level)
+
+    def _indent_ele(self, elem, level):
+        """Indent the element."""
+        if not elem.text or not elem.text.strip():
+            elem.text = self._indent_text(level) + "  "
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = self._indent_text(level)
+        for elem in elem:
+            self.indent(elem, level + 1)
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = self._indent_text(level)
+
+    def _indent_text(self, level):
+        return "\n" + level * "  "
 
     def load_pronom_xml(self, puid_filter=None):
         """
@@ -116,18 +121,12 @@ class FormatInfo:
         If a @param puid is specified, only that one will be loaded.
         """
         formats = []
-        # for p in self.pronom_files:
-        #    print p
-        # print self.pronom_files
-        # exit()
         try:
             zip = zipfile.ZipFile(self.pronom_files, 'r')
             for item in zip.infolist():
-                # print item.filename
                 try:
                     stream = zip.open(item)
                     # Work is done here!
-                    # if item.filename != 'github/fido/fido/conf/pronom-xml/puid.fmt.11.xml':
                     format_ = self.parse_pronom_xml(stream, puid_filter)
                     if format_ is not None:
                         formats.append(format_)
@@ -144,7 +143,7 @@ class FormatInfo:
             id_map = {}
             for element in formats:
                 puid = element.find('puid').text
-                # print "working on puid:",puid
+                # print('working on puid:{}'.format(puid))
                 pronom_id = element.find('pronom_id').text
                 id_map[pronom_id] = puid
             for element in formats:
@@ -207,17 +206,23 @@ class FormatInfo:
             # There are some funny chars in the notes, which caused me trouble and it is a unicode string,
             ET.SubElement(fido_sig, 'note').text = get_text_tna(pronom_sig, 'SignatureNote')
             for pronom_pat in pronom_sig.findall(TNA('ByteSequence')):
+                # print('Parsing ID:{}'.format(puid))
                 fido_pat = ET.SubElement(fido_sig, 'pattern')
                 pos = fido_position(get_text_tna(pronom_pat, 'PositionType'))
-                bytes = get_text_tna(pronom_pat, 'ByteSequenceValue')
+                byte_seq = get_text_tna(pronom_pat, 'ByteSequenceValue')
                 offset = get_text_tna(pronom_pat, 'Offset')
                 max_offset = get_text_tna(pronom_pat, 'MaxOffset')
                 if not max_offset:
                     pass
                 # print "working on puid:", puid, ", position: ", pos, "with offset, maxoffset: ", offset, ",", max_offset
-                regex = convert_to_regex(bytes, 'Little', pos, offset, max_offset)
+                try:
+                    regex = convert_to_regex(byte_seq, 'Little', pos, offset, max_offset)
+                except ValueError as ve:
+                    print('ValueError converting PUID {} signature to regex: {}'.format(puid, ve), file=sys.stderr)
+                    regex = FLG_INCOMPATIBLE
+
                 # print "done puid", puid
-                if regex == "__INCOMPATIBLE_SIG__":
+                if regex == FLG_INCOMPATIBLE:
                     print("Error: incompatible PRONOM signature found for puid {} skipping...".format(puid), file=sys.stderr)
                     # remove the empty 'signature' nodes
                     # now that the signature is not compatible and thus "regex" is empty
@@ -226,7 +231,7 @@ class FormatInfo:
                         fido_format.remove(r)
                     continue
                 ET.SubElement(fido_pat, 'position').text = pos
-                ET.SubElement(fido_pat, 'pronom_pattern').text = bytes
+                ET.SubElement(fido_pat, 'pronom_pattern').text = byte_seq
                 ET.SubElement(fido_pat, 'regex').text = regex
         # Get the format details
         fido_details = ET.SubElement(fido_format, 'details')
@@ -372,7 +377,7 @@ def _convert_err_msg(msg, c, i, chars, buf):
     return "Conversion: {0}: char='{1}', at pos {2} in \n  {3}\n  {4}^\nBuffer = {5}".format(msg, c, i, chars, i * ' ', buf.getvalue())
 
 
-def doByte(chars, i, littleendian, esc=True):
+def do_byte(chars, i, littleendian, esc=True):
     """
     Convert two chars[i] and chars[i+1] into a byte.
 
@@ -473,7 +478,7 @@ def do_any_all_bitmasks(chars, i, predicate, littleendian):
     See https://github.com/nishihatapalmer/byteseek/wiki/Regular-Expression-Syntax#all-bitmasks
     and https://github.com/nishihatapalmer/byteseek/wiki/Regular-Expression-Syntax#any-bitmasks
     """
-    byt, inc = doByte(chars, i + 1, littleendian, esc=False)
+    byt, inc = do_byte(chars, i + 1, littleendian, esc=False)
     bitmask = ord(byt)
     regex = '({})'.format(
         '|'.join(['\\x' + hex(byte)[2:].zfill(2) for byte in range(0x100)
@@ -534,9 +539,9 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
             elif chars[i] in '*+?':
                 state = 'specials'
             else:
-                raise Exception(_convert_err_msg('Illegal character in start', chars[i], i, chars, buf))
+                raise ValueError(_convert_err_msg('Illegal character in start', chars[i], i, chars, buf))
         elif state == 'bytes':
-            (byt, inc) = doByte(chars, i, littleendian)
+            (byt, inc) = do_byte(chars, i, littleendian)
             buf.write(byt)
             i += inc
             state = 'start'
@@ -555,7 +560,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
             i += 2
             while True:
                 if chars[i].isalnum():
-                    (byt, inc) = doByte(chars, i, littleendian)
+                    (byt, inc) = do_byte(chars, i, littleendian)
                     buf.write(byt)
                     i += inc
                 elif chars[i] == '&':
@@ -578,7 +583,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
             try:
                 buf.write('[')
                 i += 1
-                (byt, inc) = doByte(chars, i, littleendian)
+                (byt, inc) = do_byte(chars, i, littleendian)
                 buf.write(byt)
                 i += inc
                 # assert(chars[i] == ':')
@@ -586,7 +591,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
                     return "__INCOMPATIBLE_SIG__"
                 buf.write('-')
                 i += 1
-                (byt, inc) = doByte(chars, i, littleendian)
+                (byt, inc) = do_byte(chars, i, littleendian)
                 buf.write(byt)
                 i += inc
                 # assert(chars[i] == ']')
@@ -606,7 +611,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
             i += 1
             while True:
                 if chars[i].isalnum():
-                    (byt, inc) = doByte(chars, i, littleendian)
+                    (byt, inc) = do_byte(chars, i, littleendian)
                     buf.write(byt)
                     i += inc
                 elif chars[i] == '|':
@@ -618,7 +623,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
                 elif chars[i] == '[':
                     buf.write('[')
                     i += 1
-                    (byt, inc) = doByte(chars, i, littleendian)
+                    (byt, inc) = do_byte(chars, i, littleendian)
                     buf.write(byt)
                     i += inc
                     # assert(chars[i] == ':')
@@ -626,7 +631,7 @@ def convert_to_regex(chars, endianness='', pos='BOF', offset='0', maxoffset=''):
                         return "__INCOMPATIBLE_SIG__"
                     buf.write('-')
                     i += 1
-                    (byt, inc) = doByte(chars, i, littleendian)
+                    (byt, inc) = do_byte(chars, i, littleendian)
                     buf.write(byt)
                     i += inc
 

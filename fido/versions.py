@@ -18,6 +18,7 @@ PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
 """
 
 from __future__ import absolute_import
+from logging import root
 
 import os
 import re
@@ -112,55 +113,79 @@ def sig_file_actions(sig_act):
     """Process signature file update actions."""
     versions = get_local_versions()
     sig_vers = versions.pronom_version
+
+    # Get update URL, add trailing slash if missing
     update_url = versions.update_site
     if not update_url.endswith('/'):
         update_url += '/'
-    if sig_act == 'check':
-        is_new, latest = _version_check(sig_vers, update_url)
-        if is_new:
-            print('Updated signatures v{} are available, current version is v{}'.format(latest, sig_vers))
-        else:
-            print('Your signature files are up to date, current version is v{}'.format(sig_vers))
-    elif sig_act == 'list':
-        resp = requests.get(update_url + 'format/')
-        tree = ET.fromstring(resp.content)
-        print('Available signature versions')
-        for child in tree.iter('signature'):
-            print(child.get('version'))
-    elif sig_act == 'update':
-        is_new, latest = _version_check(sig_vers, update_url)
-        if not is_new:
-            print('Your signature files are up to date, current version is v{}'.format(sig_vers))
-            sys.exit(0)
-        print('Updated signatures v{} are available, current version is v{}'.format(latest, sig_vers))
-        _output_details(latest, update_url, versions)
-    else:
-        ver = sig_act
-        if not ver.startswith('v'):
-            ver = 'v' + sig_act
-        resp = requests.get(update_url + 'format/' + ver + '/')
-        if resp.status_code != 200:
-            print('No signature files found for {}, REST status {}'.format(sig_act, resp.status_code))
-            sys.exit(1)
-        _output_details(re.search('\d+|$', ver).group(), update_url, versions)  # noqa: W605
 
+    # Parse parameter and take appropriate action
+    if sig_act == 'list':
+        # List available signature files
+        _list_available_versions(update_url)
+    elif sig_act in ['check', 'update']:
+        # Check or/and update signature file to latest
+        _check_update_signatures(sig_vers, update_url, versions, sig_act == 'update')
+    else:
+        # Download a specific version of the signature file
+        _download_sig_version(sig_vers, update_url, versions)
+    sys.stdout.flush()
+    sys.exit(0)
+
+def _list_available_versions(update_url):
+    """List available signature files."""
+    resp = requests.get(update_url + 'format/')
+    tree = ET.fromstring(resp.content)
+    sys.stdout.write('Available signature versions:\n')
+    for child in tree.iter('signature'):
+        sys.stdout.write('{}\n'.format(child.get('version')))
+
+def _check_update_signatures(sig_vers, update_url, versions, is_update=False):
+    is_new, latest = _version_check(sig_vers, update_url)
+    if is_new:
+        sys.stdout.write('Updated signatures v{} are available, current version is v{}\n'.format(latest, sig_vers))
+        if is_update: _output_details(latest, update_url, versions)
+    else:
+        sys.stdout.write('Your signature files are up to date, current version is v{}\n'.format(sig_vers))
+    sys.exit(0)
+
+def _download_sig_version(sig_act, update_url, versions):
+    match = re.search('^v?(\d+)$', sig_act, re.IGNORECASE)
+
+    if not match:
+        sys.exit('{} is not a valid version number, to download a sig file try "-sig v104" or "-sig 104".'.format(sig_act))
+    ver = sig_act
+    if not ver.startswith('v'):
+        ver = 'v' + sig_act
+    resp = requests.get(update_url + 'format/' + ver + '/')
+    if resp.status_code != 200:
+        sys.exit('No signature files found for {}, REST status {}'.format(sig_act, resp.status_code))
+    _output_details(re.search('\d+|$', ver).group(), update_url, versions)  # noqa: W605
+
+def _get_version(ver_string):
+    """Parse a PROMOM version number from a string."""
+    match = re.search('^v?(\d+)$', ver_string, re.IGNORECASE)
+    if not match:
+        sys.exit('{} is not a valid version number, to download a sig file try "-sig v104" or "-sig 104".'.format(ver_string))
+    ver = ver_string
+    return ver_string if not ver.startswith('v') else ver_string[1:]
 
 def _output_details(version, update_url, versions):
-    print('Updating signatures')
+    sys.stdout.write('Updating signature file.\n')
     _write_sigs(version, update_url, 'fido', 'formats-v{}.xml')
-    _write_sigs(version, update_url, 'droid', 'DROID_SignatureFile-{}.xml')
-    _write_sigs(version, update_url, 'fido', 'pronom-xml-{}.zip')
+    _write_sigs(version, update_url, 'droid', 'DROID_SignatureFile-v{}.xml')
+    _write_sigs(version, update_url, 'pronom', 'pronom-xml-v{}.zip')
     versions.pronom_version = '{}'.format(version)
-    versions.pronom_signature = 'pronom-xml-{}.zip'.format(version)
+    versions.pronom_signature = 'formats-v{}.xml'.format(version)
     versions.write()
 
 
 def _version_check(sig_ver, update_url):
     resp = requests.get(update_url + 'format/latest/')
     if resp.status_code != 200:
-        print('Error getting latest version info {}'.format(resp.status_code))
-        sys.exit(1)
-    latest = re.search('\d+|$', resp.text).group()  # noqa: W605
+        sys.exit('Error getting latest version info: HTTP Status {}'.format(resp.status_code))
+    root_ele = ET.fromstring(resp.text)
+    latest = _get_version(root_ele.get('version'))
     return int(latest) > int(sig_ver), latest
 
 

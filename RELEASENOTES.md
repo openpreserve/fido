@@ -1,5 +1,6 @@
 RELEASE NOTES
 =============
+
 Format Identification for Digital Objects (fido).
 Copyright 2010 by Open Preservation Foundation.
 
@@ -8,12 +9,29 @@ Copyright 2010 The Open Preservation Foundation
 Fido is made available under the Apache License, Version 2.0; see the file
 LICENSE.txt for details.
 
-Fido 1.6.0rc1
+Fido 1.6.0rc5
 -------------
 
-2022-03-29
+2022-08-03
 
-New command line options for updating signatures, see
+- added update signature parameter to control signature download verison:
+- trapped regex creation exception so that sig file creation is not derailed;
+- PRONOM/DROID signature file now downloaded from URL rather than via SOAP service;
+- moved sleep between SOAP downloads so that it's only applied between actual downloads, not when processing cached results;
+- code style warnings:
+  - some minor refactoring for complex methods;
+  - factoring out string constants;
+  - renamed some variables and methods;
+  - removed some commented code;
+  - tidied exit conditions; and
+  - removed some unreachable code.
+
+Fido 1.6.0rc4
+-------------
+
+2022-06-22
+
+New command line options for updating signatures
 
 - PRONOM signatures can now be updated from a web service [[#202][]].
 - PRONOM v104 support with successful signature compilation (see issue [#203][]) [[#204][]].
