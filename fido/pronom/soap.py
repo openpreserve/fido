@@ -20,7 +20,6 @@ limitations under the License.
 PRONOM format signatures SOAP calls.
 """
 import sys
-import tempfile
 from urllib.error import HTTPError, URLError
 import xml.etree.ElementTree as ET
 from six.moves import urllib
@@ -59,6 +58,7 @@ def get_pronom_sig_version():
     ver_ele = tree.find('.//pronom:Version/pronom:Version', NS)
     return int(ver_ele.text)
 
+
 def get_droid_signatures(version):
     """
     Get a DROID signature file by version.
@@ -73,10 +73,11 @@ def get_droid_signatures(version):
         with urllib.request.urlopen('https://www.nationalarchives.gov.uk/documents/DROID_SignatureFile_V{}.xml'.format(version)) as f:
             xml = f.read().decode('utf-8')
             root_ele = ET.fromstring(xml)
-            format_count = len(root_ele.findall('FileFormat'))
+            format_count = len(root_ele.findall('.//{http://www.nationalarchives.gov.uk/pronom/SignatureFile}FileFormat'))
     except HTTPError as httpe:
-        sys.stderr.write("get_droid_signatures(): could not download signature file v{} due to exception: {}\n".format(version, httpe))    
+        sys.stderr.write("get_droid_signatures(): could not download signature file v{} due to exception: {}\n".format(version, httpe))
     return xml, format_count
+
 
 def _get_soap_ele_tree(soap_action):
     soap_string = '{}<soap:Envelope xmlns:xsi="{}" xmlns:xsd="{}" xmlns:soap="{}"><soap:Body><{} xmlns="{}" /></soap:Body></soap:Envelope>'.format(XML_PROC, NS.get('xsi'), NS.get('xsd'), NS.get('soap'), soap_action, PRONOM_NS).encode(ENCODING)

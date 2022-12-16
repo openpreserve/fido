@@ -18,7 +18,6 @@ PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
 """
 
 from __future__ import absolute_import
-from logging import root
 
 import os
 import re
@@ -132,6 +131,7 @@ def sig_file_actions(sig_act):
     sys.stdout.flush()
     sys.exit(0)
 
+
 def _list_available_versions(update_url):
     """List available signature files."""
     resp = requests.get(update_url + 'format/')
@@ -140,18 +140,21 @@ def _list_available_versions(update_url):
     for child in tree.iter('signature'):
         sys.stdout.write('{}\n'.format(child.get('version')))
 
+
 def _check_update_signatures(sig_vers, update_url, versions, is_update=False):
     is_new, latest = _version_check(sig_vers, update_url)
     if is_new:
         sys.stdout.write('Updated signatures v{} are available, current version is v{}\n'.format(latest, sig_vers))
-        if is_update: _output_details(latest, update_url, versions)
+        if is_update:
+            _output_details(latest, update_url, versions)
     else:
         sys.stdout.write('Your signature files are up to date, current version is v{}\n'.format(sig_vers))
     sys.exit(0)
 
+
 def _download_sig_version(sig_act, update_url, versions):
     sys.stdout.write('Downloading signature files for version {}\n'.format(sig_act))
-    match = re.search('^v?(\d+)$', sig_act, re.IGNORECASE)
+    match = re.search(r'^v?(\d+)$', sig_act, re.IGNORECASE)
 
     if not match:
         sys.exit('{} is not a valid version number, to download a sig file try "-sig v104" or "-sig 104".'.format(sig_act))
@@ -161,15 +164,17 @@ def _download_sig_version(sig_act, update_url, versions):
     resp = requests.get(update_url + 'format/' + ver + '/')
     if resp.status_code != 200:
         sys.exit('No signature files found for {}, REST status {}'.format(sig_act, resp.status_code))
-    _output_details(re.search('\d+|$', ver).group(), update_url, versions)  # noqa: W605
+    _output_details(re.search(r'\d+|$', ver).group(), update_url, versions)  # noqa: W605
+
 
 def _get_version(ver_string):
     """Parse a PROMOM version number from a string."""
-    match = re.search('^v?(\d+)$', ver_string, re.IGNORECASE)
+    match = re.search(r'^v?(\d+)$', ver_string, re.IGNORECASE)
     if not match:
         sys.exit('{} is not a valid version number, to download a sig file try "-sig v104" or "-sig 104".'.format(ver_string))
     ver = ver_string
     return ver_string if not ver.startswith('v') else ver_string[1:]
+
 
 def _output_details(version, update_url, versions):
     sys.stdout.write('Updating signature file to {}.\n'.format(version))

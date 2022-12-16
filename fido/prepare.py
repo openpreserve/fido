@@ -21,6 +21,8 @@ from .versions import get_local_versions
 from .char_handler import escape
 
 FLG_INCOMPATIBLE = '__INCOMPATIBLE_SIG__'
+
+
 class NS:
     """
     Helper class for XML name spaces in ElementTree.
@@ -150,7 +152,7 @@ class FormatInfo:
                 for rel in element.findall('has_priority_over'):
                     try:
                         rel.text = id_map[rel.text]
-                    except KeyError as e:
+                    except KeyError:
                         print("Error looking up priority over PRONOM ID {0} for format {1}".format(rel.text, element.find('puid').text), file=sys.stderr)
 
         self._sort_formats(formats)

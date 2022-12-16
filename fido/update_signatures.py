@@ -96,8 +96,10 @@ def sig_version_check(version='latest'):
             sys.exit(ABORT_MSG)
     return version, sig_file_name
 
+
 def _sig_file_name(version):
     return os.path.join(CONFIG_DIR, DEFAULTS['signatureFileName'].format(version))
+
 
 def download_sig_file(version, sig_file):
     """Download the latest version of the PRONOM sigs to signatureFile."""

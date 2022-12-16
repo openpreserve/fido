@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import sys
 """
 FIDO: Format Identifier for Digital Objects
 
@@ -21,13 +22,16 @@ PRONOM SOAP call test cases.
 """
 from fido.pronom import soap
 
+
 def test_pronom_version():
     """Test that the returned PRONOM sig version is an integer > 90."""
     version = soap.get_pronom_sig_version()
     assert version > 90
 
+
 def test_pronom_signature():
     """Test that retrieving signatures gets something with length and no errors are thrown."""
-    xml, count = soap.get_pronom_signature()
-    assert count > 1000
-    assert len(xml) > 1000
+    version = soap.get_pronom_sig_version()
+    xml, count = soap.get_droid_signatures(version)
+    assert len(xml) > 1000, 'Expected more than 1000 XML lines, got %s' % len(xml)
+    assert count > 1000, 'Expected more than 1000 signatures, got %s' % count
