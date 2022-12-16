@@ -34,12 +34,6 @@ jobs:
       - name: Coverage using pytest
         if: matrix.python-version == 3.10
         run: pytest --cov=fido --cov-report=lcov
-      - name: Upload XML coverage report
-        if: matrix.python-version == 3.10
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-xml
-          path: coverage.xml
       - name: Upload coverage report
         if: matrix.python-version == 3.10
         uses: actions/upload-artifact@v3
@@ -52,22 +46,11 @@ jobs:
     needs: [ build ]
 
     steps:
-      - name: Download coverage XML report
-        uses: actions/download-artifact@v3
-        with:
-          name: coverage-xml
-          path: coverage.xml
       - name: Download coverage LCOV report
         uses: actions/download-artifact@v3
         with:
           name: coverage-lcov
           path: coverage.lcov
-      - name: Codecov coverage reporting
-        uses: codecov/codecov-action@v3
-        with:
-          files: coverage.xml
-          fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)
       - name: Codacy coverage reporting
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
