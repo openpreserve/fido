@@ -9,31 +9,34 @@ FIDO is a command-line tool to identify the file formats of digital objects.
 It is designed for simple integration into automated work-flows.
 
 FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions.
-PRONOM is available from http://www.nationalarchives.gov.uk/pronom/
+PRONOM is available from <http://www.nationalarchives.gov.uk/pronom/>
 See [LICENSE](LICENSE.txt) for license information.
 
-* Download from: https://github.com/openpreserve/fido/releases
-* Usage guide: http://wiki.opf-labs.org/display/KB/FIDO+usage+guide
+* Download from: <https://github.com/openpreserve/fido/releases>
+* Usage guide: <http://wiki.opf-labs.org/display/KB/FIDO+usage+guide>
 * Author: Adam Farquhar (BL), 2010
 * Maintainer: Maurice de Rooij (OPF/NANETH), 2011, 2012, 2013, Misty de Meo 2014, 2015, 2016, Holly Becker 2016
 
 Usage
 -----
 
-```
-usage: fido.py [-h] [-v] [-q] [-recurse] [-zip] [-nocontainer] [-pronom_only]
-               [-input INPUT] [-filename FILENAME] [-useformats INCLUDEPUIDS]
-               [-nouseformats EXCLUDEPUIDS] [-matchprintf FORMATSTRING]
-               [-nomatchprintf FORMATSTRING] [-bufsize BUFSIZE]
-               [-container_bufsize CONTAINER_BUFSIZE]
-               [-loadformats XML1,...,XMLn] [-confdir CONFDIR]
-               [FILE [FILE ...]]
+```shell
+usage: fido [-h] [-v] [-q] [-recurse] [-zip] [-noextension] [-nocontainer]
+            [-pronom_only] [-input INPUT] [-filename FILENAME]
+            [-useformats INCLUDEPUIDS] [-nouseformats EXCLUDEPUIDS]
+            [-matchprintf FORMATSTRING] [-nomatchprintf FORMATSTRING]
+            [-bufsize BUFSIZE] [-sigs SIG_ACT]
+            [-container_bufsize CONTAINER_BUFSIZE]
+            [-loadformats XML1,...,XMLn] [-confdir CONFDIR]
+            [FILE [FILE ...]]
 ```
 
 positional arguments:
+
 * `FILE`: files to check. If the file is -, then read content from stdin. In this case, python must be invoked with `-u` or it may convert the line terminators.
 
 optional arguments:
+
 * `-h`, `--help`: show this help message and exit
 * `-v`: show version information
 * `-q`: run (more) quietly
@@ -48,6 +51,10 @@ optional arguments:
 * `-matchprintf FORMATSTRING`: format string (Python style) to use on match. See nomatchprintf, README.txt.
 * `-nomatchprintf FORMATSTRING`: format string (Python style) to use if no match. See README.txt
 * `-bufsize BUFSIZE`: size (in bytes) of the buffer to match against (default=131072 bytes)
+* `-sigs SIG_ACT`: SIG_ACT "check" for new version of signature file for download.
+                   SIG_ACT "list" list all available sig file versions.
+                   SIG_ACT "update" to automatically update to latest available sig file.
+                   SIG_ACT "n" download and use version n.
 * `-container_bufsize CONTAINER_BUFSIZE`: size (in bytes) of the buffer to match against (default=524288 bytes)
 * `-loadformats XML1,...,XMLn`: comma separated string of XML format files to add.
 * `-confdir CONFDIR`: configuration directory to load_fido_xml, for example, the format specifications from.
@@ -55,11 +62,11 @@ optional arguments:
 Installation
 ------------
 
-(also see: http://wiki.opf-labs.org/display/KB/FIDO+usage+guide)
+(also see: <http://wiki.opf-labs.org/display/KB/FIDO+usage+guide>)
 
 Any platform
 
-1. Download the latest zip release from https://github.com/openpreserve/fido/releases
+1. Download the latest zip release from <https://github.com/openpreserve/fido/releases>
 2. Unzip into some directory
 3. Open a command shell, cd to the directory that you placed the zip contents into
 4. Run `python setup.py install` to install FIDO and dependencies.  This may require sudo on Linux/OSX or admin privileges on Windows.
@@ -75,11 +82,42 @@ Using pip
 Updating signatures
 -------------------
 
-To update FIDO with the latest PRONOM file format definitions, run:
-   `fido-update-signatures`
-This is an interactive CLI script which downloads the latest PRONOM signature file and signatures. Please note that it can take a while to download all PUID signatures.
+Signatures can be updated from the OPF's signature service.
+The service is pull only and iit's location is in the `versions.xml`
+configuration file as
 
-If you are having trouble running the script due to firewall restrictions, see OPF wiki: http://wiki.opf-labs.org/display/PT/Command+Line+Interface+proxy+usage
+```xml
+<updateSite>https://fidosigs.openpreservation.org</updateSite>
+```
+
+To check what version of the PRONOM signatures you are using
+type: `fido -v` and you'll see something like:
+
+```shell
+FIDO v1.6.0 (pronom-xml-95.zip, container-signature-20200121.xml, format_extensions.xml)
+```
+
+Here `pronom-xml-95.zip` denotes PRONOM version 95. To see if a more recent
+set of signatures is available type `fido -sigs check` which will report back:
+
+```shell
+Updated signatures v104 are available, current version is v95
+```
+
+if new signatures are available or
+
+```shell
+Your signature files are up to date, current version is v104
+```
+
+if not. To update signatures to the latest version type `fido -sigs update`:
+
+```shell
+Updated signatures v104 are available, current version is v95
+Updating signatures
+```
+
+If you are having trouble due to firewall restrictions, see OPF wiki: <http://wiki.opf-labs.org/display/PT/Command+Line+Interface+proxy+usage>
 
 Please note that this WILL NOT update the container signature file located in the 'conf' folder.
 The reason for this that the PRONOM container signature file contains special types
@@ -96,6 +134,8 @@ installed using `pip install olefile`, by running `python setup.py install`,
 or a pip installation will handle dependencies.
 
 FIDO 1.3.3 and later have experimental Python 3 support.
+
+FIDO 1.4 and later have Python 3 support.
 
 Format Definitions
 ------------------
@@ -118,11 +158,12 @@ an object called info with the following fields:
 * `printnomatch`: `info.count` (file N)
 
 The defaults for FIDO 1.0 are:
+
 * `printmatch`:
- * `"OK,%(info.time)s,%(info.puid)s,%(info.formatname)s,%(info.signaturename)s,%(info.filesize)s,\"%(info.filename)s\",\"%(info.mimetype)s\",\"%(info.matchtype)s\"\n"`
+* `"OK,%(info.time)s,%(info.puid)s,%(info.formatname)s,%(info.signaturename)s,%(info.filesize)s,\"%(info.filename)s\",\"%(info.mimetype)s\",\"%(info.matchtype)s\"\n"`
 
 * `printnomatch`:
- * `"KO,%(info.time)s,,,,%(info.filesize)s,\"%(info.filename)s\",,\"%(info.matchtype)s\"\n"`
+* `"KO,%(info.time)s,,,,%(info.filesize)s,\"%(info.filename)s\",,\"%(info.matchtype)s\"\n"`
 
 It can be useful to provide an empty string for either, for example to ignore all failed matches, or all successful ones (see examples below).
 Note that a newline needs to be added to the end of the string using \n.
@@ -131,10 +172,11 @@ Matchtypes
 -----------
 
 FIDO returns the following matchtypes:
-- fail:      the object could not be identified with signature or file extension
-- extension: the object could only be identified by file extension
-- signature: the object has been identified with (a) PRONOM signature(s)
-- container: the object has been idenfified with (a) PRONOM container signature(s)
+
+* fail:      the object could not be identified with signature or file extension
+* extension: the object could only be identified by file extension
+* signature: the object has been identified with (a) PRONOM signature(s)
+* container: the object has been idenfified with (a) PRONOM container signature(s)
 
 In some cases multiple results are returned.
 
@@ -152,14 +194,14 @@ Take input from a list of files:
 
 Linux:
 
-```
+```shell
 ls > files.txt
 python fido.py -input files.txt
 ```
 
 Windows:
 
-```
+```shell
 dir /b > files.txt
 python fido.py -input files.txt
 ```

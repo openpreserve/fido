@@ -25,7 +25,7 @@ import csv
 import sys
 
 from . import __version__
-from .pronomutils import get_local_pronom_versions
+from .versions import get_local_versions
 
 
 def main():
@@ -35,7 +35,7 @@ def main():
     <versions>
         <fido_version>{0}</fido_version>
         <signature_version>{1}</signature_version>
-    </versions>""".format(__version__, get_local_pronom_versions().pronom_version))
+    </versions>""".format(__version__, get_local_versions().pronom_version))
 
     reader = csv.reader(sys.stdin)
 

@@ -1,0 +1,61 @@
+name: PR QA
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    name: Checkout and Build
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -U flake8 pep257 pytest-cov codecov codacy-coverage pluggy
+          pip install -e .
+      - name: Lint code with flake8
+        run: flake8 . --count --show-source --max-line-length=127 --statistics
+      - name: Lint code with pep257
+        if: matrix.python-version == 2.7
+        run: pep257 --match="(?!fido).*\.py" ./fido
+      - name: Test using pytest
+        run: pytest --cov=fido
+      - name: Generate LCOV coverage report
+        if: matrix.python-version == 3.10
+        run: coverage xml -o cobertura.xml
+      - name: Upload coverage report
+        if: matrix.python-version == 3.10
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: cobertura.xml
+  coverage:
+    name: Quality Assurance
+    runs-on: ubuntu-20.04
+    needs: [ build ]
+
+    steps:
+      - name: Download coverage report
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage-report
+          path: cobertura.xml
+      - name: Codecov coverage reporting
+        uses: codecov/codecov-action@v3
+        with:
+          files: cobertura.xml
+          fail_ci_if_error: false # optional (default = false)
+          verbose: true # optional (default = false)
+      - name: Codacy analysis reporting
+        uses: codacy/codacy-analysis-cli-action@4.0.0
