@@ -147,8 +147,7 @@ def download_signatures(defaults, format_eles, resume, tmpdir):
     for format_ele in format_eles:
         download_sig(format_ele, tmpdir, resume, defaults)
         numfiles += 1
-        percent = int(float(numfiles) / one_percent)
-        print(r"{}/{} files [{}%]".format(numfiles, puid_count, percent))
+        print(r"Downloaded {}/{} files [{}%]".format(numfiles, puid_count, int(float(numfiles) / one_percent)), end="\r")
     print("100%")
 
 

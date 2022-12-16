@@ -148,7 +148,10 @@ class FormatInfo:
                 id_map[pronom_id] = puid
             for element in formats:
                 for rel in element.findall('has_priority_over'):
-                    rel.text = id_map[rel.text]
+                    try:
+                        rel.text = id_map[rel.text]
+                    except KeyError as e:
+                        print("Error looking up priority over PRONOM ID {0} for format {1}".format(rel.text, element.find('puid').text), file=sys.stderr)
 
         self._sort_formats(formats)
         self.formats = formats

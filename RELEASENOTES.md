@@ -9,27 +9,10 @@ Copyright 2010 The Open Preservation Foundation
 Fido is made available under the Apache License, Version 2.0; see the file
 LICENSE.txt for details.
 
-Fido 1.6.0rc5
+Fido 1.6.0
 -------------
 
-2022-08-03
-
-- added update signature parameter to control signature download verison:
-- trapped regex creation exception so that sig file creation is not derailed;
-- PRONOM/DROID signature file now downloaded from URL rather than via SOAP service;
-- moved sleep between SOAP downloads so that it's only applied between actual downloads, not when processing cached results;
-- code style warnings:
-  - some minor refactoring for complex methods;
-  - factoring out string constants;
-  - renamed some variables and methods;
-  - removed some commented code;
-  - tidied exit conditions; and
-  - removed some unreachable code.
-
-Fido 1.6.0rc4
--------------
-
-2022-06-22
+2022-12-15
 
 New command line options for updating signatures
 
@@ -42,6 +25,17 @@ New command line options for updating signatures
 - Closed issue [#179][], [#198][]: Crash on XLS format by updating olefile version to 0.46 [[#195][]].
 - Closed issue [#179][]: Crash on XLS format by updating olefile version to 0.46 [[#195][]].
 - Closed issue [#192][]: Fixed signature file defaults [[#193][]].
+- added update signature parameter to control signature download verison:
+- trapped regex creation exception so that sig file creation is not derailed;
+- PRONOM/DROID signature file now downloaded from URL rather than via SOAP service;
+- moved sleep between SOAP downloads so that it's only applied between actual downloads, not when processing cached results;
+- code style warnings:
+  - some minor refactoring for complex methods;
+  - factoring out string constants;
+  - renamed some variables and methods;
+  - removed some commented code;
+  - tidied exit conditions; and
+  - removed some unreachable code.
 
 [#100]: https://github.com/openpreserve/fido/issues/100
 [#150]: https://github.com/openpreserve/fido/issues/150

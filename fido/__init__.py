@@ -14,7 +14,7 @@ from os.path import abspath, dirname, join
 from six.moves import input as rinput
 
 
-__version__ = '1.6.0rc5'
+__version__ = '1.6.0'
 
 
 CONFIG_DIR = join(abspath(dirname(__file__)), 'conf')

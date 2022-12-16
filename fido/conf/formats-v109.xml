@@ -1747,7 +1747,7 @@ The file format specification is available: http://graphcomp.com/info/specs/live
     <pronom_id>103</pronom_id>
     <extension>log</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>A log file is an usually human-readable plain text file that records (= logs) activities or events occuring in or behaviors of an operating system or other software runs.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -1756,7 +1756,7 @@ The file format specification is available: http://graphcomp.com/info/specs/live
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>23 Sep 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -1887,22 +1887,31 @@ The file format specification is available: http://graphcomp.com/info/specs/live
   </format>
   <format>
     <puid>x-fmt/67</puid>
-    <name>Met Metafile</name>
+    <name>OS/2 Presentation Manager Metafile (MET)</name>
     <version />
     <alias />
     <pronom_id>108</pronom_id>
     <extension>met</extension>
+    <signature>
+      <name>OS/2 Presentation Manager Metafile (MET)</name>
+      <note>BOF, offset 2: Header begins with a variable 2-byte header size value, followed by 0xD3A8A8 &#8216;Begin Document&#8217; field.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>D3A8A8</pronom_pattern>
+        <regex>(?s)\A.{2,2}\xd3\xa8\xa8</regex>
+      </pattern>
+    </signature>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>The Presentation Manager Metafile format is a raster and vector image format originating from IBM&#8217;s OS/2 operating system.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
-      <content_type />
+      <dc:creator>IBM Corporation</dc:creator>
+      <dcterms:publisher>IBM Corporation</dcterms:publisher>
+      <content_type>Image (Raster), Image (Vector)</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>29 Jul 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -2409,8 +2418,8 @@ The file format specification is available: http://graphcomp.com/info/specs/live
   <format>
     <puid>x-fmt/88</puid>
     <mime>application/vnd.ms-powerpoint</mime>
-    <name>Microsoft Powerpoint Presentation</name>
-    <version>4.0</version>
+    <name>Microsoft PowerPoint Presentation</name>
+    <version>4.x</version>
     <alias />
     <pronom_id>133</pronom_id>
     <extension>ppt</extension>
@@ -2437,17 +2446,17 @@ The file format specification is available: http://graphcomp.com/info/specs/live
       </pattern>
     </signature>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>Microsoft PowerPoint Presentation is a proprietary binary file format developed by Microsoft Corporation used to store presentation files created in the Microsoft PowerPoint presentation software. This record describes version 4 of .ppt file format released in February 1994 for Windows, and included in the 4.2 version of Microsoft Office for Windows released in the same year. Versions up to version 4 of Microsoft PowerPoint use .ppt as extension however, they are not compatible with each other. Microsoft made backwards compatibility an optional add-on after Office 2003 and appears to have removed it altogether in Office 2010. Please follow the links attached to this entry for more information.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
       <content_type>Presentation</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>30 Sep 2020</dcterms:modified>
-        <dc:description>This format is identifiable via a container signature in DROID 6 and later.</dc:description>
+        <dcterms:modified>24 Aug 2022</dcterms:modified>
+        <dc:description />
       </record_metadata>
     </details>
   </format>
@@ -5837,16 +5846,16 @@ QCD - QuarkXPress Article</dc:description>
       </pattern>
     </signature>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>The WordStar format is the default proprietary plain text format for the word processing application of the same name. It was created in 1978 by MicroPro, originally for the CP/M operating system but later was used on other operating systems such as PC/MS-DOS. It was the first word processor to render the doument on screen as it would appear when printed. WordStar files often have the extension ws or ws follwed by their version number but it is also common for them to have no extension.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>MicroPro Inc</dc:creator>
+      <dcterms:publisher>MicroPro Inc</dcterms:publisher>
       <content_type>Word Processor</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>29 Jul 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -5861,16 +5870,16 @@ QCD - QuarkXPress Article</dc:description>
     <extension>ws</extension>
     <extension>wsw</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>The WordStar format is the default proprietary plain text format for the word processing application of the same name. It was created in 1978 by MicroPro, originally for the CP/M operating system but later was used on other operating systems such as PC/MS-DOS. It was the first word processor to render the doument on screen as it would appear when printed. WordStar files often have the extension ws or ws follwed by their version number but it is also common for them to have no extension.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>MicroPro Inc</dc:creator>
+      <dcterms:publisher>MicroPro Inc</dcterms:publisher>
       <content_type>Word Processor</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>29 Jul 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -6897,8 +6906,8 @@ http://www.esri.com/library/whitepapers/pdfs/shapefile.pdf</dc:description>
       <note>Version comment</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>252150532D41646F62652D32{0-2}455053462D32{0-2}0A</pronom_pattern>
-        <regex>(?s)\A%\!PS-Adobe-2.{0,2}EPSF-2.{0,2}\n</regex>
+        <pronom_pattern>252150532D41646F62652D32{0-3}455053462D32{0-2}0A</pronom_pattern>
+        <regex>(?s)\A%\!PS-Adobe-2.{0,3}EPSF-2.{0,2}\n</regex>
       </pattern>
     </signature>
     <signature>
@@ -6935,7 +6944,7 @@ http://www.esri.com/library/whitepapers/pdfs/shapefile.pdf</dc:description>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>31 Oct 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -6957,16 +6966,16 @@ http://www.esri.com/library/whitepapers/pdfs/shapefile.pdf</dc:description>
       </pattern>
     </signature>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>The WordStar format is the default proprietary plain text format for the word processing application of the same name. It was created in 1978 by MicroPro, originally for the CP/M operating system but later was used on other operating systems such as PC/MS-DOS. It was the first word processor to render the doument on screen as it would appear when printed. WordStar files often have the extension ws or ws follwed by their version number but it is also common for them to have no extension.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>MicroPro Inc</dc:creator>
+      <dcterms:publisher>MicroPro Inc</dcterms:publisher>
       <content_type>Word Processor</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>29 Jul 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -6989,16 +6998,16 @@ http://www.esri.com/library/whitepapers/pdfs/shapefile.pdf</dc:description>
       </pattern>
     </signature>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>The WordStar format is the default proprietary plain text format for the word processing application of the same name. It was created in 1978 by MicroPro, originally for the CP/M operating system but later was used on other operating systems such as PC/MS-DOS. It was the first word processor to render the doument on screen as it would appear when printed. WordStar files often have the extension ws or ws follwed by their version number but it is also common for them to have no extension.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>MicroPro Inc</dc:creator>
+      <dcterms:publisher>MicroPro Inc</dcterms:publisher>
       <content_type>Word Processor</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>29 Jul 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -7582,20 +7591,22 @@ http://www.esri.com/library/whitepapers/pdfs/shapefile.pdf</dc:description>
     <extension>ws</extension>
     <extension>ws4</extension>
     <details>
-      <dc:description>WordStar is a Word Processor application originally published by MicroPro. WS4 files currently cannot by identified though a PRONOM identification signature. 
+      <dc:description>The WordStar format is the default proprietary plain text format for the word processing application of the same name. It was created in 1978 by MicroPro, originally for the CP/M operating system but later was used on other operating systems such as PC/MS-DOS. It was the first word processor to render the doument on screen as it would appear when printed. WordStar files often have the extension ws or ws follwed by their version number but it is also common for them to have no extension. 
+
+WS4 files currently cannot by identified though a PRONOM identification signature. 
 
 On the surface it's a plain text file, however the format 'shifts' the last byte of each word. Effectively it is 'flipping' the first bit of the ASCII character from 0 to 1. so a lower case 'r' (hex value 0x72) becomes '&#242;' (hex value 0xF2); lower case 'd' (hex 0x64) becomes '&#228;' (hex 0xE4) and so on. 
 
 It should be possible to write a simple decoder application for WS4 files, however note that the conjecture above is based on observation of a limited pool of files, and there may be additional subtleties yet to be encountered and understood. Please contact the PRONOM team if you have any further information about this format.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>MicroPro Inc</dc:creator>
+      <dcterms:publisher>MicroPro Inc</dcterms:publisher>
       <content_type>Word Processor</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>29 Jul 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -7618,16 +7629,16 @@ It should be possible to write a simple decoder application for WS4 files, howev
       </pattern>
     </signature>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>The WordStar format is the default proprietary plain text format for the word processing application of the same name. It was created in 1978 by MicroPro, originally for the CP/M operating system but later was used on other operating systems such as PC/MS-DOS. It was the first word processor to render the doument on screen as it would appear when printed. WordStar files often have the extension ws or ws follwed by their version number but it is also common for them to have no extension.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>MicroPro Inc</dc:creator>
+      <dcterms:publisher>MicroPro Inc</dcterms:publisher>
       <content_type>Word Processor</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>29 Jul 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -7641,16 +7652,16 @@ It should be possible to write a simple decoder application for WS4 files, howev
     <extension>ws</extension>
     <extension>wsw</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>The WordStar format is the default proprietary plain text format for the word processing application of the same name. It was created in 1978 by MicroPro, originally for the CP/M operating system but later was used on other operating systems such as PC/MS-DOS. It was the first word processor to render the doument on screen as it would appear when printed. WordStar files often have the extension ws or ws follwed by their version number but it is also common for them to have no extension.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>MicroPro Inc</dc:creator>
+      <dcterms:publisher>MicroPro Inc</dcterms:publisher>
       <content_type>Word Processor</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>29 Jul 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -10593,16 +10604,16 @@ The identification byte is followed by four or more bytes that are all equal to 
     <extension>ws3</extension>
     <extension>ws</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>The WordStar format is the default proprietary plain text format for the word processing application of the same name. It was created in 1978 by MicroPro, originally for the CP/M operating system but later was used on other operating systems such as PC/MS-DOS. It was the first word processor to render the doument on screen as it would appear when printed. WordStar files often have the extension ws or ws follwed by their version number but it is also common for them to have no extension.</dc:description>
       <dcterms:available />
-      <dc:creator />
-      <dcterms:publisher />
+      <dc:creator>MicroPro Inc</dc:creator>
+      <dcterms:publisher>MicroPro Inc</dcterms:publisher>
       <content_type>Word Processor</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Aug 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>29 Jul 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -11942,7 +11953,7 @@ The identification byte is followed by four or more bytes that are all equal to 
     </signature>
     <details>
       <dc:description>The Extensible Markup Language (XML) is a general purpose markup language for creating other, special purpose, markup languages, and is a simplified subset of SGML. The structure and grammar of an XML document can be defined using a markup declaration, such as a Document Type Definition (DTD) or XML schema. A XML document consists of nested elements, each of which may have attributes and content. It typically begins with an XML declaration, defining the XML version and character set used. This may be followed by a Document Type declaration, containing or pointing to a markup declaration for the class of document. An XML document is said to be well-formed if it conforms to the XML specification; it is said to be valid if it additionally complies with a defined markup declaration. The formatting and transformation of XML documents can be controlled using the Extensible Stylesheet Language (XSL).</dc:description>
-      <dcterms:available>04 Feb 2004</dcterms:available>
+      <dcterms:available>01 Jan 1998</dcterms:available>
       <dc:creator>World Wide Web Consortium</dc:creator>
       <dcterms:publisher>World Wide Web Consortium</dcterms:publisher>
       <is_supertype_of>931</is_supertype_of>
@@ -12198,6 +12209,7 @@ The identification byte is followed by four or more bytes that are all equal to 
       <dcterms:available>26 Jan 2000</dcterms:available>
       <dc:creator>World Wide Web Consortium</dc:creator>
       <dcterms:publisher>World Wide Web Consortium</dcterms:publisher>
+      <is_supertype_of>2626</is_supertype_of>
       <content_type>Text (Mark-up)</content_type>
       <reference>
         <dc:title>W3C Recommendation: XHTML 1.0 - The Extensible HyperText Markup Language (Second Edition)</dc:title>
@@ -13301,6 +13313,9 @@ Version 2.0 is the same file format as version 97</dc:description>
     <extension>jpeg</extension>
     <extension>jpe</extension>
     <extension>jpg</extension>
+    <extension>jif</extension>
+    <extension>jfif</extension>
+    <extension>jfi</extension>
     <apple_uti>public.jpeg</apple_uti>
     <has_priority_over>fmt/41</has_priority_over>
     <signature>
@@ -13318,7 +13333,7 @@ Version 2.0 is the same file format as version 97</dc:description>
       </pattern>
     </signature>
     <details>
-      <dc:description>The JPEG File Interchange Format (JFIF) is a file format for storing JPEG-compressed raster images. It was developed by the Independent JPEG Group and C-Cube Microsystems, in the absence of any such format being defined in the JPEG standard, and rapidly became a de facto standard; this is what is commonly referred to as the JPEG file format. A JFIF file comprises a JPEG data stream together with a JFIF marker. It begins with a Start of Image (SOI) marker, immediately followed by a JFIF Application (APP0). This is followed by the JPEG image data, which is terminated by an End of Image (EOI) marker. JFIF supports up to 24-bit colour and uses lossy compression (based on the Discrete Cosine Transform algorithm). Other types of compression are available through JPEG extensions, including progressive image buildup, arithmetic encoding, variable quantization, selective refinement, image tiling, and lossless compression, but these may not be supported by all JFIF readers and writers.</dc:description>
+      <dc:description>The JPEG File Interchange Format (JFIF) is a file format for storing JPEG-compressed raster images. It was developed by the Independent JPEG Group and C-Cube Microsystems, in the absence of any such format being defined in the JPEG standard, and rapidly became a de facto standard; this is what is commonly referred to as the JPEG file format. A JFIF file comprises a JPEG data stream together with a JFIF marker. It begins with a Stofof Image (SOI) marker, immediately followed by a JFIF Application (APP0). This is followed by the JPEG image data, which is terminated by an End of Image (EOI) marker. JFIF supports up to 24-bit colour and uses lossy compression (based on the Discrete Cosine Transform algorithm). Other types of compression are available through JPEG extensions, including progressive image buildup, arithmetic encoding, variable quantization, selective refinement, image tiling, and lossless compression, but these may not be supported by all JFIF readers and writers.</dc:description>
       <dcterms:available />
       <dc:creator>C-Cube Microsystems</dc:creator>
       <dcterms:publisher>C-Cube Microsystems</dcterms:publisher>
@@ -13327,7 +13342,7 @@ Version 2.0 is the same file format as version 97</dc:description>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>11 Mar 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>20 Oct 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -13342,6 +13357,9 @@ Version 2.0 is the same file format as version 97</dc:description>
     <extension>jpg</extension>
     <extension>jpe</extension>
     <extension>jpeg</extension>
+    <extension>jif</extension>
+    <extension>jfif</extension>
+    <extension>jfi</extension>
     <apple_uti>public.jpeg</apple_uti>
     <has_priority_over>fmt/41</has_priority_over>
     <signature>
@@ -13368,7 +13386,7 @@ Version 2.0 is the same file format as version 97</dc:description>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>11 Mar 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>20 Oct 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -13383,6 +13401,9 @@ Version 2.0 is the same file format as version 97</dc:description>
     <extension>jpg</extension>
     <extension>jpe</extension>
     <extension>jpeg</extension>
+    <extension>jif</extension>
+    <extension>jfif</extension>
+    <extension>jfi</extension>
     <apple_uti>public.jpeg</apple_uti>
     <has_priority_over>fmt/41</has_priority_over>
     <signature>
@@ -13419,7 +13440,7 @@ Version 2.0 is the same file format as version 97</dc:description>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>11 Mar 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>20 Oct 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -13434,6 +13455,9 @@ Version 2.0 is the same file format as version 97</dc:description>
     <extension>jpe</extension>
     <extension>jpg</extension>
     <extension>jpeg</extension>
+    <extension>jif</extension>
+    <extension>jfif</extension>
+    <extension>jfi</extension>
     <signature>
       <name>Raw JPEG</name>
       <note>SOI marker at BOF, EOI marker at EOF</note>
@@ -13464,7 +13488,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       </pattern>
     </signature>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>Raw JPEG Stream represents JPEG bitstream sequence of digital objects. JPEG stands for Joint Photographic Experts Group, an international organization that standardized the concept of lossy compression during the late 1980s and early 1990s. It uses DCT (Discrete Cosine Transform) compression technique used for images and audio. The standard of lossy compression is able to remove some visual data invisible to human eye which averages out colour variation and reduces the file size. JPEG image consists of a sequence of segments, each beginning with a two-byte "marker", each of which begins with a 0xFF byte, followed by a byte indicating what kind of marker it is. The signature for this entry represents the first two bytes of every JPEG stream, which are the Start Of Image (SOI) marker with values of 0xFF and 0xD8 (indicating that the baseline is DCT-based) and the End of Image (EOI) marker with valued of 0xFF and 0xD9. The second signatures represents the "colour transform" field of the APP14 which is an "Adobe" segment, representing graphic files which may have been edited in Adobe applications such as Adobe Photoshop.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -13473,7 +13497,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>11 Mar 2005</dcterms:created>
-        <dcterms:modified>02 Aug 2005</dcterms:modified>
+        <dcterms:modified>20 Oct 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -17835,6 +17859,11 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
       <is_supertype_of>783</is_supertype_of>
       <is_supertype_of>1206</is_supertype_of>
       <is_supertype_of>1231</is_supertype_of>
+      <is_supertype_of>2599</is_supertype_of>
+      <is_supertype_of>2600</is_supertype_of>
+      <is_supertype_of>2602</is_supertype_of>
+      <is_supertype_of>2603</is_supertype_of>
+      <is_supertype_of>2604</is_supertype_of>
       <content_type>Text (Mark-up)</content_type>
       <reference>
         <dc:title>Open Document Format for Office Applications (OpenDocument) v1.0, OASIS Standard, 1 May 2005</dc:title>
@@ -18127,11 +18156,11 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
     <has_priority_over>fmt/6</has_priority_over>
     <signature>
       <name>Waveform Audio (WAVEFORMATEX)</name>
-      <note>RIFF header, WAVE ID, Format chunk, chunk length GTE 18, wformat Tag not equal to decimal 65534 = 0xFFFE and Data chunk</note>
+      <note>RIFF header, WAVE ID, Format chunk, chunk length GTE 18, wformat Tag not equal to decimal 65534 = 0xFFFE and Data chunk. Since DROID cannot currently handle inverted (i.e. not equal to) sequences, the wformat chunk is not expressed in this signature. For fmt/143 the wformat tag = 65534 = 0xFFFE, so this is handled by setting an appropriate identification priority.</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>52494646{4}57415645666D7420[!10]{3}[!FEFF]{16-*}64617461</pronom_pattern>
-        <regex>(?s)\ARIFF.{4}WAVEfmt (?!\x10).{3}(?!\xfe\xff).{16,}data</regex>
+        <pronom_pattern>52494646{4}57415645666D7420[!10]{21-*}64617461</pronom_pattern>
+        <regex>(?s)\ARIFF.{4}WAVEfmt (?!\x10).{21,}data</regex>
       </pattern>
     </signature>
     <details>
@@ -18145,7 +18174,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>01 Feb 2007</dcterms:created>
-        <dcterms:modified>01 Feb 2007</dcterms:modified>
+        <dcterms:modified>31 Oct 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -18160,6 +18189,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
     <extension>wav</extension>
     <extension>wave</extension>
     <has_priority_over>fmt/6</has_priority_over>
+    <has_priority_over>fmt/142</has_priority_over>
     <signature>
       <name>Waveform Audio (WAVEFORMATEXTENSIBLE)</name>
       <note>RIFF header, WAVE ID, Format chunk, chunk length GTE 40, wformat Tag = decimal 65534 = 0xFEFF and Data chunk</note>
@@ -18180,7 +18210,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>01 Feb 2007</dcterms:created>
-        <dcterms:modified>01 Feb 2007</dcterms:modified>
+        <dcterms:modified>25 Aug 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -19065,13 +19095,13 @@ This version was published in February 2005 and corrected the flaws in the first
   </format>
   <format>
     <puid>x-fmt/422</puid>
-    <name>Java language source code file</name>
+    <name>Java Language Source Code File</name>
     <version />
     <alias />
     <pronom_id>809</pronom_id>
     <extension>java</extension>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>A source code file written in Java from which a Java class file can be generated by a compiler. Java is a high-level, class-based, object-oriented general-purpose programming language designed to have as few implementation dependencies as possible. As a human-readable plain text file, it can be opened and viewed in any text editor.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -19080,7 +19110,7 @@ This version was published in February 2005 and corrected the flaws in the first
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>02 Feb 2007</dcterms:created>
-        <dcterms:modified>02 Feb 2007</dcterms:modified>
+        <dcterms:modified>23 Sep 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -21173,7 +21203,7 @@ The majority of INX files included with an installation are named "setup.inx". T
   <format>
     <puid>fmt/198</puid>
     <mime>audio/mpeg</mime>
-    <name>MPEG Audio Stream, Layer II</name>
+    <name>MPEG Audio Stream Layer II</name>
     <version />
     <alias />
     <pronom_id>923</pronom_id>
@@ -21273,16 +21303,17 @@ The majority of INX files included with an installation are named "setup.inx". T
       </pattern>
     </signature>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>MPEG Audio Stream Layer II is a lossy audio compression format defined by ISO/IEC 11172-3 standard. The format was initiated by the Digital Audio Broadcast (DAB) project financed by the European Union as a part of the EUREKA research program in the late 1980s. The format first appeared in early 1990s, with its encoding derived from the MUSICAM (Masking pattern adapted Universal Subband Integrated Coding And Multiplexing) audio codec, chosen for its simplicity and error resistance. It is a predecessor to MPEG 1/2 Audio Layer III and often referred to as MP2.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
+      <is_supertype_of>1092</is_supertype_of>
       <content_type>Audio</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>27 Oct 2009</dcterms:created>
-        <dcterms:modified>27 Oct 2009</dcterms:modified>
+        <dcterms:modified>06 Oct 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -21566,6 +21597,7 @@ TIFF Magic, Subfile Type, Compression, Makernote Tag, Makernote ID, Byte Order</
       <dc:creator />
       <dcterms:publisher />
       <is_subtype_of>638</is_subtype_of>
+      <is_subtype_of>2626</is_subtype_of>
       <content_type>Text (Mark-up)</content_type>
       <record_metadata>
         <status>unknown</status>
@@ -25215,12 +25247,12 @@ DATA: VERSION:160 SECURITY: ENCODING: CHARSET: COMPRESSION: OLDFILEUID: NEWFILEU
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
-      <content_type>Image (Vector)</content_type>
+      <content_type>Audio</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>30 Mar 2011</dcterms:created>
-        <dcterms:modified>30 Mar 2011</dcterms:modified>
+        <dcterms:modified>28 Oct 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -25819,6 +25851,7 @@ DATA: VERSION:160 SECURITY: ENCODING: CHARSET: COMPRESSION: OLDFILEUID: NEWFILEU
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
+      <is_subtype_of>923</is_subtype_of>
       <content_type>Audio</content_type>
       <record_metadata>
         <status>unknown</status>
@@ -30081,12 +30114,12 @@ EOF: }..}..</note>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
-      <content_type>Database</content_type>
+      <content_type>Aggregate</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>28 Aug 2012</dcterms:created>
-        <dcterms:modified>04 Mar 2022</dcterms:modified>
+        <dcterms:modified>28 Oct 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -30249,11 +30282,16 @@ EOF: }..}..</note>
   </format>
   <format>
     <puid>fmt/468</puid>
-    <name>ISO Disk Image File</name>
+    <name>ISO 9660 Disk Image File</name>
     <version />
     <alias />
     <pronom_id>1255</pronom_id>
     <extension>iso</extension>
+    <extension>toast</extension>
+    <extension>cdr</extension>
+    <extension>dmg</extension>
+    <extension>bin</extension>
+    <has_priority_over>fmt/1743</has_priority_over>
     <signature>
       <name>ISO Disk Image File</name>
       <note>BOF: CD001{1-16384}&#255;CD001 with offset of (32700- 37700).
@@ -30265,16 +30303,17 @@ Beginning at byte 32768, an ISO file will hold two-to-many volume descriptors, e
       </pattern>
     </signature>
     <details>
-      <dc:description>This is an outline record only, and requires further details, research or authentication to provide information that will enable users to further understand the format and to assess digital preservation risks associated with it if appropriate. If you are able to help by supplying any additional information concerning this entry, please return to the main PRONOM page and select &#8216;Add an Entry&#8217;.</dc:description>
+      <dc:description>ISO 9660 Disk Image File is a virtual image of optical disk, storing content and structure of an optical disc which can be transferred on the other media. This format specifically uses ISO 9660, a so-called original standard for file system for optical disc media, written by International Organization for Standardization (ISO) and considered an international technical standard available for many operating systems. A disk image is a uncompressed copy of the contents of a disk or a folder, it can facilitate certain types of backup and recovery strategies. Please see ID: fdd000348 from Library of Congress and other the links attached to this entry for further information.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
-      <content_type />
+      <is_subtype_of>2584</is_subtype_of>
+      <content_type>Aggregate</content_type>
       <record_metadata>
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>25 Oct 2012</dcterms:created>
-        <dcterms:modified>25 Oct 2012</dcterms:modified>
+        <dcterms:modified>17 Aug 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -34138,7 +34177,7 @@ The EBML specifications are work-in-progress, and can be found here: https://git
         <dc:identifier>https://www.matroska.org/downloads/test_suite.html</dc:identifier>
         <dcterms:license />
         <dc:rights />
-        <checksum type="md5">42196a751dfb0ecd49b4d067c14e04bf</checksum>
+        <checksum type="md5">2691f423c47a924914659af6d9841daa</checksum>
       </example_file>
       <record_metadata>
         <status>unknown</status>
@@ -34298,15 +34337,17 @@ The EBML specifications are work-in-progress, and can be found here: https://git
     <extension>dcm</extension>
     <signature>
       <name>DICOM</name>
-      <note>128 0x00 bytes, followed by 'DICM' ASCII string. This could also be expessed as just 'DICM', with a 128 byte offset, however including the 00 bytes strengthens the signature.</note>
+      <note>BOF; Offset: 128; Magic bytes: 'DICM'. 
+
+Please see the specification attached with this entry, which states that any format with string 'DCM' at the 128th byte is considered to be a DICOM file format.</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004449434D</pronom_pattern>
-        <regex>(?s)\A\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00DICM</regex>
+        <pronom_pattern>4449434D</pronom_pattern>
+        <regex>(?s)\A.{128,128}DICM</regex>
       </pattern>
     </signature>
     <details>
-      <dc:description>DICOM (Digital Imaging and Communications in Medicine) is a standard for handling, storing, printing, and transmitting information in medical imaging. It includes a file format definition and a network communications protocol. The communication protocol is an application protocol that uses TCP/IP to communicate between systems. DICOM files can be exchanged between two entities that are capable of receiving image and patient data in DICOM format. The National Electrical Manufacturers Association (NEMA) holds the copyright to this standard. It was developed by the DICOM Standards Committee, whose members are also partly members of NEMA.</dc:description>
+      <dc:description>Digital Imaging and Communications in Medicine (DICOM) is a standard for handling, storing, printing, and transmitting information in medical imaging. It includes a file format definition and a network communications protocol. The communication protocol is an application protocol that uses TCP/IP to communicate between systems. DICOM files can be exchanged between two entities that are capable of receiving image and patient data in DICOM format. The National Electrical Manufacturers Association (NEMA) holds the copyright to this standard. It was developed by the DICOM Standards Committee, whose members are also partly members of NEMA.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -34315,7 +34356,7 @@ The EBML specifications are work-in-progress, and can be found here: https://git
         <status>unknown</status>
         <dc:creator>Tessella / Tessella</dc:creator>
         <dcterms:created>28 Aug 2013</dcterms:created>
-        <dcterms:modified>28 Aug 2013</dcterms:modified>
+        <dcterms:modified>22 Jul 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -47107,6 +47148,7 @@ The format lacks an extension, and is instead represented by a file name consist
     <version>1</version>
     <alias />
     <pronom_id>1772</pronom_id>
+    <extension>as</extension>
     <signature>
       <name>AppleSingle v1</name>
       <note>BOF: 4 byte AppleSingle Magic Number 0x00051600, then 4 byte version number 0x00010000</note>
@@ -47126,7 +47168,7 @@ The format lacks an extension, and is instead represented by a file name consist
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>21 Sep 2016</dcterms:created>
-        <dcterms:modified>21 Sep 2016</dcterms:modified>
+        <dcterms:modified>29 Jul 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -47138,6 +47180,7 @@ The format lacks an extension, and is instead represented by a file name consist
     <version>2</version>
     <alias />
     <pronom_id>1773</pronom_id>
+    <extension>as</extension>
     <signature>
       <name>AppleSingle v2</name>
       <note>BOF: 4 byte AppleSingle Magic Number 0x00051600, then 4 byte version number 0x00020000</note>
@@ -47157,7 +47200,7 @@ The format lacks an extension, and is instead represented by a file name consist
         <status>unknown</status>
         <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
         <dcterms:created>21 Sep 2016</dcterms:created>
-        <dcterms:modified>21 Sep 2016</dcterms:modified>
+        <dcterms:modified>29 Jul 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -47718,11 +47761,11 @@ Specification: https://github.com/ephtracy/voxel-model/blob/master/MagicaVoxel-f
     <extension>xmp</extension>
     <signature>
       <name>XMP file format</name>
-      <note>&lt;x:xmpmeta xmlns:x=("|')adobe:ns:meta/</note>
+      <note>&lt;x:xmpmeta xmlns:x=("|')adobe:ns:meta/("|')</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>3C783A786D706D65746120786D6C6E733A783D(22|27)61646F62653A6E733A6D6574612F(22|25)</pronom_pattern>
-        <regex>(?s)\A\x3cx:xmpmeta xmlns:x=(?:"|')adobe:ns:meta/(?:"|%)</regex>
+        <pronom_pattern>3C783A786D706D65746120786D6C6E733A783D(22|27)61646F62653A6E733A6D6574612F(22|27)</pronom_pattern>
+        <regex>(?s)\A\x3cx:xmpmeta xmlns:x=(?:"|')adobe:ns:meta/(?:"|')</regex>
       </pattern>
     </signature>
     <details>
@@ -47735,7 +47778,7 @@ Specification: https://github.com/ephtracy/voxel-model/blob/master/MagicaVoxel-f
         <status>unknown</status>
         <dc:creator>The Church of Jesus Christ of Latter-Day Saints / The Church of Jesus Christ of Latter-Day Saints</dc:creator>
         <dcterms:created>06 Feb 2017</dcterms:created>
-        <dcterms:modified>06 Feb 2017</dcterms:modified>
+        <dcterms:modified>02 Sep 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -50131,8 +50174,24 @@ This signature may be improved with a better understanding of the format.</note>
     <has_priority_over>x-fmt/388</has_priority_over>
     <has_priority_over>x-fmt/399</has_priority_over>
     <has_priority_over>fmt/353</has_priority_over>
+    <signature>
+      <name>Hasselblad 3FR</name>
+      <note>BOF; Offset: 0; Magic Bytes: A TIFF based format starting with Intel endian header "II*" and 0x00 then between 4 to 148 wildcard bytes followed by TIFF Make tag 0x0F01, then wildcard bytes between 8 to 512, followed by, in ASCII, "Hasselblad" tag
+
+BOF; Offset: 1-2048; Magic Bytes: 0x000500040001</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>49492A00{4-128}0F01{8-512}48617373656C626C6164</pronom_pattern>
+        <regex>(?s)\AII\*\x00.{4,128}\x0f\x01.{8,512}Hasselblad</regex>
+      </pattern>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>000500040001</pronom_pattern>
+        <regex>(?s)\A.{1,2047}\x00\x05\x00\x04\x00\x01</regex>
+      </pattern>
+    </signature>
     <details>
-      <dc:description>3FR is the raw image format produced by some models of Hasselblad camera equipment. The format conforms to the EXIF standard.</dc:description>
+      <dc:description>Hasselblad 3FR Raw Image is a proprietary Hasselblad raw image format produced by some models of Hasselblad camera equipment. The format is based on Tagged Image File Format (TIFF) and conforms to the Exchangeable Image File Format (EXIF) standard. The format was developed in the early 2000s with the introduction of H2D 2nd generation of integrated DSLRs and as a successor to Imacon 3F raw image file format.</dc:description>
       <dcterms:available />
       <dc:creator />
       <dcterms:publisher />
@@ -50141,7 +50200,7 @@ This signature may be improved with a better understanding of the format.</note>
         <status>unknown</status>
         <dc:creator>Historic Environment Scotland / Historic Environment Scotland</dc:creator>
         <dcterms:created>13 Jul 2017</dcterms:created>
-        <dcterms:modified>13 Jul 2017</dcterms:modified>
+        <dcterms:modified>21 Oct 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -50441,6 +50500,8 @@ https://web.archive.org/web/20020219190852/http://developer.apple.com:80/techpub
     <pronom_id>1878</pronom_id>
     <extension>dmg</extension>
     <apple_uti>com.apple.disk-image</apple_uti>
+    <has_priority_over>x-fmt/268</has_priority_over>
+    <has_priority_over>fmt/1740</has_priority_over>
     <signature>
       <name>Apple Disk Image</name>
       <note>EOF, 512 offset - 'koly' block header, 4 byte version (0x00000004), 4 byte size of header (0x00000200)</note>
@@ -50460,7 +50521,7 @@ https://web.archive.org/web/20020219190852/http://developer.apple.com:80/techpub
         <status>unknown</status>
         <dc:creator>Datable / Datable</dc:creator>
         <dcterms:created>17 Jul 2017</dcterms:created>
-        <dcterms:modified>17 Jul 2017</dcterms:modified>
+        <dcterms:modified>19 Aug 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -55823,6 +55884,7 @@ f &lt;space&gt; 3+ integer values, can be negative, separated by space. Faces co
   </format>
   <format>
     <puid>fmt/1241</puid>
+    <mime>application/vnd.software602.filler.form+xml</mime>
     <name>FO File</name>
     <version />
     <alias />
@@ -55831,11 +55893,11 @@ f &lt;space&gt; 3+ integer values, can be negative, separated by space. Faces co
     <has_priority_over>fmt/101</has_priority_over>
     <signature>
       <name>FO File</name>
-      <note>Within the first 2000 bytes 'fo:root inheritance='</note>
+      <note>Within the first 4000 hex byte pairs 'fo:root'</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>666F3A726F6F7420696E6865726974616E63653D</pronom_pattern>
-        <regex>(?s)\A.{0,4000}fo:root inheritance=</regex>
+        <pronom_pattern>666F3A726F6F74</pronom_pattern>
+        <regex>(?s)\A.{0,4000}fo:root</regex>
       </pattern>
     </signature>
     <details>
@@ -55847,8 +55909,8 @@ f &lt;space&gt; 3+ integer values, can be negative, separated by space. Faces co
       <record_metadata>
         <status>unknown</status>
         <dc:creator>The National Archives of the Czech Republic / The National Archives of the Czech Republic</dc:creator>
-        <dcterms:created>18 Jan 2020</dcterms:created>
-        <dcterms:modified>18 Jan 2020</dcterms:modified>
+        <dcterms:created>20 Dec 2019</dcterms:created>
+        <dcterms:modified>11 Oct 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -55871,7 +55933,7 @@ f &lt;space&gt; 3+ integer values, can be negative, separated by space. Faces co
         <status>unknown</status>
         <dc:creator>The National Archives of the Czech Republic / The National Archives of the Czech Republic</dc:creator>
         <dcterms:created>18 Jan 2020</dcterms:created>
-        <dcterms:modified>18 Jan 2020</dcterms:modified>
+        <dcterms:modified>11 Oct 2022</dcterms:modified>
         <dc:description>This format can be identified via a container signature in DROID version 6 or later. The PRONOM database cannot currently represent container signatures.</dc:description>
       </record_metadata>
     </details>
@@ -67085,7 +67147,7 @@ EOF, offset 0-100, magic bytes,:   .adf</note>
       <content_type>Text (Structured)</content_type>
       <record_metadata>
         <status>unknown</status>
-        <dc:creator>Victoria University of Wellington / Victoria University of Wellington</dc:creator>
+        <dc:creator>National Library of Australia / National Library of Australia</dc:creator>
         <dcterms:created>20 Jan 2022</dcterms:created>
         <dcterms:modified>20 Jul 2022</dcterms:modified>
         <dc:description />
@@ -69357,7 +69419,7 @@ This format is a proprietary binary file, altered from earlier version CL2, CL3 
     <version />
     <alias />
     <pronom_id>2507</pronom_id>
-    <extension>Z</extension>
+    <extension>z</extension>
     <signature>
       <name>Z Compressed Data</name>
       <note>BOF; Offset: 0; Magic Bytes: 0x1F9D90</note>
@@ -69377,7 +69439,7 @@ This format is a proprietary binary file, altered from earlier version CL2, CL3 
         <status>unknown</status>
         <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
         <dcterms:created>22 Apr 2022</dcterms:created>
-        <dcterms:modified>22 Apr 2022</dcterms:modified>
+        <dcterms:modified>29 Jul 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -70169,16 +70231,17 @@ EOF Absolute from beginning of file, magic bytes: End..MetaData End..</note>
   </format>
   <format>
     <puid>fmt/1697</puid>
-    <name>Calc602 Spreadsheet file or backup file</name>
+    <name>Calc602 Spreadsheet file</name>
     <version>1.51</version>
     <alias />
     <pronom_id>2533</pronom_id>
     <extension>bak</extension>
     <extension>tc6</extension>
     <has_priority_over>fmt/1568</has_priority_over>
+    <has_priority_over>fmt/1773</has_priority_over>
     <signature>
-      <name>Calc602 Spreadsheet file or backup file v.1.51</name>
-      <note>BOF Absolute from beginning of file, magic bytes: Software602 Calc602 v.1.00 Tabulka</note>
+      <name>Calc602 Spreadsheet file v.1.51</name>
+      <note>BOF Absolute from beginning of file, magic bytes: Software602 Calc602 v.1.51 Tabulka</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>536F6674776172653630320D0A43616C6336303220762E312E353120546162756C</pronom_pattern>
@@ -70195,21 +70258,22 @@ EOF Absolute from beginning of file, magic bytes: End..MetaData End..</note>
         <status>unknown</status>
         <dc:creator>The National Archives of the Czech Republic / The National Archives of the Czech Republic</dc:creator>
         <dcterms:created>13 Jun 2022</dcterms:created>
-        <dcterms:modified>13 Jun 2022</dcterms:modified>
+        <dcterms:modified>28 Oct 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
   </format>
   <format>
     <puid>fmt/1698</puid>
-    <name>Calc602 Spreadsheet file or backup file v.1.00</name>
+    <name>Calc602 Spreadsheet file</name>
     <version>1.00</version>
     <alias />
     <pronom_id>2534</pronom_id>
     <extension>bak</extension>
     <extension>tc6</extension>
+    <has_priority_over>fmt/1773</has_priority_over>
     <signature>
-      <name>Calc602 Spreadsheet file or backup file v.1.00</name>
+      <name>Calc602 Spreadsheet file v.1.00</name>
       <note>Absolute from beginning of file, magic bytes: Software602 Calc602 v.1.00 Tabulka</note>
       <pattern>
         <position>BOF</position>
@@ -70227,7 +70291,7 @@ EOF Absolute from beginning of file, magic bytes: End..MetaData End..</note>
         <status>unknown</status>
         <dc:creator>The National Archives of the Czech Republic / The National Archives of the Czech Republic</dc:creator>
         <dcterms:created>13 Jun 2022</dcterms:created>
-        <dcterms:modified>13 Jun 2022</dcterms:modified>
+        <dcterms:modified>28 Oct 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -70239,6 +70303,7 @@ EOF Absolute from beginning of file, magic bytes: End..MetaData End..</note>
     <alias />
     <pronom_id>2535</pronom_id>
     <extension>gc6</extension>
+    <has_priority_over>fmt/1774</has_priority_over>
     <signature>
       <name>602 Graph/Chart File</name>
       <note>BOF Absolute from beginning of file, magic bytes: Software602 Calc602 v.1.51 Graf</note>
@@ -70258,7 +70323,7 @@ EOF Absolute from beginning of file, magic bytes: End..MetaData End..</note>
         <status>unknown</status>
         <dc:creator>The National Archives of the Czech Republic / The National Archives of the Czech Republic</dc:creator>
         <dcterms:created>13 Jun 2022</dcterms:created>
-        <dcterms:modified>13 Jun 2022</dcterms:modified>
+        <dcterms:modified>28 Oct 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -70676,6 +70741,7 @@ EOF Absolute from beginning of file, magic bytes: End..MetaData End..</note>
     <alias />
     <pronom_id>2549</pronom_id>
     <extension>pc6</extension>
+    <has_priority_over>fmt/1775</has_priority_over>
     <signature>
       <name>Calc602 Project File v.1.0</name>
       <note>BOF Absolute from beginning of file, magic bytes: Software602
@@ -70696,7 +70762,7 @@ Calc602 v.1.00 WorkSpace</note>
         <status>unknown</status>
         <dc:creator>The National Archives of the Czech Republic / The National Archives of the Czech Republic</dc:creator>
         <dcterms:created>14 Jun 2022</dcterms:created>
-        <dcterms:modified>14 Jun 2022</dcterms:modified>
+        <dcterms:modified>28 Oct 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>
@@ -70995,6 +71061,15 @@ Calc602 v.1.00 WorkSpace</note>
     <pronom_id>2568</pronom_id>
     <extension>xml</extension>
     <has_priority_over>fmt/101</has_priority_over>
+    <signature>
+      <name>LegalDocML Document</name>
+      <note>BOF: XML declaration: '&lt;?xml version=("OR')1.0("OR')' followed by a gap between 0-1024 bytes followed by namespace declaration: '&lt;akomaNtoso' then 0-1024 bytes later, 'xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F786D6C2076657273696F6E3D(22|27)312E30(22|27){0-1024}3C616B6F6D614E746F736F20{0-1024}786D6C6E733D22687474703A2F2F646F63732E6F617369732D6F70656E2E6F72672F6C6567616C646F636D6C2F6E732F616B6E2F332E30</pronom_pattern>
+        <regex>(?s)\A\x3c\?xml version=(?:"|')1\.0(?:"|').{0,1024}\x3cakomaNtoso .{0,1024}xmlns="http://docs\.oasis-open\.org/legaldocml/ns/akn/3\.0</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>LegalDocML is an open standard maintained by the LegalDocML Technical Committee under the OASIS Standards body. It is an XML-based standard for describing the structure of legal documents.</dc:description>
       <dcterms:available />
@@ -71088,11 +71163,11 @@ EOF Absolute from end of file, magic bytes: &lt;/IMG&gt;</note>
     <extension>ptx</extension>
     <signature>
       <name>Pro Tools Session File</name>
-      <note>BOF offset 45: .Pro Tools HD.{29} .Release&#8230;..Pro Tools Session File</note>
+      <note>BOF Absolute from beginning of file, magic bytes:.0010111100101011{3}Z&#8230;</note>
       <pattern>
         <position>BOF</position>
-        <pronom_pattern>0050726F20546F6F6C7320484403{29}0052656C65617365001600000050726F20546F6F6C732053657373696F6E2046696C65</pronom_pattern>
-        <regex>(?s)\A.{44,44}\x00Pro Tools HD\x03.{29}\x00Release\x00\x16\x00\x00\x00Pro Tools Session File</regex>
+        <pronom_pattern>0330303130313131313030313031303131{3}5A010004</pronom_pattern>
+        <regex>(?s)\A\x030010111100101011.{3}Z\x01\x00\x04</regex>
       </pattern>
     </signature>
     <details>
@@ -71152,8 +71227,8 @@ EOF Absolute from end of file, magic bytes: &lt;/IMG&gt;</note>
     <has_priority_over>fmt/101</has_priority_over>
     <signature>
       <name>Esri Shapefile Geospatial Metadata File</name>
-      <note>BOF, offset 0-50, magic bytes: &lt;metadata xml:lang="en"&gt;&lt;Esri&gt;
-EOF offset 0-3: &lt;/metadata&gt;</note>
+      <note>BOF, offset 0-250, magic bytes: &lt;metadata xml:lang="en"&gt;&lt;Esri&gt;
+EOF offset 0-5: &lt;/metadata&gt;</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>3C6D6574616461746120786D6C3A6C616E673D22{2}223E{0-2}3C457372693E</pronom_pattern>
@@ -71326,6 +71401,1944 @@ It is likely to be the same as the TruePaint TPI format.</dc:description>
         <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
         <dcterms:created>19 Jul 2022</dcterms:created>
         <dcterms:modified>19 Jul 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1735</puid>
+    <name>C/C++ Header File</name>
+    <version />
+    <alias />
+    <pronom_id>2580</pronom_id>
+    <extension>h</extension>
+    <extension>hpp</extension>
+    <extension>hxx</extension>
+    <details>
+      <dc:description>C/C++ Header File can come with extension .hpp, .hxx or .h and are text header files written in the C or C++ programming language. File extension .h are preffered to be used in C programming language but are also compatable with C++. The .hpp extension is preffered to be used in C++ header file (the "pp" in extension presumably stands for "plus, plus"). These files are mainly categorized as developer files using the correct file extension, they can be inserted to a .cpp source code file, provided the &#8220;#include directive&#8221; is used. Due to type of this file format a magic bytes sequence could not be established and this format is only recognised by its exension, please contact the PRONOM team if you can provide any more information.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>UMC Utrecht / University Medical Center Utrecht</dc:creator>
+        <dcterms:created>02 Aug 2022</dcterms:created>
+        <dcterms:modified>02 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1736</puid>
+    <name>Creative Voice File</name>
+    <version />
+    <alias />
+    <pronom_id>2581</pronom_id>
+    <extension>voc</extension>
+    <signature>
+      <name>Creative Voice File</name>
+      <note>BOF; Offset: 0; 'Creative Voice File'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>437265617469766520566F6963652046696C65</pronom_pattern>
+        <regex>(?s)\ACreative Voice File</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Creative Voice File is an audio format developed in the 1990s developed by Creative Labs for the storage of uncompressed PCM audio data for use on Sound Blaster boards.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Audio</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>08 Aug 2022</dcterms:created>
+        <dcterms:modified>08 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1737</puid>
+    <mime>application/vnd.isac.fcs</mime>
+    <name>Flow Cytometry Standard File</name>
+    <version>1.0-3.1</version>
+    <alias />
+    <pronom_id>2583</pronom_id>
+    <extension>fcs</extension>
+    <signature>
+      <name>Flow Cytometry Standard File</name>
+      <note>BOF; Offset: 0; Magic Bytes: 'FCS' followed by a version number then followed by space characters, followed by at least three pairs of ASCII-encoded integers indicating the byte offsets for the start and end (=last byte of) of the primary TEXT segment, the DATA segment, and the ANALYSIS segment</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>464353{3}20</pronom_pattern>
+        <regex>(?s)\AFCS.{3} </regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Flow Cytometry Standard (FCS) is a format originating from data file standard for reading and writing of data from flow cytometry experiments written by International Society for Advancement of Cytometry (ISAC). FCS format describes a file that is a combination of textual data followed by binary data. The first version of the format was adopted as FCS 1.0 in 1984, and then was modified in 1990 as FCS 2.0 and again in 1997 as FCS 3.0, with the latest version of the standard introduced in 2010 as version 3.1. Please see the links attached with this entry to find file specification.</dc:description>
+      <dcterms:available />
+      <dc:creator>ISAC / International Society for Advancement of Cytometry</dc:creator>
+      <dcterms:publisher>International Society for Advancement of Cytometry</dcterms:publisher>
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>UMC Utrecht / University Medical Center Utrecht</dc:creator>
+        <dcterms:created>15 Aug 2022</dcterms:created>
+        <dcterms:modified>15 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1738</puid>
+    <name>UDF Disc Image</name>
+    <version />
+    <alias />
+    <pronom_id>2584</pronom_id>
+    <extension>toast</extension>
+    <extension>iso</extension>
+    <extension>cdr</extension>
+    <extension>dmg</extension>
+    <signature>
+      <name>UDF Disc Image</name>
+      <note>BOF; Offset: 32768; Max Offset: 36864; Magic Bytes:  0x00424541303101, then an exact of 2041 wildcard bytes, followed by 0x004E535230, then either 0x32 or 33 followed by 0x01</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>00424541303101{2041}004E535230(32|33)01</pronom_pattern>
+        <regex>(?s)\A.{32768,36864}\x00BEA01\x01.{2041}\x00NSR0(?:2|3)\x01</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>UDF Disc Image is a format that stores contents and structure of an optical disc which can be transferred on the other media. It uses Universal Disk Format (UDF) file system developed for optical media by the Optical Storage Technology Association (OSTA). It is a portable format that is recognized by several operating systems, and considered to be a successor of ISO 9660 capable to manage read/write media in better capacity. UDF is used for computer data storage for a broad range of media, including DVDs and Blu-Ray disks. A disk image is a uncompressed copy of the contents of a disk or a folder, it can facilitate certain types of backup and recovery strategies. Please see ID: fdd000348 from Library of Congress and other links attached to this entry for further information.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <is_supertype_of>1255</is_supertype_of>
+      <is_subtype_of>2585</is_subtype_of>
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Church of Jesus Christ of Latter-Day Saints / The Church of Jesus Christ of Latter-Day Saints</dc:creator>
+        <dcterms:created>17 Aug 2022</dcterms:created>
+        <dcterms:modified>17 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1739</puid>
+    <name>UDF-ISO 9660 Bridge Disc</name>
+    <version />
+    <alias />
+    <pronom_id>2585</pronom_id>
+    <extension>toast</extension>
+    <extension>iso</extension>
+    <extension>cdr</extension>
+    <extension>dmg</extension>
+    <has_priority_over>fmt/468</has_priority_over>
+    <has_priority_over>fmt/1738</has_priority_over>
+    <signature>
+      <name>UDF-ISO 9660 Bridge Disc</name>
+      <note>BOF; Offset: 32768; Max Offset: 70468; Magic Bytes:  0x4344303031, then wildcard bytes between 1 to 16384, followed by 0xFF4344303031
+
+&amp; 
+
+BOF; Offset: 32768; Max Offset: 70468; Magic Bytes:  0x00424541303101, then an exact of 2041 wildcard bytes, followed by 0x004E535230, then either 0x32 or 33 followed by 0x01</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4344303031{1-16384}FF4344303031</pronom_pattern>
+        <regex>(?s)\A.{32768,70468}CD001.{1,16384}\xffCD001</regex>
+      </pattern>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>00424541303101{2041}004E535230(32|33)01</pronom_pattern>
+        <regex>(?s)\A.{32768,36864}\x00BEA01\x01.{2041}\x00NSR0(?:2|3)\x01</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>UDF-ISO 9660 Bridge Disc is a format that stores contents and structure of an optical disc which can be transferred on the other media. It uses Universal Disk Format (UDF) file system developed for optical media by the Optical Storage Technology Association (OSTA), as well as ISO 9660 International Organization for Standardization (ISO). This format acts as a support for discs where ISO 9660 and UDF formats all reside on the same optical disc. It can be used in video applications, such as DVD-Video, DVD+VR, and DVD-VR. A disk image is a uncompressed copy of the contents of a disk or a folder, it can facilitate certain types of backup and recovery strategies. Please see ID: fdd000348 from Library of Congress and other links attached to this entry for further information.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <is_supertype_of>2584</is_supertype_of>
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Church of Jesus Christ of Latter-Day Saints / The Church of Jesus Christ of Latter-Day Saints</dc:creator>
+        <dcterms:created>17 Aug 2022</dcterms:created>
+        <dcterms:modified>17 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1740</puid>
+    <name>Apple Partition Map Disk Image</name>
+    <version />
+    <alias />
+    <pronom_id>2586</pronom_id>
+    <extension>toast</extension>
+    <extension>iso</extension>
+    <extension>cdr</extension>
+    <extension>dmg</extension>
+    <extension>bin</extension>
+    <extension>img</extension>
+    <has_priority_over>fmt/468</has_priority_over>
+    <signature>
+      <name>Apple Partition Map Disk Image, sig n.1</name>
+      <note>BOF; Offset: 0; Magic Bytes: wildcard bytes between 0 to 16 bytes, followed by 0x45520200, an exact 508 wildcard bytes followed by 0x504D</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>{0-16}45520200{508}504D</pronom_pattern>
+        <regex>(?s)\A.{0,16}ER\x02\x00.{508}PM</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Apple Partition Map Disk Image, sig n.2</name>
+      <note>BOF; Offset: 0; Magic Bytes: wildcard bytes between 0 to 16 bytes, followed by 0x45520800, an exact 2044 wildcard bytes followed by 0x504D</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>{0-16}45520800{2044}504D</pronom_pattern>
+        <regex>(?s)\A.{0,16}ER\x08\x00.{2044}PM</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Apple Partition Map Disk Image, sig n.3</name>
+      <note>BOF; Offset: 0; Magic Bytes: wildcard bytes between 0 to 16 bytes, followed by a set of null bytes, then an exact 508 wildcard bytes followed by 0x504D</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>{0-16}00000000{508}504D</pronom_pattern>
+        <regex>(?s)\A.{0,16}\x00\x00\x00\x00.{508}PM</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Apple Partition Map Disk Image is specific to describing the contents and structure of Apple Partition Map (APM) partition scheme, it can be thought of as a container format for multiple filesystem image files. It was developed by Apple in around 1988 with the introduction of Apple Partition Map scheme on Macintosh II, a scheme that defines how the data is organized on a singular disk. A disk image is a uncompressed copy of the contents of a disk or a folder, it can facilitate certain types of backup and recovery strategies. Please see ID: fdd000348 from Library of Congress and other links attached to this entry for further information.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Church of Jesus Christ of Latter-Day Saints / The Church of Jesus Christ of Latter-Day Saints</dc:creator>
+        <dcterms:created>17 Aug 2022</dcterms:created>
+        <dcterms:modified>17 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1741</puid>
+    <name>Apple Partition Map ISO 9660 Hybrid</name>
+    <version />
+    <alias />
+    <pronom_id>2587</pronom_id>
+    <extension>toast</extension>
+    <extension>iso</extension>
+    <extension>cdr</extension>
+    <has_priority_over>fmt/468</has_priority_over>
+    <has_priority_over>fmt/1740</has_priority_over>
+    <signature>
+      <name>Apple Partition Map ISO 9660 Hybrid, sig n.1</name>
+      <note>BOF; Offset: 32768; Max Offset: 70468; Magic Bytes: wildcard bytes between 0 to 16 bytes, followed by 0x45520200, an exact 508 wildcard bytes followed by 0x504D4344303031, then wildcard bytes between 1 to 16384, followed by 0xFF4344303031</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>{0-16}45520200{508}504D4344303031{1-16384}FF4344303031</pronom_pattern>
+        <regex>(?s)\A.{32768,70468}.{0,16}ER\x02\x00.{508}PMCD001.{1,16384}\xffCD001</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Apple Partition Map ISO 9660 Hybrid, sig n.2</name>
+      <note>BOF; Offset: 32768; Max Offset: 70468; Magic Bytes: wildcard bytes between 0 to 16 bytes, followed by 0x45520800, an exact 2044 wildcard bytes followed by 0x504D4344303031, then wildcard bytes between 1 to 16384, followed by 0xFF4344303031</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>{0-16}45520800{2044}504D4344303031{1-16384}FF4344303031</pronom_pattern>
+        <regex>(?s)\A.{32768,70468}.{0,16}ER\x08\x00.{2044}PMCD001.{1,16384}\xffCD001</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Apple Partition Map ISO 9660 Hybrid is a hybrid to describing the contents and structure of Apple Partition Map (APM) partition scheme and ISO9660 file system for optical disc media. The hybrid system allows for ISO9660 as a primary volume descriptor and an Apple Partition Map, allowing the disc to work on different types of computers. Apple Partition Map was developed by Apple in around 1988 with the introduction of Macintosh II. ISO 9660 was written by International Organization for Standardization (ISO) and considered an international technical standard available for many operating systems. A disk image is a uncompressed copy of the contents of a disk or a folder, it can facilitate certain types of backup and recovery strategies. Please see ID: fdd000348 from Library of Congress and other links attached to this entry for further information.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Church of Jesus Christ of Latter-Day Saints / The Church of Jesus Christ of Latter-Day Saints</dc:creator>
+        <dcterms:created>17 Aug 2022</dcterms:created>
+        <dcterms:modified>17 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1742</puid>
+    <name>Hierarchical File System Plus</name>
+    <version />
+    <alias>HFS+, Mac OS Extended, HFS Extended</alias>
+    <pronom_id>2588</pronom_id>
+    <extension>img</extension>
+    <extension>dmg</extension>
+    <extension>toast</extension>
+    <signature>
+      <name>Hierarchical File System Plus, sig n.1</name>
+      <note>BOF; Offset: 1024; Magic Bytes:  0x482B0004 
+&amp;
+EOF; Offset: 1024; Magic Bytes:  0x482B0004</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>482B0004</pronom_pattern>
+        <regex>(?s)\A.{1024,1024}H\+\x00\x04</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <pronom_pattern>482B0004</pronom_pattern>
+        <regex>(?s)H\+\x00\x04.{0,1024}\Z</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Hierarchical File System Plus, sig n.2</name>
+      <note>BOF; Offset: 1024; Magic Bytes:  0x48580005 
+&amp;
+EOF; Offset: 1024; Magic Bytes:  0x48580005</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>48580005</pronom_pattern>
+        <regex>(?s)\A.{1024,1024}HX\x00\x05</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <pronom_pattern>48580005</pronom_pattern>
+        <regex>(?s)HX\x00\x05.{0,1024}\Z</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Hierarchical File System Plus (also known as HFS+, Mac OS Extended or HFS Extended) is a file system developed by Apple Inc. as a successor to the Hierarchical File System (HFS) [fmt/1105]. The system was introduced in January 1998 with the release of Mac OS 8.1 and continued to be the primary file system on Apple operating systems starting with Mac OS X, as well as one of the primary file systems used by the iPod portable media player. It features improvements to HFS, such as a 32-bit file length field rather than 16-bit to allow for much longer files names and adds support for Unicode characters in file names up to 255 characters long, containing any characters in the Unicode repertoire (though there may be OS or API-specific restrictions on permittable characters). Journaling was added in 2003 and case-sensitive file names were introduced under the HFSX option. It was replaced with the Apple File System (APFS) released with macOS High Sierra in 2017.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Church of Jesus Christ of Latter-Day Saints / The Church of Jesus Christ of Latter-Day Saints</dc:creator>
+        <dcterms:created>17 Aug 2022</dcterms:created>
+        <dcterms:modified>17 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1743</puid>
+    <name>Nero Burning ROM Image File</name>
+    <version>Generic</version>
+    <alias />
+    <pronom_id>2589</pronom_id>
+    <extension>nrg</extension>
+    <signature>
+      <name>Nero Burning ROM Image File</name>
+      <note>EOF; Offset: 0-12; Magic Bytes: 0x4E4552(35|4F)</note>
+      <pattern>
+        <position>EOF</position>
+        <pronom_pattern>4E4552(35|4F)</pronom_pattern>
+        <regex>(?s)NER(?:5|O).{0,12}\Z</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Nero Burning ROM Image File (NRG) is a proprietary disc image format associated with Nero Burning ROM software. It acts as the utility of Nero Burning ROM and is used to create backups or copies of data for discs. This is a generic entry of NRG file format but there are two versions of this format. Its first version was launched in 1997 and was specified to store values as 32-bit integers. Its second version was introduced with version 5.5 of Nero Burning ROM software in 2001 and supports 64-bit integers.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Church of Jesus Christ of Latter-Day Saints / The Church of Jesus Christ of Latter-Day Saints</dc:creator>
+        <dcterms:created>19 Aug 2022</dcterms:created>
+        <dcterms:modified>19 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1744</puid>
+    <name>Psion Series 3 Bitmap</name>
+    <version />
+    <alias />
+    <pronom_id>2590</pronom_id>
+    <extension>pic</extension>
+    <signature>
+      <name>Psion Series 3 Bitmap</name>
+      <note>BOF:'PIC&#220;00'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>504943DC3030</pronom_pattern>
+        <regex>(?s)\APIC\xdc00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Psion Series 3 Bitmap (also known as Psion PIC or EPOC PIC) is a raster image file format associated with Psion's EPOC operating system, and used mainly on Psion PDA devices. A Psion PIC file contains one or more bi-level bitmaps. Sometimes, two bitmaps need to be combined to make a 4-tone grayscale image.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dcterms:created>19 Aug 2022</dcterms:created>
+        <dcterms:modified>19 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1745</puid>
+    <name>PixArt Bitmap</name>
+    <version />
+    <alias />
+    <pronom_id>2591</pronom_id>
+    <extension>pix</extension>
+    <signature>
+      <name>PixArt Bitmap</name>
+      <note>BOF:'PIXT'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>50495854</pronom_pattern>
+        <regex>(?s)\APIXT</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>PixArt Bitmap is a file formated related to the PixArt graphics program for the Atari line of computers</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dcterms:created>19 Aug 2022</dcterms:created>
+        <dcterms:modified>19 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1746</puid>
+    <name>Rocky Interlace Picture</name>
+    <version />
+    <alias />
+    <pronom_id>2592</pronom_id>
+    <extension>rip</extension>
+    <signature>
+      <name>Rocky Interlace Picture</name>
+      <note>BOF:'RIP1.'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>524950312E</pronom_pattern>
+        <regex>(?s)\ARIP1\.</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Rocky Interlace Picture is a graphics format from the Atari line of computers.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dcterms:created>19 Aug 2022</dcterms:created>
+        <dcterms:modified>19 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1747</puid>
+    <mime>application/vnd.ms-PowerPoint</mime>
+    <name>Microsoft PowerPoint Presentation</name>
+    <version>2.x</version>
+    <alias />
+    <pronom_id>2593</pronom_id>
+    <extension>ppt</extension>
+    <apple_uti>com.microsoft.powerpoint.ppt</apple_uti>
+    <signature>
+      <name>Microsoft PowerPoint Presentation v2</name>
+      <note>BOF; Offset: 0; Magic Bytes: 0xEDDEAD0B02000000</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>EDDEAD0B02000000</pronom_pattern>
+        <regex>(?s)\A\xed\xde\xad\x0b\x02\x00\x00\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Microsoft PowerPoint Presentation is a proprietary binary file format developed by Microsoft Corporation used to store presentation files created in the Microsoft PowerPoint presentation system. This record describes version 2 of .ppt file format released in May 1990 for Windows, and included in the first version of Microsoft Office for Windows. Versions up to version 4 [x-fmt/88] of Microsoft PowerPoint use .ppt as extension however, they are not compatible with each other. Microsoft made backwards compatibility an optional add-on after Office 2003 and appears to have removed it altogether in Office 2010. Please follow the links attached to this entry for more information.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Church of Jesus Christ of Latter-Day Saints / The Church of Jesus Christ of Latter-Day Saints</dc:creator>
+        <dcterms:created>24 Aug 2022</dcterms:created>
+        <dcterms:modified>24 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1748</puid>
+    <mime>application/vnd.ms-PowerPoint</mime>
+    <name>Microsoft PowerPoint Presentation</name>
+    <version>3.x</version>
+    <alias />
+    <pronom_id>2594</pronom_id>
+    <extension>ppt</extension>
+    <apple_uti>com.microsoft.powerpoint.ppt</apple_uti>
+    <signature>
+      <name>Microsoft PowerPoint Presentation v3</name>
+      <note>BOF; Offset: 0; Magic Bytes: 0xEDDEAD0B03000000</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>EDDEAD0B03000000</pronom_pattern>
+        <regex>(?s)\A\xed\xde\xad\x0b\x03\x00\x00\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Microsoft PowerPoint Presentation is a proprietary binary file format developed by Microsoft Corporation used to store presentation files created in the Microsoft PowerPoint presentation system. This record describes version 3 of .ppt file format released in May 1992 for Windows, and included in the 3.0 version of Microsoft Office for Windows released in August 1992. Versions up to version 4 [x-fmt/88] of Microsoft PowerPoint use .ppt as extension however, they are not compatible with each other. Microsoft made backwards compatibility an optional add-on after Office 2003 and appears to have removed it altogether in Office 2010. Please follow the links attached to this entry for more information.</dc:description>
+      <dcterms:available />
+      <dc:creator>Microsoft Corporation</dc:creator>
+      <dcterms:publisher>Microsoft Corporation</dcterms:publisher>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Church of Jesus Christ of Latter-Day Saints / The Church of Jesus Christ of Latter-Day Saints</dc:creator>
+        <dcterms:created>24 Aug 2022</dcterms:created>
+        <dcterms:modified>24 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1749</puid>
+    <name>Canon MIF File</name>
+    <version />
+    <alias />
+    <pronom_id>2595</pronom_id>
+    <extension>mif</extension>
+    <signature>
+      <name>Canon MIF File</name>
+      <note>BOF:'MI' followed by 0x01 (Start of Header) followed by 0x01 (Start of Header) followed by 0x02 (Start of Text)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D49010102</pronom_pattern>
+        <regex>(?s)\AMI\x01\x01\x02</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>A Canon MIF file is present in the Canon XF folder structure that is used by media cards associated with cameras such as XF205 and C300. It contains information about each clip recorded on the media card, is found within the CANON XF/CLIPS 001 directory and is a strict requirement in order to mount a particular card in Canon media apps to make the content readable. Although little official documentation exists, MIF likely stands for Media Information File.</dc:description>
+      <dcterms:available />
+      <dc:creator>Canon / Canon</dc:creator>
+      <dcterms:publisher>Canon</dcterms:publisher>
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Aug 2022</dcterms:created>
+        <dcterms:modified>24 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1750</puid>
+    <name>Canon CIF File</name>
+    <version />
+    <alias />
+    <pronom_id>2596</pronom_id>
+    <extension>cif</extension>
+    <signature>
+      <name>Canon CIF File</name>
+      <note>BOF:'CI' followed by 0x01 (Start of Header) followed by 0x00 (Null) followed by 0x11 (Device Control 1) followed by 0x14 (Device Control 4) followed by 0x11 (Device Control 1) followed by 0x10 (Data Link Escape)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4349010011141110</pronom_pattern>
+        <regex>(?s)\ACI\x01\x00\x11\x14\x11\x10</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>A Canon CIF file is present in the Canon XF folder structure that is used by media cards associated with cameras such as XF205 and C300. It contains information identifying the clip and the camera used, including type, serial number and version. Additionally, it stores some information which can be seen and edited in the Canon XF Utility, such as the Clip Status (OK/Check/None). It is found within each CANON XF/CLIPS 001/AAxxxx directory, where xxxx is an automatically generated number beginning with 0001. A full copy of the file exists within the INDEX.MIF file (fmt/1749) found within the CANONXF/CLIPS001 directory. Although little official documentation exists, CIF likely stands for Clip Information File.</dc:description>
+      <dcterms:available />
+      <dc:creator>Canon / Canon</dc:creator>
+      <dcterms:publisher>Canon</dcterms:publisher>
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Aug 2022</dcterms:created>
+        <dcterms:modified>24 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1751</puid>
+    <name>Canon SIF File</name>
+    <version />
+    <alias />
+    <pronom_id>2597</pronom_id>
+    <extension>sif</extension>
+    <has_priority_over>fmt/134</has_priority_over>
+    <signature>
+      <name>Canon SIF File</name>
+      <note>BOF: 0x01 (Start of Header) followed by 0x00 (Null) followed by 0x02 (Start of Text) followed by 0x00 (Null)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>01000200</pronom_pattern>
+        <regex>(?s)\A\x01\x00\x02\x00</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>A Canon SIF file is present in the Canon XF folder structure that is used by media cards associated with cameras such as XF205 and C300. It is created whenever a video file is shot and exceeds the 2GB file size limit imposed by the FAT32 filesystem. In this case, an SIF file is created for each corresponding MXF file. It is found within the CANON XF/CLIPS 001/AAxxxx directory, where xxxx is an automatically generated number beginning with 0001. Although little official documentation exists, SIF likely stands for Shot/Segment/Span Information File. The precise contents of the file format have not yet been established, but its existence is necessary in order to import spanned clips into Canon media apps.</dc:description>
+      <dcterms:available />
+      <dc:creator>Canon / Canon</dc:creator>
+      <dcterms:publisher>Canon</dcterms:publisher>
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>24 Aug 2022</dcterms:created>
+        <dcterms:modified>24 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1752</puid>
+    <mime>application/vnd.oasis.opendocument.base</mime>
+    <name>OpenDocument Database Format</name>
+    <version>1.3</version>
+    <alias />
+    <pronom_id>2599</pronom_id>
+    <extension>odb</extension>
+    <has_priority_over>fmt/135</has_priority_over>
+    <has_priority_over>fmt/444</has_priority_over>
+    <details>
+      <dc:description>OpenDocument (ODF) format is a generic format for office documents, such as text, spreadsheets, presentations, drawings, and databases. It was developed by OASIS, based on the original OpenOffice document format. The format is an open standard, and is supported by a variety of office software packages. ODF is an XML format, which may comprise a single XML document, or a collection of subdocuments within a package. The package format is the commonly used form, and comprises a standard ZIP package containing the XML content and any associated binary data, together with a manifest which lists the package content. An ODF database document contains a relational database. The content is contained in a 'content' xml subdocument. Additional subdocuments contain style information, document metadata, and application-specific settings.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <is_subtype_of>778</is_subtype_of>
+      <content_type>Database</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Preservica / Preservica</dc:creator>
+        <dcterms:created>25 Aug 2022</dcterms:created>
+        <dcterms:modified>25 Aug 2022</dcterms:modified>
+        <dc:description>This format can be identified via a container signature in DROID version 6 or later.</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1753</puid>
+    <mime>application/vnd.oasis.opendocument.graphics</mime>
+    <name>OpenDocument Graphics</name>
+    <version>1.3</version>
+    <alias />
+    <pronom_id>2600</pronom_id>
+    <extension>odg</extension>
+    <has_priority_over>fmt/135</has_priority_over>
+    <has_priority_over>fmt/296</has_priority_over>
+    <details>
+      <dc:description>OpenDocument (ODF) format is a generic format for office documents, such as text, spreadsheets, presentations, drawings, and databases. It was developed by OASIS, based on the original OpenOffice document format. The format is an open standard, and is supported by a variety of office software packages. ODF is an XML format, which may comprise a single XML document, or a collection of subdocuments within a package. The package format is the commonly used form, and comprises a standard ZIP package containing the XML content and any associated binary data, together with a manifest which lists the package content. An ODF drawing document contains drawing data. The content is contained in a 'content' xml subdocument. Additional subdocuments contain style information, document metadata, and application-specific settings.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <is_subtype_of>778</is_subtype_of>
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Preservica / Preservica</dc:creator>
+        <dcterms:created>25 Aug 2022</dcterms:created>
+        <dcterms:modified>25 Aug 2022</dcterms:modified>
+        <dc:description>This format can be identified via a container signature in DROID version 6 or later.</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1754</puid>
+    <mime>application/vnd.oasis.opendocument.presentation</mime>
+    <name>OpenDocument Presentation</name>
+    <version>1.3</version>
+    <alias />
+    <pronom_id>2602</pronom_id>
+    <extension>odp</extension>
+    <has_priority_over>fmt/135</has_priority_over>
+    <has_priority_over>fmt/292</has_priority_over>
+    <details>
+      <dc:description>OpenDocument (ODF) format is a generic format for office documents, such as text, spreadsheets, presentations, drawings, and databases. It was developed by OASIS, based on the original OpenOffice document format. The format is an open standard, and is supported by a variety of office software packages. ODF is an XML format, which may comprise a single XML document, or a collection of subdocuments within a package. The package format is the commonly used form, and comprises a standard ZIP package containing the XML content and any associated binary data, together with a manifest which lists the package content. An ODF presentation document contains a graphical presentation. The content is contained in a 'content' xml subdocument. Additional subdocuments contain style information, document metadata, and application-specific settings.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <is_subtype_of>778</is_subtype_of>
+      <content_type>Presentation</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Preservica / Preservica</dc:creator>
+        <dcterms:created>25 Aug 2022</dcterms:created>
+        <dcterms:modified>25 Aug 2022</dcterms:modified>
+        <dc:description>This format can be identified via a container signature in DROID version 6 or later.</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1755</puid>
+    <mime>application/vnd.oasis.opendocument.spreadsheet</mime>
+    <name>OpenDocument Spreadsheet</name>
+    <version>1.3</version>
+    <alias />
+    <pronom_id>2603</pronom_id>
+    <extension>ods</extension>
+    <has_priority_over>fmt/135</has_priority_over>
+    <has_priority_over>fmt/294</has_priority_over>
+    <details>
+      <dc:description>OpenDocument (ODF) format is a generic format for office documents, such as text, spreadsheets, presentations, drawings, and databases. It was developed by OASIS, based on the original OpenOffice document format. The format is an open standard, and is supported by a variety of office software packages. ODF is an XML format, which may comprise a single XML document, or a collection of subdocuments within a package. The package format is the commonly used form, and comprises a standard ZIP package containing the XML content and any associated binary data, together with a manifest which lists the package content. An ODF spreadsheet document contains spreadsheet data. The content is contained in a 'content' xml subdocument. Additional subdocuments contain style information, document metadata, and application-specific settings.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <is_subtype_of>778</is_subtype_of>
+      <content_type>Spreadsheet</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Preservica / Preservica</dc:creator>
+        <dcterms:created>25 Aug 2022</dcterms:created>
+        <dcterms:modified>25 Aug 2022</dcterms:modified>
+        <dc:description>This format can be identified via a container signature in DROID version 6 or later.</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1756</puid>
+    <mime>application/vnd.oasis.opendocument.text</mime>
+    <name>OpenDocument Text</name>
+    <version>1.3</version>
+    <alias />
+    <pronom_id>2604</pronom_id>
+    <extension>odt</extension>
+    <has_priority_over>fmt/135</has_priority_over>
+    <has_priority_over>fmt/290</has_priority_over>
+    <details>
+      <dc:description>OpenDocument (ODF) format is a generic format for office documents, such as text, spreadsheets, presentations, drawings, and databases. It was developed by OASIS, based on the original OpenOffice document format. The format is an open standard, and is supported by a variety of office software packages. ODF is an XML format, which may comprise a single XML document, or a collection of subdocuments within a package. The package format is the commonly used form, and comprises a standard ZIP package containing the XML content and any associated binary data, together with a manifest which lists the package content. An ODF text document contains word-processed text. The content is contained in a 'content' xml subdocument. Additional subdocuments contain style information, document metadata, and application-specific settings.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <is_subtype_of>778</is_subtype_of>
+      <content_type>Word Processor</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Preservica / Preservica</dc:creator>
+        <dcterms:created>25 Aug 2022</dcterms:created>
+        <dcterms:modified>25 Aug 2022</dcterms:modified>
+        <dc:description>This format can be identified via a container signature in DROID version 6 or later.</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1757</puid>
+    <name>Apple Partition Map - ISO 9660 - UDF Hybrid Disk Image</name>
+    <version />
+    <alias />
+    <pronom_id>2605</pronom_id>
+    <extension>iso</extension>
+    <extension>toast</extension>
+    <extension>dmg</extension>
+    <has_priority_over>fmt/1738</has_priority_over>
+    <has_priority_over>fmt/1739</has_priority_over>
+    <has_priority_over>fmt/1740</has_priority_over>
+    <signature>
+      <name>Apple Partition Map - ISO 9660 - UDF Hybrid Disk Image sig.1</name>
+      <note>BOF; Offset: 0; Magic Bytes: wildcard bytes between 0 to 16 bytes, followed by 0x45520200, an exact 508 wildcard bytes followed by 0x504D
+
+BOF; Offset: 32768; Max Offset: 103236; Magic Bytes:  0x4344303031, then wildcard bytes between 1 to 16384, followed by 0xFF4344303031
+
+BOF; Offset: 32768; Max Offset: 69632; Magic Bytes:  0x00424541303101, then an exact of 2041 wildcard bytes, followed by 0x004E535230, then either 0x32 or 33 followed by 0x01</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>{0-16}45520200{508}504D</pronom_pattern>
+        <regex>(?s)\A.{0,16}ER\x02\x00.{508}PM</regex>
+      </pattern>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4344303031{1-16384}FF4344303031</pronom_pattern>
+        <regex>(?s)\A.{32768,103236}CD001.{1,16384}\xffCD001</regex>
+      </pattern>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>00424541303101{2041}004E535230(32|33)01</pronom_pattern>
+        <regex>(?s)\A.{32768,69632}\x00BEA01\x01.{2041}\x00NSR0(?:2|3)\x01</regex>
+      </pattern>
+    </signature>
+    <signature>
+      <name>Apple Partition Map - ISO 9660 - UDF Hybrid Disk Image sig.2udf</name>
+      <note>BOF; Offset: 0; Magic Bytes: wildcard bytes between 0 to 16 bytes, followed by 0x45520800, an exact 2044 wildcard bytes followed by 0x504D
+
+BOF; Offset: 32768; Max Offset: 103236; Magic Bytes:  0x4344303031, then wildcard bytes between 1 to 16384, followed by 0xFF4344303031
+
+BOF; Offset: 32768; Max Offset: 69632; Magic Bytes:  0x00424541303101, then an exact of 2041 wildcard bytes, followed by 0x004E535230, then either 0x32 or 33 followed by 0x01</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>{0-16}45520800{2044}504D</pronom_pattern>
+        <regex>(?s)\A.{0,16}ER\x08\x00.{2044}PM</regex>
+      </pattern>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4344303031{1-16384}FF4344303031</pronom_pattern>
+        <regex>(?s)\A.{32768,103236}CD001.{1,16384}\xffCD001</regex>
+      </pattern>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>00424541303101{2041}004E535230(32|33)01</pronom_pattern>
+        <regex>(?s)\A.{32768,69632}\x00BEA01\x01.{2041}\x00NSR0(?:2|3)\x01</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Apple Partition Map - ISO 9660 - UDF Hybrid Disk Image, describes the contents and structure of optical disc media of Apple Partition Map (APM) partition scheme with ISO9660 and Universal Disk Format (UDF) file systems attached. Since all three schemes reside on the same optical disc this is most likely to be on DVD media type of file. APM partition scheme can be thought of as a container format for multiple file system image files, and in this entry together UDF file system developed for optical media by the Optical Storage Technology Association (OSTA) and ISO 9660 International Organization for Standardization (ISO), the hybrid system acts as a support for all three schemes and allows for disc to be rendered on various operating systems. A disk image is a uncompressed copy of the contents of a disk or a folder, it can facilitate certain types of backup and recovery strategies. Please see ID: fdd000348 from Library of Congress and other links attached to this entry for further information.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Church of Jesus Christ of Latter-Day Saints / The Church of Jesus Christ of Latter-Day Saints</dc:creator>
+        <dcterms:created>25 Aug 2022</dcterms:created>
+        <dcterms:modified>25 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1758</puid>
+    <name>Media Descriptor File</name>
+    <version />
+    <alias />
+    <pronom_id>2607</pronom_id>
+    <extension>mdf</extension>
+    <details>
+      <dc:description>Media Descriptor File is created by the software Alcohol %120, developed by Alcohol Soft. It is a CD/DVD image format. The Media Descriptor File is often accompanied by a sidecar file with the extension .mds. This file contains metadata and structural information about the disc image. This format supports mixed mode CDs and can contain both audio and data tracks.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Royal Danish Library / The Royal Danish Library</dc:creator>
+        <dcterms:created>26 Aug 2022</dcterms:created>
+        <dcterms:modified>26 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1759</puid>
+    <name>Media Descriptor Sidecar File</name>
+    <version />
+    <alias />
+    <pronom_id>2608</pronom_id>
+    <extension>mds</extension>
+    <signature>
+      <name>Media Descriptor Sidecar File</name>
+      <note>BOF; Offset:0; Magic Bytes: 'MEDIA DESCRIPTOR'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D454449412044455343524950544F52</pronom_pattern>
+        <regex>(?s)\AMEDIA DESCRIPTOR</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Media Descriptor Sidecar File contains metadata and structural information about the Media Descriptor File. It is found alongside files with the extension .mdf. These files are created from the software Alcohol %120 which was developed by Alcohol Soft.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Royal Danish Library / The Royal Danish Library</dc:creator>
+        <dcterms:created>26 Aug 2022</dcterms:created>
+        <dcterms:modified>26 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1760</puid>
+    <name>CloneCD Control File</name>
+    <version />
+    <alias />
+    <pronom_id>2610</pronom_id>
+    <extension>ccd</extension>
+    <signature>
+      <name>CloneCD Control File</name>
+      <note>BOF; Offset:0; Magic Bytes: '[CloneCD]'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>5B436C6F6E6543445D</pronom_pattern>
+        <regex>(?s)\A\[CloneCD\]</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>CloneCD Control File is used by the CloneCD software to mark the properties of a CD/DVD image and contains metadata and structural information about the disk image. It is found alongside the .img disk image file. They often have a .sub subchannel file alongside them.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Royal Danish Library / The Royal Danish Library</dc:creator>
+        <dcterms:created>26 Aug 2022</dcterms:created>
+        <dcterms:modified>26 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1761</puid>
+    <name>MacBinary</name>
+    <version>I</version>
+    <alias />
+    <pronom_id>2611</pronom_id>
+    <details>
+      <dc:description>MacBinary is a format for the encoding of Macintosh files for transmission or storage on other operating systems. This means that all system specific aspects of the file can be reconstituted after transmission. The file itself combines the two forks of a MacOS file into a single file alongside the metadata.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Church of Jesus Christ of Latter-Day Saints / The Church of Jesus Christ of Latter-Day Saints</dc:creator>
+        <dcterms:created>26 Aug 2022</dcterms:created>
+        <dcterms:modified>26 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1762</puid>
+    <name>MacBinary</name>
+    <version>II</version>
+    <alias />
+    <pronom_id>2612</pronom_id>
+    <extension>bin</extension>
+    <signature>
+      <name>MacBinary II</name>
+      <note>BOF; Offset: 0; Byte Sequence: 00x00 repeated in 73 bytes and then 7 bytes and then in 16 bytes 00x 000000000000000000000000000000000000000000000081</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>00{73}00{7}00{16}000000000000000000000000000000000000000000000081</pronom_pattern>
+        <regex>(?s)\A\x00.{73}\x00.{7}\x00.{16}\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x81</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>MacBinary is a format for the encoding of Macintosh files for transmission or storage on other operating systems. This means that all system specific aspects of the file can be reconstituted after transmission. The file itself combines the two forks of a MacOS file into a single file alongside the metadata.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Church of Jesus Christ of Latter-Day Saints / The Church of Jesus Christ of Latter-Day Saints</dc:creator>
+        <dcterms:created>26 Aug 2022</dcterms:created>
+        <dcterms:modified>26 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1763</puid>
+    <name>MacBinary</name>
+    <version>III</version>
+    <alias />
+    <pronom_id>2613</pronom_id>
+    <extension>bin</extension>
+    <signature>
+      <name>MacBinary III</name>
+      <note>BOF; Offset: 0; Byte Sequence: 00x00 repeated in 73 bytes and then 7 bytes followed by 'mBIN' and then in 16 bytes 00x82</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>00{73}00{7}00{19}6D42494E{16}82</pronom_pattern>
+        <regex>(?s)\A\x00.{73}\x00.{7}\x00.{19}mBIN.{16}\x82</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>MacBinary is a format for the encoding of Macintosh files for transmission or storage on other operating systems. This means that all system specific aspects of the file can be reconstituted after transmission. The file itself combines the two forks of a MacOS file into a single file alongside the metadata.</dc:description>
+      <dcterms:available />
+      <dc:creator>Apple Computer, Inc.</dc:creator>
+      <dcterms:publisher>Apple Computer, Inc.</dcterms:publisher>
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Church of Jesus Christ of Latter-Day Saints / The Church of Jesus Christ of Latter-Day Saints</dc:creator>
+        <dcterms:created>26 Aug 2022</dcterms:created>
+        <dcterms:modified>26 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1764</puid>
+    <name>Sony SLV File</name>
+    <version />
+    <alias />
+    <pronom_id>2614</pronom_id>
+    <extension>slv</extension>
+    <signature>
+      <name>Sony SLV File</name>
+      <note>BOF:'slvg' followed by a gap of 4 followed by 'fill'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>736C7667{4}66696C6C</pronom_pattern>
+        <regex>(?s)\Aslvg.{4}fill</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>A Sony SLV file is automatically generated by some models of Sony cameras when an error occurs during filming, such as a power cut or a media issue or when the camera fails to close properly during an improper shutdown. Although no official documentation has been found, various forum posts claim that SLV stands for salvage and that these files are created to assist the camera in salvaging lost data, by creating an XML file and then auto-deleting after this process is complete.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Aggregate</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>26 Aug 2022</dcterms:created>
+        <dcterms:modified>26 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1765</puid>
+    <name>Media Hash List</name>
+    <version />
+    <alias />
+    <pronom_id>2615</pronom_id>
+    <extension>mhl</extension>
+    <has_priority_over>fmt/101</has_priority_over>
+    <signature>
+      <name>Media Hash List</name>
+      <note>BOF:'&lt;?xml version=("OR')1.0("OR')' followed by a gap of 0-512 bytes followed by &lt;hashlist version=("OR')1.0("OR')</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F786D6C2076657273696F6E3D(22|27)312E30(22|27){0-512}3C686173686C6973742076657273696F6E3D(22|27)312E30(22|27)</pronom_pattern>
+        <regex>(?s)\A.{0,3}\x3c\?xml version=(?:"|')1\.0(?:"|').{0,512}\x3chashlist version=(?:"|')1\.0(?:"|')</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The Media Hash List (MHL) standard specifies how a common inventory list of a folder&#8217;s content looks like. The Media Hash List specification ensures that the complete source media is transferred without any alterations. MHL is an XML format, that lists all the files in a folder and all of its subfolders as well as the corresponding checksums. This list is accompanied by additional information about the creation of the MHL file. The MHL file comprehends all the information necessary to tell if the folder structure or any of the contained files was modified since the MHL file was created.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>26 Aug 2022</dcterms:created>
+        <dcterms:modified>26 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1766</puid>
+    <name>Sony SML File</name>
+    <version />
+    <alias />
+    <pronom_id>2616</pronom_id>
+    <extension>sml</extension>
+    <signature>
+      <name>Sony SML File</name>
+      <note>BOF:'&lt;list type=' followed by a gap of 0-64 bytes followed by 'name= ; 'EOF:'&lt;/list&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C6C69737420747970653D22{0-64}6E616D653D</pronom_pattern>
+        <regex>(?s)\A.{0,3}\x3clist type=".{0,64}name=</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <pronom_pattern>3C2F6C6973743E</pronom_pattern>
+        <regex>(?s)\x3c/list\x3e.{0,3}\Z</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Sony SML files store housekeeping information used by 7-series cameras, including user-defined settings and lists. They are found in the SOUNDDEV folder in storage volumes formatted by 7-series recorders. More specifically, these files contain the following information:
+
+PROJECTFOLDERS.SML - contains any entry and setting that has been made under the Top-Level Folder selection of the File: Folder Options Setup Menu option. 
+
+ROLLFOLDERS.SML - contains any entry and setting that has been made under the Mid-Level Folder selection of the File: Folder Options Setup Menu option.
+
+SCENEFOLDERS.SML - contains any entry and setting that has been made under the Bottom-Level Folder selection of the File: Folder Options Setup Menu option.
+
+SCENENAMES.SML - contains any entry and setting that has been made under the Setup Menu option Rec: Scene Name/Number.
+
+TRKANAME.SML - contains any entry and setting that has been made under the Track A selection of the Rec: Track Names Setup Menu option.
+
+TRKBNAME.SML - contains any entry and setting that has been made under the Track B selection of the Rec: Track Names Setup Menu option.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Digital Preservation Department / The National Archives</dc:creator>
+        <dcterms:created>26 Aug 2022</dcterms:created>
+        <dcterms:modified>26 Aug 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1767</puid>
+    <name>Calc602 Project File</name>
+    <version>1.51</version>
+    <alias />
+    <pronom_id>2617</pronom_id>
+    <extension>pc6</extension>
+    <has_priority_over>fmt/1775</has_priority_over>
+    <signature>
+      <name>Calc602 Project File v 1.51</name>
+      <note>BOF Absolute from beginning of file, magic bytes: Software602
+Calc602 v.1.51 WorkSpace</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>536F6674776172653630320D0A43616C6336303220762E312E353120576F726B53706163</pronom_pattern>
+        <regex>(?s)\ASoftware602\r\nCalc602 v\.1\.51 WorkSpac</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Binary format used by spreadsheet programme Calc602 containing information about all currently open files, layout on the screen, macros loaded into memory etc.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Unstructured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives of the Czech Republic / The National Archives of the Czech Republic</dc:creator>
+        <dcterms:created>14 Sep 2022</dcterms:created>
+        <dcterms:modified>14 Sep 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1768</puid>
+    <name>C Source Code File</name>
+    <version />
+    <alias />
+    <pronom_id>2618</pronom_id>
+    <extension>c</extension>
+    <details>
+      <dc:description>File written in C programming language that can be opened and viewed in any text editor. As a source code file, it can be converted into machine language by a compiler, creating an executable program. Since 1989, the language has been standardised by the International Organisation for Standardization (ISO) and ANSI. Programmes written in C can be used in a wide variety of operating systems and computer programmes, if they are standards compliant, with minimal changes to their source code.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Unstructured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Stadtarchiv Hof / Stadtarchiv Hof</dc:creator>
+        <dcterms:created>20 Sep 2022</dcterms:created>
+        <dcterms:modified>20 Sep 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1769</puid>
+    <name>C++ Source Code File</name>
+    <version />
+    <alias />
+    <pronom_id>2619</pronom_id>
+    <extension>cpp</extension>
+    <extension>cxx</extension>
+    <extension>cc</extension>
+    <details>
+      <dc:description>File written in the general-purpose programming language C++, which was created as an extension of the C programming language that developed into a language in its own right. C++ is standardised by the International Organisation for Standardization (ISO), who first standardised it in 1998.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Text (Unstructured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Stadtarchiv Hof / Stadtarchiv Hof</dc:creator>
+        <dcterms:created>20 Sep 2022</dcterms:created>
+        <dcterms:modified>20 Sep 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1770</puid>
+    <name>GenBank Flat File</name>
+    <version />
+    <alias />
+    <pronom_id>2620</pronom_id>
+    <extension>gb</extension>
+    <extension>gbk</extension>
+    <signature>
+      <name>GenBank Flat File</name>
+      <note>BOF Absolute from beginning of file, magic bytes: LOCUS
+Variable: ORIGIN
+EOF offset 0-1, magic bytes: //.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4C4F435553</pronom_pattern>
+        <regex>(?s)\ALOCUS</regex>
+      </pattern>
+      <pattern>
+        <position>VAR</position>
+        <pronom_pattern>4F524947494E</pronom_pattern>
+        <regex>(?s)ORIGIN</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <pronom_pattern>2F2F(0A|0D)</pronom_pattern>
+        <regex>(?s)//(?:\n|\r).{0,1}\Z</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The GenBank format was developed by the U.S. National Center for Biotechnology Information (NCBI). The format is a standardised way of recording DNA and protein sequencing information accompanied with other data, such as Journal references, keywords, definitions and other information, so that it can be easily read by humans and machines. The NCBI Genbank database https://www.ncbi.nlm.nih.gov/genbank/ is a repository of publicly available DNA sequences in the Genbank format, and takes in submissions of Genbank files from all over the world.</dc:description>
+      <dcterms:available />
+      <dc:creator>National Center for Biotechnology Information</dc:creator>
+      <dcterms:publisher>National Center for Biotechnology Information</dcterms:publisher>
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Bodleian Library, University of Oxford / Bodleian Library, University of Oxford</dc:creator>
+        <dcterms:created>21 Sep 2022</dcterms:created>
+        <dcterms:modified>21 Sep 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1771</puid>
+    <name>ESRI Persistent Auxiliary Metadata File</name>
+    <version />
+    <alias />
+    <pronom_id>2621</pronom_id>
+    <extension>xml</extension>
+    <extension>aux.xml</extension>
+    <has_priority_over>fmt/101</has_priority_over>
+    <signature>
+      <name>Esri Persistent Auxiliary Metadata File</name>
+      <note>BOF offset 0-30, magic bytes: &lt;PAMDataset&gt;(10-200)&lt;Metadata domain="ESRI"|"Esri"&gt;
+EOF, offset 0-1:&lt;/PAMDataset&gt;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C50414D446174617365743E{10-200}3C4D6574616461746120646F6D61696E3D22(4553524922|4573726922)3E</pronom_pattern>
+        <regex>(?s)\A.{0,30}\x3cPAMDataset\x3e.{10,200}\x3cMetadata domain="(?:ESRI"|Esri")\x3e</regex>
+      </pattern>
+      <pattern>
+        <position>EOF</position>
+        <pronom_pattern>3C2F50414D446174617365743E</pronom_pattern>
+        <regex>(?s)\x3c/PAMDataset\x3e.{0,1}\Z</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>The ESRI Persistent Auxiliary Metadata File is a format produced by ArcGIS software, which accompanies the raster file (and sits alongside it). lnformation for the raster dataset, such a statistics, tables, histograms and co-ordinates, is stored in this auxiliary file if it cannot be stored internally. The files have the extension .aux.xml, but due to limitations of PRONOM, have been added with extension.xml as well as aux.xml.</dc:description>
+      <dcterms:available />
+      <dc:creator>Esri / Esri</dc:creator>
+      <dcterms:publisher>Esri</dcterms:publisher>
+      <content_type>GIS</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of Australia / National Library of Australia</dc:creator>
+        <dcterms:created>22 Sep 2022</dcterms:created>
+        <dcterms:modified>22 Sep 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1772</puid>
+    <name>Casio QV CAM</name>
+    <version />
+    <alias />
+    <pronom_id>2622</pronom_id>
+    <extension>cam</extension>
+    <signature>
+      <name>Casio QV CAM</name>
+      <note>BOF; Offset: 0; Magic Bytes: 0x0720 followed by 'MM'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>07204D4D</pronom_pattern>
+        <regex>(?s)\A\x07 MM</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Casio QV CAM file format is a proprietary raster image format of Casio QV digital camera series. The QV series camera were originally packaged with built in flash memory to store images with a special data cable that allowed for transfer to a personal computer whilst using the QV-Link software. Using the software, the CAM format allowed for images to be uploaded back to its camera. The format could be considered a camera data image format, as some files contain JFIF or other encoding. The QV-Link software allowed for CAM file to be saved as TIFF, JPEG, or BM format for MS-Windows; or PICT, TIFF, or JPEG for Macintosh. 
+
+The first of the series, QV-10, was announced in November 1994 and was originally developed by a team led by Hiroyuki Suetaka in 1995. It was the world's first consumer LCD digital camera, meaning that it was the first electronic camera in history that allowed users to record and view the images right away. The relatively low cost of the camera helped it achieve wide success and was influential in the rise in popularity of digital photography. The full list of QV series can be found following the links provided in Notes section.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Church of Jesus Christ of Latter-Day Saints / The Church of Jesus Christ of Latter-Day Saints</dc:creator>
+        <dcterms:created>30 Sep 2022</dcterms:created>
+        <dcterms:modified>30 Sep 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1773</puid>
+    <name>Calc602 Spreadsheet File</name>
+    <version />
+    <alias />
+    <pronom_id>2623</pronom_id>
+    <extension>bak</extension>
+    <extension>tc6</extension>
+    <signature>
+      <name>Calc602 Spreadsheet file</name>
+      <note>BOF Absolute from beginning of file, magic bytes: Software602 Calc602 v.{1-4} Tabulka</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>536F6674776172653630320D0A43616C6336303220762E{1-4}20546162756C</pronom_pattern>
+        <regex>(?s)\ASoftware602\r\nCalc602 v\..{1,4} Tabul</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Files generated by Calc602, a spreadsheet programme made by Software602 which was released in 1988 by then Czechoslovakian company 602 Svazarm (since the 1990s known as IT company Software602). Tc6 is the native file format for Calc602.The .bak file backs up content, and has exactly the same internal signature as the tc6 file.</dc:description>
+      <dcterms:available />
+      <dc:creator>Software602, Inc.</dc:creator>
+      <dcterms:publisher>Software602, Inc.</dcterms:publisher>
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives of the Czech Republic / The National Archives of the Czech Republic</dc:creator>
+        <dcterms:created>03 Oct 2022</dcterms:created>
+        <dcterms:modified>03 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1774</puid>
+    <name>602 Graph/Chart File</name>
+    <version />
+    <alias />
+    <pronom_id>2624</pronom_id>
+    <extension>gc6</extension>
+    <signature>
+      <name>602 Graph/Chart File</name>
+      <note>BOF Absolute from beginning of file, magic bytes: Software602 Calc602 v.{1-4} Graf</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>536F6674776172653630320D0A43616C6336303220762E{1-4}2047726166</pronom_pattern>
+        <regex>(?s)\ASoftware602\r\nCalc602 v\..{1,4} Graf</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Binary format for graph/chart created by spreadsheet programme Calc602, which was released in the 1990s by Czechoslovakian company 602 Svazarm (since the 1990s known as IT company Software602).</dc:description>
+      <dcterms:available />
+      <dc:creator>Software602, Inc.</dc:creator>
+      <dcterms:publisher>Software602, Inc.</dcterms:publisher>
+      <content_type>Text (Structured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives of the Czech Republic / The National Archives of the Czech Republic</dc:creator>
+        <dcterms:created>03 Oct 2022</dcterms:created>
+        <dcterms:modified>03 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1775</puid>
+    <name>Calc602 Project File</name>
+    <version />
+    <alias />
+    <pronom_id>2625</pronom_id>
+    <extension>pc6</extension>
+    <signature>
+      <name>Calc602 Project File</name>
+      <note>BOF Absolute from beginning of file, magic bytes: Software602 Calc602 v.{1-4} WorkSpace</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>536F6674776172653630320D0A43616C6336303220762E{1-4}20576F726B5370616365</pronom_pattern>
+        <regex>(?s)\ASoftware602\r\nCalc602 v\..{1,4} WorkSpace</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Binary format used by spreadsheet programme Calc602 containing information about all currently open files, layout on the screen, macros loaded into memory etc.</dc:description>
+      <dcterms:available />
+      <dc:creator>Software602, Inc.</dc:creator>
+      <dcterms:publisher>Software602, Inc.</dcterms:publisher>
+      <content_type>Text (Unstructured)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives of the Czech Republic / The National Archives of the Czech Republic</dc:creator>
+        <dcterms:created>03 Oct 2022</dcterms:created>
+        <dcterms:modified>03 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1776</puid>
+    <mime>application/xml</mime>
+    <mime>text/xml</mime>
+    <name>Extensible Markup Language</name>
+    <version>1.1</version>
+    <alias>XML (1.1)</alias>
+    <pronom_id>2626</pronom_id>
+    <extension>xml</extension>
+    <apple_uti>public.xml</apple_uti>
+    <signature>
+      <name>Extensible Markup Language v1.1</name>
+      <note>BOF; Offset: 0; Magic Bytes: XML header declaration - '&lt;?xml' followed by whitespace character specific to XML file, then either no wildcard characters or up to thirty whitespace characters, then followed by version number. XML 1.1 can incorporate various spaces in its syntax, this possibility has been incorporated to this signature.</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3C3F786D6C(20|09){0-30}76657273696F6E{0-30}3D{0-30}(22|27)312E31(22|27)</pronom_pattern>
+        <regex>(?s)\A\x3c\?xml(?: |\x09).{0,30}version.{0,30}=.{0,30}(?:"|')1\.1(?:"|')</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Extensible Markup Language (XML) version 1.1 was developed by World Wide Web Consortium (W3C) in 2004. It is a general purpose markup language for creating other special purpose markup languages, it derived from SGML (ISO 8879). XML 1.1 was designed to be used when features of XML 1.0 [fmt/101] do not permit certain functionalities. It is structured to use any version of Unicode, in basic terms, whereas XML 1.0 provided a rigid definition of names, wherein everything that was not permitted was forbidden, XML 1.1 names are designed so that everything that is not forbidden (for a specific reason) is permitted. It also adds checking of normalization, and follows the Unicode line ending rules more closely. Authors are encouraged to generate XML 1.0 documents if the added flexibility is not required. XML Parsers are expected to understand both XML 1.0 and XML 1.1. It typically begins with an XML declaration, defining the XML version and character set used. This may be followed by a Document Type declaration, containing or pointing to a markup declaration for the class of document. An XML document is said to be well-formed if it conforms to the XML specification; it is said to be valid if it additionally complies with a defined markup declaration. The formatting and transformation of XML documents can be controlled using the Extensible Stylesheet Language (XSL).</dc:description>
+      <dcterms:available>04 Feb 2004</dcterms:available>
+      <dc:creator>World Wide Web Consortium</dc:creator>
+      <dcterms:publisher>World Wide Web Consortium</dcterms:publisher>
+      <is_supertype_of>931</is_supertype_of>
+      <is_subtype_of>643</is_subtype_of>
+      <content_type>Text (Mark-up)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Stadtarchiv Hof / Stadtarchiv Hof</dc:creator>
+        <dcterms:created>04 Oct 2022</dcterms:created>
+        <dcterms:modified>04 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1777</puid>
+    <name>SIARD (Software-Independent Archiving of Relational Databases)</name>
+    <version>2.2</version>
+    <alias />
+    <pronom_id>2627</pronom_id>
+    <extension>siard</extension>
+    <details>
+      <dc:description>Software-Independent Archiving of Relational Databases is a format for storing content of relational databases in files for long-term preservation e.g. in archives. The format was developed by the Swiss Federal Archives. It is an open standard and is supported by the SIARD software of the Swiss Federal Archives. SIARD format is a ZIP file (based on the 64 bit extension of the ZIP format introduced by PkWare Inc. with version 4.5 of the ZIP format definition in order to avoid size limitations which are unrealistic for databases). The ZIP file contains an XML file describing the database structure and metadata as well as a collection of XML files describing the table content (database primary data) as well as, optionally, some text files and some binary files representing database large objects (BLOBs and CLOBs).</dc:description>
+      <dcterms:available />
+      <dc:creator>Swiss Federal Archives / Swiss Federal Archives</dc:creator>
+      <dcterms:publisher>Swiss Federal Archives</dcterms:publisher>
+      <content_type>Database</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>Swiss Federal Archives / Swiss Federal Archives</dc:creator>
+        <dcterms:created>04 Oct 2022</dcterms:created>
+        <dcterms:modified>04 Oct 2022</dcterms:modified>
+        <dc:description>This format is identifiable via a container signature in DROID 6 and later.</dc:description>
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1778</puid>
+    <name>Dynamic Publisher Picture File</name>
+    <version />
+    <alias />
+    <pronom_id>2628</pronom_id>
+    <extension>pct</extension>
+    <signature>
+      <name>Dynamic Publisher Picture File</name>
+      <note>BOF:'DYNAMIC PUBLISHER SCREEN'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>44594E414D4943205055424C49534845522053435245454E</pronom_pattern>
+        <regex>(?s)\ADYNAMIC PUBLISHER SCREEN</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Dynamic Publisher is a desktop publishing application for the MSX2 computer system. It was published by Radarsoft in 1987. This entry relates to the picture or screen files associated with the format which have a .pct extension and are raster image files.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dcterms:created>12 Oct 2022</dcterms:created>
+        <dcterms:modified>12 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1779</puid>
+    <name>Dynamic Publisher Font File</name>
+    <version />
+    <alias />
+    <pronom_id>2629</pronom_id>
+    <extension>fnt</extension>
+    <signature>
+      <name>Dynamic Publisher Font File</name>
+      <note>BOF:'DYNAMIC PUBLISHER FONT'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>44594E414D4943205055424C495348455220464F4E54</pronom_pattern>
+        <regex>(?s)\ADYNAMIC PUBLISHER FONT</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Dynamic Publisher is a desktop publishing application for the MSX2 computer system. It was published by Radarsoft in 1987. This entry relates to the font files associated with the software, which can be customised by the user.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Font</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dcterms:created>12 Oct 2022</dcterms:created>
+        <dcterms:modified>12 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1780</puid>
+    <name>Koala MicroIllustrator Graphic File</name>
+    <version />
+    <alias />
+    <pronom_id>2630</pronom_id>
+    <extension>pic</extension>
+    <signature>
+      <name>Koala MicroIllustrator Graphic File</name>
+      <note>BOF:'&#255;&#8364;&#201;&#199;' followed by 0x1A (Substitute)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>FF80C9C71A</pronom_pattern>
+        <regex>(?s)\A\xff\x80\xc9\xc7\x1a</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Koala MicroIllustrator is a graphics program for the Atari line of computers. Koala MicroIllustrator Graphics files are raster image files associated with this software.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dcterms:created>12 Oct 2022</dcterms:created>
+        <dcterms:modified>12 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1781</puid>
+    <name>Pentax PEF Image File</name>
+    <version />
+    <alias>Pentax RAW</alias>
+    <pronom_id>2631</pronom_id>
+    <extension>pef</extension>
+    <has_priority_over>fmt/353</has_priority_over>
+    <signature>
+      <name>Pentax PEF Image File</name>
+      <note>BOF; Offset: 0; Magic Bytes: A TIFF based format starting with  TIFF Motorola endian header "MM.*" then variable number of wildcard bytes followed by 'PENTAX' tag, then wildcard bytes between none to 2048 followed by MakerNote values of "AOC MM".</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D4D002A*50454E544158{0-2048}414F43004D4D</pronom_pattern>
+        <regex>(?s)\AMM\x00\*.*PENTAX.{0,2048}AOC\x00MM</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Pentax PEF Image File (or Pentax RAW) is a RAW image format based on TIFF [fmt/353] file format, provided by Pentax and associated with Pentax Digital SLR cameras. Its use has been deprecated since the release of DNG format. Similarly to RAW camera formats, PEF format contains information of image capture such as colour, lighting or camera sensor. The structure of these informations related to each image differs in each PEF format depending on which camera model was used to capture the image. The format first appeared with Pentax's digital *its Series and continued until Pentax Q series.</dc:description>
+      <dcterms:available />
+      <dc:creator>Ricoh / Ricoh</dc:creator>
+      <dcterms:publisher>Ricoh</dcterms:publisher>
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The Church of Jesus Christ of Latter-Day Saints / The Church of Jesus Christ of Latter-Day Saints</dc:creator>
+        <dcterms:created>17 Oct 2022</dcterms:created>
+        <dcterms:modified>17 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1782</puid>
+    <name>The Spectral Geologist Dataset</name>
+    <version>7.15</version>
+    <alias />
+    <pronom_id>2632</pronom_id>
+    <extension>tsg</extension>
+    <signature>
+      <name>The Spectral Geologist Dataset v.7.15</name>
+      <note>BOF 0-1024, magic bytes: TSG 7.15 Dataset</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>54534720372E31352044617461736574</pronom_pattern>
+        <regex>(?s)\A.{0,1024}TSG 7\.15 Dataset</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>File generated by The Spectral Geologist (TSG), processing software designed for the analysis of field or laboratory spectrometer data. TSG stores the spectral and associated data (geochemistry, coordinate data etc) in two files, regardless of the number of spectra in the dataset. These files have the extensions .bip and .tsg. The .bip file stores all of the spectral and associated data; it is usually far larger than the .TSG file. The .tsg file stores a description of the data contained in the associated .BIP file. Both files are essential for TSG to be able to access the dataset and must be together in the same directory.</dc:description>
+      <dcterms:available />
+      <dc:creator>The Spectral Geologist</dc:creator>
+      <dcterms:publisher>The Spectral Geologist</dcterms:publisher>
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of Australia / National Library of Australia</dc:creator>
+        <dcterms:created>20 Oct 2022</dcterms:created>
+        <dcterms:modified>20 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1783</puid>
+    <name>The Spectral Geologist Dataset</name>
+    <version>7</version>
+    <alias />
+    <pronom_id>2633</pronom_id>
+    <extension>tsg</extension>
+    <signature>
+      <name>The Spectral Geologist Dataset v.7</name>
+      <note>BOF 0-1024, magic bytes: TSG 7.00 Dataset</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>54534720372E30302044617461736574</pronom_pattern>
+        <regex>(?s)\A.{0,1024}TSG 7\.00 Dataset</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>File generated by The Spectral Geologist (TSG), processing software designed for the analysis of field or laboratory spectrometer data. TSG stores the spectral and associated data (geochemistry, coordinate data etc) in two files, regardless of the number of spectra in the dataset. These files have the extensions .bip and .tsg. The .bip file stores all of the spectral and associated data; it is usually far larger than the .TSG file. The .tsg file stores a description of the data contained in the associated .BIP file. Both files are essential for TSG to be able to access the dataset and must be together in the same directory.</dc:description>
+      <dcterms:available />
+      <dc:creator>The Spectral Geologist</dc:creator>
+      <dcterms:publisher>The Spectral Geologist</dcterms:publisher>
+      <content_type>Dataset</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>National Library of Australia / National Library of Australia</dc:creator>
+        <dcterms:created>20 Oct 2022</dcterms:created>
+        <dcterms:modified>20 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1784</puid>
+    <name>Animatic Film Format</name>
+    <version />
+    <alias />
+    <pronom_id>2634</pronom_id>
+    <extension>flm</extension>
+    <signature>
+      <name>Animatic Film Format</name>
+      <note>BOF:Offset of 48 followed by ' followed by 0x18 (Cancel) followed by ( followed by 0x18 (Cancel)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>27182818</pronom_pattern>
+        <regex>(?s)\A.{48}'\x18\(\x18</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Animatic Film is an Atari animation format associated with the Animatic Animation System software by Kinetic Microsystems.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dcterms:created>25 Oct 2022</dcterms:created>
+        <dcterms:modified>25 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1785</puid>
+    <name>FLR Database File</name>
+    <version />
+    <alias />
+    <pronom_id>2635</pronom_id>
+    <extension>flr</extension>
+    <signature>
+      <name>FLR Database File</name>
+      <note>BOF:'72249'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>3732323439</pronom_pattern>
+        <regex>(?s)\A72249</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>FLR is a database file format produced by the Info File program by Softwood on the Amiga.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Database</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dcterms:created>25 Oct 2022</dcterms:created>
+        <dcterms:modified>25 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1786</puid>
+    <name>Funpaint Image File</name>
+    <version />
+    <alias />
+    <pronom_id>2636</pronom_id>
+    <extension>fun</extension>
+    <extension>fp2</extension>
+    <extension>vic</extension>
+    <signature>
+      <name>Funpaint Image File</name>
+      <note>BOF:'&#240;?FUNPAINT' followed by 0x20 (Space) followed by '(MT)' followed by 0x20 (Space)</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>F03F46554E5041494E5420284D542920</pronom_pattern>
+        <regex>(?s)\A\xf0\?FUNPAINT \(MT\) </regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Funpaint image file is a raster image format associated with the Funpaint / Funpaint II, an interlaced FLI graphics editor for the Commodore 64. The resolution of the images is 296x200 pixels.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dcterms:created>25 Oct 2022</dcterms:created>
+        <dcterms:modified>25 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1787</puid>
+    <name>G9B Graphics Format Bitmap</name>
+    <version />
+    <alias />
+    <pronom_id>2637</pronom_id>
+    <extension>g9b</extension>
+    <signature>
+      <name>G9B Graphics Format Bitmap</name>
+      <note>BOF:'G9B'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>473942</pronom_pattern>
+        <regex>(?s)\AG9B</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>G9B is a raster image graphics format associated with the GFX9000, a GFX9k library for MSX computers.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dcterms:created>25 Oct 2022</dcterms:created>
+        <dcterms:modified>25 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1788</puid>
+    <name>Gunpaint Image File</name>
+    <version />
+    <alias />
+    <pronom_id>2638</pronom_id>
+    <extension>gun</extension>
+    <signature>
+      <name>Gunpaint Image File</name>
+      <note>BOF: 0x00 (Null) followed by '@'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>0040</pronom_pattern>
+        <regex>(?s)\A\x00@</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Gunpaint are raster image files associated with the Gunpaint graphics program for the Commodore 64. Files are exactly 33603 bytes long and have a 296x200 resolution.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dcterms:created>25 Oct 2022</dcterms:created>
+        <dcterms:modified>25 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1789</puid>
+    <name>GX2 Graphics File</name>
+    <version />
+    <alias />
+    <pronom_id>2639</pronom_id>
+    <extension>gx2</extension>
+    <extension>ega</extension>
+    <signature>
+      <name>GX2 Graphics File</name>
+      <note>BOF:'GX2'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>475832</pronom_pattern>
+        <regex>(?s)\AGX2</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>GX2 is a raster graphics format associated with the Show Partner presentation software for MS-DOS.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dcterms:created>25 Oct 2022</dcterms:created>
+        <dcterms:modified>25 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1790</puid>
+    <name>Help Librarian File</name>
+    <version />
+    <alias />
+    <pronom_id>2640</pronom_id>
+    <extension>hlp</extension>
+    <extension>dat</extension>
+    <extension>dta</extension>
+    <signature>
+      <name>Help Librarian File</name>
+      <note>BOF:'C-Worthy (R) Help Librarian Data File Version'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>432D576F72746879202852292048656C70204C696272617269616E20446174612046696C652056657273696F6E</pronom_pattern>
+        <regex>(?s)\AC-Worthy \(R\) Help Librarian Data File Version</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Help Librarian is a program by Custom Design Systems released in 1985 that produced 'help' files, predominantly with the .hlp extension.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type />
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dcterms:created>25 Oct 2022</dcterms:created>
+        <dcterms:modified>25 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1791</puid>
+    <name>Haiku Vector Icon Format</name>
+    <version />
+    <alias />
+    <pronom_id>2641</pronom_id>
+    <extension>hvif</extension>
+    <signature>
+      <name>Haiku Vector Icon Format</name>
+      <note>BOF:'ncif'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>6E636966</pronom_pattern>
+        <regex>(?s)\Ancif</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>Haiku Vector Icon Format (HVIF) is a vector based icon format associated with the Haiku operating system. Encoded icons can be found in the .rdef files in the Haiku source code.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Vector)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dcterms:created>25 Oct 2022</dcterms:created>
+        <dcterms:modified>25 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1792</puid>
+    <name>ICDRAW Single Icon File</name>
+    <version />
+    <alias />
+    <pronom_id>2642</pronom_id>
+    <extension>ibi</extension>
+    <signature>
+      <name>ICDRAW Single Icon File</name>
+      <note>BOF:'ICBI'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>49434249</pronom_pattern>
+        <regex>(?s)\AICBI</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>ICDRAW icon is an icon format associated with the ICDRAW icon editor for the Atari Falcon computer. There are two versions of this file type. This entry relates to the first, a "single icon file" with the .ibi extension.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dcterms:created>25 Oct 2022</dcterms:created>
+        <dcterms:modified>25 Oct 2022</dcterms:modified>
+        <dc:description />
+      </record_metadata>
+    </details>
+  </format>
+  <format>
+    <puid>fmt/1793</puid>
+    <name>ICDRAW Group Icon File</name>
+    <version />
+    <alias />
+    <pronom_id>2643</pronom_id>
+    <extension>ib3</extension>
+    <signature>
+      <name>ICDRAW Group Icon File</name>
+      <note>BOF:'ICB3'</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>49434233</pronom_pattern>
+        <regex>(?s)\AICB3</regex>
+      </pattern>
+    </signature>
+    <details>
+      <dc:description>ICDRAW icon is an icon format associated with the ICDRAW icon editor for the Atari Falcon computer. There are two versions of this file type. This entry relates to the second, a "group icon file" with the .ib3 extension.</dc:description>
+      <dcterms:available />
+      <dc:creator />
+      <dcterms:publisher />
+      <content_type>Image (Raster)</content_type>
+      <record_metadata>
+        <status>unknown</status>
+        <dc:creator>The National Archives and Records Administration / The National Archives and Records Administration</dc:creator>
+        <dcterms:created>25 Oct 2022</dcterms:created>
+        <dcterms:modified>25 Oct 2022</dcterms:modified>
         <dc:description />
       </record_metadata>
     </details>

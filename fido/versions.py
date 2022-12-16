@@ -128,7 +128,7 @@ def sig_file_actions(sig_act):
         _check_update_signatures(sig_vers, update_url, versions, sig_act == 'update')
     else:
         # Download a specific version of the signature file
-        _download_sig_version(sig_vers, update_url, versions)
+        _download_sig_version(sig_act, update_url, versions)
     sys.stdout.flush()
     sys.exit(0)
 
@@ -150,6 +150,7 @@ def _check_update_signatures(sig_vers, update_url, versions, is_update=False):
     sys.exit(0)
 
 def _download_sig_version(sig_act, update_url, versions):
+    sys.stdout.write('Downloading signature files for version {}\n'.format(sig_act))
     match = re.search('^v?(\d+)$', sig_act, re.IGNORECASE)
 
     if not match:
@@ -171,7 +172,7 @@ def _get_version(ver_string):
     return ver_string if not ver.startswith('v') else ver_string[1:]
 
 def _output_details(version, update_url, versions):
-    sys.stdout.write('Updating signature file.\n')
+    sys.stdout.write('Updating signature file to {}.\n'.format(version))
     _write_sigs(version, update_url, 'fido', 'formats-v{}.xml')
     _write_sigs(version, update_url, 'droid', 'DROID_SignatureFile-v{}.xml')
     _write_sigs(version, update_url, 'pronom', 'pronom-xml-v{}.zip')
@@ -193,5 +194,5 @@ def _write_sigs(latest, update_url, type, name_template):
     sig_out = str(importlib_resources.files('fido').joinpath('conf', name_template.format(latest)))
     if os.path.exists(sig_out):
         return
-    resp = requests.get(update_url + 'format/latest/{}/'.format(type))
+    resp = requests.get(update_url + 'format/{0}/{1}/'.format(latest, type))
     open(sig_out, 'wb').write(resp.content)
