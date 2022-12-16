@@ -30,31 +30,37 @@ jobs:
         if: matrix.python-version == 2.7
         run: pep257 --match="(?!fido).*\.py" ./fido
       - name: Test using pytest
-        run: pytest --cov=fido --cov-report=xml
-      - name: Coverage using pytest
+        run: pytest --cov=fido
+      - name: Generate coverage report
         if: matrix.python-version == 3.10
-        run: pytest --cov=fido --cov-report=lcov
+        run: coverage xml
       - name: Upload coverage report
         if: matrix.python-version == 3.10
         uses: actions/upload-artifact@v3
         with:
-          name: coverage-lcov
-          path: coverage.lcov
+          name: coverage-report
+          path: coverage.xml
   coverage:
     name: Quality Assurance
     runs-on: ubuntu-20.04
     needs: [ build ]
 
     steps:
-      - name: Download coverage LCOV report
+      - name: Download coverage report
         uses: actions/download-artifact@v3
         with:
-          name: coverage-lcov
-          path: coverage.lcov
+          name: coverage-report
+          path: coverage.xml
+      - name: Codecov coverage reporting
+        uses: codecov/codecov-action@v3
+        with:
+          files: coverage.xml
+          fail_ci_if_error: false # optional (default = false)
+          verbose: true # optional (default = false)
       - name: Codacy coverage reporting
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: coverage.lcov
+          coverage-reports: coverage.xml
       - name: Codacy analysis reporting
         uses: codacy/codacy-analysis-cli-action@4.0.0
