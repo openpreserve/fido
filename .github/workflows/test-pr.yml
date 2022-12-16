@@ -31,9 +31,6 @@ jobs:
         run: pep257 --match="(?!fido).*\.py" ./fido
       - name: Test using pytest
         run: pytest --cov=fido
-      - name: Generate coverage report
-        if: matrix.python-version == 3.10
-        run: coverage xml
       - name: Generate LCOV coverage report
         if: matrix.python-version == 3.10
         run: coverage xml -o cobertura.xml
@@ -63,7 +60,9 @@ jobs:
       - name: Codacy coverage reporting
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
+          language: python
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: cobertura.xml
+          force-coverage-parser: cobertura
       - name: Codacy analysis reporting
         uses: codacy/codacy-analysis-cli-action@4.0.0
