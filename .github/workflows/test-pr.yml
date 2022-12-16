@@ -34,12 +34,15 @@ jobs:
       - name: Generate coverage report
         if: matrix.python-version == 3.10
         run: coverage xml
+      - name: Generate LCOV coverage report
+        if: matrix.python-version == 3.10
+        run: coverage xml -o cobertura.xml
       - name: Upload coverage report
         if: matrix.python-version == 3.10
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
-          path: coverage.xml
+          path: cobertura.xml
   coverage:
     name: Quality Assurance
     runs-on: ubuntu-20.04
@@ -50,17 +53,17 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: coverage-report
-          path: coverage.xml
+          path: cobertura.xml
       - name: Codecov coverage reporting
         uses: codecov/codecov-action@v3
         with:
-          files: coverage.xml
+          files: cobertura.xml
           fail_ci_if_error: false # optional (default = false)
           verbose: true # optional (default = false)
       - name: Codacy coverage reporting
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: coverage.xml
+          coverage-reports: cobertura.xml
       - name: Codacy analysis reporting
         uses: codacy/codacy-analysis-cli-action@4.0.0
