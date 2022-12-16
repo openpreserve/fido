@@ -30,6 +30,9 @@ jobs:
         if: matrix.python-version == 2.7
         run: pep257 --match="(?!fido).*\.py" ./fido
       - name: Test using pytest
+        run: pytest --cov=fido
+      - name: Coverage using pytest
+        if: matrix.python-version == 3.10
         run: pytest --cov=fido --cov-report=lcov --cov-report=html
       - name: Upload coverage report
         if: matrix.python-version == 3.10
