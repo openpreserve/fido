@@ -57,12 +57,5 @@ jobs:
           files: cobertura.xml
           fail_ci_if_error: false # optional (default = false)
           verbose: true # optional (default = false)
-      - name: Codacy coverage reporting
-        uses: codacy/codacy-coverage-reporter-action@v1
-        with:
-          language: python
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: cobertura.xml
-          force-coverage-parser: cobertura
       - name: Codacy analysis reporting
         uses: codacy/codacy-analysis-cli-action@4.0.0
