@@ -44,13 +44,11 @@ jobs:
 
     steps:
       - name: Download coverage report
-        if: matrix.python-version == 3.10
         uses: actions/download-artifact@v3
         with:
           name: coverage-report
           path: coverage.xml
       - name: Codecov coverage reporting
-        if: matrix.python-version == 3.10
         uses: codecov/codecov-action@v3
         with:
           files: coverage.xml
@@ -58,10 +56,8 @@ jobs:
           verbose: true # optional (default = false)
       - name: Codacy coverage reporting
         uses: codacy/codacy-coverage-reporter-action@v1
-        if: matrix.python-version == 3.10
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: jhove-apps/target/site/jacoco-aggregate/jacoco.xml
       - name: Codacy analysis reporting
-        if: matrix.python-version == 3.10
         uses: codacy/codacy-analysis-cli-action@4.0.0
