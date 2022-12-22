@@ -30,6 +30,7 @@ install_requires = [
     'six >= 1.10.0, < 2',
     'win-unicode-console >= 0.5; python_version == "2.7" and platform_system == "Windows"',
     'importlib-resources',
+    'requests'
 ]
 
 
