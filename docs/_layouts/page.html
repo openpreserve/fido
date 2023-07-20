@@ -1,0 +1,21 @@
+{% include header.html %}
+<body role="document">
+{% include navbar.html nav=site.data.docnav %}
+<section class="main-content">
+    <div class="container">
+      <div class="row">
+        <div id="content" class="main-content-inner col-sm-12">
+          <article>
+            <header class="jumbotron">
+              <img src="img/fidologo.png" alt="FIDO logo"/>
+              <h2>Open source Format Identification of Digital Objects</h2>
+              <p class="version">Currently v1.3.4</p>
+            </header>
+{{ content }}
+          </article><!-- #post-## -->
+        </div><!-- close .*-inner (main-content or sidebar, depending if sidebar is used) -->
+    </div><!-- close .row -->
+  </div><!-- close .container -->
+</section><!-- close .main-content -->
+{% include footer.html %}
+</body>
