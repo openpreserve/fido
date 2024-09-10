@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
+requires = ["setuptools>=42", "wheel", "setuptools-git-versioning>=2.0,<3"]
 build-backend = "setuptools.build_meta"
 
 # These were in requirements/packing.txt
@@ -35,7 +35,7 @@ classifiers = [
 dependencies = [
     "olefile >= 0.46, < 1",
     "requests",
-    "flake8"
+    "flake8",
     ]
 
 [project.urls]
@@ -58,6 +58,9 @@ fido-toxml = "fido.toxml:main"
 
 [tool.pytest.ini_options]
 addopts = "--maxfail=1 --strict-markers"
+
+[tool.setuptools-git-versioning]
+enabled = true
 
 [tool.flake8]
 exclude = ['.venv']
