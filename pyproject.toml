@@ -56,11 +56,16 @@ fido-toxml = "fido.toxml:main"
 [tool.setuptools.package-data]
 "fido" = ["*.*", "conf/*.*", "pronom/*.*"]
 
+[tool.setuptools-git-versioning]
+enabled = true
+# version_file = "VERSION"
+# count_commits_from_version_file = true
+# dev_template = "{tag}.{branch}{ccount}"  # <--- note {branch} here
+# dirty_template = "{tag}.{branch}{ccount}"
+
 [tool.pytest.ini_options]
 addopts = "--maxfail=1 --strict-markers"
 
-[tool.setuptools-git-versioning]
-enabled = true
 
 [tool.flake8]
 exclude = ['.venv']
