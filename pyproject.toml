@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opf-fido"
+version = "0.1.0"  # Replace with the actual version from find_version function
+description = "Format Identification for Digital Objects (FIDO)."
+readme = "A command-line tool to identify the file formats of digital objects. FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions."
+authors = [
+    { name="Adam Farquhar (BL)", email="" }  # Add email if available
+]
+license = { text = "Apache License 2.0" }
+homepage = "http://openpreservation.org/technology/products/fido/"
+dependencies = [
+    "olefile >= 0.46, < 1",
+    "six >= 1.10.0, < 2",
+    "win-unicode-console >= 0.5; python_version == '2.7' and platform_system == 'Windows'",
+    "importlib-resources",
+    "requests"
+]
+
+[project.optional-dependencies]
+testing = [
+    "pytest",
+    "pytest-cov",
+]
+setup = [
+    "pytest-runner"
+]
+
+[project.scripts]
+fido = "fido.fido:main"
+fido-prepare = "fido.prepare:main"
+fido-update-signatures = "fido.update_signatures:main"
+fido-toxml = "fido.toxml:main"
+
+[project.classifiers]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 2.7"
+]
+
+[tool.setuptools.package-data]
+"fido" = ["*.*", "conf/*.*", "signatures/*.*", "pronom/*.*"]
+
+[tool.pytest.ini_options]
+addopts = "--maxfail=1 --strict-markers"
+
+[tool.flake8]
+ignore = ["E501"]
