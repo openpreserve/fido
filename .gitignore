@@ -1,5 +1,6 @@
 *.egg-info
 *.py[co]
+.venv/
 
 /MANIFEST
 /dist
@@ -8,6 +9,9 @@
 /.eggs
 .coverage
 .env/
+.pytest_cache/
+.ruff_cache
+__pycache__/
 
 /fmtinfo.csv
 /exp

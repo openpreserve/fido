@@ -13,14 +13,13 @@ from os.path import abspath, dirname, join
 
 from six.moves import input as rinput
 
-
-__version__ = '1.6.1'
-
-
-CONFIG_DIR = join(abspath(dirname(__file__)), 'conf')
+__version__ = "1.8.0dev"
 
 
-def query_yes_no(question, default='yes'):
+CONFIG_DIR = join(abspath(dirname(__file__)), "conf")
+
+
+def query_yes_no(question, default="yes"):
     """
     Ask a yes/no question via input() and return their answer.
 
@@ -30,19 +29,19 @@ def query_yes_no(question, default='yes'):
 
     The "answer" return value is True for "yes" or False for "no".
     """
-    valid = {'yes': True, 'y': True, 'no': False, 'n': False}
+    valid = {"yes": True, "y": True, "no": False, "n": False}
     if default is None:
-        prompt = ' [y/n] '
-    elif default == 'yes':
-        prompt = ' [Y/n] '
-    elif default == 'no':
-        prompt = ' [y/N] '
+        prompt = " [y/n] "
+    elif default == "yes":
+        prompt = " [Y/n] "
+    elif default == "no":
+        prompt = " [y/N] "
     else:
         raise ValueError('Invalid default answer: "%s"' % default)
     while True:
-        print(question + prompt, end='')
+        print(question + prompt, end="")
         choice = rinput().lower()
-        if default is not None and choice == '':
+        if default is not None and choice == "":
             return valid[default]
         if choice in valid:
             return valid[choice]
