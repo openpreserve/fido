@@ -18,7 +18,7 @@ FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descri
 readme = "README.md"
 authors = [
     { name="Adam Farquhar (BL)" }  # Add email if available
-]
+    ]
 license = { file = "LICENSE.txt" }
 
 classifiers = [
@@ -30,12 +30,13 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11"
-]
+    ]   
 
 dependencies = [
     "olefile >= 0.46, < 1",
-    "requests"
-]
+    "requests",
+    "flake8"
+    ]
 
 [project.urls]
 homepage = "http://openpreservation.org/technology/products/fido/"
@@ -44,7 +45,7 @@ homepage = "http://openpreservation.org/technology/products/fido/"
 testing = [
     "pytest",
     "pytest-cov",
-]
+    ]
 
 [project.scripts]
 fido = "fido.fido:main"
@@ -59,4 +60,7 @@ fido-toxml = "fido.toxml:main"
 addopts = "--maxfail=1 --strict-markers"
 
 [tool.flake8]
-ignore = ["E501"]
+exclude = ['.venv']
+ignore = ['E231', 'E241', 'E501', 'W503', 'E203']
+max-line-length = 130
+# count = true

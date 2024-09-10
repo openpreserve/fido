@@ -9,7 +9,6 @@ It is designed for simple integration into automated work-flows.
 """
 
 import os
-import platform
 import re
 import sys
 import tarfile

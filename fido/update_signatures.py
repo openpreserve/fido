@@ -21,7 +21,7 @@ from argparse import ArgumentParser
 from shutil import rmtree
 from xml.etree import ElementTree as CET
 
-from . import CONFIG_DIR, __version__, query_yes_no
+from . import CONFIG_DIR, __version__
 from .prepare import run as prepare_pronom_to_fido
 from .pronom.soap import NS, get_droid_signatures, get_pronom_sig_version, get_sig_xml_for_puid
 from .versions import get_local_versions
@@ -64,7 +64,7 @@ def query_yes_no(question, default="yes"):
         raise ValueError('Invalid default answer: "%s"' % default)
     while True:
         print(question + prompt, end="")
-        choice = rinput().lower()
+        choice = input().lower()
         if default is not None and choice == "":
             return valid[default]
         if choice in valid:
