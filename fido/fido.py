@@ -532,10 +532,11 @@ class Fido:
         buffer = b''
         while bytes_read < bytes_to_read:
             readbuffer = file.read(bytes_to_read - bytes_read)
+            last_read_len = len(readbuffer)
             buffer += readbuffer
-            bytes_read = len(buffer)
-            # break out if EOF is reached.
-            if readbuffer == '':
+            bytes_read += last_read_len
+            # break out if EOF is reached, that is zero bytes read.
+            if last_read_len < 1:
                 break
         return buffer
 
