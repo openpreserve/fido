@@ -21,6 +21,8 @@ PRONOM format signatures HTTP calls.
 """
 from six.moves import urllib
 
+# NOTE: from fido/pronom/
+
 
 def get_sig_xml_for_puid(puid):
     """Return the full PRONOM signature XML for the passed PUID."""

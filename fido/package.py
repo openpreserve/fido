@@ -4,15 +4,14 @@ import re
 import zipfile
 
 import olefile
-from six import iteritems
 
 
-class Package():
+class Package:
     """Base class for container support."""
 
     def _process_puid_map(self, data, puid_map):
         results = []
-        for puid, signatures in iteritems(puid_map):
+        for puid, signatures in puid_map.items():
             results.extend(self._process_matches(data, puid, signatures))
 
         return results
@@ -39,14 +38,14 @@ class OlePackage(Package):
         try:
             with olefile.OleFileIO(self.ole) as ole:
                 results = []
-                for path, puid_map in iteritems(self.signatures):
+                for path, puid_map in self.signatures.items():
                     # Each OLE container signature lists the path of the file inside the OLE
                     # on which it operates; if the file is missing, there can be no match.
                     # This is not a precise match because the name of the stream may slightly
                     # differ; for example, \x01CompObj instead of CompObj
                     filepath = None
                     for paths in ole.listdir():
-                        p = '/'.join(paths)
+                        p = "/".join(paths)
                         if p == path or p[1:] == path:
                             filepath = p
                             break
@@ -77,7 +76,7 @@ class ZipPackage(Package):
         try:
             with zipfile.ZipFile(self.zip) as zip_:
                 results = []
-                for path, puid_map in iteritems(self.signatures):
+                for path, puid_map in self.signatures.items():
                     # Each ZIP container signature lists the path of the file inside the ZIP
                     # on which it operates; if the file is missing, there can be no match.
                     if path not in zip_.namelist():
