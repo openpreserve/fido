@@ -1,0 +1,74 @@
+[build-system]
+requires = ["setuptools>=42", "wheel", "setuptools-git-versioning>=2.0,<3"]
+build-backend = "setuptools.build_meta"
+
+# These were in requirements/packing.txt
+# twine>=1.8,<1.9
+# wheel==0.38.1
+
+[project]
+name = "opf-fido"
+dynamic = ["version"]
+requires-python = ">= 3.8"
+description = """
+Format Identification for Digital Objects (FIDO).
+A command-line tool to identify the file formats of digital objects.
+FIDO uses the UK National Archives (TNA) PRONOM File Format and Container descriptions.
+"""
+readme = "README.md"
+authors = [
+    { name="Adam Farquhar (BL)" }  # Add email if available
+    ]
+license = { file = "LICENSE.txt" }
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11"
+    ]   
+
+dependencies = [
+    "olefile >= 0.46, < 1",
+    "requests",
+    "flake8",
+    ]
+
+[project.urls]
+homepage = "http://openpreservation.org/technology/products/fido/"
+
+[project.optional-dependencies]
+testing = [
+    "pytest",
+    "pytest-cov",
+    ]
+
+[project.scripts]
+fido = "fido.fido:main"
+fido-prepare = "fido.prepare:main"
+fido-toxml = "fido.toxml:main"
+
+
+[tool.setuptools.package-data]
+"fido" = ["*.*", "conf/*.*", "pronom/*.*"]
+
+[tool.setuptools-git-versioning]
+enabled = true
+# version_file = "VERSION"
+# count_commits_from_version_file = true
+# dev_template = "{tag}.{branch}{ccount}"  # <--- note {branch} here
+# dirty_template = "{tag}.{branch}{ccount}"
+
+[tool.pytest.ini_options]
+addopts = "--maxfail=1 --strict-markers"
+
+
+[tool.flake8]
+exclude = ['.venv']
+ignore = ['E231', 'E241', 'E501', 'W503', 'E203']
+max-line-length = 130
+# count = true
