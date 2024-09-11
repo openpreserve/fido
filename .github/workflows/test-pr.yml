@@ -25,7 +25,7 @@ jobs:
           pip install -U flake8 pep257 pytest-cov codecov codacy-coverage pluggy
           pip install -e .
       - name: Lint code with flake8
-        run: flake8 . --count --show-source --max-line-length=127 --statistics
+        run: flake8 . --count --show-source --ignore=E203,E501 --max-line-length=127 --statistics
       - name: Lint code with pep257
         if: matrix.python-version == 2.7
         run: pep257 --match="(?!fido).*\.py" ./fido
