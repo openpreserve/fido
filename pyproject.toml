@@ -1,10 +1,6 @@
 [build-system]
-requires = ["setuptools>=42", "wheel", "setuptools-git-versioning>=2.0,<3"]
+requires = ["setuptools>=42", "wheel", "twine", "setuptools-git-versioning>=2.0,<3"]
 build-backend = "setuptools.build_meta"
-
-# These were in requirements/packing.txt
-# twine>=1.8,<1.9
-# wheel==0.38.1
 
 [project]
 name = "opf-fido"
