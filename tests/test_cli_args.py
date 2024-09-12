@@ -13,8 +13,6 @@ def test_parse_args_input_valid():
         "-useformats=fmt1,fmt2 -nouseformats=fmt3,fmt4"
     )
     args = parse_cli_args(arg_string.split(), defaults)
-    print(arg_string.split())
-    print(args)
     assert args.v
     assert args.q
     assert args.recurse
@@ -30,13 +28,11 @@ def test_parse_args_input_valid():
 def test_parse_args_files_valid():
     arg_string = "-q -zip file1.ext file2.ext"
     args = parse_cli_args(arg_string.split(), defaults)
-    print(arg_string.split())
-    print(args)
     assert args.q
     assert args.zip
-    assert args.noextension
-    assert args.nocontainer
-    assert args.pronom_only
+    assert not args.noextension
+    assert not args.nocontainer
+    assert not args.pronom_only
     assert args.files == ["file1.ext", "file2.ext"]
     assert args.useformats is None
     assert args.nouseformats is None
