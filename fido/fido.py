@@ -634,7 +634,12 @@ class Fido:
                         with zipstream.open(item) as source:
                             self.copy_stream(source, target)
                             # target.seek(0)
-                            self.identify_contents(item_name, target, self.container_type(matches), extension=extension)
+                            self.identify_contents(
+                                item_name,
+                                target,
+                                self.container_type(matches),
+                                extension=extension,
+                            )
         except IOError:
             sys.stderr.write("FIDO: ZipError {0}\n".format(filename))
         except zipfile.BadZipfile:
@@ -663,7 +668,12 @@ class Fido:
                         self.handle_matches(tar_item_name, matches, timer.duration())
                         if self.container_type(matches):
                             f.seek(0)
-                            self.identify_contents(tar_item_name, f, self.container_type(matches), extension=extension)
+                            self.identify_contents(
+                                tar_item_name,
+                                f,
+                                self.container_type(matches),
+                                extension=extension,
+                            )
         except tarfile.TarError:
             sys.stderr.write("FIDO: Error: TarError {0}\n".format(filename))
 

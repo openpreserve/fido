@@ -34,9 +34,9 @@ def test_parse_args_files_valid():
     print(args)
     assert args.q
     assert args.zip
-    assert args.noextension == False
-    assert args.nocontainer == False
-    assert args.pronom_only == False
+    assert args.noextension
+    assert args.nocontainer
+    assert args.pronom_only
     assert args.files == ["file1.ext", "file2.ext"]
     assert args.useformats is None
     assert args.nouseformats is None
@@ -45,10 +45,10 @@ def test_parse_args_files_valid():
 def test_parse_args_invalid():
     arg_string = "-q -zip -bad_arg file1.ext file2.ext"
     with pytest.raises(SystemExit):
-        args = parse_cli_args(arg_string.split(), defaults)
+        parse_cli_args(arg_string.split(), defaults)
 
 
 def test_parse_files_and_input_invalid():
     arg_string = "-q -zip -input files.txt file1.ext file2.ext"
     with pytest.raises(SystemExit):
-        args = parse_cli_args(arg_string.split(), defaults)
+        parse_cli_args(arg_string.split(), defaults)
