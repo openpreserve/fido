@@ -3,11 +3,15 @@ import sys
 from argparse import ArgumentParser, RawTextHelpFormatter
 
 
-def build_parser() -> ArgumentParser:
-    defaults = {
-        "description": "FIDO - File Identification Tool",
-        "epilog": "For more information, visit the official documentation.",
-    }
+def parse_cli_args(argv: list[str], defaults: dict) -> argparse.Namespace:
+    """
+    Parse command-line arguments.
+    Args:
+        argv (list[str]): List of command-line arguments. Could be sys.argv
+        defaults (dict): Dictionary of default values. Expects to find configdir, bufsize and container_bufsize.
+    Returns:
+        argparse.Namespace: Parsed command-line arguments. Reference via name as in args.v or args.recurse.
+    """
 
     parser = ArgumentParser(
         description=defaults["description"],
@@ -63,16 +67,43 @@ def build_parser() -> ArgumentParser:
         default=None,
         help="comma separated string of formats not to use in identification",
     )
+    parser.add_argument(
+        "-matchprintf",
+        metavar="FORMATSTRING",
+        default=None,
+        help="format string (Python style) to use on match. See nomatchprintf, README.txt.",
+    )
+    parser.add_argument(
+        "-nomatchprintf",
+        metavar="FORMATSTRING",
+        default=None,
+        help="format string (Python style) to use if no match. See README.txt",
+    )
+    parser.add_argument(
+        "-bufsize",
+        type=int,
+        default=None,
+        help=f"size (in bytes) of the buffer to match against (default={defaults['bufsize']})",
+    )
+    parser.add_argument(
+        "-sigs",
+        default=None,
+        metavar="SIG_ACT",
+        help='SIG_ACT "check" for new version\nSIG_ACT "update" to latest\nSIG_ACT "list" available versions\nSIG_ACT "n" use version n.',
+    )
+    parser.add_argument(
+        "-container_bufsize",
+        type=int,
+        default=None,
+        help=f"size (in bytes) of the buffer to match against (default={defaults['container_bufsize']}).",
+    )
+    parser.add_argument(
+        "-loadformats", default=None, metavar="XML1,...,XMLn", help="comma separated string of XML format files to add."
+    )
+    parser.add_argument(
+        "-confdir",
+        default=defaults["config_dir"],
+        help="configuration directory to load_fido_xml, for example, the format specifications from.",
+    )
 
-    return parser
-
-
-def parse_args(parser: ArgumentParser) -> argparse.Namespace:
-    try:
-        args = parser.parse_args()
-    except argparse.ArgumentError as e:
-        parser.print_help()
-        print(f"\nError: {e}\n")
-        sys.exit(1)
-
-    return args
+    return parser.parse_args(argv)

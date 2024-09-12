@@ -13,23 +13,20 @@ import re
 import sys
 import tarfile
 import tempfile
-from argparse import ArgumentParser, RawTextHelpFormatter
-from contextlib import closing
-
-try:
-    from time import perf_counter
-except ImportError:
-    from time import clock as perf_counter
-
 import zipfile
+from contextlib import closing
+from time import perf_counter
+from typing import Optional
 from xml.etree import cElementTree as ET
 
 from fido import CONFIG_DIR, __version__
 from fido.char_handler import escape
+from fido.cli_args import parse_cli_args
 from fido.package import OlePackage, ZipPackage
 from fido.versions import get_local_versions, sig_file_actions
 
 defaults = {
+    "config_dir": CONFIG_DIR,
     "bufsize": 128 * 1024,  # (bytes)
     "regexcachesize": 2084,  # (bytes)
     "printmatch": 'OK,%(info.time)s,%(info.puid)s,"%(info.formatname)s","%(info.signaturename)s",%(info.filesize)s,"%(info.filename)s","%(info.mimetype)s","%(info.matchtype)s"\n',
@@ -74,8 +71,8 @@ class Fido:
 
     def __init__(
         self,
-        quiet=False,
-        bufsize=None,
+        quiet: bool = False,
+        bufsize: Optional[int] = None,
         container_bufsize=None,
         printnomatch=None,
         printmatch=None,
@@ -793,107 +790,7 @@ def main(args=None):
     """Main FIDO method."""
     if not args:
         args = sys.argv[1:]
-
-    parser = ArgumentParser(
-        description=defaults["description"],
-        epilog=defaults["epilog"],
-        fromfile_prefix_chars="@",
-        formatter_class=RawTextHelpFormatter,
-    )
-    parser.add_argument("-v", default=False, action="store_true", help="show version information")
-    parser.add_argument("-q", default=False, action="store_true", help="run (more) quietly")
-    parser.add_argument("-recurse", default=False, action="store_true", help="recurse into subdirectories")
-    parser.add_argument("-zip", default=False, action="store_true", help="recurse into zip and tar files")
-    parser.add_argument(
-        "-noextension",
-        default=False,
-        action="store_true",
-        help="disable extension matching, reduces number of matches but may reduce false positives",
-    )
-    parser.add_argument(
-        "-nocontainer",
-        default=False,
-        action="store_true",
-        help="disable deep scan of container documents, increases speed but may reduce accuracy with big files",
-    )
-    parser.add_argument(
-        "-pronom_only",
-        default=False,
-        action="store_true",
-        help="disables loading of format extensions file, only PRONOM signatures are loaded, may reduce accuracy of results",
-    )
-
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument(
-        "-input", default=False, help="file containing a list of files to check, one per line. - means stdin"
-    )
-    group.add_argument(
-        "files",
-        nargs="*",
-        default=[],
-        metavar="FILE",
-        help="files to check. If the file is -, then read content from stdin. In this case, python must be invoked with -u or it may convert the line terminators.",
-    )
-
-    parser.add_argument("-filename", default=None, help="filename if file contents passed through STDIN")
-    parser.add_argument(
-        "-useformats",
-        metavar="INCLUDEPUIDS",
-        default=None,
-        help="comma separated string of formats to use in identification",
-    )
-    parser.add_argument(
-        "-nouseformats",
-        metavar="EXCLUDEPUIDS",
-        default=None,
-        help="comma separated string of formats not to use in identification",
-    )
-    parser.add_argument(
-        "-matchprintf",
-        metavar="FORMATSTRING",
-        default=None,
-        help="format string (Python style) to use on match. See nomatchprintf, README.txt.",
-    )
-    parser.add_argument(
-        "-nomatchprintf",
-        metavar="FORMATSTRING",
-        default=None,
-        help="format string (Python style) to use if no match. See README.txt",
-    )
-    parser.add_argument(
-        "-bufsize",
-        type=int,
-        default=None,
-        help="size (in bytes) of the buffer to match against (default=" + str(defaults["bufsize"]) + " bytes)",
-    )
-    parser.add_argument(
-        "-sigs",
-        default=None,
-        metavar="SIG_ACT",
-        help='SIG_ACT "check" for new version\nSIG_ACT "update" to latest\nSIG_ACT "list" available versions\nSIG_ACT "n" use version n.',
-    )
-    parser.add_argument(
-        "-container_bufsize",
-        type=int,
-        default=None,
-        help="size (in bytes) of the buffer to match against (default="
-        + str(defaults["container_bufsize"])
-        + " bytes)",
-    )
-    parser.add_argument(
-        "-loadformats", default=None, metavar="XML1,...,XMLn", help="comma separated string of XML format files to add."
-    )
-    parser.add_argument(
-        "-confdir",
-        default=CONFIG_DIR,
-        help="configuration directory to load_fido_xml, for example, the format specifications from.",
-    )
-
-    if len(sys.argv) == 1:
-        parser.print_help()
-        sys.exit(1)
-    args = parser.parse_args(args)
-
+    args = parse_cli_args(args, defaults)
     timer = PerfTimer()
 
     versions = get_local_versions(args.confdir)
@@ -904,15 +801,13 @@ def main(args=None):
     defaults["format_files"] = [defaults["xml_pronomSignature"]]
 
     if args.pronom_only:
-        versionHeader = "FIDO v{0} ({1}, {2})\n".format(
-            __version__, defaults["xml_pronomSignature"], defaults["containersignature_file"]
+        versionHeader = (
+            f"FIDO v{__version__} ({defaults['xml_pronomSignature']}, {defaults['containersignature_file']})\n"
         )
     else:
-        versionHeader = "FIDO v{0} ({1}, {2}, {3})\n".format(
-            __version__,
-            defaults["xml_pronomSignature"],
-            defaults["containersignature_file"],
-            defaults["xml_fidoExtensionSignature"],
+        versionHeader = (
+            f"FIDO v{__version__} ({defaults['xml_pronomSignature']}, {defaults['containersignature_file']}, "
+            f"{defaults['xml_fidoExtensionSignature']})\n"
         )
         defaults["format_files"].append(defaults["xml_fidoExtensionSignature"])
 
