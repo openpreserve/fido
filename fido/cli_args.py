@@ -1,8 +1,9 @@
 import argparse
 from argparse import ArgumentParser, RawTextHelpFormatter
+from typing import Any, Dict, List
 
 
-def parse_cli_args(argv: list[str], defaults: dict) -> argparse.Namespace:
+def parse_cli_args(argv: List[str], defaults: Dict[str, Any]) -> argparse.Namespace:
     """
     Parse command-line arguments.
     Args:
