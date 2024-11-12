@@ -31,7 +31,6 @@ classifiers = [
 dependencies = [
     "olefile >= 0.46, < 1",
     "requests",
-    "flake8",
     ]
 
 [project.urls]
@@ -41,6 +40,7 @@ homepage = "http://openpreservation.org/technology/products/fido/"
 testing = [
     "pytest",
     "pytest-cov",
+    "flake8",
     ]
 
 [project.scripts]
