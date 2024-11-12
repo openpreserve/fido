@@ -32,5 +32,5 @@ def test_pronom_signature():
     """Test that retrieving signatures gets something with length and no errors are thrown."""
     version = soap.get_pronom_sig_version()
     xml, count = soap.get_droid_signatures(version)
-    assert len(xml) > 1000, 'Expected more than 1000 XML lines, got %s' % len(xml)
-    assert count > 1000, 'Expected more than 1000 signatures, got %s' % count
+    assert len(xml) > 1000, "Expected more than 1000 XML lines, got %s" % len(xml)
+    assert count > 1000, "Expected more than 1000 signatures, got %s" % count

@@ -66,5 +66,8 @@ addopts = "--maxfail=1 --strict-markers"
 [tool.flake8]
 exclude = ['.venv']
 ignore = ['E231', 'E241', 'E501', 'W503', 'E203']
-max-line-length = 130
+max-line-length = 120
 # count = true
+
+[tool.ruff]
+line-length = 120

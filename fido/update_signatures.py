@@ -23,7 +23,12 @@ from xml.etree import ElementTree as CET
 
 from . import CONFIG_DIR, __version__
 from .prepare import run as prepare_pronom_to_fido
-from .pronom.soap import NS, get_droid_signatures, get_pronom_sig_version, get_sig_xml_for_puid
+from .pronom.soap import (
+    NS,
+    get_droid_signatures,
+    get_pronom_sig_version,
+    get_sig_xml_for_puid,
+)
 from .versions import get_local_versions
 
 ABORT_MSG = "Aborting update..."
@@ -112,7 +117,9 @@ def sig_version_check(version="latest"):
         print("Getting latest version number from PRONOM...")
         version = get_pronom_sig_version()
         if not version:
-            sys.exit("Failed to obtain PRONOM signature file version number, please try again.")
+            sys.exit(
+                "Failed to obtain PRONOM signature file version number, please try again."
+            )
 
     print("Querying PRONOM for signaturefile version {}.".format(version))
     sig_file_name = _sig_file_name(version)
@@ -152,7 +159,9 @@ def init_sig_download(defaults):
     resume = False
     if os.path.isdir(tmpdir):
         print("Found previously created temporary folder for download:", tmpdir)
-        resume = query_yes_no("Do you want to resume download (yes) or start over (no)?")
+        resume = query_yes_no(
+            "Do you want to resume download (yes) or start over (no)?"
+        )
         if resume:
             print("Resuming download...")
     else:
@@ -162,7 +171,9 @@ def init_sig_download(defaults):
         except OSError:
             pass
     if not os.path.isdir(tmpdir):
-        sys.stderr.write("Failed to create temporary folder for PUID's, using: " + tmpdir)
+        sys.stderr.write(
+            "Failed to create temporary folder for PUID's, using: " + tmpdir
+        )
     return tmpdir, resume
 
 
@@ -176,7 +187,10 @@ def download_signatures(defaults, format_eles, resume, tmpdir):
         download_sig(format_ele, tmpdir, resume, defaults)
         numfiles += 1
         print(
-            r"Downloaded {}/{} files [{}%]".format(numfiles, puid_count, int(float(numfiles) / one_percent)), end="\r"
+            r"Downloaded {}/{} files [{}%]".format(
+                numfiles, puid_count, int(float(numfiles) / one_percent)
+            ),
+            end="\r",
         )
     print("100%")
 
@@ -208,7 +222,10 @@ def create_zip_file(defaults, format_eles, version, tmpdir):
     print("Creating PRONOM zip...")
     compression = zipfile.ZIP_DEFLATED if "zlib" in sys.modules else zipfile.ZIP_STORED
     modes = {zipfile.ZIP_DEFLATED: "deflated", zipfile.ZIP_STORED: "stored"}
-    zf = zipfile.ZipFile(os.path.join(CONFIG_DIR, DEFAULTS["pronomZipFileName"].format(version)), mode="w")
+    zf = zipfile.ZipFile(
+        os.path.join(CONFIG_DIR, DEFAULTS["pronomZipFileName"].format(version)),
+        mode="w",
+    )
     print("Adding files with compression mode", modes[compression])
     for format_ele in format_eles:
         _, puid_filename = get_puid_file_name(format_ele)
@@ -241,8 +258,15 @@ def update_versions_xml(version):
 
 def main():
     """Main CLI entrypoint."""
-    parser = ArgumentParser(description="Download and convert the latest PRONOM signatures")
-    parser.add_argument("-tmpdir", default=OPTIONS["tmp_dir"], help="Location to store temporary files", dest="tmp_dir")
+    parser = ArgumentParser(
+        description="Download and convert the latest PRONOM signatures"
+    )
+    parser.add_argument(
+        "-tmpdir",
+        default=OPTIONS["tmp_dir"],
+        help="Location to store temporary files",
+        dest="tmp_dir",
+    )
     parser.add_argument(
         "-keep_tmp",
         default=OPTIONS["deleteTempDirectory"],
