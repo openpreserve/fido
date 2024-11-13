@@ -23,7 +23,7 @@ import re
 import sys
 
 import requests
-from defusedxml.ElementTree import ElementTree as ET
+from defusedxml import ElementTree as ET
 from defusedxml.ElementTree import ParseError, parse
 
 from fido import CONFIG_DIR

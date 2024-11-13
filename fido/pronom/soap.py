@@ -24,7 +24,7 @@ import sys
 import urllib
 from urllib.error import HTTPError, URLError
 
-import defusedxml.ElementTree as ET
+from defusedxml.ElementTree import fromstring
 
 from fido import __version__
 
@@ -85,7 +85,7 @@ def get_droid_signatures(version):
             "https://www.nationalarchives.gov.uk/documents/DROID_SignatureFile_V{}.xml".format(version)
         ) as f:
             xml = f.read().decode("utf-8")
-            root_ele = ET.fromstring(xml)
+            root_ele = fromstring(xml)
             format_count = len(
                 root_ele.findall(".//{http://www.nationalarchives.gov.uk/pronom/SignatureFile}FileFormat")
             )
@@ -106,7 +106,7 @@ def _get_soap_ele_tree(soap_action):
     xml = _get_soap_response(soap_action, soap_string)
     for prefix, uri in NS.items():
         ET.register_namespace(prefix, uri)
-    return ET.fromstring(xml)
+    return fromstring(xml)
 
 
 def _get_soap_response(soap_action, soap_string):

@@ -17,7 +17,7 @@ import zipfile
 from contextlib import closing
 from typing import Optional
 
-from defusedxml import cElementTree as ET
+from defusedxml import ElementTree as ET
 
 from fido import CONFIG_DIR, __version__
 from fido.cli_args import parse_cli_args
