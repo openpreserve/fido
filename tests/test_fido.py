@@ -5,34 +5,34 @@ import csv
 import io
 from time import sleep
 
+import pytest
+
 from fido.fido import Fido, PerfTimer
 
 
 def test_perf_timer():
     timer = PerfTimer()
-    sleep(3.6)
+    sleep(0.2)
     duration = timer.duration()
     assert duration > 0
 
 
-# Magic number for fmt/1000.
-MAGIC = b"\x5a\x58\x54\x61\x70\x65\x21\x1a\x01"
-
-# Expected positive PUID.
-PUID = "fmt/1000"
-
-# Expected result.
-OK = "OK"
+id_test_data = [(b"\x5a\x58\x54\x61\x70\x65\x21\x1a\x01", "fmt/1000", "OK")]
 
 
-def test_file_identification(tmp_path, capsys):
+@pytest.mark.parametrize(
+    "magic, expected_puid, expected_result",
+    id_test_data,
+    # Add additional test cases here
+)
+def test_file_identification(tmp_path, capsys, magic: bytes, expected_puid: str, expected_result: str):
     """Reference for Fido-based format identification
     1. Create a byte-stream with a known magic number and serialize to tempfile.
     2. Call identify_file(...) to identify the file against Fido's known formats.
     """
     # Create a temporary file and write our skeleton file out to it.
     tmp_file = tmp_path / "tmp_file"
-    tmp_file.write_bytes(MAGIC)
+    tmp_file.write_bytes(magic)
 
     # Create a Fido instance and call identify_file. The identify_file function
     # will create and manage a file for itself.
@@ -48,18 +48,23 @@ def test_file_identification(tmp_path, capsys):
     reader = csv.reader(io.StringIO(captured.out), delimiter=",")
     assert reader is not None
     row = next(reader)
-    assert row[0] == OK, "row hasn't returned a positive identification"
-    assert row[2] == PUID, "row doesn't contain expected PUID value"
-    assert int(row[5]) == len(MAGIC), "row doesn't contain stream length"
+    assert row[0] == expected_result, "row hasn't returned a positive identification"
+    assert row[2] == expected_puid, "row doesn't contain expected PUID value"
+    assert int(row[5]) == len(magic), "row doesn't contain stream length"
 
 
-def test_stream_identification(capsys):
+@pytest.mark.parametrize(
+    "magic, expected_puid, expected_result",
+    id_test_data,
+    # Add additional test cases here
+)
+def test_stream_identification(capsys, magic: bytes, expected_puid: str, expected_result: str):
     """Reference for Fido-based format identification
     1. Create a byte-stream with a known magic number.
     2. Call identify_stream(...) to identify the file against Fido's known formats.
     """
     # Create the stream object with the known magic-number.
-    fstream = io.BytesIO(MAGIC)
+    fstream = io.BytesIO(magic)
 
     # Create a Fido instance and call identify_stream. The identify_stream function
     # will work on the stream as-is. This could be an open file handle that the
@@ -76,6 +81,6 @@ def test_stream_identification(capsys):
     reader = csv.reader(io.StringIO(captured.out), delimiter=",")
     assert reader is not None
     row = next(reader)
-    assert row[0] == OK, "row hasn't returned a positive identification"
-    assert row[2] == PUID, "row doesn't contain expected PUID value"
-    assert int(row[5]) == len(MAGIC), "row doesn't contain stream length"
+    assert row[0] == expected_result, "row hasn't returned a positive identification"
+    assert row[2] == expected_puid, "row doesn't contain expected PUID value"
+    assert int(row[5]) == len(magic), "row doesn't contain stream length"
