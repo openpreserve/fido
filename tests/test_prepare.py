@@ -2,7 +2,7 @@ import re
 
 import pytest
 
-from fido.prepare import convert_to_regex
+from fido.pronom.prepare import convert_to_regex
 
 
 def binrep_convert(byt):
@@ -64,17 +64,17 @@ def test_bitmasks(pronom_bytesequence, matches_predicate):
     ("pronom_bytesequence", "input_", "matches_bool"),
     (
         # These are good:
-        ("ab{3}cd(01|02|03)~07ff", "\xAB\xDD\xDD\xDD\xCD\x02\x11\xFF", True),
-        ("ab{3}cd(01|02|03)~07ff", "\xAB\xDD\xDD\xDD\xCD\x03\x11\xFF", True),
-        ("ab{3}cd(01|02|03)~07ff", "\xAB\xDD\xDD\xDD\xCD\x02\xFE\xFF", True),
+        ("ab{3}cd(01|02|03)~07ff", "\xab\xdd\xdd\xdd\xcd\x02\x11\xff", True),
+        ("ab{3}cd(01|02|03)~07ff", "\xab\xdd\xdd\xdd\xcd\x03\x11\xff", True),
+        ("ab{3}cd(01|02|03)~07ff", "\xab\xdd\xdd\xdd\xcd\x02\xfe\xff", True),
         # Bad because missing three anythings between AB and CD
-        ("ab{3}cd(01|02|03)~07ff", "\xAB\xDD\xDD\xCD\x02\x11\xFF", False),
+        ("ab{3}cd(01|02|03)~07ff", "\xab\xdd\xdd\xcd\x02\x11\xff", False),
         # Bad because not at start of string
-        ("ab{3}cd(01|02|03)~07ff", "\xDA\xAB\xDD\xDD\xDD\xCD\x02\x11\xFF", False),
+        ("ab{3}cd(01|02|03)~07ff", "\xda\xab\xdd\xdd\xdd\xcd\x02\x11\xff", False),
         # Bad because 04 is not in (01|02|03)
-        ("ab{3}cd(01|02|03)~07ff", "\xAB\xDD\xDD\xDD\xCD\x04\x11\xFF", False),
+        ("ab{3}cd(01|02|03)~07ff", "\xab\xdd\xdd\xdd\xcd\x04\x11\xff", False),
         # Bad because 18 is not in ~07
-        ("ab{3}cd(01|02|03)~07ff", "\xAB\xDD\xDD\xDD\xCD\x02\x18\xFF", False),
+        ("ab{3}cd(01|02|03)~07ff", "\xab\xdd\xdd\xdd\xcd\x02\x18\xff", False),
     ),
 )
 def test_heterogenous_sequences(pronom_bytesequence, input_, matches_bool):

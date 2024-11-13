@@ -45,9 +45,9 @@ testing = [
 
 [project.scripts]
 fido = "fido.fido:main"
-fido-prepare = "fido.prepare:main"
+fido-prepare = "fido.pronom.prepare:main"
 fido-toxml = "fido.toxml:main"
-
+fido-update-signatures = "fido.pronom.update_signatures:run"
 
 [tool.setuptools.package-data]
 "fido" = ["*.*", "conf/*.*", "pronom/*.*"]

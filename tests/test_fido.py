@@ -7,7 +7,8 @@ from time import sleep
 
 import pytest
 
-from fido.fido import Fido, PerfTimer
+from fido.fido import Fido
+from fido.utils.timer import PerfTimer
 
 
 def test_perf_timer():
