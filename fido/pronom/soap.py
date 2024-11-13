@@ -50,7 +50,9 @@ HEADERS = {
 
 def get_sig_xml_for_puid(puid):
     """Return the full PRONOM signature XML for the passed PUID."""
-    req = urllib.request.Request("http://www.nationalarchives.gov.uk/pronom/{}.xml".format(puid))
+    req = urllib.request.Request(
+        "http://www.nationalarchives.gov.uk/pronom/{}.xml".format(puid)
+    )
     response = urllib.request.urlopen(req)
     xml = response.read()
     return xml
@@ -80,12 +82,16 @@ def get_droid_signatures(version):
     format_count = False
     try:
         with urllib.request.urlopen(
-            "https://www.nationalarchives.gov.uk/documents/DROID_SignatureFile_V{}.xml".format(version)
+            "https://www.nationalarchives.gov.uk/documents/DROID_SignatureFile_V{}.xml".format(
+                version
+            )
         ) as f:
             xml = f.read().decode("utf-8")
             root_ele = ET.fromstring(xml)
             format_count = len(
-                root_ele.findall(".//{http://www.nationalarchives.gov.uk/pronom/SignatureFile}FileFormat")
+                root_ele.findall(
+                    ".//{http://www.nationalarchives.gov.uk/pronom/SignatureFile}FileFormat"
+                )
             )
     except HTTPError as httpe:
         sys.stderr.write(
@@ -111,9 +117,15 @@ def _get_soap_ele_tree(soap_action):
 
 def _get_soap_response(soap_action, soap_string):
     try:
-        req = urllib.request.Request("http://{}/pronom/service.asmx".format(PRONOM_HOST), data=soap_string)
+        req = urllib.request.Request(
+            "http://{}/pronom/service.asmx".format(PRONOM_HOST), data=soap_string
+        )
     except URLError:
-        print("There was a problem contacting the PRONOM service at http://{}/pronom/service.asmx.".format(PRONOM_HOST))
+        print(
+            "There was a problem contacting the PRONOM service at http://{}/pronom/service.asmx.".format(
+                PRONOM_HOST
+            )
+        )
         print("Please check your network connection and try again.")
         sys.exit(1)
     for key, value in HEADERS.items():

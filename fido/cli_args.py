@@ -19,10 +19,24 @@ def parse_cli_args(argv: List[str], defaults: Dict[str, Any]) -> argparse.Namesp
         fromfile_prefix_chars="@",
         formatter_class=RawTextHelpFormatter,
     )
-    parser.add_argument("-v", default=False, action="store_true", help="show version information")
-    parser.add_argument("-q", default=False, action="store_true", help="run (more) quietly")
-    parser.add_argument("-recurse", default=False, action="store_true", help="recurse into subdirectories")
-    parser.add_argument("-zip", default=False, action="store_true", help="recurse into zip and tar files")
+    parser.add_argument(
+        "-v", default=False, action="store_true", help="show version information"
+    )
+    parser.add_argument(
+        "-q", default=False, action="store_true", help="run (more) quietly"
+    )
+    parser.add_argument(
+        "-recurse",
+        default=False,
+        action="store_true",
+        help="recurse into subdirectories",
+    )
+    parser.add_argument(
+        "-zip",
+        default=False,
+        action="store_true",
+        help="recurse into zip and tar files",
+    )
     parser.add_argument(
         "-noextension",
         default=False,
@@ -44,7 +58,9 @@ def parse_cli_args(argv: List[str], defaults: Dict[str, Any]) -> argparse.Namesp
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
-        "-input", default=False, help="file containing a list of files to check, one per line. - means stdin"
+        "-input",
+        default=False,
+        help="file containing a list of files to check, one per line. - means stdin",
     )
     group.add_argument(
         "files",
@@ -54,7 +70,9 @@ def parse_cli_args(argv: List[str], defaults: Dict[str, Any]) -> argparse.Namesp
         help="files to check. If the file is -, then read content from stdin. In this case, python must be invoked with -u or it may convert the line terminators.",
     )
 
-    parser.add_argument("-filename", default=None, help="filename if file contents passed through STDIN")
+    parser.add_argument(
+        "-filename", default=None, help="filename if file contents passed through STDIN"
+    )
     parser.add_argument(
         "-useformats",
         metavar="INCLUDEPUIDS",
@@ -98,7 +116,10 @@ def parse_cli_args(argv: List[str], defaults: Dict[str, Any]) -> argparse.Namesp
         help=f"size (in bytes) of the buffer to match against (default={defaults['container_bufsize']}).",
     )
     parser.add_argument(
-        "-loadformats", default=None, metavar="XML1,...,XMLn", help="comma separated string of XML format files to add."
+        "-loadformats",
+        default=None,
+        metavar="XML1,...,XMLn",
+        help="comma separated string of XML format files to add.",
     )
     parser.add_argument(
         "-confdir",

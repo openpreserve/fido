@@ -541,16 +541,20 @@ class Fido:
         """
         return container_type in ("zip", "tar")
 
+    # This is updated following PR #191: FIX: Develop out FIDO tests with pytest
+    # It should fix a problem that streams (not files) would hang.
+    # Needs thorough testing, though.
     def blocking_read(self, file, bytes_to_read):
         """Perform a blocking read and return the buffer."""
         bytes_read = 0
         buffer = b""
         while bytes_read < bytes_to_read:
             readbuffer = file.read(bytes_to_read - bytes_read)
+            last_read_len = len(readbuffer)
             buffer += readbuffer
-            bytes_read = len(buffer)
-            # break out if EOF is reached.
-            if readbuffer == "":
+            bytes_read += last_read_len
+            # break out if EOF is reached, that is zero bytes read.
+            if last_read_len < 1:
                 break
         return buffer
 
