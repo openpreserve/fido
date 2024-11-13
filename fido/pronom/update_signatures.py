@@ -19,17 +19,18 @@ import time
 import zipfile
 from argparse import ArgumentParser
 from shutil import rmtree
-from xml.etree import ElementTree as CET
 
-from . import CONFIG_DIR, __version__
-from .prepare import run as prepare_pronom_to_fido
-from .pronom.soap import (
+from defusedxml import ElementTree as CET
+from pronom.prepare import run as prepare_pronom_to_fido
+
+from fido import CONFIG_DIR, __version__
+from fido.pronom.soap import (
     NS,
     get_droid_signatures,
     get_pronom_sig_version,
     get_sig_xml_for_puid,
 )
-from .versions import get_local_versions
+from fido.pronom.versions import get_local_versions
 
 ABORT_MSG = "Aborting update..."
 
@@ -117,9 +118,7 @@ def sig_version_check(version="latest"):
         print("Getting latest version number from PRONOM...")
         version = get_pronom_sig_version()
         if not version:
-            sys.exit(
-                "Failed to obtain PRONOM signature file version number, please try again."
-            )
+            sys.exit("Failed to obtain PRONOM signature file version number, please try again.")
 
     print("Querying PRONOM for signaturefile version {}.".format(version))
     sig_file_name = _sig_file_name(version)
@@ -159,9 +158,7 @@ def init_sig_download(defaults):
     resume = False
     if os.path.isdir(tmpdir):
         print("Found previously created temporary folder for download:", tmpdir)
-        resume = query_yes_no(
-            "Do you want to resume download (yes) or start over (no)?"
-        )
+        resume = query_yes_no("Do you want to resume download (yes) or start over (no)?")
         if resume:
             print("Resuming download...")
     else:
@@ -171,9 +168,7 @@ def init_sig_download(defaults):
         except OSError:
             pass
     if not os.path.isdir(tmpdir):
-        sys.stderr.write(
-            "Failed to create temporary folder for PUID's, using: " + tmpdir
-        )
+        sys.stderr.write("Failed to create temporary folder for PUID's, using: " + tmpdir)
     return tmpdir, resume
 
 
@@ -187,9 +182,7 @@ def download_signatures(defaults, format_eles, resume, tmpdir):
         download_sig(format_ele, tmpdir, resume, defaults)
         numfiles += 1
         print(
-            r"Downloaded {}/{} files [{}%]".format(
-                numfiles, puid_count, int(float(numfiles) / one_percent)
-            ),
+            r"Downloaded {}/{} files [{}%]".format(numfiles, puid_count, int(float(numfiles) / one_percent)),
             end="\r",
         )
     print("100%")
@@ -258,9 +251,7 @@ def update_versions_xml(version):
 
 def main():
     """Main CLI entrypoint."""
-    parser = ArgumentParser(
-        description="Download and convert the latest PRONOM signatures"
-    )
+    parser = ArgumentParser(description="Download and convert the latest PRONOM signatures")
     parser.add_argument(
         "-tmpdir",
         default=OPTIONS["tmp_dir"],

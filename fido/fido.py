@@ -15,15 +15,16 @@ import tarfile
 import tempfile
 import zipfile
 from contextlib import closing
-from time import perf_counter
 from typing import Optional
-from xml.etree import cElementTree as ET
+
+from defusedxml import ElementTree as ET
 
 from fido import CONFIG_DIR, __version__
-from fido.char_handler import escape
 from fido.cli_args import parse_cli_args
 from fido.package import OlePackage, ZipPackage
-from fido.versions import get_local_versions, sig_file_actions
+from fido.pronom.versions import get_local_versions, sig_file_actions
+from fido.utils.char_handler import escape
+from fido.utils.timer import PerfTimer
 
 defaults = {
     "config_dir": CONFIG_DIR,
@@ -48,22 +49,6 @@ FIDO uses the UK National Archives (TNA) PRONOM File Format
 and Container descriptions.
 PRONOM is available from http://www.nationalarchives.gov.uk/pronom/""",
 }
-
-
-class PerfTimer:
-    """Utility class that carries out simple process timings."""
-
-    def __init__(self):
-        """New instance with start time running."""
-        self.start_time = perf_counter()
-
-    def start(self):
-        """Start new timer."""
-        self.start_time = perf_counter()
-
-    def duration(self):
-        """Return the duration since instantiation or start() was last called."""
-        return perf_counter() - self.start_time
 
 
 class Fido:

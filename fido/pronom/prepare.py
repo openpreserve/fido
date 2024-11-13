@@ -12,10 +12,11 @@ from urllib.error import HTTPError
 from urllib.parse import urlparse
 from urllib.request import urlopen
 from xml.dom import minidom
-from xml.etree import ElementTree as ET
 
-from .char_handler import escape
-from .versions import get_local_versions
+from defusedxml import ElementTree as ET
+
+from fido.pronom.versions import get_local_versions
+from fido.utils.char_handler import escape
 
 FLG_INCOMPATIBLE = "__INCOMPATIBLE_SIG__"
 
@@ -126,10 +127,10 @@ class FormatInfo:
         """
         formats = []
         try:
-            zip = zipfile.ZipFile(self.pronom_files, "r")
-            for item in zip.infolist():
+            pronom_collection = zipfile.ZipFile(self.pronom_files, "r")
+            for item in pronom_collection.infolist():
                 try:
-                    stream = zip.open(item)
+                    stream = pronom_collection.open(item)
                     # Work is done here!
                     format_ = self.parse_pronom_xml(stream, puid_filter)
                     if format_ is not None:
@@ -138,12 +139,10 @@ class FormatInfo:
                     stream.close()
         finally:
             try:
-                zip.close()
+                pronom_collection.close()
             except Exception as e:
                 print(
-                    "An error occured loading '{0}' (exception: {1})".format(
-                        self.pronom_files, e
-                    ),
+                    "An error occured loading '{0}' (exception: {1})".format(self.pronom_files, e),
                     file=sys.stderr,
                 )
                 sys.exit()
@@ -182,62 +181,46 @@ class FormatInfo:
         pronom_format = pronom_root.find(TNA("report_format_detail/FileFormat"))
         fido_format = ET.Element("format")
         # Get the base Format information
-        for id in pronom_format.findall(TNA("FileFormatIdentifier")):
-            type = get_text_tna(id, "IdentifierType")
-            if type == "PUID":
-                puid = get_text_tna(id, "Identifier")
+        for xml_id in pronom_format.findall(TNA("FileFormatIdentifier")):
+            xml_id_type = get_text_tna(xml_id, "IdentifierType")
+            if xml_id_type == "PUID":
+                puid = get_text_tna(xml_id, "Identifier")
                 ET.SubElement(fido_format, "puid").text = puid
                 if puid_filter and puid != puid_filter:
                     return None
         # A bit clumsy.  I want to have puid first, then mime, then container.
-        for id in pronom_format.findall(TNA("FileFormatIdentifier")):
-            type = get_text_tna(id, "IdentifierType")
-            if type == "MIME":
-                ET.SubElement(fido_format, "mime").text = get_text_tna(id, "Identifier")
-            elif type == "PUID":
-                puid = get_text_tna(id, "Identifier")
+        for xml_id in pronom_format.findall(TNA("FileFormatIdentifier")):
+            xml_id_type = get_text_tna(xml_id, "IdentifierType")
+            if xml_id_type == "MIME":
+                ET.SubElement(fido_format, "mime").text = get_text_tna(xml_id, "Identifier")
+            elif xml_id_type == "PUID":
+                puid = get_text_tna(xml_id, "Identifier")
                 if puid == "x-fmt/263":
                     ET.SubElement(fido_format, "container").text = "zip"
                 elif puid == "x-fmt/265":
                     ET.SubElement(fido_format, "container").text = "tar"
-        ET.SubElement(fido_format, "name").text = get_text_tna(
-            pronom_format, "FormatName"
-        )
-        ET.SubElement(fido_format, "version").text = get_text_tna(
-            pronom_format, "FormatVersion"
-        )
-        ET.SubElement(fido_format, "alias").text = get_text_tna(
-            pronom_format, "FormatAliases"
-        )
-        ET.SubElement(fido_format, "pronom_id").text = get_text_tna(
-            pronom_format, "FormatID"
-        )
+        ET.SubElement(fido_format, "name").text = get_text_tna(pronom_format, "FormatName")
+        ET.SubElement(fido_format, "version").text = get_text_tna(pronom_format, "FormatVersion")
+        ET.SubElement(fido_format, "alias").text = get_text_tna(pronom_format, "FormatAliases")
+        ET.SubElement(fido_format, "pronom_id").text = get_text_tna(pronom_format, "FormatID")
         # Get the extensions from the ExternalSignature
         for x in pronom_format.findall(TNA("ExternalSignature")):
             ET.SubElement(fido_format, "extension").text = get_text_tna(x, "Signature")
-        for id in pronom_format.findall(TNA("FileFormatIdentifier")):
-            type = get_text_tna(id, "IdentifierType")
-            if type == "Apple Uniform Type Identifier":
-                ET.SubElement(fido_format, "apple_uti").text = get_text_tna(
-                    id, "Identifier"
-                )
+        for xml_id in pronom_format.findall(TNA("FileFormatIdentifier")):
+            xml_id_type = get_text_tna(xml_id, "IdentifierType")
+            if xml_id_type == "Apple Uniform Type Identifier":
+                ET.SubElement(fido_format, "apple_uti").text = get_text_tna(xml_id, "Identifier")
         # Handle the relationships
         for x in pronom_format.findall(TNA("RelatedFormat")):
             rel = get_text_tna(x, "RelationshipType")
             if rel == "Has priority over":
-                ET.SubElement(fido_format, "has_priority_over").text = get_text_tna(
-                    x, "RelatedFormatID"
-                )
+                ET.SubElement(fido_format, "has_priority_over").text = get_text_tna(x, "RelatedFormatID")
         # Get the InternalSignature information
         for pronom_sig in pronom_format.findall(TNA("InternalSignature")):
             fido_sig = ET.SubElement(fido_format, "signature")
-            ET.SubElement(fido_sig, "name").text = get_text_tna(
-                pronom_sig, "SignatureName"
-            )
+            ET.SubElement(fido_sig, "name").text = get_text_tna(pronom_sig, "SignatureName")
             # There are some funny chars in the notes, which caused me trouble and it is a unicode string,
-            ET.SubElement(fido_sig, "note").text = get_text_tna(
-                pronom_sig, "SignatureNote"
-            )
+            ET.SubElement(fido_sig, "note").text = get_text_tna(pronom_sig, "SignatureNote")
             for pronom_pat in pronom_sig.findall(TNA("ByteSequence")):
                 # print('Parsing ID:{}'.format(puid))
                 fido_pat = ET.SubElement(fido_sig, "pattern")
@@ -249,14 +232,10 @@ class FormatInfo:
                     pass
                 # print "working on puid:", puid, ", position: ", pos, "with offset, maxoffset: ", offset, ",", max_offset
                 try:
-                    regex = convert_to_regex(
-                        byte_seq, "Little", pos, offset, max_offset
-                    )
+                    regex = convert_to_regex(byte_seq, "Little", pos, offset, max_offset)
                 except ValueError as ve:
                     print(
-                        "ValueError converting PUID {} signature to regex: {}".format(
-                            puid, ve
-                        ),
+                        "ValueError converting PUID {} signature to regex: {}".format(puid, ve),
                         file=sys.stderr,
                     )
                     regex = FLG_INCOMPATIBLE
@@ -264,9 +243,7 @@ class FormatInfo:
                 # print "done puid", puid
                 if regex == FLG_INCOMPATIBLE:
                     print(
-                        "Error: incompatible PRONOM signature found for puid {} skipping...".format(
-                            puid
-                        ),
+                        "Error: incompatible PRONOM signature found for puid {} skipping...".format(puid),
                         file=sys.stderr,
                     )
                     # remove the empty 'signature' nodes
@@ -280,80 +257,54 @@ class FormatInfo:
                 ET.SubElement(fido_pat, "regex").text = regex
         # Get the format details
         fido_details = ET.SubElement(fido_format, "details")
-        ET.SubElement(fido_details, "dc:description").text = get_text_tna(
-            pronom_format, "FormatDescription"
-        )
-        ET.SubElement(fido_details, "dcterms:available").text = get_text_tna(
-            pronom_format, "ReleaseDate"
-        )
-        ET.SubElement(fido_details, "dc:creator").text = get_text_tna(
-            pronom_format, "Developers/DeveloperCompoundName"
-        )
+        ET.SubElement(fido_details, "dc:description").text = get_text_tna(pronom_format, "FormatDescription")
+        ET.SubElement(fido_details, "dcterms:available").text = get_text_tna(pronom_format, "ReleaseDate")
+        ET.SubElement(fido_details, "dc:creator").text = get_text_tna(pronom_format, "Developers/DeveloperCompoundName")
         ET.SubElement(fido_details, "dcterms:publisher").text = get_text_tna(
             pronom_format, "Developers/OrganisationName"
         )
         for x in pronom_format.findall(TNA("RelatedFormat")):
             rel = get_text_tna(x, "RelationshipType")
             if rel == "Is supertype of":
-                ET.SubElement(fido_details, "is_supertype_of").text = get_text_tna(
-                    x, "RelatedFormatID"
-                )
+                ET.SubElement(fido_details, "is_supertype_of").text = get_text_tna(x, "RelatedFormatID")
         for x in pronom_format.findall(TNA("RelatedFormat")):
             rel = get_text_tna(x, "RelationshipType")
             if rel == "Is subtype of":
-                ET.SubElement(fido_details, "is_subtype_of").text = get_text_tna(
-                    x, "RelatedFormatID"
-                )
-        ET.SubElement(fido_details, "content_type").text = get_text_tna(
-            pronom_format, "FormatTypes"
-        )
+                ET.SubElement(fido_details, "is_subtype_of").text = get_text_tna(x, "RelatedFormatID")
+        ET.SubElement(fido_details, "content_type").text = get_text_tna(pronom_format, "FormatTypes")
         # References
         for x in pronom_format.findall(TNA("Document")):
             r = ET.SubElement(fido_details, "reference")
             ET.SubElement(r, "dc:title").text = get_text_tna(x, "TitleText")
-            ET.SubElement(r, "dc:creator").text = get_text_tna(
-                x, "Author/AuthorCompoundName"
-            )
-            ET.SubElement(r, "dc:publisher").text = get_text_tna(
-                x, "Publisher/PublisherCompoundName"
-            )
-            ET.SubElement(r, "dcterms:available").text = get_text_tna(
-                x, "PublicationDate"
-            )
-            for id in x.findall(TNA("DocumentIdentifier")):
-                type = get_text_tna(id, "IdentifierType")
-                if type == "URL":
-                    ET.SubElement(r, "dc:identifier").text = "http://" + get_text_tna(
-                        id, "Identifier"
-                    )
+            ET.SubElement(r, "dc:creator").text = get_text_tna(x, "Author/AuthorCompoundName")
+            ET.SubElement(r, "dc:publisher").text = get_text_tna(x, "Publisher/PublisherCompoundName")
+            ET.SubElement(r, "dcterms:available").text = get_text_tna(x, "PublicationDate")
+            for xml_id in x.findall(TNA("DocumentIdentifier")):
+                xml_id_type = get_text_tna(xml_id, "IdentifierType")
+                if xml_id_type == "URL":
+                    ET.SubElement(r, "dc:identifier").text = "http://" + get_text_tna(xml_id, "Identifier")
                 else:
                     ET.SubElement(r, "dc:identifier").text = (
-                        get_text_tna(id, "IdentifierType")
-                        + ":"
-                        + get_text_tna(id, "Identifier")
+                        get_text_tna(xml_id, "IdentifierType") + ":" + get_text_tna(xml_id, "Identifier")
                     )
             ET.SubElement(r, "dc:description").text = get_text_tna(x, "DocumentNote")
             ET.SubElement(r, "dc:type").text = get_text_tna(x, "DocumentType")
             ET.SubElement(r, "dcterms:license").text = (
-                get_text_tna(x, "AvailabilityDescription")
-                + " "
-                + get_text_tna(x, "AvailabilityNote")
+                get_text_tna(x, "AvailabilityDescription") + " " + get_text_tna(x, "AvailabilityNote")
             )
             ET.SubElement(r, "dc:rights").text = get_text_tna(x, "DocumentIPR")
         # Examples
         for x in pronom_format.findall(TNA("ReferenceFile")):
             rf = ET.SubElement(fido_details, "example_file")
             ET.SubElement(rf, "dc:title").text = get_text_tna(x, "ReferenceFileName")
-            ET.SubElement(rf, "dc:description").text = get_text_tna(
-                x, "ReferenceFileDescription"
-            )
+            ET.SubElement(rf, "dc:description").text = get_text_tna(x, "ReferenceFileDescription")
             checksum = ""
-            for id in x.findall(TNA("ReferenceFileIdentifier")):
-                type = get_text_tna(id, "IdentifierType")
-                if type == "URL":
+            for xml_id in x.findall(TNA("ReferenceFileIdentifier")):
+                xml_id_type = get_text_tna(xml_id, "IdentifierType")
+                if xml_id_type == "URL":
                     # Starting with PRONOM 89, some URLs contain http://
                     # and others do not.
-                    url = get_text_tna(id, "Identifier")
+                    url = get_text_tna(xml_id, "Identifier")
                     if not urlparse(url).scheme:
                         url = "http://" + url
                     ET.SubElement(rf, "dc:identifier").text = url
@@ -364,20 +315,14 @@ class FormatInfo:
                         m.update(sock.read())
                         sock.close()
                     except HTTPError as http_excep:
-                        sys.stderr.write(
-                            "HTTP {} error loading resource {}\n".format(
-                                http_excep.code, url
-                            )
-                        )
+                        sys.stderr.write("HTTP {} error loading resource {}\n".format(http_excep.code, url))
                         if http_excep.code == 404:
                             continue
 
                     checksum = m.hexdigest()
                 else:
                     ET.SubElement(rf, "dc:identifier").text = (
-                        get_text_tna(id, "IdentifierType")
-                        + ":"
-                        + get_text_tna(id, "Identifier")
+                        get_text_tna(xml_id, "IdentifierType") + ":" + get_text_tna(xml_id, "Identifier")
                     )
             ET.SubElement(rf, "dcterms:license").text = ""
             ET.SubElement(rf, "dc:rights").text = get_text_tna(x, "ReferenceFileIPR")
@@ -387,18 +332,10 @@ class FormatInfo:
         # Record Metadata
         md = ET.SubElement(fido_details, "record_metadata")
         ET.SubElement(md, "status").text = "unknown"
-        ET.SubElement(md, "dc:creator").text = get_text_tna(
-            pronom_format, "ProvenanceName"
-        )
-        ET.SubElement(md, "dcterms:created").text = get_text_tna(
-            pronom_format, "ProvenanceSourceDate"
-        )
-        ET.SubElement(md, "dcterms:modified").text = get_text_tna(
-            pronom_format, "LastUpdatedDate"
-        )
-        ET.SubElement(md, "dc:description").text = get_text_tna(
-            pronom_format, "ProvenanceDescription"
-        )
+        ET.SubElement(md, "dc:creator").text = get_text_tna(pronom_format, "ProvenanceName")
+        ET.SubElement(md, "dcterms:created").text = get_text_tna(pronom_format, "ProvenanceSourceDate")
+        ET.SubElement(md, "dcterms:modified").text = get_text_tna(pronom_format, "LastUpdatedDate")
+        ET.SubElement(md, "dc:description").text = get_text_tna(pronom_format, "ProvenanceDescription")
         return fido_format
 
     # FIXME: I don't think that this quite works yet!
@@ -485,9 +422,7 @@ def do_byte(chars, i, littleendian, esc=True):
     c2 = "0123456789ABCDEF".find(chars[i + 1].upper())
     buf = StringIO()
     if c1 < 0 or c2 < 0:
-        raise Exception(
-            _convert_err_msg("bad byte sequence", chars[i : i + 2], i, chars, buf)
-        )
+        raise Exception(_convert_err_msg("bad byte sequence", chars[i : i + 2], i, chars, buf))
     if littleendian:
         val = chr(16 * c1 + c2)
     else:
@@ -553,16 +488,12 @@ def calculate_repetition(char, pos, offset, maxoffset):
 
 def do_all_bitmasks(chars, i, littleendian):
     """(byte & bitmask) == bitmask."""
-    return do_any_all_bitmasks(
-        chars, i, lambda byt, bitmask: ((byt & bitmask) == bitmask), littleendian
-    )
+    return do_any_all_bitmasks(chars, i, lambda byt, bitmask: ((byt & bitmask) == bitmask), littleendian)
 
 
 def do_any_bitmasks(chars, i, littleendian):
     """(byte & bitmask) != 0."""
-    return do_any_all_bitmasks(
-        chars, i, lambda byt, bitmask: ((byt & bitmask) != 0), littleendian
-    )
+    return do_any_all_bitmasks(chars, i, lambda byt, bitmask: ((byt & bitmask) != 0), littleendian)
 
 
 def do_any_all_bitmasks(chars, i, predicate, littleendian):
@@ -581,13 +512,7 @@ def do_any_all_bitmasks(chars, i, predicate, littleendian):
     byt, inc = do_byte(chars, i + 1, littleendian, esc=False)
     bitmask = ord(byt)
     regex = "({})".format(
-        "|".join(
-            [
-                "\\x" + hex(byte)[2:].zfill(2)
-                for byte in range(0x100)
-                if predicate(byte, bitmask)
-            ]
-        )
+        "|".join(["\\x" + hex(byte)[2:].zfill(2) for byte in range(0x100) if predicate(byte, bitmask)])
     )
     return regex, inc + 1
 
@@ -645,11 +570,7 @@ def convert_to_regex(chars, endianness="", pos="BOF", offset="0", maxoffset=""):
             elif chars[i] in "*+?":
                 state = "specials"
             else:
-                raise ValueError(
-                    _convert_err_msg(
-                        "Illegal character in start", chars[i], i, chars, buf
-                    )
-                )
+                raise ValueError(_convert_err_msg("Illegal character in start", chars[i], i, chars, buf))
         elif state == "bytes":
             (byt, inc) = do_byte(chars, i, littleendian)
             buf.write(byt)
@@ -684,11 +605,7 @@ def convert_to_regex(chars, endianness="", pos="BOF", offset="0", maxoffset=""):
                 elif chars[i] == "]":
                     break
                 else:
-                    raise Exception(
-                        _convert_err_msg(
-                            "Illegal character in non-match", chars[i], i, chars, buf
-                        )
-                    )
+                    raise Exception(_convert_err_msg("Illegal character in non-match", chars[i], i, chars, buf))
             buf.write(")")
             i += 1
             state = "start"
@@ -714,11 +631,7 @@ def convert_to_regex(chars, endianness="", pos="BOF", offset="0", maxoffset=""):
                 buf.write("]")
                 i += 1
             except Exception:
-                print(
-                    _convert_err_msg(
-                        "Illegal character in bracket", chars[i], i, chars, buf
-                    )
-                )
+                print(_convert_err_msg("Illegal character in bracket", chars[i], i, chars, buf))
                 raise
             if i < len(chars) and chars[i] == "{":
                 state = "curly-after-bracket"
@@ -761,9 +674,7 @@ def convert_to_regex(chars, endianness="", pos="BOF", offset="0", maxoffset=""):
                 else:
                     raise Exception(
                         _convert_err_msg(
-                            (
-                                "Current state = '{0}' : Illegal character in paren"
-                            ).format(state),
+                            ("Current state = '{0}' : Illegal character in paren").format(state),
                             chars[i],
                             i,
                             chars,
@@ -796,11 +707,7 @@ def convert_to_regex(chars, endianness="", pos="BOF", offset="0", maxoffset=""):
                 elif chars[i] == "}":
                     break
                 else:
-                    raise Exception(
-                        _convert_err_msg(
-                            "Illegal character in curly", chars[i], i, chars, buf
-                        )
-                    )
+                    raise Exception(_convert_err_msg("Illegal character in curly", chars[i], i, chars, buf))
             buf.write("}")
             i += 1  # skip the )
             state = "start"
@@ -813,11 +720,7 @@ def convert_to_regex(chars, endianness="", pos="BOF", offset="0", maxoffset=""):
                 i += 1
             elif chars[i] == "?":
                 if chars[i + 1] != "?":
-                    raise Exception(
-                        _convert_err_msg(
-                            "Illegal character after ?", chars[i + 1], i + 1, chars, buf
-                        )
-                    )
+                    raise Exception(_convert_err_msg("Illegal character after ?", chars[i + 1], i + 1, chars, buf))
                 buf.write(".?")
                 i += 2
             state = "start"
@@ -833,18 +736,18 @@ def convert_to_regex(chars, endianness="", pos="BOF", offset="0", maxoffset=""):
     return val
 
 
-def run(input=None, output=None, puid=None):
+def run(input_file=None, output_file=None, puid=None):
     """Convert PRONOM formats into FIDO signatures."""
     versions = get_local_versions()
 
-    if input is None:
-        input = versions.get_zip_file()
-    if output is None:
-        output = versions.get_signature_file()
+    if input_file is None:
+        input_file = versions.get_zip_file()
+    if output_file is None:
+        output_file = versions.get_signature_file()
 
-    info = FormatInfo(input)
+    info = FormatInfo(input_file)
     info.load_pronom_xml(puid)
-    info.save(output)
+    info.save(output_file)
     print(
         "Converted {0} PRONOM formats to FIDO signatures".format(len(info.formats)),
         file=sys.stderr,
@@ -856,19 +759,13 @@ def main(args=None):
     if args is None:
         args = sys.argv[1:]
 
-    parser = ArgumentParser(
-        description="Produce the FIDO format XML that is loaded at run-time"
-    )
-    parser.add_argument(
-        "-input", default=None, help="Input file, a Zip containing PRONOM XML files"
-    )
+    parser = ArgumentParser(description="Produce the FIDO format XML that is loaded at run-time")
+    parser.add_argument("-input", default=None, help="Input file, a Zip containing PRONOM XML files")
     parser.add_argument("-output", default=None, help="Output file")
-    parser.add_argument(
-        "-puid", default=None, help="A particular PUID record to extract"
-    )
+    parser.add_argument("-puid", default=None, help="A particular PUID record to extract")
     args = parser.parse_args(args)
 
-    run(input=args.input, output=args.output, puid=args.puid)
+    run(input_file=args.input, output_file=args.output, puid=args.puid)
 
 
 if __name__ == "__main__":
