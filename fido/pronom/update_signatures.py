@@ -19,8 +19,8 @@ import time
 import zipfile
 from argparse import ArgumentParser
 from shutil import rmtree
-from xml.etree import ElementTree as CET
 
+from defusedxml import ElementTree as CET
 from pronom.prepare import run as prepare_pronom_to_fido
 
 from fido import CONFIG_DIR, __version__

@@ -30,7 +30,8 @@ classifiers = [
 
 dependencies = [
     "olefile >= 0.46, < 1",
-    "requests",
+    "requests >= 2",
+    "defusedxml >= 0.7"
     ]
 
 [project.urls]

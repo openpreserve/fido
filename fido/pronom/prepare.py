@@ -12,7 +12,8 @@ from urllib.error import HTTPError
 from urllib.parse import urlparse
 from urllib.request import urlopen
 from xml.dom import minidom
-from xml.etree import ElementTree as ET
+
+from defusedxml import ElementTree as ET
 
 from fido.pronom.versions import get_local_versions
 from fido.utils.char_handler import escape
@@ -126,10 +127,10 @@ class FormatInfo:
         """
         formats = []
         try:
-            zip = zipfile.ZipFile(self.pronom_files, "r")
-            for item in zip.infolist():
+            pronom_collection = zipfile.ZipFile(self.pronom_files, "r")
+            for item in pronom_collection.infolist():
                 try:
-                    stream = zip.open(item)
+                    stream = pronom_collection.open(item)
                     # Work is done here!
                     format_ = self.parse_pronom_xml(stream, puid_filter)
                     if format_ is not None:
@@ -138,7 +139,7 @@ class FormatInfo:
                     stream.close()
         finally:
             try:
-                zip.close()
+                pronom_collection.close()
             except Exception as e:
                 print(
                     "An error occured loading '{0}' (exception: {1})".format(self.pronom_files, e),
@@ -180,20 +181,20 @@ class FormatInfo:
         pronom_format = pronom_root.find(TNA("report_format_detail/FileFormat"))
         fido_format = ET.Element("format")
         # Get the base Format information
-        for id in pronom_format.findall(TNA("FileFormatIdentifier")):
-            type = get_text_tna(id, "IdentifierType")
-            if type == "PUID":
-                puid = get_text_tna(id, "Identifier")
+        for xml_id in pronom_format.findall(TNA("FileFormatIdentifier")):
+            xml_id_type = get_text_tna(xml_id, "IdentifierType")
+            if xml_id_type == "PUID":
+                puid = get_text_tna(xml_id, "Identifier")
                 ET.SubElement(fido_format, "puid").text = puid
                 if puid_filter and puid != puid_filter:
                     return None
         # A bit clumsy.  I want to have puid first, then mime, then container.
-        for id in pronom_format.findall(TNA("FileFormatIdentifier")):
-            type = get_text_tna(id, "IdentifierType")
-            if type == "MIME":
-                ET.SubElement(fido_format, "mime").text = get_text_tna(id, "Identifier")
-            elif type == "PUID":
-                puid = get_text_tna(id, "Identifier")
+        for xml_id in pronom_format.findall(TNA("FileFormatIdentifier")):
+            xml_id_type = get_text_tna(xml_id, "IdentifierType")
+            if xml_id_type == "MIME":
+                ET.SubElement(fido_format, "mime").text = get_text_tna(xml_id, "Identifier")
+            elif xml_id_type == "PUID":
+                puid = get_text_tna(xml_id, "Identifier")
                 if puid == "x-fmt/263":
                     ET.SubElement(fido_format, "container").text = "zip"
                 elif puid == "x-fmt/265":
@@ -205,10 +206,10 @@ class FormatInfo:
         # Get the extensions from the ExternalSignature
         for x in pronom_format.findall(TNA("ExternalSignature")):
             ET.SubElement(fido_format, "extension").text = get_text_tna(x, "Signature")
-        for id in pronom_format.findall(TNA("FileFormatIdentifier")):
-            type = get_text_tna(id, "IdentifierType")
-            if type == "Apple Uniform Type Identifier":
-                ET.SubElement(fido_format, "apple_uti").text = get_text_tna(id, "Identifier")
+        for xml_id in pronom_format.findall(TNA("FileFormatIdentifier")):
+            xml_id_type = get_text_tna(xml_id, "IdentifierType")
+            if xml_id_type == "Apple Uniform Type Identifier":
+                ET.SubElement(fido_format, "apple_uti").text = get_text_tna(xml_id, "Identifier")
         # Handle the relationships
         for x in pronom_format.findall(TNA("RelatedFormat")):
             rel = get_text_tna(x, "RelationshipType")
@@ -278,13 +279,13 @@ class FormatInfo:
             ET.SubElement(r, "dc:creator").text = get_text_tna(x, "Author/AuthorCompoundName")
             ET.SubElement(r, "dc:publisher").text = get_text_tna(x, "Publisher/PublisherCompoundName")
             ET.SubElement(r, "dcterms:available").text = get_text_tna(x, "PublicationDate")
-            for id in x.findall(TNA("DocumentIdentifier")):
-                type = get_text_tna(id, "IdentifierType")
-                if type == "URL":
-                    ET.SubElement(r, "dc:identifier").text = "http://" + get_text_tna(id, "Identifier")
+            for xml_id in x.findall(TNA("DocumentIdentifier")):
+                xml_id_type = get_text_tna(xml_id, "IdentifierType")
+                if xml_id_type == "URL":
+                    ET.SubElement(r, "dc:identifier").text = "http://" + get_text_tna(xml_id, "Identifier")
                 else:
                     ET.SubElement(r, "dc:identifier").text = (
-                        get_text_tna(id, "IdentifierType") + ":" + get_text_tna(id, "Identifier")
+                        get_text_tna(xml_id, "IdentifierType") + ":" + get_text_tna(xml_id, "Identifier")
                     )
             ET.SubElement(r, "dc:description").text = get_text_tna(x, "DocumentNote")
             ET.SubElement(r, "dc:type").text = get_text_tna(x, "DocumentType")
@@ -298,12 +299,12 @@ class FormatInfo:
             ET.SubElement(rf, "dc:title").text = get_text_tna(x, "ReferenceFileName")
             ET.SubElement(rf, "dc:description").text = get_text_tna(x, "ReferenceFileDescription")
             checksum = ""
-            for id in x.findall(TNA("ReferenceFileIdentifier")):
-                type = get_text_tna(id, "IdentifierType")
-                if type == "URL":
+            for xml_id in x.findall(TNA("ReferenceFileIdentifier")):
+                xml_id_type = get_text_tna(xml_id, "IdentifierType")
+                if xml_id_type == "URL":
                     # Starting with PRONOM 89, some URLs contain http://
                     # and others do not.
-                    url = get_text_tna(id, "Identifier")
+                    url = get_text_tna(xml_id, "Identifier")
                     if not urlparse(url).scheme:
                         url = "http://" + url
                     ET.SubElement(rf, "dc:identifier").text = url
@@ -321,7 +322,7 @@ class FormatInfo:
                     checksum = m.hexdigest()
                 else:
                     ET.SubElement(rf, "dc:identifier").text = (
-                        get_text_tna(id, "IdentifierType") + ":" + get_text_tna(id, "Identifier")
+                        get_text_tna(xml_id, "IdentifierType") + ":" + get_text_tna(xml_id, "Identifier")
                     )
             ET.SubElement(rf, "dcterms:license").text = ""
             ET.SubElement(rf, "dc:rights").text = get_text_tna(x, "ReferenceFileIPR")
@@ -735,18 +736,18 @@ def convert_to_regex(chars, endianness="", pos="BOF", offset="0", maxoffset=""):
     return val
 
 
-def run(input=None, output=None, puid=None):
+def run(input_file=None, output_file=None, puid=None):
     """Convert PRONOM formats into FIDO signatures."""
     versions = get_local_versions()
 
-    if input is None:
-        input = versions.get_zip_file()
-    if output is None:
-        output = versions.get_signature_file()
+    if input_file is None:
+        input_file = versions.get_zip_file()
+    if output_file is None:
+        output_file = versions.get_signature_file()
 
-    info = FormatInfo(input)
+    info = FormatInfo(input_file)
     info.load_pronom_xml(puid)
-    info.save(output)
+    info.save(output_file)
     print(
         "Converted {0} PRONOM formats to FIDO signatures".format(len(info.formats)),
         file=sys.stderr,
@@ -764,7 +765,7 @@ def main(args=None):
     parser.add_argument("-puid", default=None, help="A particular PUID record to extract")
     args = parser.parse_args(args)
 
-    run(input=args.input, output=args.output, puid=args.puid)
+    run(input_file=args.input, output_file=args.output, puid=args.puid)
 
 
 if __name__ == "__main__":
