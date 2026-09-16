@@ -1,8 +1,11 @@
+import os
 import re
 
 import pytest
 
-from fido.prepare import convert_to_regex
+from fido.prepare import FormatInfo, absolute_max_offset, convert_to_regex
+
+PRONOM_RECORDS = os.path.join(os.path.dirname(__file__), 'fixtures', 'pronom')
 
 
 def binrep_convert(byt):
@@ -94,3 +97,57 @@ def test_heterogenous_sequences(pronom_bytesequence, input_, matches_bool):
         assert re.search(patt, input_)
     else:
         assert not re.search(patt, input_)
+
+
+def converted_patterns(record_name):
+    """Convert a real PRONOM v125 record and return its (position, regex) pairs."""
+    with open(os.path.join(PRONOM_RECORDS, record_name), 'rb') as record:
+        fido_format = FormatInfo(None).parse_pronom_xml(record)
+    return [(pattern.findtext('position'), pattern.findtext('regex')) for pattern in fido_format.iter('pattern')]
+
+
+@pytest.mark.parametrize(
+    ('offset', 'max_offset', 'expected'),
+    (
+        ('3000', '700', '3700'),
+        ('1', '2', '3'),
+        ('0', '8', '8'),
+        ('', '5', '5'),
+        ('4', '', ''),
+        ('4', '0', '0'),
+    )
+)
+def test_absolute_max_offset(offset, max_offset, expected):
+    assert absolute_max_offset(offset, max_offset) == expected
+
+
+def test_bof_window_runs_from_offset_to_offset_plus_max_offset():
+    """fmt/1202 has Offset 1 and MaxOffset 2, so DROID matches its sequence at offsets 1 to 3."""
+    [(position, regex)] = converted_patterns('puid.fmt.1202.xml')
+    sequence = 'GUYMAGER ACQUISITION INFO FILE'
+    assert position == 'BOF'
+    for offset in (1, 2, 3):
+        assert re.search(regex, '\x00' * offset + sequence), 'expected a match at offset {}'.format(offset)
+    for offset in (0, 4):
+        assert not re.search(regex, '\x00' * offset + sequence), 'expected no match at offset {}'.format(offset)
+
+
+def test_max_offset_below_offset_converts_to_a_valid_regex():
+    """fmt/1558 has Offset 3000 and MaxOffset 700, which used to convert to the invalid .{3000,700}."""
+    [(position, regex)] = converted_patterns('puid.fmt.1558.xml')
+    sequence = 'C64/C128 SELF EXTRACTING LHARCHIVE'
+    re.compile(regex)
+    for offset in (3000, 3370, 3700):
+        assert re.search(regex, '\x00' * offset + sequence), 'expected a match at offset {}'.format(offset)
+    for offset in (2999, 3701):
+        assert not re.search(regex, '\x00' * offset + sequence), 'expected no match at offset {}'.format(offset)
+
+
+def test_eof_window_runs_from_offset_to_offset_plus_max_offset():
+    """fmt/1646's EOF sequence has Offset 109 and MaxOffset 11, so it ends 109 to 120 bytes before EOF."""
+    regex = dict(converted_patterns('puid.fmt.1646.xml'))['EOF']
+    sequence = '\x02\xff\xfe\xff\x05A\x00r\x00i\x00a\x00l'
+    for trailing in (109, 115, 120):
+        assert re.search(regex, sequence + '\x00' * trailing), 'expected a match {} bytes before EOF'.format(trailing)
+    for trailing in (108, 121):
+        assert not re.search(regex, sequence + '\x00' * trailing), 'expected no match {} bytes before EOF'.format(trailing)

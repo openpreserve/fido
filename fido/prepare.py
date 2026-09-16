@@ -216,9 +216,7 @@ class FormatInfo:
                 pos = fido_position(get_text_tna(pronom_pat, 'PositionType'))
                 byte_seq = get_text_tna(pronom_pat, 'ByteSequenceValue')
                 offset = get_text_tna(pronom_pat, 'Offset')
-                max_offset = get_text_tna(pronom_pat, 'MaxOffset')
-                if not max_offset:
-                    pass
+                max_offset = absolute_max_offset(offset, get_text_tna(pronom_pat, 'MaxOffset'))
                 # print "working on puid:", puid, ", position: ", pos, "with offset, maxoffset: ", offset, ",", max_offset
                 try:
                     regex = convert_to_regex(byte_seq, 'Little', pos, offset, max_offset)
@@ -361,6 +359,20 @@ def _cmp_to_key(mycmp):
             return mycmp(self.obj, other.obj) != 0
 
     return K
+
+
+def absolute_max_offset(offset, max_offset):
+    """
+    Return a PRONOM MaxOffset as an absolute offset.
+
+    PRONOM records MaxOffset relative to Offset: DROID matches a sequence
+    between Offset and Offset + MaxOffset, while convert_to_regex takes the
+    absolute bound. An empty or zero MaxOffset means no range and is returned
+    unchanged.
+    """
+    if not max_offset or max_offset == '0':
+        return max_offset
+    return str(int(offset or '0') + int(max_offset))
 
 
 def fido_position(pronom_position):
