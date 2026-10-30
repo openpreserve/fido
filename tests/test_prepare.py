@@ -1,3 +1,4 @@
+import os
 import re
 from types import SimpleNamespace
 from xml.etree import ElementTree as XET
@@ -8,7 +9,9 @@ import urllib.error
 import pytest
 
 from fido.pronom import prepare
-from fido.pronom.prepare import convert_to_regex
+from fido.pronom.prepare import absolute_max_offset, convert_to_regex
+
+TEST_DATA_PRONOM = os.path.normpath(os.path.join(__file__, "..", "test_data/pronom"))
 
 
 def binrep_convert(byt):
@@ -545,3 +548,64 @@ def test_parse_pronom_xml_reference_file_http_non_404_uses_empty_hash(monkeypatc
     checksum = result.find("details/example_file/checksum")
     assert checksum.text == hashlib.md5(b"").hexdigest()
     assert "HTTP 500 error loading resource" in capsys.readouterr().err
+
+
+def converted_patterns(monkeypatch, record_name):
+    """Convert a real PRONOM v125 record and return its (position, regex) pairs."""
+    monkeypatch.setattr(prepare, "ET", XET)
+    info = prepare.FormatInfo("dummy.zip")
+    with open(os.path.join(TEST_DATA_PRONOM, record_name), "rb") as record:
+        fido_format = info.parse_pronom_xml(record)
+    return [
+        (pattern.findtext("position"), pattern.findtext("regex"))
+        for pattern in fido_format.iter("pattern")
+    ]
+
+
+@pytest.mark.parametrize(
+    ("offset", "max_offset", "expected"),
+    (
+        ("3000", "700", "3700"),
+        ("1", "2", "3"),
+        ("0", "8", "8"),
+        ("", "5", "5"),
+        ("4", "", ""),
+        ("4", "0", "0"),
+    ),
+)
+def test_absolute_max_offset(offset, max_offset, expected):
+    assert absolute_max_offset(offset, max_offset) == expected
+
+
+def test_bof_window_runs_from_offset_to_offset_plus_max_offset(monkeypatch):
+    """fmt/1202 has Offset 1 and MaxOffset 2, so DROID matches its sequence at offsets 1 to 3."""
+    [(position, regex)] = converted_patterns(monkeypatch, "puid.fmt.1202.xml")
+    sequence = "GUYMAGER ACQUISITION INFO FILE"
+    assert position == "BOF"
+    for offset in (1, 2, 3):
+        assert re.search(regex, "\x00" * offset + sequence), "expected a match at offset {}".format(offset)
+    for offset in (0, 4):
+        assert not re.search(regex, "\x00" * offset + sequence), "expected no match at offset {}".format(offset)
+
+
+def test_max_offset_below_offset_converts_to_a_valid_regex(monkeypatch):
+    """fmt/1558 has Offset 3000 and MaxOffset 700, which used to convert to the invalid .{3000,700}."""
+    [(position, regex)] = converted_patterns(monkeypatch, "puid.fmt.1558.xml")
+    sequence = "C64/C128 SELF EXTRACTING LHARCHIVE"
+    re.compile(regex)
+    for offset in (3000, 3370, 3700):
+        assert re.search(regex, "\x00" * offset + sequence), "expected a match at offset {}".format(offset)
+    for offset in (2999, 3701):
+        assert not re.search(regex, "\x00" * offset + sequence), "expected no match at offset {}".format(offset)
+
+
+def test_eof_window_runs_from_offset_to_offset_plus_max_offset(monkeypatch):
+    """fmt/1646's EOF sequence has Offset 109 and MaxOffset 11, so it ends 109 to 120 bytes before EOF."""
+    regex = dict(converted_patterns(monkeypatch, "puid.fmt.1646.xml"))["EOF"]
+    sequence = "\x02\xff\xfe\xff\x05A\x00r\x00i\x00a\x00l"
+    for trailing in (109, 115, 120):
+        assert re.search(regex, sequence + "\x00" * trailing), "expected a match {} bytes before EOF".format(trailing)
+    for trailing in (108, 121):
+        assert not re.search(regex, sequence + "\x00" * trailing), "expected no match {} bytes before EOF".format(
+            trailing
+        )
