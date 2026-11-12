@@ -21,9 +21,9 @@ from argparse import ArgumentParser
 from shutil import rmtree
 
 from defusedxml import ElementTree as CET
-from pronom.prepare import run as prepare_pronom_to_fido
 
 from fido import CONFIG_DIR, __version__
+from fido.pronom.prepare import run as prepare_pronom_to_fido
 from fido.pronom.soap import (
     NS,
     get_droid_signatures,

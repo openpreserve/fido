@@ -1,22 +1,30 @@
 import importlib
 import os
+import subprocess
 import sys
-from types import ModuleType, SimpleNamespace
+from types import SimpleNamespace
 
 import pytest
 
 
 @pytest.fixture
-def update_signatures_module(monkeypatch):
-    fake_pronom = ModuleType("pronom")
-    fake_prepare = ModuleType("pronom.prepare")
-    fake_prepare.run = lambda: None
-    fake_pronom.prepare = fake_prepare
-
-    monkeypatch.setitem(sys.modules, "pronom", fake_pronom)
-    monkeypatch.setitem(sys.modules, "pronom.prepare", fake_prepare)
+def update_signatures_module():
     module = importlib.import_module("fido.pronom.update_signatures")
     return importlib.reload(module)
+
+
+@pytest.mark.parametrize(
+    "code",
+    (
+        # the fido-update-signatures entry point
+        "from fido.pronom.update_signatures import run",
+        # soap.py must import urllib.request itself, not rely on another module having done it
+        "import fido.pronom.soap as soap; soap.urllib.request.Request",
+    ),
+)
+def test_imports_work_in_a_fresh_interpreter(code):
+    result = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
 
 
 def test_get_puid_file_name(update_signatures_module):
