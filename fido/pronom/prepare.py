@@ -227,9 +227,9 @@ class FormatInfo:
                 pos = fido_position(get_text_tna(pronom_pat, "PositionType"))
                 byte_seq = get_text_tna(pronom_pat, "ByteSequenceValue")
                 offset = get_text_tna(pronom_pat, "Offset")
-                max_offset = absolute_max_offset(offset, get_text_tna(pronom_pat, "MaxOffset"))
                 # print "working on puid:", puid, ", position: ", pos, "with offset, maxoffset: ", offset, ",", max_offset
                 try:
+                    max_offset = absolute_max_offset(offset, get_text_tna(pronom_pat, "MaxOffset"))
                     regex = convert_to_regex(byte_seq, "Little", pos, offset, max_offset)
                 except ValueError as ve:
                     print(

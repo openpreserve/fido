@@ -360,6 +360,20 @@ def test_parse_pronom_xml_skips_incompatible_signature(monkeypatch, capsys):
     assert "incompatible PRONOM signature found" in capsys.readouterr().err
 
 
+def test_parse_pronom_xml_skips_signature_with_non_numeric_max_offset(monkeypatch, capsys):
+    info = prepare.FormatInfo("dummy.zip")
+    monkeypatch.setattr(prepare, "ET", XET)
+    record = XET.fromstring(_minimal_pronom_xml(include_reference_url=False))
+    record.find(".//{http://pronom.nationalarchives.gov.uk}MaxOffset").text = "abc"
+
+    result = info.parse_pronom_xml(io.BytesIO(XET.tostring(record)))
+
+    assert result.findall("signature") == []
+    err = capsys.readouterr().err
+    assert "ValueError converting PUID x-fmt/263 signature to regex" in err
+    assert "incompatible PRONOM signature found" in err
+
+
 def test_prettify_outputs_xml_string():
     elem = XET.Element("root")
     XET.SubElement(elem, "child").text = "value"
