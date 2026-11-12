@@ -1921,7 +1921,7 @@ The file format specification is available: http://graphcomp.com/info/specs/live
       <pattern>
         <position>BOF</position>
         <pronom_pattern>D3A8A8</pronom_pattern>
-        <regex>(?s)\A.{2,2}\xd3\xa8\xa8</regex>
+        <regex>(?s)\A.{2,4}\xd3\xa8\xa8</regex>
       </pattern>
     </signature>
     <details>
@@ -10218,7 +10218,7 @@ Full specifications can be found at http://www.w3.org/TR/xmlschema-0/</dc:descri
       <pattern>
         <position>BOF</position>
         <pronom_pattern>FF99{100}4D500004</pronom_pattern>
-        <regex>(?s)\A.{6,6}\xff\x99.{100}MP\x00\x04</regex>
+        <regex>(?s)\A.{6,12}\xff\x99.{100}MP\x00\x04</regex>
       </pattern>
     </signature>
     <details>
@@ -12989,7 +12989,7 @@ http://www.adobe.com/devnet/articles/flashplayer-air-feature-list.html</dc:descr
       <pattern>
         <position>BOF</position>
         <pronom_pattern>6D6F6F76{0-4096}(6D766864|636D6F76|726D7261)</pronom_pattern>
-        <regex>(?s)\A.{4,4}moov.{0,4096}(?:mvhd|cmov|rmra)</regex>
+        <regex>(?s)\A.{4,8}moov.{0,4096}(?:mvhd|cmov|rmra)</regex>
       </pattern>
     </signature>
     <signature>
@@ -13001,7 +13001,7 @@ Variants 2-8 cover the following pattern, which would be desirable to consolidat
       <pattern>
         <position>BOF</position>
         <pronom_pattern>6D646174*6D6F6F76{0-4096}(6D766864|636D6F76|726D7261)</pronom_pattern>
-        <regex>(?s)\A.{4,4}mdat.*moov.{0,4096}(?:mvhd|cmov|rmra)</regex>
+        <regex>(?s)\A.{4,8}mdat.*moov.{0,4096}(?:mvhd|cmov|rmra)</regex>
       </pattern>
     </signature>
     <signature>
@@ -13010,7 +13010,7 @@ Variants 2-8 cover the following pattern, which would be desirable to consolidat
       <pattern>
         <position>BOF</position>
         <pronom_pattern>636D6F76*6D6F6F76{0-4096}(6D766864|636D6F76|726D7261)</pronom_pattern>
-        <regex>(?s)\A.{4,4}cmov.*moov.{0,4096}(?:mvhd|cmov|rmra)</regex>
+        <regex>(?s)\A.{4,8}cmov.*moov.{0,4096}(?:mvhd|cmov|rmra)</regex>
       </pattern>
     </signature>
     <signature>
@@ -13019,7 +13019,7 @@ Variants 2-8 cover the following pattern, which would be desirable to consolidat
       <pattern>
         <position>BOF</position>
         <pronom_pattern>6674797071742020</pronom_pattern>
-        <regex>(?s)\A.{4,4}ftypqt  </regex>
+        <regex>(?s)\A.{4,8}ftypqt  </regex>
       </pattern>
     </signature>
     <signature>
@@ -13028,7 +13028,7 @@ Variants 2-8 cover the following pattern, which would be desirable to consolidat
       <pattern>
         <position>BOF</position>
         <pronom_pattern>706E6F74*6D6F6F76{0-4096}(6D766864|636D6F76|726D7261)</pronom_pattern>
-        <regex>(?s)\A.{4,4}pnot.*moov.{0,4096}(?:mvhd|cmov|rmra)</regex>
+        <regex>(?s)\A.{4,8}pnot.*moov.{0,4096}(?:mvhd|cmov|rmra)</regex>
       </pattern>
     </signature>
     <signature>
@@ -13037,7 +13037,7 @@ Variants 2-8 cover the following pattern, which would be desirable to consolidat
       <pattern>
         <position>BOF</position>
         <pronom_pattern>736B6970*6D6F6F76{0-4096}(6D766864|636D6F76|726D7261)</pronom_pattern>
-        <regex>(?s)\A.{4,4}skip.*moov.{0,4096}(?:mvhd|cmov|rmra)</regex>
+        <regex>(?s)\A.{4,8}skip.*moov.{0,4096}(?:mvhd|cmov|rmra)</regex>
       </pattern>
     </signature>
     <signature>
@@ -13046,7 +13046,7 @@ Variants 2-8 cover the following pattern, which would be desirable to consolidat
       <pattern>
         <position>BOF</position>
         <pronom_pattern>66726565*6D6F6F76{0-4096}(6D766864|636D6F76|726D7261)</pronom_pattern>
-        <regex>(?s)\A.{4,4}free.*moov.{0,4096}(?:mvhd|cmov|rmra)</regex>
+        <regex>(?s)\A.{4,8}free.*moov.{0,4096}(?:mvhd|cmov|rmra)</regex>
       </pattern>
     </signature>
     <signature>
@@ -13055,7 +13055,7 @@ Variants 2-8 cover the following pattern, which would be desirable to consolidat
       <pattern>
         <position>BOF</position>
         <pronom_pattern>77696465*6D6F6F76{0-4096}(6D766864|636D6F76|726D7261)</pronom_pattern>
-        <regex>(?s)\A.{4,4}wide.*moov.{0,4096}(?:mvhd|cmov|rmra)</regex>
+        <regex>(?s)\A.{4,8}wide.*moov.{0,4096}(?:mvhd|cmov|rmra)</regex>
       </pattern>
     </signature>
     <details>
@@ -13669,7 +13669,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       <pattern>
         <position>BOF</position>
         <pronom_pattern>900000070000000430323230</pronom_pattern>
-        <regex>(?s)\A.{10,131072}\x90\x00\x00\x07\x00\x00\x00\x040220</regex>
+        <regex>(?s)\A.{10,131082}\x90\x00\x00\x07\x00\x00\x00\x040220</regex>
       </pattern>
     </signature>
     <signature>
@@ -13683,7 +13683,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       <pattern>
         <position>BOF</position>
         <pronom_pattern>009007000400000030323230</pronom_pattern>
-        <regex>(?s)\A.{10,131072}\x00\x90\x07\x00\x04\x00\x00\x000220</regex>
+        <regex>(?s)\A.{10,131082}\x00\x90\x07\x00\x04\x00\x00\x000220</regex>
       </pattern>
     </signature>
     <details>
@@ -13779,7 +13779,7 @@ EOF: EOI marker (FF|D9) with a large offset due to the amount of photoshop metad
       <pattern>
         <position>BOF</position>
         <pronom_pattern>009007000400000030323130</pronom_pattern>
-        <regex>(?s)\A.{10,65535}\x00\x90\x07\x00\x04\x00\x00\x000210</regex>
+        <regex>(?s)\A.{10,65545}\x00\x90\x07\x00\x04\x00\x00\x000210</regex>
       </pattern>
     </signature>
     <details>
@@ -17129,7 +17129,7 @@ http://www.openoffice.org/xml/xml_specification.pdf</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>009007000400000030323030</pronom_pattern>
-        <regex>(?s)\A.{10,65535}\x00\x90\x07\x00\x04\x00\x00\x000200</regex>
+        <regex>(?s)\A.{10,65545}\x00\x90\x07\x00\x04\x00\x00\x000200</regex>
       </pattern>
     </signature>
     <signature>
@@ -17143,7 +17143,7 @@ http://www.openoffice.org/xml/xml_specification.pdf</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>900000070000000430323030</pronom_pattern>
-        <regex>(?s)\A.{10,65535}\x90\x00\x00\x07\x00\x00\x00\x040200</regex>
+        <regex>(?s)\A.{10,65545}\x90\x00\x00\x07\x00\x00\x00\x040200</regex>
       </pattern>
     </signature>
     <details>
@@ -17905,7 +17905,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
       <pattern>
         <position>EOF</position>
         <pronom_pattern>504B0506</pronom_pattern>
-        <regex>(?s)PK\x05\x06.{18,65531}\Z</regex>
+        <regex>(?s)PK\x05\x06.{18,65549}\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -18763,7 +18763,7 @@ This version was published in February 2005 and corrected the flaws in the first
       <pattern>
         <position>EOF</position>
         <pronom_pattern>169201000400000000000001</pronom_pattern>
-        <regex>(?s)\x16\x92\x01\x00\x04\x00\x00\x00\x00\x00\x00\x01.{4,4084}\Z</regex>
+        <regex>(?s)\x16\x92\x01\x00\x04\x00\x00\x00\x00\x00\x00\x01.{4,4088}\Z</regex>
       </pattern>
     </signature>
     <signature>
@@ -18786,7 +18786,7 @@ This version was published in February 2005 and corrected the flaws in the first
       <pattern>
         <position>EOF</position>
         <pronom_pattern>921600010000000401000000</pronom_pattern>
-        <regex>(?s)\x92\x16\x00\x01\x00\x00\x00\x04\x01\x00\x00\x00.{4,4084}\Z</regex>
+        <regex>(?s)\x92\x16\x00\x01\x00\x00\x00\x04\x01\x00\x00\x00.{4,4088}\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -18838,7 +18838,7 @@ This version was published in February 2005 and corrected the flaws in the first
       <pattern>
         <position>EOF</position>
         <pronom_pattern>AF870300??000000</pronom_pattern>
-        <regex>(?s)\xaf\x87\x03\x00.?\x00\x00\x00.{4,4088}\Z</regex>
+        <regex>(?s)\xaf\x87\x03\x00.?\x00\x00\x00.{4,4092}\Z</regex>
       </pattern>
     </signature>
     <signature>
@@ -18861,7 +18861,7 @@ This version was published in February 2005 and corrected the flaws in the first
       <pattern>
         <position>EOF</position>
         <pronom_pattern>87AF0003000000</pronom_pattern>
-        <regex>(?s)\x87\xaf\x00\x03\x00\x00\x00.{5,4089}\Z</regex>
+        <regex>(?s)\x87\xaf\x00\x03\x00\x00\x00.{5,4094}\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -20202,7 +20202,7 @@ This version was published in February 2005 and corrected the flaws in the first
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4F532F32{0-256}636D6170{0-256}676C7966{0-256}68656164{0-256}68686561{0-256}686D7478{0-256}6C6F6361{0-256}6D617870{0-256}6E616D65{0-256}706F7374</pronom_pattern>
-        <regex>(?s)\A.{12,128}OS/2.{0,256}cmap.{0,256}glyf.{0,256}head.{0,256}hhea.{0,256}hmtx.{0,256}loca.{0,256}maxp.{0,256}name.{0,256}post</regex>
+        <regex>(?s)\A.{12,140}OS/2.{0,256}cmap.{0,256}glyf.{0,256}head.{0,256}hhea.{0,256}hmtx.{0,256}loca.{0,256}maxp.{0,256}name.{0,256}post</regex>
       </pattern>
     </signature>
     <details>
@@ -30422,7 +30422,7 @@ Beginning at byte 32768, an ISO file will hold two-to-many volume descriptors, e
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4344303031{1-16384}FF4344303031</pronom_pattern>
-        <regex>(?s)\A.{32700,37700}CD001.{1,16384}\xffCD001</regex>
+        <regex>(?s)\A.{32700,70400}CD001.{1,16384}\xffCD001</regex>
       </pattern>
     </signature>
     <details>
@@ -33016,7 +33016,7 @@ EOF IEND&#174;B`&#8218;</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>30(0D0A|0A|0D)53454354494F4E(0D0A|0A|0D)202032(0D0A|0A|0D)484541444552(0D0A|0A|0D)*39(0D0A|0A|0D)2441434144564552(0D0A|0A|0D)202031(0D0A|0A|0D)414331303237(0D0A|0A|0D)*30(0D0A|0A|0D)454E44534543(0D0A|0A|0D)</pronom_pattern>
-        <regex>(?s)\A.{1,5}0(?:\r\n|\n|\r)SECTION(?:\r\n|\n|\r)  2(?:\r\n|\n|\r)HEADER(?:\r\n|\n|\r).*9(?:\r\n|\n|\r)\$ACADVER(?:\r\n|\n|\r)  1(?:\r\n|\n|\r)AC1027(?:\r\n|\n|\r).*0(?:\r\n|\n|\r)ENDSEC(?:\r\n|\n|\r)</regex>
+        <regex>(?s)\A.{1,6}0(?:\r\n|\n|\r)SECTION(?:\r\n|\n|\r)  2(?:\r\n|\n|\r)HEADER(?:\r\n|\n|\r).*9(?:\r\n|\n|\r)\$ACADVER(?:\r\n|\n|\r)  1(?:\r\n|\n|\r)AC1027(?:\r\n|\n|\r).*0(?:\r\n|\n|\r)ENDSEC(?:\r\n|\n|\r)</regex>
       </pattern>
       <pattern>
         <position>EOF</position>
@@ -36854,7 +36854,7 @@ EOF: Svar {8-34} 030i (offset 8)</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}49</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}I</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}I</regex>
       </pattern>
     </signature>
     <signature>
@@ -36863,7 +36863,7 @@ EOF: Svar {8-34} 030i (offset 8)</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}49</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}I</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}I</regex>
       </pattern>
     </signature>
     <details>
@@ -36898,7 +36898,7 @@ EOF: Svar {8-34} 030i (offset 8)</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}43</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}C</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}C</regex>
       </pattern>
     </signature>
     <signature>
@@ -36907,7 +36907,7 @@ EOF: Svar {8-34} 030i (offset 8)</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}43</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}C</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}C</regex>
       </pattern>
     </signature>
     <details>
@@ -37842,7 +37842,7 @@ language and a fixed-document format.</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}46</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}F</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}F</regex>
       </pattern>
     </signature>
     <signature>
@@ -37851,7 +37851,7 @@ language and a fixed-document format.</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}46</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}F</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}F</regex>
       </pattern>
     </signature>
     <details>
@@ -44967,7 +44967,7 @@ The 'Route Section' describes the 'Basis Set' used, as listed here: http://www.g
       <pattern>
         <position>BOF</position>
         <pronom_pattern>(414D31|504D33|53544F2D3347|332D323147|332D323167|362D333147|362D333167|6175672D63632D7076747A){0-128}0A(2D31|30|31)(20|2C)[31:39]{1-128}[30:39]2E[30:39]{0-24}[30:39]2E[30:39]{0-24}[30:39]2E[30:39]</pronom_pattern>
-        <regex>(?s)\A.{1,128}(?:AM1|PM3|STO-3G|3-21G|3-21g|6-31G|6-31g|aug-cc-pvtz).{0,128}\n(?:-1|0|1)(?: |,)[1-9].{1,128}[0-9]\.[0-9].{0,24}[0-9]\.[0-9].{0,24}[0-9]\.[0-9]</regex>
+        <regex>(?s)\A.{1,129}(?:AM1|PM3|STO-3G|3-21G|3-21g|6-31G|6-31g|aug-cc-pvtz).{0,128}\n(?:-1|0|1)(?: |,)[1-9].{1,128}[0-9]\.[0-9].{0,24}[0-9]\.[0-9].{0,24}[0-9]\.[0-9]</regex>
       </pattern>
       <pattern>
         <position>BOF</position>
@@ -47245,7 +47245,7 @@ Schema: http://music-encoding.org/downloads/latest-release/</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>786D6C6E733D22687474703A2F2F7777772E6D757369632D656E636F64696E672E6F72672F6E732F6D6569</pronom_pattern>
-        <regex>(?s)\A.{20,512}xmlns="http://www\.music-encoding\.org/ns/mei</regex>
+        <regex>(?s)\A.{20,532}xmlns="http://www\.music-encoding\.org/ns/mei</regex>
       </pattern>
     </signature>
     <details>
@@ -47466,7 +47466,7 @@ Specification: https://www.khronos.org/opengles/sdk/tools/KTX/file_format_spec/<
       <pattern>
         <position>BOF</position>
         <pronom_pattern>F8726F(BA|BB)</pronom_pattern>
-        <regex>(?s)\A.{4,4}\xf8ro(?:\xba|\xbb)</regex>
+        <regex>(?s)\A.{4,8}\xf8ro(?:\xba|\xbb)</regex>
       </pattern>
     </signature>
     <details>
@@ -47778,7 +47778,7 @@ Specification: https://github.com/ephtracy/voxel-model/blob/master/MagicaVoxel-f
       <pattern>
         <position>EOF</position>
         <pronom_pattern>694D6F766965</pronom_pattern>
-        <regex>(?s)iMovie.{8,256}\Z</regex>
+        <regex>(?s)iMovie.{8,264}\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -47816,7 +47816,7 @@ Specification: https://github.com/ephtracy/voxel-model/blob/master/MagicaVoxel-f
       <pattern>
         <position>EOF</position>
         <pronom_pattern>494253797374656D2056657273696F6E</pronom_pattern>
-        <regex>(?s)IBSystem Version.{8,256}\Z</regex>
+        <regex>(?s)IBSystem Version.{8,264}\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -50345,7 +50345,7 @@ BOF; Offset: 1-2048; Magic Bytes: 0x000500040001</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>000500040001</pronom_pattern>
-        <regex>(?s)\A.{1,2047}\x00\x05\x00\x04\x00\x01</regex>
+        <regex>(?s)\A.{1,2048}\x00\x05\x00\x04\x00\x01</regex>
       </pattern>
     </signature>
     <details>
@@ -53430,12 +53430,12 @@ EOF, max offset 2048: CLEAR TEXT BLOCK..LWFORMAT V6</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>466F6C696F</pronom_pattern>
-        <regex>(?s)\A.{1292,2623}Folio</regex>
+        <regex>(?s)\A.{1292,3915}Folio</regex>
       </pattern>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>76323030</pronom_pattern>
-        <regex>(?s)\A.{1292,2623}v200</regex>
+        <regex>(?s)\A.{1292,3915}v200</regex>
       </pattern>
     </signature>
     <details>
@@ -54828,7 +54828,7 @@ http://wiki.ogre3d.org/tiki-index.php?page=Ogre+meshxml+DTD</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4755594D41474552204143515549534954494F4E20494E464F2046494C45</pronom_pattern>
-        <regex>(?s)\A.{1,2}GUYMAGER ACQUISITION INFO FILE</regex>
+        <regex>(?s)\A.{1,3}GUYMAGER ACQUISITION INFO FILE</regex>
       </pattern>
     </signature>
     <details>
@@ -57416,7 +57416,7 @@ The message may contain one or more attachments in the file format specified in 
       <pattern>
         <position>BOF</position>
         <pronom_pattern>47455242494C444F4320</pronom_pattern>
-        <regex>(?s)\A.{9,9}GERBILDOC </regex>
+        <regex>(?s)\A.{9,18}GERBILDOC </regex>
       </pattern>
     </signature>
     <details>
@@ -57447,7 +57447,7 @@ The message may contain one or more attachments in the file format specified in 
       <pattern>
         <position>BOF</position>
         <pronom_pattern>47455242494C444F4333</pronom_pattern>
-        <regex>(?s)\A.{9,9}GERBILDOC3</regex>
+        <regex>(?s)\A.{9,18}GERBILDOC3</regex>
       </pattern>
     </signature>
     <details>
@@ -57478,7 +57478,7 @@ The message may contain one or more attachments in the file format specified in 
       <pattern>
         <position>BOF</position>
         <pronom_pattern>47455242494C4442</pronom_pattern>
-        <regex>(?s)\A.{9,9}GERBILDB</regex>
+        <regex>(?s)\A.{9,18}GERBILDB</regex>
       </pattern>
     </signature>
     <details>
@@ -57509,7 +57509,7 @@ The message may contain one or more attachments in the file format specified in 
       <pattern>
         <position>BOF</position>
         <pronom_pattern>5241424249544752415048</pronom_pattern>
-        <regex>(?s)\A.{9,9}RABBITGRAPH</regex>
+        <regex>(?s)\A.{9,18}RABBITGRAPH</regex>
       </pattern>
     </signature>
     <details>
@@ -57975,7 +57975,7 @@ The message may contain one or more attachments in the file format specified in 
       <pattern>
         <position>BOF</position>
         <pronom_pattern>5053443552444F43</pronom_pattern>
-        <regex>(?s)\A.{12,12}PSD5RDOC</regex>
+        <regex>(?s)\A.{12,24}PSD5RDOC</regex>
       </pattern>
     </signature>
     <details>
@@ -58522,7 +58522,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}(39|3A|3B|3D|3E)</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}(?:9|:|;|=|\x3e)</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}(?:9|:|;|=|\x3e)</regex>
       </pattern>
     </signature>
     <signature>
@@ -58531,7 +58531,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}3E</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}\x3e</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}\x3e</regex>
       </pattern>
     </signature>
     <details>
@@ -58566,7 +58566,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}3F</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}\?</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}\?</regex>
       </pattern>
     </signature>
     <signature>
@@ -58575,7 +58575,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}3F</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}\?</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}\?</regex>
       </pattern>
     </signature>
     <details>
@@ -58610,7 +58610,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}41</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}A</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}A</regex>
       </pattern>
     </signature>
     <signature>
@@ -58619,7 +58619,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}41</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}A</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}A</regex>
       </pattern>
     </signature>
     <details>
@@ -58654,7 +58654,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}42</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}B</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}B</regex>
       </pattern>
     </signature>
     <signature>
@@ -58663,7 +58663,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}42</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}B</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}B</regex>
       </pattern>
     </signature>
     <details>
@@ -58698,7 +58698,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}44</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}D</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}D</regex>
       </pattern>
     </signature>
     <signature>
@@ -58707,7 +58707,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}44</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}D</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}D</regex>
       </pattern>
     </signature>
     <details>
@@ -58742,7 +58742,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}45</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}E</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}E</regex>
       </pattern>
     </signature>
     <signature>
@@ -58751,7 +58751,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}45</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}E</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}E</regex>
       </pattern>
     </signature>
     <details>
@@ -58786,7 +58786,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}47</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}G</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}G</regex>
       </pattern>
     </signature>
     <signature>
@@ -58795,7 +58795,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}47</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}G</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}G</regex>
       </pattern>
     </signature>
     <details>
@@ -58830,7 +58830,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}4B</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}K</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}K</regex>
       </pattern>
     </signature>
     <signature>
@@ -58839,7 +58839,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}4B</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}K</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}K</regex>
       </pattern>
     </signature>
     <details>
@@ -58874,7 +58874,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}4C</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}L</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}L</regex>
       </pattern>
     </signature>
     <signature>
@@ -58883,7 +58883,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}4C</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}L</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}L</regex>
       </pattern>
     </signature>
     <details>
@@ -58918,7 +58918,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}4D</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}M</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}M</regex>
       </pattern>
     </signature>
     <signature>
@@ -58927,7 +58927,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}4D</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}M</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}M</regex>
       </pattern>
     </signature>
     <details>
@@ -58962,7 +58962,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}4E</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}N</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}N</regex>
       </pattern>
     </signature>
     <signature>
@@ -58971,7 +58971,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}4E</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}N</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}N</regex>
       </pattern>
     </signature>
     <details>
@@ -59006,7 +59006,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}4F</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}O</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}O</regex>
       </pattern>
     </signature>
     <signature>
@@ -59015,7 +59015,7 @@ A glTF Overview can be found at https://www.khronos.org/gltf .</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}4F</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}O</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}O</regex>
       </pattern>
     </signature>
     <details>
@@ -59881,7 +59881,7 @@ WARC format has been written by the members of the IIPC (http://www.netpreserve.
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4850545F44445F494744533A464F4E544C4942{32600-33200}44474E2D5469746C6573</pronom_pattern>
-        <regex>(?s)\A.{824,2792}HPT_DD_IGDS:FONTLIB.{32600,33200}DGN-Titles</regex>
+        <regex>(?s)\A.{824,3616}HPT_DD_IGDS:FONTLIB.{32600,33200}DGN-Titles</regex>
       </pattern>
     </signature>
     <details>
@@ -60732,7 +60732,7 @@ WARC format has been written by the members of the IIPC (http://www.netpreserve.
       <pattern>
         <position>BOF</position>
         <pronom_pattern>3C6D7576656550726F6A6563743E3C76</pronom_pattern>
-        <regex>(?s)\A.{40,168}\x3cmuveeProject\x3e\x3cv</regex>
+        <regex>(?s)\A.{40,208}\x3cmuveeProject\x3e\x3cv</regex>
       </pattern>
     </signature>
     <details>
@@ -61368,7 +61368,7 @@ EOF, max offset 36: 0x1A 'FF' 0x1A</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>464C4F43485433</pronom_pattern>
-        <regex>(?s)\A.{4,16}FLOCHT3</regex>
+        <regex>(?s)\A.{4,20}FLOCHT3</regex>
       </pattern>
     </signature>
     <details>
@@ -62387,7 +62387,7 @@ EOF 0-16: 'EODF'</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}3C</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}\x3c</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}\x3c</regex>
       </pattern>
     </signature>
     <details>
@@ -62422,7 +62422,7 @@ EOF 0-16: 'EODF'</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}48</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}H</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}H</regex>
       </pattern>
     </signature>
     <signature>
@@ -62431,7 +62431,7 @@ EOF 0-16: 'EODF'</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}48</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}H</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}H</regex>
       </pattern>
     </signature>
     <details>
@@ -62466,7 +62466,7 @@ EOF 0-16: 'EODF'</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}4A</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}J</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}J</regex>
       </pattern>
     </signature>
     <signature>
@@ -62475,7 +62475,7 @@ EOF 0-16: 'EODF'</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}4A</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}J</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}J</regex>
       </pattern>
     </signature>
     <details>
@@ -64002,7 +64002,7 @@ P5 differs from the preceding P4 version, amongst other things, using the then-n
       <pattern>
         <position>BOF</position>
         <pronom_pattern>5354414BFFFFFFFF</pronom_pattern>
-        <regex>(?s)\A.{4,4}STAK\xff\xff\xff\xff</regex>
+        <regex>(?s)\A.{4,8}STAK\xff\xff\xff\xff</regex>
       </pattern>
     </signature>
     <details>
@@ -64112,7 +64112,7 @@ P5 differs from the preceding P4 version, amongst other things, using the then-n
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4D4D585052{2}50</pronom_pattern>
-        <regex>(?s)\A.{2,2}MMXPR.{2}P</regex>
+        <regex>(?s)\A.{2,4}MMXPR.{2}P</regex>
       </pattern>
     </signature>
     <signature>
@@ -64121,7 +64121,7 @@ P5 differs from the preceding P4 version, amongst other things, using the then-n
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4949585052{1}50</pronom_pattern>
-        <regex>(?s)\A.{2,2}IIXPR.{1}P</regex>
+        <regex>(?s)\A.{2,4}IIXPR.{1}P</regex>
       </pattern>
     </signature>
     <details>
@@ -65508,7 +65508,7 @@ P5 differs from the preceding P4 version, amongst other things, using the then-n
       <pattern>
         <position>BOF</position>
         <pronom_pattern>414E4E4F544154494F4E5F444F43554D454E5420415554484F523D</pronom_pattern>
-        <regex>(?s)\A.{27,57}ANNOTATION_DOCUMENT AUTHOR=</regex>
+        <regex>(?s)\A.{27,84}ANNOTATION_DOCUMENT AUTHOR=</regex>
       </pattern>
       <pattern>
         <position>EOF</position>
@@ -65545,7 +65545,7 @@ P5 differs from the preceding P4 version, amongst other things, using the then-n
       <pattern>
         <position>BOF</position>
         <pronom_pattern>3C707265666572656E636573*7873693A6E6F4E616D657370616365536368656D614C6F636174696F6E3D22687474703A2F2F7777772E6D70692E6E6C2F746F6F6C732F656C616E2F50726566735F76</pronom_pattern>
-        <regex>(?s)\A.{27,30}\x3cpreferences.*xsi:noNamespaceSchemaLocation="http://www\.mpi\.nl/tools/elan/Prefs_v</regex>
+        <regex>(?s)\A.{27,57}\x3cpreferences.*xsi:noNamespaceSchemaLocation="http://www\.mpi\.nl/tools/elan/Prefs_v</regex>
       </pattern>
       <pattern>
         <position>EOF</position>
@@ -65984,7 +65984,7 @@ Prior to mid1980s, the most significant pre-NDF format used by a major data anal
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4336342F433132382053454C462045585452414354494E47204C4841524348495645</pronom_pattern>
-        <regex>(?s)\A.{3000,700}C64/C128 SELF EXTRACTING LHARCHIVE</regex>
+        <regex>(?s)\A.{3000,3700}C64/C128 SELF EXTRACTING LHARCHIVE</regex>
       </pattern>
     </signature>
     <details>
@@ -66266,7 +66266,7 @@ EOF: magic bytes: cf{5-100}&gt; (offset 0-5)</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>6973646F632E637A</pronom_pattern>
-        <regex>(?s)\A.{16,284}isdoc\.cz</regex>
+        <regex>(?s)\A.{16,300}isdoc\.cz</regex>
       </pattern>
     </signature>
     <details>
@@ -66300,7 +66300,7 @@ EOF: magic bytes: cf{5-100}&gt; (offset 0-5)</note>
       <pattern>
         <position>EOF</position>
         <pronom_pattern>2E6973646F63</pronom_pattern>
-        <regex>(?s)\.isdoc.{12,988}\Z</regex>
+        <regex>(?s)\.isdoc.{12,1000}\Z</regex>
       </pattern>
       <pattern>
         <position>BOF</position>
@@ -66339,7 +66339,7 @@ ISDOC format is a type of Extensible Markup Language (XML) file format specific 
       <pattern>
         <position>BOF</position>
         <pronom_pattern>436F7079726967687420313938392D313939312062792042697473747265616D20496E632E20416C6C207269676874732072657365727665642E</pronom_pattern>
-        <regex>(?s)\A.{100,200}Copyright 1989-1991 by Bitstream Inc\. All rights reserved\.</regex>
+        <regex>(?s)\A.{100,300}Copyright 1989-1991 by Bitstream Inc\. All rights reserved\.</regex>
       </pattern>
     </signature>
     <details>
@@ -66372,7 +66372,7 @@ ISDOC format is a type of Extensible Markup Language (XML) file format specific 
       <pattern>
         <position>BOF</position>
         <pronom_pattern>6973646F632E637A2F6E616D6573706163652F32303133222076657273696F6E3D22362E302E3122</pronom_pattern>
-        <regex>(?s)\A.{16,284}isdoc\.cz/namespace/2013" version="6\.0\.1"</regex>
+        <regex>(?s)\A.{16,300}isdoc\.cz/namespace/2013" version="6\.0\.1"</regex>
       </pattern>
     </signature>
     <details>
@@ -67343,7 +67343,7 @@ EOF, offset 0-100, magic bytes,:   .adf</note>
       <pattern>
         <position>EOF</position>
         <pronom_pattern>545950454C4942</pronom_pattern>
-        <regex>(?s)TYPELIB.{13,20}\Z</regex>
+        <regex>(?s)TYPELIB.{13,33}\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -68785,7 +68785,7 @@ EOF; Offset: 109 - 120; Magic bytes; '&#255;&#254;&#255;.A.r.i.a.l'</note>
       <pattern>
         <position>EOF</position>
         <pronom_pattern>02FFFEFF0541007200690061006C</pronom_pattern>
-        <regex>(?s)\x02\xff\xfe\xff\x05A\x00r\x00i\x00a\x00l.{109,11}\Z</regex>
+        <regex>(?s)\x02\xff\xfe\xff\x05A\x00r\x00i\x00a\x00l.{109,120}\Z</regex>
       </pattern>
     </signature>
     <details>
@@ -69510,7 +69510,7 @@ This format is a proprietary binary file, altered from earlier version CL2, CL3 
       <pattern>
         <position>BOF</position>
         <pronom_pattern>39434130454545452D354243352D343165392D383234322D424545323136343346464630</pronom_pattern>
-        <regex>(?s)\A.{160,100}9CA0EEEE-5BC5-41e9-8242-BEE21643FFF0</regex>
+        <regex>(?s)\A.{160,260}9CA0EEEE-5BC5-41e9-8242-BEE21643FFF0</regex>
       </pattern>
     </signature>
     <details>
@@ -69542,7 +69542,7 @@ This format is a proprietary binary file, altered from earlier version CL2, CL3 
       <pattern>
         <position>BOF</position>
         <pronom_pattern>31303235334334432D323239442D346338372D384431442D313639454644464544383639</pronom_pattern>
-        <regex>(?s)\A.{160,100}10253C4C-229D-4c87-8D1D-169EFDFED869</regex>
+        <regex>(?s)\A.{160,260}10253C4C-229D-4c87-8D1D-169EFDFED869</regex>
       </pattern>
     </signature>
     <details>
@@ -71283,7 +71283,7 @@ EOF Absolute from end of file, magic bytes: &lt;/IMG&gt;</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>2F2078732C79732C6D622C6D722C6D742C6D6C</pronom_pattern>
-        <regex>(?s)\A.{56,56}/ xs,ys,mb,mr,mt,ml</regex>
+        <regex>(?s)\A.{56,112}/ xs,ys,mb,mr,mt,ml</regex>
       </pattern>
     </signature>
     <details>
@@ -71655,7 +71655,7 @@ It is likely to be the same as the TruePaint TPI format.</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>00424541303101{2041}004E535230(32|33)01</pronom_pattern>
-        <regex>(?s)\A.{32768,4096}\x00BEA01\x01.{2041}\x00NSR0(?:2|3)\x01</regex>
+        <regex>(?s)\A.{32768,36864}\x00BEA01\x01.{2041}\x00NSR0(?:2|3)\x01</regex>
       </pattern>
     </signature>
     <details>
@@ -71697,12 +71697,12 @@ BOF; Offset: 32768; Max Offset: 70468; Magic Bytes:  0x00424541303101, then an e
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4344303031{1-16384}FF4344303031</pronom_pattern>
-        <regex>(?s)\A.{32768,37700}CD001.{1,16384}\xffCD001</regex>
+        <regex>(?s)\A.{32768,70468}CD001.{1,16384}\xffCD001</regex>
       </pattern>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>00424541303101{2041}004E535230(32|33)01</pronom_pattern>
-        <regex>(?s)\A.{32768,37700}\x00BEA01\x01.{2041}\x00NSR0(?:2|3)\x01</regex>
+        <regex>(?s)\A.{32768,70468}\x00BEA01\x01.{2041}\x00NSR0(?:2|3)\x01</regex>
       </pattern>
     </signature>
     <details>
@@ -71793,7 +71793,7 @@ BOF; Offset: 32768; Max Offset: 70468; Magic Bytes:  0x00424541303101, then an e
       <pattern>
         <position>BOF</position>
         <pronom_pattern>{0-16}45520200{508}504D4344303031{1-16384}FF4344303031</pronom_pattern>
-        <regex>(?s)\A.{32768,70468}.{0,16}ER\x02\x00.{508}PMCD001.{1,16384}\xffCD001</regex>
+        <regex>(?s)\A.{32768,103236}.{0,16}ER\x02\x00.{508}PMCD001.{1,16384}\xffCD001</regex>
       </pattern>
     </signature>
     <signature>
@@ -71802,7 +71802,7 @@ BOF; Offset: 32768; Max Offset: 70468; Magic Bytes:  0x00424541303101, then an e
       <pattern>
         <position>BOF</position>
         <pronom_pattern>{0-16}45520800{2044}504D4344303031{1-16384}FF4344303031</pronom_pattern>
-        <regex>(?s)\A.{32768,70468}.{0,16}ER\x08\x00.{2044}PMCD001.{1,16384}\xffCD001</regex>
+        <regex>(?s)\A.{32768,103236}.{0,16}ER\x08\x00.{2044}PMCD001.{1,16384}\xffCD001</regex>
       </pattern>
     </signature>
     <details>
@@ -71837,7 +71837,7 @@ EOF; Offset: 1024; Magic Bytes:  0x482B0004</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>482B0004</pronom_pattern>
-        <regex>(?s)\A.{1024,1024}H\+\x00\x04</regex>
+        <regex>(?s)\A.{1024,2048}H\+\x00\x04</regex>
       </pattern>
       <pattern>
         <position>EOF</position>
@@ -71853,7 +71853,7 @@ EOF; Offset: 1024; Magic Bytes:  0x48580005</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>48580005</pronom_pattern>
-        <regex>(?s)\A.{1024,1024}HX\x00\x05</regex>
+        <regex>(?s)\A.{1024,2048}HX\x00\x05</regex>
       </pattern>
       <pattern>
         <position>EOF</position>
@@ -72317,12 +72317,12 @@ BOF; Offset: 32768; Max Offset: 69632; Magic Bytes:  0x00424541303101, then an e
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4344303031{1-16384}FF4344303031</pronom_pattern>
-        <regex>(?s)\A.{32768,103236}CD001.{1,16384}\xffCD001</regex>
+        <regex>(?s)\A.{32768,136004}CD001.{1,16384}\xffCD001</regex>
       </pattern>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>00424541303101{2041}004E535230(32|33)01</pronom_pattern>
-        <regex>(?s)\A.{32768,69632}\x00BEA01\x01.{2041}\x00NSR0(?:2|3)\x01</regex>
+        <regex>(?s)\A.{32768,102400}\x00BEA01\x01.{2041}\x00NSR0(?:2|3)\x01</regex>
       </pattern>
     </signature>
     <signature>
@@ -72340,12 +72340,12 @@ BOF; Offset: 32768; Max Offset: 69632; Magic Bytes:  0x00424541303101, then an e
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4344303031{1-16384}FF4344303031</pronom_pattern>
-        <regex>(?s)\A.{32768,103236}CD001.{1,16384}\xffCD001</regex>
+        <regex>(?s)\A.{32768,136004}CD001.{1,16384}\xffCD001</regex>
       </pattern>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>00424541303101{2041}004E535230(32|33)01</pronom_pattern>
-        <regex>(?s)\A.{32768,69632}\x00BEA01\x01.{2041}\x00NSR0(?:2|3)\x01</regex>
+        <regex>(?s)\A.{32768,102400}\x00BEA01\x01.{2041}\x00NSR0(?:2|3)\x01</regex>
       </pattern>
     </signature>
     <details>
@@ -75978,7 +75978,7 @@ EOF, offset 5:end data</note>
       <pattern>
         <position>EOF</position>
         <pronom_pattern>656E642064617461</pronom_pattern>
-        <regex>(?s)end data.{5,5}\Z</regex>
+        <regex>(?s)end data.{5,10}\Z</regex>
       </pattern>
     </signature>
     <details>
