@@ -29,11 +29,10 @@ from fido.utils.timer import PerfTimer
 defaults = {
     "config_dir": CONFIG_DIR,
     "bufsize": 128 * 1024,  # (bytes)
-    "regexcachesize": 2084,  # (bytes)
     "printmatch": 'OK,%(info.time)s,%(info.puid)s,"%(info.formatname)s","%(info.signaturename)s",%(info.filesize)s,"%(info.filename)s","%(info.mimetype)s","%(info.matchtype)s"\n',
     "printnomatch": 'KO,%(info.time)s,,,,%(info.filesize)s,"%(info.filename)s",,"%(info.matchtype)s"\n',
-    "format_files": ["formats-v116.xml", "format_extensions.xml"],
-    "containersignature_file": "container-signature-20231127.xml",
+    "format_files": ["formats-v125.xml", "format_extensions.xml"],
+    "containersignature_file": "container-signature-20260907.xml",
     "container_bufsize": 512 * 1024,  # (bytes)
     "description": """Format Identification for Digital Objects (fido).
 FIDO is a command-line tool to identify the file formats of digital objects.
@@ -93,7 +92,7 @@ class Fido:
         self.current_sig = None
         self.current_pat = None
         self.current_count = 0  # Count of calls to match_formats
-        re._MAXCACHE = defaults["regexcachesize"]
+        self.compiled_regexes = {}
         self.externalsig = ET.XML("<signature><name>External</name></signature>")
 
     def convert_container_sequence(self, sig):
@@ -268,6 +267,14 @@ class Fido:
         """Return the UTF-8 encoded regex from a pattern."""
         # The regex is matching bytes from a file so regex must also be bytes
         return pat.find("regex").text.encode("utf8")
+
+    def get_compiled_regex(self, pat):
+        """Return the compiled regex for a pattern, compiling it only once per Fido instance."""
+        regex = self.get_regex(pat)
+        compiled = self.compiled_regexes.get(regex)
+        if compiled is None:
+            compiled = self.compiled_regexes[regex] = re.compile(regex)
+        return compiled
 
     def get_extension(self, format):
         """Return the extension for a format."""
@@ -717,22 +724,22 @@ class Fido:
                         for pat in self.get_patterns(sig):
                             self.current_pat = pat
                             pos = self.get_pos(pat)
-                            regex = self.get_regex(pat)
+                            regex = self.get_compiled_regex(pat)
                             # print 'trying ', regex
                             if pos == "BOF":
-                                if not re.match(regex, bofbuffer):
+                                if not regex.match(bofbuffer):
                                     success = False
                                     break
                             elif pos == "EOF":
-                                if not re.search(regex, eofbuffer):
+                                if not regex.search(eofbuffer):
                                     success = False
                                     break
                             elif pos == "VAR":
-                                if not re.search(regex, bofbuffer):
+                                if not regex.search(bofbuffer):
                                     success = False
                                     break
                             elif pos == "IFB":
-                                if not re.search(regex, bofbuffer):
+                                if not regex.search(bofbuffer):
                                     success = False
                                     break
                         if success:
