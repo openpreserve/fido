@@ -12,8 +12,9 @@ from urllib.error import HTTPError
 from urllib.parse import urlparse
 from urllib.request import urlopen
 from xml.dom import minidom
+from xml.etree import ElementTree as ET  # builds the FIDO XML; defusedxml only parses
 
-from defusedxml import ElementTree as ET
+from defusedxml import ElementTree as DET
 
 from fido.pronom.versions import get_local_versions
 from fido.utils.char_handler import escape
@@ -176,7 +177,7 @@ class FormatInfo:
         If a @param puid is specified, only that one will be loaded.
         @return ET.ElementTree Element representing it.
         """
-        pronom_xml = ET.parse(source)
+        pronom_xml = DET.parse(source)
         pronom_root = pronom_xml.getroot()
         pronom_format = pronom_root.find(TNA("report_format_detail/FileFormat"))
         fido_format = ET.Element("format")

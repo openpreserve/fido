@@ -324,7 +324,6 @@ def test_parse_pronom_xml_extracts_core_fields(monkeypatch):
             return None
 
     info = prepare.FormatInfo("dummy.zip")
-    monkeypatch.setattr(prepare, "ET", XET)
     monkeypatch.setattr(prepare, "urlopen", lambda _url: DummySock())
 
     result = info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml()))
@@ -344,14 +343,12 @@ def test_parse_pronom_xml_extracts_core_fields(monkeypatch):
 
 def test_parse_pronom_xml_respects_puid_filter(monkeypatch):
     info = prepare.FormatInfo("dummy.zip")
-    monkeypatch.setattr(prepare, "ET", XET)
 
     assert info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(puid="fmt/1")), puid_filter="fmt/2") is None
 
 
 def test_parse_pronom_xml_skips_incompatible_signature(monkeypatch, capsys):
     info = prepare.FormatInfo("dummy.zip")
-    monkeypatch.setattr(prepare, "ET", XET)
     monkeypatch.setattr(prepare, "convert_to_regex", lambda *_a, **_k: prepare.FLG_INCOMPATIBLE)
 
     result = info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(include_reference_url=False)))
@@ -362,7 +359,6 @@ def test_parse_pronom_xml_skips_incompatible_signature(monkeypatch, capsys):
 
 def test_parse_pronom_xml_skips_signature_with_non_numeric_max_offset(monkeypatch, capsys):
     info = prepare.FormatInfo("dummy.zip")
-    monkeypatch.setattr(prepare, "ET", XET)
     record = XET.fromstring(_minimal_pronom_xml(include_reference_url=False))
     record.find(".//{http://pronom.nationalarchives.gov.uk}MaxOffset").text = "abc"
 
@@ -389,7 +385,6 @@ def test_formatinfo_save_writes_formats_xml(monkeypatch, tmp_path):
     fmt = XET.Element("format")
     XET.SubElement(fmt, "puid").text = "fmt/1"
     info.formats = [fmt]
-    monkeypatch.setattr(prepare, "ET", XET)
 
     out = tmp_path / "formats.xml"
     info.save(str(out))
@@ -518,7 +513,6 @@ def test_parse_pronom_xml_extracts_super_and_subtype_relationships(monkeypatch):
     XET.SubElement(rel_sub, _tna("RelatedFormatID")).text = "301"
 
     info = prepare.FormatInfo("dummy.zip")
-    monkeypatch.setattr(prepare, "ET", XET)
     monkeypatch.setattr(prepare, "urlopen", lambda _url: io.BytesIO(b"x"))
 
     result = info.parse_pronom_xml(io.BytesIO(XET.tostring(root, encoding="utf-8")))
@@ -529,7 +523,6 @@ def test_parse_pronom_xml_extracts_super_and_subtype_relationships(monkeypatch):
 
 def test_parse_pronom_xml_reference_file_http_404_continues(monkeypatch, capsys):
     info = prepare.FormatInfo("dummy.zip")
-    monkeypatch.setattr(prepare, "ET", XET)
     monkeypatch.setattr(
         prepare,
         "urlopen",
@@ -548,7 +541,6 @@ def test_parse_pronom_xml_reference_file_http_404_continues(monkeypatch, capsys)
 
 def test_parse_pronom_xml_reference_file_http_non_404_uses_empty_hash(monkeypatch, capsys):
     info = prepare.FormatInfo("dummy.zip")
-    monkeypatch.setattr(prepare, "ET", XET)
     monkeypatch.setattr(
         prepare,
         "urlopen",
@@ -566,7 +558,6 @@ def test_parse_pronom_xml_reference_file_http_non_404_uses_empty_hash(monkeypatc
 
 def converted_patterns(monkeypatch, record_name):
     """Convert a real PRONOM v125 record and return its (position, regex) pairs."""
-    monkeypatch.setattr(prepare, "ET", XET)
     info = prepare.FormatInfo("dummy.zip")
     with open(os.path.join(TEST_DATA_PRONOM, record_name), "rb") as record:
         fido_format = info.parse_pronom_xml(record)
