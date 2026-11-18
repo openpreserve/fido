@@ -379,7 +379,7 @@ def test_main_sigs_calls_action(monkeypatch):
 
     assert exc.value.code == 0
     assert calls["sigs"] == "list"
-    assert calls["conf_dir"] == "/tmp", "-confdir must reach the signature actions"
+    assert calls["conf_dir"] == _main_args().confdir, "-confdir must reach the signature actions"
 
 
 def test_main_stdin_zip_raises_runtime(monkeypatch):
