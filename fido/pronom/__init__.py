@@ -18,3 +18,5 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 """FIDO module to deal with all things PRONOM signature files."""
+
+HTTP_TIMEOUT_SECONDS = 30

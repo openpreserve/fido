@@ -27,6 +27,7 @@ import requests
 from defusedxml.ElementTree import ParseError, fromstring, parse
 
 from fido import CONFIG_DIR
+from fido.pronom import HTTP_TIMEOUT_SECONDS
 
 
 class LocalVersions(object):
@@ -130,9 +131,17 @@ def sig_file_actions(sig_act):
     sys.exit(0)
 
 
+def _get(url):
+    """GET a signature service URL, and give up with a message when it stops answering."""
+    try:
+        return requests.get(url, timeout=HTTP_TIMEOUT_SECONDS)
+    except requests.exceptions.RequestException as err:
+        sys.exit(f"Could not reach {url}: {err}")
+
+
 def _list_available_versions(update_url):
     """List available signature files."""
-    resp = requests.get(update_url + "format/")
+    resp = _get(update_url + "format/")
     tree = fromstring(resp.content)
     sys.stdout.write("Available signature versions:\n")
     for child in tree.iter("signature"):
@@ -161,7 +170,7 @@ def _download_sig_version(sig_act, update_url, versions):
     ver = sig_act
     if not ver.startswith("v"):
         ver = "v" + sig_act
-    resp = requests.get(update_url + "format/" + ver + "/")
+    resp = _get(update_url + "format/" + ver + "/")
     if resp.status_code != 200:
         sys.exit("No signature files found for {}, REST status {}".format(sig_act, resp.status_code))
     _output_details(re.search(r"\d+|$", ver).group(), update_url, versions)  # noqa: W605
@@ -189,7 +198,7 @@ def _output_details(version, update_url, versions):
 
 
 def _version_check(sig_ver, update_url):
-    resp = requests.get(update_url + "format/latest/")
+    resp = _get(update_url + "format/latest/")
     if resp.status_code != 200:
         sys.exit("Error getting latest version info: HTTP Status {}".format(resp.status_code))
     root_ele = fromstring(resp.text)
@@ -201,5 +210,5 @@ def _write_sigs(latest, update_url, type, name_template):
     sig_out = str(importlib.resources.files("fido").joinpath("conf", name_template.format(latest)))
     if os.path.exists(sig_out):
         return
-    resp = requests.get(update_url + "format/{0}/{1}/".format(latest, type))
+    resp = _get(update_url + "format/{0}/{1}/".format(latest, type))
     open(sig_out, "wb").write(resp.content)
