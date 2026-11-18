@@ -55,9 +55,31 @@ def signature_service(monkeypatch):
     return requested
 
 
+def read_files(directory):
+    return {path.name: path.read_bytes() for path in Path(directory).iterdir() if path.is_file()}
+
+
+@pytest.fixture(autouse=True)
+def packaged_conf_dir_is_untouched():
+    """Fail a test that changes the packaged conf dir, after restoring it from a snapshot taken before the test."""
+    packaged = Path(CONFIG_DIR)
+    before = read_files(packaged)
+    yield
+    after = read_files(packaged)
+    added = sorted(set(after) - set(before))
+    changed = sorted(name for name in before if after.get(name) != before[name])
+    for name in added:
+        (packaged / name).unlink()
+    for name in changed:
+        (packaged / name).write_bytes(before[name])
+    assert not (added or changed), (
+        f"the packaged conf dir was modified (now restored): added {added}, changed {changed}"
+    )
+
+
 @pytest.fixture
 def decoy_packaged_conf_dir(monkeypatch, tmp_path):
-    """Point the packaged conf directory at an empty one, so a regression cannot write into the real package."""
+    """Point importlib.resources at an empty package, so a download that falls back to the package's conf dir shows."""
     decoy = tmp_path / "package"
     (decoy / "conf").mkdir(parents=True)
 
@@ -105,8 +127,8 @@ def test_downloads_land_next_to_the_versions_xml_that_was_read_through_a_symlink
     try:
         (work / "link").symlink_to(Path("..") / "srv" / "config" / "current", target_is_directory=True)
     except (OSError, NotImplementedError) as error:
-        pytest.skip("symlinks are not supported here: {}".format(error))
-    confdir_through_symlink = "{}/link/..".format(work)
+        pytest.skip(f"symlinks are not supported here: {error}")
+    confdir_through_symlink = f"{work}/link/.."
     assert Path(confdir_through_symlink, "versions.xml").read_text(encoding="utf-8") == VERSIONS_XML, (
         "the layout must make the OS resolve link/.. to the directory holding versions.xml"
     )
