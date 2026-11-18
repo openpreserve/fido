@@ -172,6 +172,12 @@ The defaults for FIDO 1.0 are:
 It can be useful to provide an empty string for either, for example to ignore all failed matches, or all successful ones (see examples below).
 Note that a newline needs to be added to the end of the string using \n.
 
+A byte in a file name that is not valid in the encoding of standard output is
+written as an escape such as `\udcff`, so that one such name does not stop the
+run. This is lossy: the original byte cannot be recovered from the escape. When
+standard output already uses `surrogateescape` (the C/POSIX locale, Python UTF-8
+mode, or `PYTHONIOENCODING=utf-8:surrogateescape`) the byte is written unchanged.
+
 Matchtypes
 -----------
 

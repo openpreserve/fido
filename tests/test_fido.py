@@ -306,6 +306,22 @@ def test_walk_zip_handles_bad_zip(monkeypatch, capsys):
     assert "FIDO: ZipError bad.zip" in capsys.readouterr().err
 
 
+def test_walk_zip_reports_an_archive_with_an_entry_name_that_is_not_valid_utf8(monkeypatch, tmp_path, capsys):
+    """Some tools set the UTF-8 flag on names in a legacy code page; the archive is reported, the run goes on."""
+    fido = _make_fido(monkeypatch)
+    buffer = io.BytesIO()
+    with fido_mod.zipfile.ZipFile(buffer, "w") as archive:
+        archive.writestr("\u00e9.txt", b"content")
+    sample = tmp_path / "sample.zip"
+    sample.write_bytes(buffer.getvalue().replace("\u00e9".encode("utf-8"), b"\xe9\xff"))
+
+    fido.walk_zip(str(sample))
+
+    error = capsys.readouterr().err
+    assert error.startswith(f"FIDO: ZipError {sample}: "), error
+    assert "codec can't decode" in error, error
+
+
 def test_walk_tar_handles_tar_error(monkeypatch, capsys):
     fido = _make_fido(monkeypatch)
     monkeypatch.setattr(fido_mod.tarfile, "TarFile", lambda *_a, **_k: (_ for _ in ()).throw(fido_mod.tarfile.TarError()))
@@ -675,3 +691,168 @@ def test_signature_regexes_are_compiled_once_and_re_cache_is_untouched(monkeypat
     assert first_run > 0
     assert len(compiled) == first_run
     assert len(set(compiled)) == len(compiled)
+
+
+def _create_file_named_with_bytes(directory, name, content):
+    """Create a file whose name is not valid UTF-8, or skip where the platform or file system cannot hold one."""
+    if fido_mod.sys.platform == "win32":
+        pytest.skip("Windows cannot build a name from a byte that is not valid UTF-8, os.fsdecode raises")
+    path = directory / fido_mod.os.fsdecode(name)
+    try:
+        path.write_bytes(content)
+    except OSError as error:
+        pytest.skip(f"this file system rejects names that are not valid UTF-8: {error}")
+    return path
+
+
+def test_main_continues_past_a_filename_that_is_not_valid_utf8(monkeypatch, tmp_path, capsys):
+    """A name from a foreign file system must not abort the run, nor hide the files after it."""
+    magic = id_test_data[0][0]
+    undecodable = _create_file_named_with_bytes(tmp_path, b"bad\xffname", magic)
+    decodable = tmp_path / "good"
+    decodable.write_bytes(magic)
+    monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
+
+    fido_mod.main(["-q", str(undecodable), str(decodable)])
+
+    rows = list(csv.reader(io.StringIO(capsys.readouterr().out)))
+    assert [row[2] for row in rows] == ["fmt/1000", "fmt/1000"], "the file after the bad name was not identified"
+    assert rows[0][6].endswith("bad\\udcffname"), "the undecodable byte should be written as an escape"
+    assert rows[1][6].endswith("good")
+
+
+def _add_signature(fmt, name, position, regex=None):
+    sig = XET.SubElement(fmt, "signature")
+    XET.SubElement(sig, "name").text = name
+    pat = XET.SubElement(sig, "pattern")
+    XET.SubElement(pat, "position").text = position
+    if regex is not None:
+        XET.SubElement(pat, "regex").text = regex
+
+
+def test_match_formats_names_the_format_whose_signature_fails(monkeypatch, capsys):
+    fido = _make_fido(monkeypatch)
+    broken = _format_element("fmt/1558")
+    _add_signature(broken, "bad range", "BOF", r"(?s)\A.{3000,700}")
+    valid = _format_element("fmt/1")
+    _add_signature(valid, "abc", "BOF", "abc")
+    fido.formats = [broken, valid]
+    fido.puid_has_priority_over_map = {"fmt/1558": frozenset(), "fmt/1": frozenset()}
+
+    matches = fido.match_formats(b"abc", b"abc")
+
+    assert [match[0] for match in matches] == [valid], "the format after the broken one was not matched"
+    error = capsys.readouterr().err
+    assert error.startswith("FIDO: Error matching fmt/1558: "), error
+    assert "min repeat greater than max repeat" in error
+
+
+def test_match_formats_reports_a_format_without_a_puid_and_continues(monkeypatch, capsys):
+    """The diagnostic for a broken entry must not itself fail on the entry that is broken."""
+    fido = _make_fido(monkeypatch)
+    without_puid = XET.Element("format")
+    _add_signature(without_puid, "no regex", "BOF")
+    valid = _format_element("fmt/1")
+    _add_signature(valid, "abc", "BOF", "abc")
+    fido.formats = [without_puid, valid]
+    fido.puid_has_priority_over_map = {"fmt/1": frozenset()}
+
+    matches = fido.match_formats(b"abc", b"abc")
+
+    assert [match[0] for match in matches] == [valid], "the format after the broken one was not matched"
+    error = capsys.readouterr().err
+    assert error.startswith("FIDO: Error matching unknown: "), error
+    assert "NoneType" in error, error
+
+
+def test_process_format_element_replaces_an_existing_format_without_a_deprecation_warning(monkeypatch, recwarn):
+    fido = _make_fido(monkeypatch)
+    first = _format_element("fmt/1")
+    second = _format_element("fmt/1")
+
+    fido.process_format_element(first)
+    fido.process_format_element(second)
+
+    assert fido.formats == [second]
+    assert fido.puid_format_map["fmt/1"] is second
+    assert not [w for w in recwarn if issubclass(w.category, DeprecationWarning)]
+
+
+class _FalsyFormat(XET.Element):
+    def __bool__(self):
+        return False
+
+
+def test_process_format_element_replaces_an_existing_format_that_is_falsy(monkeypatch):
+    """An earlier format is found by identity, whatever its truth value, so a reload does not add a duplicate."""
+    fido = _make_fido(monkeypatch)
+    first = _FalsyFormat("format")
+    XET.SubElement(first, "puid").text = "fmt/1"
+    second = _format_element("fmt/1")
+
+    fido.process_format_element(first)
+    fido.process_format_element(second)
+
+    assert fido.formats == [second], f"expected the first format to be replaced, got {len(fido.formats)} formats"
+    assert fido.puid_format_map["fmt/1"] is second
+
+
+@pytest.mark.parametrize(
+    "stream_errors, expected_name",
+    [
+        ("strict", b"bad\\udcffname"),
+        ("surrogateescape", b"bad\xffname"),
+        ("replace", b"bad?name"),
+    ],
+)
+def test_main_only_replaces_a_strict_stdout_error_handler(monkeypatch, tmp_path, stream_errors, expected_name):
+    """A stdout that already tolerates the name (C locale, UTF-8 mode) must keep writing the original byte."""
+    path = _create_file_named_with_bytes(tmp_path, b"bad\xffname", id_test_data[0][0])
+    monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
+    written = io.BytesIO()
+    stream = io.TextIOWrapper(written, encoding="utf-8", errors=stream_errors, newline="")
+    monkeypatch.setattr(fido_mod.sys, "stdout", stream)
+
+    fido_mod.main(["-q", str(path)])
+    stream.flush()
+
+    output = written.getvalue()
+    assert b"/" + expected_name + b'"' in output, f"stdout errors={stream_errors!r} wrote {output!r}"
+
+
+def _identify_listed_names(monkeypatch, capsys, listing, arguments):
+    monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
+    monkeypatch.setattr(fido_mod.sys, "stdin", io.TextIOWrapper(io.BytesIO(listing), encoding="utf-8"))
+
+    fido_mod.main(["-q", *arguments])
+
+    return list(csv.reader(io.StringIO(capsys.readouterr().out)))
+
+
+def _assert_both_listed_names_identified(rows):
+    assert [row[2] for row in rows] == ["fmt/1000", "fmt/1000"], f"expected both listed files identified, got {rows}"
+    assert rows[0][6].endswith("bad\\udcffname"), f"the undecodable name was not kept: {rows[0][6]}"
+    assert rows[1][6].endswith("good"), f"the file after the undecodable name was not identified: {rows[1][6]}"
+
+
+def test_main_identifies_a_filename_that_is_not_valid_utf8_listed_on_stdin(monkeypatch, tmp_path, capsys):
+    bad = _create_file_named_with_bytes(tmp_path, b"bad\xffname", id_test_data[0][0])
+    good = tmp_path / "good"
+    good.write_bytes(id_test_data[0][0])
+    listing = fido_mod.os.fsencode(bad) + b"\n" + fido_mod.os.fsencode(good) + b"\n"
+
+    rows = _identify_listed_names(monkeypatch, capsys, listing, ["-input", "-"])
+
+    _assert_both_listed_names_identified(rows)
+
+
+def test_main_identifies_a_filename_that_is_not_valid_utf8_listed_in_a_file(monkeypatch, tmp_path, capsys):
+    bad = _create_file_named_with_bytes(tmp_path, b"bad\xffname", id_test_data[0][0])
+    good = tmp_path / "good"
+    good.write_bytes(id_test_data[0][0])
+    listing = tmp_path / "files.txt"
+    listing.write_bytes(fido_mod.os.fsencode(bad) + b"\n" + fido_mod.os.fsencode(good) + b"\n")
+
+    rows = _identify_listed_names(monkeypatch, capsys, b"", ["-input", str(listing)])
+
+    _assert_both_listed_names_identified(rows)
