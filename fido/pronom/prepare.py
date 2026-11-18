@@ -8,9 +8,9 @@ import sys
 import zipfile
 from argparse import ArgumentParser
 from io import StringIO
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
-from urllib.request import urlopen
+from urllib.request import HTTPRedirectHandler, build_opener
 from xml.dom import minidom
 from xml.etree import ElementTree as ET  # builds the FIDO XML; defusedxml only parses
 
@@ -21,6 +21,25 @@ from fido.utils.char_handler import escape
 
 FLG_INCOMPATIBLE = "__INCOMPATIBLE_SIG__"
 REFERENCE_FILE_SCHEMES = ("http", "https")
+
+
+class RedirectSchemeError(URLError):
+    """A redirect to a URL whose scheme is not in REFERENCE_FILE_SCHEMES."""
+
+    def __init__(self, target):
+        super().__init__(f"redirected to {target!r}, only http and https URLs are fetched")
+
+
+class SchemeRestrictedRedirectHandler(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        if urlparse(newurl).scheme not in REFERENCE_FILE_SCHEMES:
+            raise RedirectSchemeError(newurl)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+def urlopen(url, *args, **kwargs):
+    # Built per call: ProxyHandler reads the proxy environment variables when it is created.
+    return build_opener(SchemeRestrictedRedirectHandler).open(url, *args, **kwargs)
 
 
 class NS:
@@ -317,6 +336,9 @@ class FormatInfo:
                         sock = urlopen(url)
                         m.update(sock.read())
                         sock.close()
+                    except RedirectSchemeError as err:
+                        sys.stderr.write(f"Skipping the checksum of {url}: {err.reason}\n")
+                        continue
                     except HTTPError as http_excep:
                         sys.stderr.write("HTTP {} error loading resource {}\n".format(http_excep.code, url))
                         if http_excep.code == 404:

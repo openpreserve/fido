@@ -5,6 +5,12 @@ from xml.etree import ElementTree as XET
 import hashlib
 import io
 import urllib.error
+import contextlib
+import http.server
+import socketserver
+import threading
+import urllib.request
+import urllib.response
 
 import pytest
 
@@ -596,6 +602,87 @@ def test_parse_pronom_xml_reference_file_over_http_or_https_is_fetched(monkeypat
     result = info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(reference_url=reference_url)))
 
     assert fetched == [fetched_url]
+    assert result.find("details/example_file/checksum").text == "9dd4e461268c8034f5c8564e155c67a6"  # md5 of b"x"
+
+
+@pytest.fixture
+def loopback_only(monkeypatch):
+    for name in ("http_proxy", "https_proxy", "all_proxy", "ftp_proxy"):
+        monkeypatch.delenv(name, raising=False)
+        monkeypatch.delenv(name.upper(), raising=False)
+    monkeypatch.setenv("NO_PROXY", "127.0.0.1")
+    monkeypatch.setenv("no_proxy", "127.0.0.1")
+
+
+@contextlib.contextmanager
+def serving(server):
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        yield server.server_address[1]
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=5)
+        assert not thread.is_alive(), "the test server did not stop"
+
+
+def redirecting_to(location):
+    class Redirect(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(302)
+            self.send_header("Location", location)
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+
+        def log_message(self, *_args):
+            pass
+
+    return Redirect
+
+
+def recording_connections(peers):
+    class Record(socketserver.BaseRequestHandler):
+        def handle(self):
+            peers.append(self.client_address)
+
+    return Record
+
+
+def test_parse_pronom_xml_reference_file_redirect_to_ftp_is_not_followed(loopback_only, capsys):
+    info = prepare.FormatInfo("dummy.zip")
+    ftp_peers = []
+    with serving(socketserver.TCPServer(("127.0.0.1", 0), recording_connections(ftp_peers))) as ftp_port:
+        target = f"ftp://127.0.0.1:{ftp_port}/x"
+        with serving(http.server.HTTPServer(("127.0.0.1", 0), redirecting_to(target))) as http_port:
+            url = f"http://127.0.0.1:{http_port}/start"
+
+            result = info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(reference_url=url)))
+
+    assert ftp_peers == [], f"the redirect to ftp was followed, the FTP port saw connections from {ftp_peers}"
+    assert url in [identifier.text for identifier in result.iter("dc:identifier")], "the identifier is still recorded"
+    assert result.find("details/example_file/checksum").text in (None, "")
+    expected = f"Skipping the checksum of {url}: redirected to '{target}', only http and https URLs are fetched"
+    assert expected in capsys.readouterr().err
+
+
+def test_parse_pronom_xml_reference_file_redirect_to_https_is_followed(monkeypatch, loopback_only):
+    requested = []
+
+    def https_open(_handler, request):
+        requested.append(request.full_url)
+        response = urllib.response.addinfourl(io.BytesIO(b"x"), {}, request.full_url, 200)
+        response.msg = "OK"
+        return response
+
+    monkeypatch.setattr(urllib.request.HTTPSHandler, "https_open", https_open)
+    info = prepare.FormatInfo("dummy.zip")
+    with serving(http.server.HTTPServer(("127.0.0.1", 0), redirecting_to("https://example.test/final"))) as http_port:
+        url = f"http://127.0.0.1:{http_port}/start"
+
+        result = info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(reference_url=url)))
+
+    assert requested == ["https://example.test/final"]
     assert result.find("details/example_file/checksum").text == "9dd4e461268c8034f5c8564e155c67a6"  # md5 of b"x"
 
 
