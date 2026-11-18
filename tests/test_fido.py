@@ -709,19 +709,57 @@ def test_main_identifies_paths_listed_in_an_input_file_with_either_line_ending(m
     assert [row[6] for row in csv.reader(io.StringIO(captured.out))] == [str(unix), str(windows)]
 
 
-@needs_unprivileged_user
-def test_list_files_reports_a_directory_it_cannot_read_and_carries_on(tmp_path, capsys):
+@pytest.fixture(params=[pytest.param("chmod", marks=needs_unprivileged_user), "faked scandir"])
+def make_unlistable(request, monkeypatch):
+    """Return a function that makes a directory fail to list, for real with chmod or, for any user, by faking the error."""
+    chmodded = []
+
+    def make(directory):
+        if request.param == "chmod":
+            directory.chmod(0o000)
+            chmodded.append(directory)
+            return
+        real_scandir = fido_mod.os.scandir
+
+        def failing_scandir(path="."):
+            if path == str(directory):
+                raise PermissionError(errno.EACCES, fido_mod.os.strerror(errno.EACCES), path)
+            return real_scandir(path)
+
+        monkeypatch.setattr(fido_mod.os, "scandir", failing_scandir)
+
+    yield make
+    for directory in chmodded:
+        directory.chmod(0o700)
+
+
+def test_list_files_reports_a_directory_it_cannot_read_and_carries_on(tmp_path, capsys, make_unlistable):
     unreadable = tmp_path / "unreadable"
     unreadable.mkdir()
     present = tmp_path / "present.bin"
     present.write_bytes(b"x")
-    unreadable.chmod(0o000)
-    try:
-        listed = list(fido_mod.list_files([str(unreadable), str(present)]))
-    finally:
-        unreadable.chmod(0o700)
+    make_unlistable(unreadable)
+
+    listed = list(fido_mod.list_files([str(unreadable), str(present)]))
 
     assert listed == [str(present)]
+    assert capsys.readouterr().err == f"FIDO: Cannot scan directory: {unreadable}\n"
+
+
+def test_list_files_recurse_reports_an_unreadable_subdirectory_and_yields_the_rest(tmp_path, capsys, make_unlistable):
+    top = tmp_path / "top"
+    readable = top / "readable"
+    unreadable = top / "unreadable"
+    for directory in (readable, unreadable):
+        directory.mkdir(parents=True)
+    (top / "top.bin").write_bytes(b"x")
+    (readable / "readable.bin").write_bytes(b"x")
+    (unreadable / "hidden.bin").write_bytes(b"x")
+    make_unlistable(unreadable)
+
+    listed = sorted(fido_mod.list_files([str(top)], recurse=True))
+
+    assert listed == [str(readable / "readable.bin"), str(top / "top.bin")], f"unexpected files: {listed}"
     assert capsys.readouterr().err == f"FIDO: Cannot scan directory: {unreadable}\n"
 
 
