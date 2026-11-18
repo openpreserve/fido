@@ -38,7 +38,7 @@ Usage
                             format string (Python style) to use on match. See nomatchprintf, README.txt.
       -nomatchprintf FORMATSTRING
                             format string (Python style) to use if no match. See README.txt
-      -bufsize BUFSIZE      size (in bytes) of the buffer to match against (default=131072 bytes)
+      -bufsize BUFSIZE      size (in bytes) of the buffer to match against (minimum=1024 bytes, default=131072 bytes). A signature cannot match beyond the buffer, so formats identified deep in a file need a larger one (ISO 9660 needs more than 32768 bytes).
       -container_bufsize CONTAINER_BUFSIZE
                             size (in bytes) of the buffer to match against (default=524288 bytes)
       -loadformats XML1,...,XMLn
