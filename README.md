@@ -58,7 +58,7 @@ optional arguments:
                    SIG_ACT "n" download and use version n.
 * `-container_bufsize CONTAINER_BUFSIZE`: size (in bytes) of the buffer to match against (default=524288 bytes)
 * `-loadformats XML1,...,XMLn`: comma separated string of XML format files to add.
-* `-confdir CONFDIR`: configuration directory to load_fido_xml, for example, the format specifications from.
+* `-confdir CONFDIR`: configuration directory to load_fido_xml, for example, the format specifications from. With -sigs, versions.xml is read from and the downloaded signature files are written to this directory.
 
 Installation
 ------------

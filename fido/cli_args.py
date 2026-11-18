@@ -124,7 +124,8 @@ def parse_cli_args(argv: List[str], defaults: Dict[str, Any]) -> argparse.Namesp
     parser.add_argument(
         "-confdir",
         default=defaults["config_dir"],
-        help="configuration directory to load_fido_xml, for example, the format specifications from.",
+        help="configuration directory to load_fido_xml, for example, the format specifications from."
+        " With -sigs, versions.xml is read from and the downloaded signature files are written to this directory.",
     )
 
     return parser.parse_args(argv)
