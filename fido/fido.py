@@ -640,6 +640,8 @@ class Fido:
             sys.stderr.write("FIDO: ZipError {0}\n".format(filename))
         except zipfile.BadZipfile:
             sys.stderr.write("FIDO: ZipError {0}\n".format(filename))
+        except UnicodeDecodeError as error:
+            sys.stderr.write(f"FIDO: ZipError {filename}: {error}\n")
 
     def walk_tar(self, filename, fileobj, extension=True):
         """

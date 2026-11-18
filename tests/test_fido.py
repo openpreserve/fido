@@ -306,6 +306,22 @@ def test_walk_zip_handles_bad_zip(monkeypatch, capsys):
     assert "FIDO: ZipError bad.zip" in capsys.readouterr().err
 
 
+def test_walk_zip_reports_an_archive_with_an_entry_name_that_is_not_valid_utf8(monkeypatch, tmp_path, capsys):
+    """Some tools set the UTF-8 flag on names in a legacy code page; the archive is reported, the run goes on."""
+    fido = _make_fido(monkeypatch)
+    buffer = io.BytesIO()
+    with fido_mod.zipfile.ZipFile(buffer, "w") as archive:
+        archive.writestr("\u00e9.txt", b"content")
+    sample = tmp_path / "sample.zip"
+    sample.write_bytes(buffer.getvalue().replace("\u00e9".encode("utf-8"), b"\xe9\xff"))
+
+    fido.walk_zip(str(sample))
+
+    error = capsys.readouterr().err
+    assert error.startswith(f"FIDO: ZipError {sample}: "), error
+    assert "codec can't decode" in error, error
+
+
 def test_walk_tar_handles_tar_error(monkeypatch, capsys):
     fido = _make_fido(monkeypatch)
     monkeypatch.setattr(fido_mod.tarfile, "TarFile", lambda *_a, **_k: (_ for _ in ()).throw(fido_mod.tarfile.TarError()))
