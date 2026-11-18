@@ -51,7 +51,7 @@ optional arguments:
 * `-nouseformats EXCLUDEPUIDS`: comma separated string of formats not to use in identification
 * `-matchprintf FORMATSTRING`: format string (Python style) to use on match. See nomatchprintf, README.txt.
 * `-nomatchprintf FORMATSTRING`: format string (Python style) to use if no match. See README.txt
-* `-bufsize BUFSIZE`: size (in bytes) of the buffer to match against (minimum=1024 bytes, default=131072 bytes)
+* `-bufsize BUFSIZE`: size (in bytes) of the buffer to match against (minimum=1024 bytes, default=131072 bytes). A signature cannot match beyond the buffer, so formats identified deep in a file need a larger one (ISO 9660 needs more than 32768 bytes).
 * `-sigs SIG_ACT`: SIG_ACT "check" for new version of signature file for download.
                    SIG_ACT "list" list all available sig file versions.
                    SIG_ACT "update" to automatically update to latest available sig file.

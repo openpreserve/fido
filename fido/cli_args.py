@@ -111,7 +111,11 @@ def parse_cli_args(argv: List[str], defaults: Dict[str, Any]) -> argparse.Namesp
         "-bufsize",
         type=buffer_size,
         default=None,
-        help=f"size (in bytes) of the buffer to match against (minimum={MIN_BUFSIZE}, default={defaults['bufsize']})",
+        help=(
+            f"size (in bytes) of the buffer to match against (minimum={MIN_BUFSIZE}, default={defaults['bufsize']}). "
+            "A signature cannot match beyond the buffer, so formats identified deep in a file need a larger one "
+            "(ISO 9660 needs more than 32768 bytes)."
+        ),
     )
     parser.add_argument(
         "-sigs",

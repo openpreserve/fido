@@ -636,6 +636,38 @@ def test_list_files_finds_a_file_whose_name_ends_in_a_newline_by_default(tmp_pat
     assert capsys.readouterr().err == ""
 
 
+def _write_iso_like_image(path):
+    """Write what the ISO 9660 signature needs: a primary descriptor at 32768, a terminator one 2048 byte block on."""
+    primary_offset = 32768
+    terminator_offset = primary_offset + 2048
+    image = bytearray(terminator_offset + 4096)
+    image[primary_offset : primary_offset + 7] = b"\x01CD001\x01"
+    image[terminator_offset : terminator_offset + 7] = b"\xffCD001\x01"
+    path.write_bytes(image)
+
+
+def test_main_bufsize_shorter_than_a_signature_offset_falls_back_to_the_extension(monkeypatch, tmp_path, capsys):
+    image = tmp_path / "disc.iso"
+    _write_iso_like_image(image)
+
+    _run_main(monkeypatch, "-q", "-bufsize", "2048", str(image))
+
+    rows = list(csv.reader(io.StringIO(capsys.readouterr().out)))
+    assert rows, "no match line was printed"
+    assert {row[8] for row in rows} == {"extension"}, f"expected extension matches only, got {rows}"
+    assert "fmt/468" not in {row[2] for row in rows}, f"ISO 9660 matched in a buffer shorter than its signature: {rows}"
+
+
+def test_main_bufsize_beyond_a_signature_offset_matches_it(monkeypatch, tmp_path, capsys):
+    image = tmp_path / "disc.iso"
+    _write_iso_like_image(image)
+
+    _run_main(monkeypatch, "-q", "-bufsize", "131072", str(image))
+
+    rows = list(csv.reader(io.StringIO(capsys.readouterr().out)))
+    assert [(row[2], row[8]) for row in rows] == [("fmt/468", "signature")], f"unexpected matches: {rows}"
+
+
 def test_main_does_not_strip_a_newline_from_a_path_argument(monkeypatch, tmp_path, capsys):
     record = tmp_path / "record"
     record.write_bytes(id_test_data[0][0])
