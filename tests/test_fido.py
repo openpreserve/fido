@@ -444,6 +444,39 @@ def test_main_matchprintf_and_nomatchprintf_each_expand_their_own_escapes(monkey
     assert capsys.readouterr().out == f"MATCH fmt/1000\t{known}\nNOMATCH\t{unknown}\n"
 
 
+def test_list_files_yields_files_and_the_contents_of_directories(tmp_path):
+    single = tmp_path / "single.bin"
+    single.write_bytes(b"x")
+    folder = tmp_path / "folder"
+    folder.mkdir()
+    inside = folder / "inside.bin"
+    inside.write_bytes(b"x")
+
+    assert list(fido_mod.list_files([str(single), str(folder)])) == [str(single), str(inside)]
+
+
+def test_list_files_reports_a_missing_path_and_carries_on(tmp_path, capsys):
+    present = tmp_path / "present.bin"
+    present.write_bytes(b"x")
+    missing = tmp_path / "missing.bin"
+
+    assert list(fido_mod.list_files([str(missing), str(present)])) == [str(present)]
+
+    assert capsys.readouterr().err == f"FIDO: Not a file or directory: {missing}\n"
+
+
+def test_main_reports_a_missing_path_even_when_quiet_and_identifies_the_rest(monkeypatch, tmp_path, capsys):
+    present = tmp_path / "present"
+    present.write_bytes(id_test_data[0][0])
+    missing = tmp_path / "missing"
+
+    _run_main(monkeypatch, "-q", str(missing), str(present))
+
+    captured = capsys.readouterr()
+    assert f"FIDO: Not a file or directory: {missing}\n" in captured.err
+    assert next(csv.reader(io.StringIO(captured.out)))[2] == "fmt/1000"
+
+
 def test_print_matches_no_match_outputs_ko(monkeypatch, capsys):
     fido = _make_fido(monkeypatch)
     fido.current_filesize = 12

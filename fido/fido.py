@@ -784,12 +784,14 @@ def list_files(roots, recurse=False):
         root = os.path.normpath(root)
         if os.path.isfile(root):
             yield root
-        else:
+        elif os.path.isdir(root):
             for path, _, files in os.walk(root):
                 for f in files:
                     yield os.path.join(path, f)
                 if not recurse:
                     break
+        else:
+            sys.stderr.write(f"FIDO: Not a file or directory: {root}\n")
 
 
 def main(args=None):
