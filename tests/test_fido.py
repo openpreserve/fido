@@ -712,3 +712,16 @@ def test_match_formats_names_the_format_whose_signature_fails(monkeypatch, capsy
     error = capsys.readouterr().err
     assert error.startswith("FIDO: Error matching fmt/1558: "), error
     assert "min repeat greater than max repeat" in error
+
+
+def test_process_format_element_replaces_an_existing_format_without_a_deprecation_warning(monkeypatch, recwarn):
+    fido = _make_fido(monkeypatch)
+    first = _format_element("fmt/1")
+    second = _format_element("fmt/1")
+
+    fido.process_format_element(first)
+    fido.process_format_element(second)
+
+    assert fido.formats == [second]
+    assert fido.puid_format_map["fmt/1"] is second
+    assert not [w for w in recwarn if issubclass(w.category, DeprecationWarning)]

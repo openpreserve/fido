@@ -230,8 +230,8 @@ class Fido:
         # TODO: Handle empty regexes properly; perhaps remove from the format list
         puid = self.get_puid(element)
         # Handle over-writes in multiple file loads
-        existing = self.puid_format_map.get(puid, False)
-        if existing:
+        existing = self.puid_format_map.get(puid)
+        if existing is not None:
             # Already have one, so replace old with new!
             self.formats[self.formats.index(existing)] = element
         else:
