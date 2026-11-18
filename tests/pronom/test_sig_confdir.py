@@ -166,24 +166,45 @@ def test_downloads_land_next_to_the_versions_xml_that_was_read_through_a_symlink
     assert updated.get_zip_file() == os.path.join(resolved, "pronom-xml-v200.zip")
 
 
+def make_unusable_conf_dir(tmp_path, content):
+    conf_dir = tmp_path / "unusable_conf"
+    conf_dir.mkdir()
+    if content is not None:
+        (conf_dir / "versions.xml").write_text(content, encoding="utf-8")
+    return conf_dir
+
+
+def assert_rejected_without_side_effects(exit_info, conf_dir, files_before, signature_service):
+    expected = f"FIDO: {conf_dir / 'versions.xml'} is missing or incomplete, cannot use it with -sigs"
+    assert str(exit_info.value) == expected
+    assert signature_service == [], "the update site was contacted"
+    assert read_files(conf_dir) == files_before, "something was written to the conf dir"
+
+
 @pytest.mark.parametrize("action", ["list", "check", "update", "v200"])
 @pytest.mark.parametrize("content", UNUSABLE_VERSIONS)
 def test_an_unusable_versions_xml_stops_the_sigs_actions_before_any_request_or_write(
     content, action, tmp_path, signature_service
 ):
-    conf_dir = tmp_path / "unusable_conf"
-    conf_dir.mkdir()
-    if content is not None:
-        (conf_dir / "versions.xml").write_text(content, encoding="utf-8")
+    conf_dir = make_unusable_conf_dir(tmp_path, content)
     before = read_files(conf_dir)
 
     with pytest.raises(SystemExit) as exc:
         versions.sig_file_actions(action, str(conf_dir))
 
-    message = str(exc.value)
-    assert message == f"FIDO: {conf_dir / 'versions.xml'} is missing or incomplete, cannot use it with -sigs", message
-    assert signature_service == [], "the update site was contacted"
-    assert read_files(conf_dir) == before, "something was written to the conf dir"
+    assert_rejected_without_side_effects(exc, conf_dir, before, signature_service)
+
+
+@pytest.mark.parametrize("content", UNUSABLE_VERSIONS)
+def test_main_reports_an_unusable_versions_xml_in_confdir(content, monkeypatch, tmp_path, signature_service):
+    monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
+    conf_dir = make_unusable_conf_dir(tmp_path, content)
+    before = read_files(conf_dir)
+
+    with pytest.raises(SystemExit) as exc:
+        fido_mod.main(["-confdir", str(conf_dir), "-sigs", "update"])
+
+    assert_rejected_without_side_effects(exc, conf_dir, before, signature_service)
 
 
 def test_main_hands_confdir_to_the_sigs_actions(monkeypatch, custom_conf_dir, signature_service):

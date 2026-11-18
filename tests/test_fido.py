@@ -360,6 +360,26 @@ def test_main_version_flag_exits(monkeypatch, capsys):
     assert "FIDO v" in capsys.readouterr().out
 
 
+def test_main_version_flag_wins_over_sigs(monkeypatch, capsys):
+    monkeypatch.setattr(fido_mod, "parse_cli_args", lambda *_a: _main_args(v=True, sigs="update"))
+    monkeypatch.setattr(
+        fido_mod,
+        "get_local_versions",
+        lambda _c: SimpleNamespace(
+            pronom_signature="formats-v116.xml",
+            pronom_container_signature="container-signature.xml",
+            fido_extension_signature="format_extensions.xml",
+        ),
+    )
+    monkeypatch.setattr(fido_mod, "sig_file_actions", lambda *_a: pytest.fail("-sigs must not run when -v is given"))
+
+    with pytest.raises(SystemExit) as exc:
+        fido_mod.main(["-v", "-sigs", "update"])
+
+    assert exc.value.code == 0
+    assert "FIDO v" in capsys.readouterr().out
+
+
 def test_main_sigs_calls_action(monkeypatch):
     calls = {}
     monkeypatch.setattr(fido_mod, "parse_cli_args", lambda *_a: _main_args(sigs="LiSt"))
