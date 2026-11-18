@@ -105,8 +105,11 @@ def _text_stdin(content: bytes):
     id_test_data,
     # Add additional test cases here
 )
-def test_main_identifies_stdin(monkeypatch, capsys, stdin_factory, magic: bytes, expected_puid: str, expected_result: str):
+def test_main_identifies_stdin(
+    monkeypatch, capsys, stdin_factory, magic: bytes, expected_puid: str, expected_result: str
+):
     """`fido -` must identify the bytes on stdin; the stream tests bypass the wiring in main()."""
+    # main() stores the signature files it loads in this dict, so run it on a copy
     monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
     monkeypatch.setattr(fido_mod.sys, "stdin", stdin_factory(magic))
 
@@ -116,6 +119,19 @@ def test_main_identifies_stdin(monkeypatch, capsys, stdin_factory, magic: bytes,
     assert row[0] == expected_result, "row hasn't returned a positive identification"
     assert row[2] == expected_puid, "row doesn't contain expected PUID value"
     assert int(row[5]) == len(magic), "row doesn't contain stream length"
+
+
+def test_main_reports_an_empty_stdin_as_no_match(monkeypatch, capsys):
+    """An empty buffer satisfies the RTF signatures, so it must not be matched at all, as for an empty file."""
+    monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
+    monkeypatch.setattr(fido_mod.sys, "stdin", _text_stdin(b""))
+
+    fido_mod.main(["-q", "-"])
+
+    rows = list(csv.reader(io.StringIO(capsys.readouterr().out)))
+    assert len(rows) == 1, rows
+    assert rows[0][0] == "KO"
+    assert int(rows[0][5]) == 0
 
 
 def _format_element(puid, container=None, extension=None, has_priority_over=None):

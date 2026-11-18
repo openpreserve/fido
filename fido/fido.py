@@ -477,7 +477,7 @@ class Fido:
         self.current_file = "STDIN"
         matches = self.match_formats(bofbuffer, eofbuffer)
         # MdR: this needs attention
-        if len(matches) > 0:
+        if len(matches) > 0 and self.current_filesize > 0:
             self.handle_matches(self.current_file, matches, timer.duration(), "signature")
         elif extension and (len(matches) == 0 or self.current_filesize == 0):
             # we can only determine the filename from the STDIN stream
