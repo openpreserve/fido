@@ -172,7 +172,7 @@ def test_sig_file_actions_dispatches(monkeypatch, sig_act, expected_call, expect
     calls = {}
     fake_versions = SimpleNamespace(pronom_version="116", update_site="https://example.test")
 
-    monkeypatch.setattr(versions, "get_local_versions", lambda: fake_versions)
+    monkeypatch.setattr(versions, "get_local_versions", lambda _conf_dir: fake_versions)
     monkeypatch.setattr(versions, "_list_available_versions", lambda update_url: calls.__setitem__("list", update_url))
     monkeypatch.setattr(
         versions,
@@ -267,7 +267,7 @@ def test_download_sig_version_exits_on_http_error(monkeypatch):
 
 def test_output_details_sets_versions_and_downloads(monkeypatch):
     calls = []
-    target = SimpleNamespace(pronom_version="", pronom_signature="")
+    target = SimpleNamespace(pronom_version="", pronom_signature="", conf_dir="/conf")
     target.write = lambda: calls.append("write")
     monkeypatch.setattr(versions, "_write_sigs", lambda *args: calls.append(args))
 
@@ -278,6 +278,7 @@ def test_output_details_sets_versions_and_downloads(monkeypatch):
     assert calls[0][2] == "fido"
     assert calls[1][2] == "droid"
     assert calls[2][2] == "pronom"
+    assert [call[4] for call in calls[:3]] == ["/conf"] * 3, "every download must go to the versions file's directory"
     assert calls[3] == "write"
 
 
@@ -293,7 +294,7 @@ def test_sig_file_actions_keeps_trailing_slash(monkeypatch):
     calls = {}
     fake_versions = SimpleNamespace(pronom_version="116", update_site="https://example.test/")
 
-    monkeypatch.setattr(versions, "get_local_versions", lambda: fake_versions)
+    monkeypatch.setattr(versions, "get_local_versions", lambda _conf_dir: fake_versions)
     monkeypatch.setattr(versions, "_list_available_versions", lambda update_url: calls.__setitem__("list", update_url))
 
     with pytest.raises(SystemExit):

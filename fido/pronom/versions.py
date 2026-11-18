@@ -106,9 +106,9 @@ def get_local_versions(config_dir=CONFIG_DIR):
     return LocalVersions(os.path.join(config_dir, "versions.xml"))
 
 
-def sig_file_actions(sig_act):
-    """Process signature file update actions."""
-    versions = get_local_versions()
+def sig_file_actions(sig_act, conf_dir=CONFIG_DIR):
+    """Process signature file update actions on the signature files in conf_dir."""
+    versions = get_local_versions(conf_dir)
     sig_vers = versions.pronom_version
 
     # Get update URL, add trailing slash if missing
@@ -180,9 +180,9 @@ def _get_version(ver_string):
 
 def _output_details(version, update_url, versions):
     sys.stdout.write("Updating signature file to {}.\n".format(version))
-    _write_sigs(version, update_url, "fido", "formats-v{}.xml")
-    _write_sigs(version, update_url, "droid", "DROID_SignatureFile-v{}.xml")
-    _write_sigs(version, update_url, "pronom", "pronom-xml-v{}.zip")
+    _write_sigs(version, update_url, "fido", "formats-v{}.xml", versions.conf_dir)
+    _write_sigs(version, update_url, "droid", "DROID_SignatureFile-v{}.xml", versions.conf_dir)
+    _write_sigs(version, update_url, "pronom", "pronom-xml-v{}.zip", versions.conf_dir)
     versions.pronom_version = "{}".format(version)
     versions.pronom_signature = "formats-v{}.xml".format(version)
     versions.write()
@@ -197,8 +197,10 @@ def _version_check(sig_ver, update_url):
     return int(latest) > int(sig_ver), latest
 
 
-def _write_sigs(latest, update_url, type, name_template):
-    sig_out = str(importlib.resources.files("fido").joinpath("conf", name_template.format(latest)))
+def _write_sigs(latest, update_url, type, name_template, conf_dir=None):
+    if conf_dir is None:
+        conf_dir = str(importlib.resources.files("fido").joinpath("conf"))
+    sig_out = os.path.join(conf_dir, name_template.format(latest))
     if os.path.exists(sig_out):
         return
     resp = requests.get(update_url + "format/{0}/{1}/".format(latest, type))

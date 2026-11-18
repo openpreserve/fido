@@ -822,7 +822,7 @@ def main(args=None):
         sys.exit(0)
 
     if args.sigs:
-        sig_file_actions(args.sigs.lower())
+        sig_file_actions(args.sigs.lower(), args.confdir)
         sys.exit(0)
 
     if args.matchprintf:

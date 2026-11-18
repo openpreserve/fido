@@ -372,13 +372,14 @@ def test_main_sigs_calls_action(monkeypatch):
             fido_extension_signature="format_extensions.xml",
         ),
     )
-    monkeypatch.setattr(fido_mod, "sig_file_actions", lambda value: calls.__setitem__("sigs", value))
+    monkeypatch.setattr(fido_mod, "sig_file_actions", lambda value, conf_dir: calls.update(sigs=value, conf_dir=conf_dir))
 
     with pytest.raises(SystemExit) as exc:
         fido_mod.main(["-sig", "list"])
 
     assert exc.value.code == 0
     assert calls["sigs"] == "list"
+    assert calls["conf_dir"] == "/tmp", "-confdir must reach the signature actions"
 
 
 def test_main_stdin_zip_raises_runtime(monkeypatch):
