@@ -878,7 +878,9 @@ def main(args=None):
                 raise RuntimeError("Multiple content read from stdin not yet supported.")
                 fido.identify_multi_object_stream(sys.stdin, extension=not args.noextension)
             else:
-                fido.identify_stream(sys.stdin, args.filename, extension=not args.noextension)
+                # sys.stdin is a text wrapper, identification needs the raw bytes behind it
+                stdin = getattr(sys.stdin, "buffer", sys.stdin)
+                fido.identify_stream(stdin, args.filename, extension=not args.noextension)
         else:
             for file in list_files(args.files, args.recurse):
                 fido.identify_file(file, extension=not args.noextension)

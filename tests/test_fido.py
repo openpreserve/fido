@@ -90,6 +90,34 @@ def test_stream_identification(capsys, magic: bytes, expected_puid: str, expecte
     assert int(row[5]) == len(magic), "row doesn't contain stream length"
 
 
+def _text_stdin(content: bytes):
+    """Behave like the interpreter's sys.stdin: a text wrapper around a binary buffer."""
+    return io.TextIOWrapper(io.BytesIO(content), encoding="utf-8")
+
+
+@pytest.mark.parametrize(
+    "stdin_factory",
+    [_text_stdin, io.BytesIO],
+    ids=["text wrapper over a binary buffer", "plain binary stream without a buffer attribute"],
+)
+@pytest.mark.parametrize(
+    "magic, expected_puid, expected_result",
+    id_test_data,
+    # Add additional test cases here
+)
+def test_main_identifies_stdin(monkeypatch, capsys, stdin_factory, magic: bytes, expected_puid: str, expected_result: str):
+    """`fido -` must identify the bytes on stdin; the stream tests bypass the wiring in main()."""
+    monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
+    monkeypatch.setattr(fido_mod.sys, "stdin", stdin_factory(magic))
+
+    fido_mod.main(["-q", "-"])
+
+    row = next(csv.reader(io.StringIO(capsys.readouterr().out)))
+    assert row[0] == expected_result, "row hasn't returned a positive identification"
+    assert row[2] == expected_puid, "row doesn't contain expected PUID value"
+    assert int(row[5]) == len(magic), "row doesn't contain stream length"
+
+
 def _format_element(puid, container=None, extension=None, has_priority_over=None):
     fmt = XET.Element("format")
     XET.SubElement(fmt, "puid").text = puid
