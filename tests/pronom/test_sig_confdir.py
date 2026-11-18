@@ -1,5 +1,6 @@
 """The -sigs actions must work on the configuration directory they are given, not the packaged one."""
 
+import os
 from pathlib import Path
 
 import pytest
@@ -91,6 +92,37 @@ def test_new_signature_files_are_installed_into_the_given_conf_dir(
     assert updated.pronom_signature == "formats-v200.xml"
     assert list(decoy_packaged_conf_dir.iterdir()) == [], "something was written to the packaged conf dir"
     assert not (Path(CONFIG_DIR) / "formats-v200.xml").exists()
+
+
+def test_downloads_land_next_to_the_versions_xml_that_was_read_through_a_symlink(
+    tmp_path, signature_service, decoy_packaged_conf_dir
+):
+    config = tmp_path / "srv" / "config"
+    (config / "current").mkdir(parents=True)
+    (config / "versions.xml").write_text(VERSIONS_XML, encoding="utf-8")
+    work = tmp_path / "work"
+    work.mkdir()
+    try:
+        (work / "link").symlink_to(Path("..") / "srv" / "config" / "current", target_is_directory=True)
+    except (OSError, NotImplementedError) as error:
+        pytest.skip("symlinks are not supported here: {}".format(error))
+    confdir_through_symlink = "{}/link/..".format(work)
+    assert Path(confdir_through_symlink, "versions.xml").read_text(encoding="utf-8") == VERSIONS_XML, (
+        "the layout must make the OS resolve link/.. to the directory holding versions.xml"
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        versions.sig_file_actions("update", confdir_through_symlink)
+
+    assert exc.value.code == 0
+    for name in DOWNLOADS:
+        assert (config / name).is_file(), name + " was not written next to the versions.xml that was read"
+    assert sorted(path.name for path in work.iterdir()) == ["link"], "files were written to the lexical parent"
+    updated = versions.get_local_versions(confdir_through_symlink)
+    assert updated.pronom_signature == "formats-v200.xml"
+    resolved = os.path.realpath(config)
+    assert updated.get_signature_file() == os.path.join(resolved, "formats-v200.xml")
+    assert updated.get_zip_file() == os.path.join(resolved, "pronom-xml-v200.zip")
 
 
 def test_main_hands_confdir_to_the_sigs_actions(monkeypatch, custom_conf_dir, signature_service):

@@ -60,7 +60,7 @@ class LocalVersions(object):
     def __init__(self, versions_file):
         """Instantiate class based on the file indicated in `versions_file`."""
         self.versions_file = versions_file
-        self.conf_dir = os.path.abspath(os.path.dirname(versions_file))
+        self.conf_dir = os.path.realpath(os.path.dirname(versions_file))
         try:
             self.tree = parse(versions_file)
             self.root = self.tree.getroot()
