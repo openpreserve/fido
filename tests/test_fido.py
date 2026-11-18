@@ -675,3 +675,22 @@ def test_signature_regexes_are_compiled_once_and_re_cache_is_untouched(monkeypat
     assert first_run > 0
     assert len(compiled) == first_run
     assert len(set(compiled)) == len(compiled)
+
+
+def test_main_continues_past_a_filename_that_is_not_valid_utf8(monkeypatch, tmp_path, capsys):
+    """A name from a foreign file system must not abort the run, nor hide the files after it."""
+    if fido_mod.sys.platform.startswith(("win", "darwin")):
+        pytest.skip("this file system only stores names that are valid unicode")
+    magic = id_test_data[0][0]
+    undecodable = tmp_path / fido_mod.os.fsdecode(b"bad\xffname")
+    undecodable.write_bytes(magic)
+    decodable = tmp_path / "good"
+    decodable.write_bytes(magic)
+    monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
+
+    fido_mod.main(["-q", str(undecodable), str(decodable)])
+
+    rows = list(csv.reader(io.StringIO(capsys.readouterr().out)))
+    assert [row[2] for row in rows] == ["fmt/1000", "fmt/1000"], "the file after the bad name was not identified"
+    assert rows[0][6].endswith("bad\\udcffname"), "the undecodable byte should be written as an escape"
+    assert rows[1][6].endswith("good")
