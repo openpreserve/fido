@@ -869,9 +869,11 @@ def main(args=None):
 
     # Set up to use stdin, or open input files:
     if args.input == "-":
+        if hasattr(sys.stdin, "reconfigure"):
+            sys.stdin.reconfigure(errors="surrogateescape")
         args.files = sys.stdin
     elif args.input:
-        args.files = open(args.input, "r")
+        args.files = open(args.input, "r", errors="surrogateescape")
 
     # RUN
     try:

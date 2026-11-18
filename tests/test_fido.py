@@ -760,3 +760,41 @@ def test_main_only_replaces_a_strict_stdout_error_handler(monkeypatch, tmp_path,
 
     output = written.getvalue()
     assert b"/" + expected_name + b'"' in output, f"stdout errors={stream_errors!r} wrote {output!r}"
+
+
+def _identify_listed_names(monkeypatch, capsys, listing, arguments):
+    monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
+    monkeypatch.setattr(fido_mod.sys, "stdin", io.TextIOWrapper(io.BytesIO(listing), encoding="utf-8"))
+
+    fido_mod.main(["-q", *arguments])
+
+    return list(csv.reader(io.StringIO(capsys.readouterr().out)))
+
+
+def _assert_both_listed_names_identified(rows):
+    assert [row[2] for row in rows] == ["fmt/1000", "fmt/1000"], f"expected both listed files identified, got {rows}"
+    assert rows[0][6].endswith("bad\\udcffname"), f"the undecodable name was not kept: {rows[0][6]}"
+    assert rows[1][6].endswith("good"), f"the file after the undecodable name was not identified: {rows[1][6]}"
+
+
+def test_main_identifies_a_filename_that_is_not_valid_utf8_listed_on_stdin(monkeypatch, tmp_path, capsys):
+    bad = _create_file_named_with_bytes(tmp_path, b"bad\xffname", id_test_data[0][0])
+    good = tmp_path / "good"
+    good.write_bytes(id_test_data[0][0])
+    listing = fido_mod.os.fsencode(bad) + b"\n" + fido_mod.os.fsencode(good) + b"\n"
+
+    rows = _identify_listed_names(monkeypatch, capsys, listing, ["-input", "-"])
+
+    _assert_both_listed_names_identified(rows)
+
+
+def test_main_identifies_a_filename_that_is_not_valid_utf8_listed_in_a_file(monkeypatch, tmp_path, capsys):
+    bad = _create_file_named_with_bytes(tmp_path, b"bad\xffname", id_test_data[0][0])
+    good = tmp_path / "good"
+    good.write_bytes(id_test_data[0][0])
+    listing = tmp_path / "files.txt"
+    listing.write_bytes(fido_mod.os.fsencode(bad) + b"\n" + fido_mod.os.fsencode(good) + b"\n")
+
+    rows = _identify_listed_names(monkeypatch, capsys, b"", ["-input", str(listing)])
+
+    _assert_both_listed_names_identified(rows)
