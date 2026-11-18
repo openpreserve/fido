@@ -20,14 +20,15 @@ limitations under the License.
 PRONOM format signatures SOAP calls.
 """
 
+import http.client
 import sys
 import urllib.request
-from urllib.error import HTTPError, URLError
 from xml.etree import ElementTree as ET
 
 from defusedxml.ElementTree import fromstring
 
 from fido import __version__
+from fido.pronom import HTTP_TIMEOUT_SECONDS
 
 ENCODING = "utf-8"
 XML_PROC = '<?xml version="1.0" encoding="{}"?>'.format(ENCODING)
@@ -54,7 +55,7 @@ HEADERS = {
 def get_sig_xml_for_puid(puid):
     """Return the full PRONOM signature XML for the passed PUID."""
     req = urllib.request.Request("http://www.nationalarchives.gov.uk/pronom/{}.xml".format(puid))
-    response = urllib.request.urlopen(req)
+    response = urllib.request.urlopen(req, timeout=HTTP_TIMEOUT_SECONDS)
     xml = response.read()
     return xml
 
@@ -64,7 +65,7 @@ def get_pronom_sig_version():
     Get PRONOM signature version.
 
     Return latest signature file version number as an int.
-    Raises an HTTPError if there are problems.
+    Exits with a message naming the service URL if it cannot be reached.
     """
     tree = _get_soap_ele_tree("getSignatureFileVersionV1")
     ver_ele = tree.find(".//pronom:Version/pronom:Version", NS)
@@ -83,17 +84,18 @@ def get_droid_signatures(version):
     format_count = False
     try:
         with urllib.request.urlopen(
-            "https://www.nationalarchives.gov.uk/documents/DROID_SignatureFile_V{}.xml".format(version)
+            "https://www.nationalarchives.gov.uk/documents/DROID_SignatureFile_V{}.xml".format(version),
+            timeout=HTTP_TIMEOUT_SECONDS,
         ) as f:
             xml = f.read().decode("utf-8")
             root_ele = fromstring(xml)
             format_count = len(
                 root_ele.findall(".//{http://www.nationalarchives.gov.uk/pronom/SignatureFile}FileFormat")
             )
-    except HTTPError as httpe:
+    except (OSError, http.client.HTTPException) as err:
         sys.stderr.write(
             "get_droid_signatures(): could not download signature file v{} due to exception: {}\n".format(
-                version, httpe
+                version, err
             )
         )
     return xml, format_count
@@ -111,15 +113,17 @@ def _get_soap_ele_tree(soap_action):
 
 
 def _get_soap_response(soap_action, soap_string):
-    try:
-        req = urllib.request.Request("https://{}/pronom/service.asmx".format(PRONOM_HOST), data=soap_string)
-    except URLError:
-        print("There was a problem contacting the PRONOM service at http://{}/pronom/service.asmx.".format(PRONOM_HOST))
-        print("Please check your network connection and try again.")
-        sys.exit(1)
+    url = f"https://{PRONOM_HOST}/pronom/service.asmx"
+    req = urllib.request.Request(url, data=soap_string)
     for key, value in HEADERS.items():
         req.add_header(key, value)
     req.add_header("Content-length", "%d" % len(soap_string))
     req.add_header("SOAPAction", soap_action)
-    response = urllib.request.urlopen(req)
-    return response.read().decode(ENCODING)
+    try:
+        response = urllib.request.urlopen(req, timeout=HTTP_TIMEOUT_SECONDS)
+        return response.read().decode(ENCODING)
+    except (OSError, http.client.HTTPException) as err:
+        sys.exit(
+            f"There was a problem contacting the PRONOM service at {url}: {err}\n"
+            "Please check your network connection and try again."
+        )
