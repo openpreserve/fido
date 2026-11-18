@@ -725,3 +725,38 @@ def test_process_format_element_replaces_an_existing_format_without_a_deprecatio
     assert fido.formats == [second]
     assert fido.puid_format_map["fmt/1"] is second
     assert not [w for w in recwarn if issubclass(w.category, DeprecationWarning)]
+
+
+def _create_file_named_with_bytes(directory, name, content):
+    """Create a file whose name is not valid UTF-8, or skip where the platform or file system cannot hold one."""
+    if fido_mod.sys.platform == "win32":
+        pytest.skip("Windows cannot build a name from a byte that is not valid UTF-8, os.fsdecode raises")
+    path = directory / fido_mod.os.fsdecode(name)
+    try:
+        path.write_bytes(content)
+    except OSError as error:
+        pytest.skip(f"this file system rejects names that are not valid UTF-8: {error}")
+    return path
+
+
+@pytest.mark.parametrize(
+    "stream_errors, expected_name",
+    [
+        ("strict", b"bad\\udcffname"),
+        ("surrogateescape", b"bad\xffname"),
+        ("replace", b"bad?name"),
+    ],
+)
+def test_main_only_replaces_a_strict_stdout_error_handler(monkeypatch, tmp_path, stream_errors, expected_name):
+    """A stdout that already tolerates the name (C locale, UTF-8 mode) must keep writing the original byte."""
+    path = _create_file_named_with_bytes(tmp_path, b"bad\xffname", id_test_data[0][0])
+    monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
+    written = io.BytesIO()
+    stream = io.TextIOWrapper(written, encoding="utf-8", errors=stream_errors, newline="")
+    monkeypatch.setattr(fido_mod.sys, "stdout", stream)
+
+    fido_mod.main(["-q", str(path)])
+    stream.flush()
+
+    output = written.getvalue()
+    assert b"/" + expected_name + b'"' in output, f"stdout errors={stream_errors!r} wrote {output!r}"

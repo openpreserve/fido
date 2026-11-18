@@ -799,10 +799,10 @@ def main(args=None):
     args = parse_cli_args(args, defaults)
     timer = PerfTimer()
 
-    # Names that are not valid in the locale encoding would otherwise abort the run at the first row written
-    for stream in (sys.stdout, sys.stderr):
-        if hasattr(stream, "reconfigure"):
-            stream.reconfigure(errors="backslashreplace")
+    # Names that are not valid in the locale encoding would otherwise abort the run at the first row written.
+    # Only a strict stdout is changed: surrogateescape (C locale, UTF-8 mode) writes the original byte back.
+    if hasattr(sys.stdout, "reconfigure") and sys.stdout.errors == "strict":
+        sys.stdout.reconfigure(errors="backslashreplace")
 
     versions = get_local_versions(args.confdir)
 
