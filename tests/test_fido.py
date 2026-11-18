@@ -569,7 +569,7 @@ def test_list_files_skips_an_empty_root_and_carries_on(tmp_path, capsys):
     present = tmp_path / "present.bin"
     present.write_bytes(b"x")
 
-    assert list(fido_mod.list_files(["", "\n", str(present)])) == [str(present)]
+    assert list(fido_mod.list_files(["", "\n", str(present)], strip_line_endings=True)) == [str(present)]
 
     assert capsys.readouterr().err == "FIDO: Empty path skipped\n" * 2
 
@@ -583,6 +583,98 @@ def test_main_skips_an_empty_path_argument_and_identifies_the_rest(monkeypatch, 
     captured = capsys.readouterr()
     assert "FIDO: Empty path skipped" in captured.err
     assert next(csv.reader(io.StringIO(captured.out)))[2] == "fmt/1000"
+
+
+@pytest.mark.parametrize(
+    "line, expected",
+    [
+        ("path\n", "path"),
+        ("path\r\n", "path"),
+        ("path", "path"),
+        ("path\r", "path\r"),
+        ("path\n\n", "path\n"),
+        ("\r\n", ""),
+        ("\n", ""),
+        ("", ""),
+    ],
+)
+def test_strip_line_ending_drops_one_line_ending_only(line, expected):
+    assert fido_mod.strip_line_ending(line) == expected, f"{line!r} stripped to something other than {expected!r}"
+
+
+def test_list_files_strips_line_endings_from_listed_paths_when_asked(tmp_path):
+    unix = tmp_path / "unix.bin"
+    unix.write_bytes(b"x")
+    windows = tmp_path / "windows.bin"
+    windows.write_bytes(b"x")
+    last = tmp_path / "last.bin"
+    last.write_bytes(b"x")
+
+    listed = list(fido_mod.list_files([f"{unix}\n", f"{windows}\r\n", str(last)], strip_line_endings=True))
+
+    assert listed == [str(unix), str(windows), str(last)]
+
+
+def test_list_files_keeps_a_trailing_newline_of_a_root_by_default(tmp_path, capsys):
+    record = tmp_path / "record"
+    record.write_bytes(b"x")
+
+    assert list(fido_mod.list_files([f"{record}\n"])) == []
+
+    assert capsys.readouterr().err == f"FIDO: Not a file or directory: {record}\n\n"
+
+
+@pytest.mark.skipif(fido_mod.os.name == "nt", reason="Windows file names cannot contain a newline")
+def test_list_files_finds_a_file_whose_name_ends_in_a_newline_by_default(tmp_path, capsys):
+    plain = tmp_path / "record"
+    plain.write_bytes(b"x")
+    with_newline = tmp_path / "record\n"
+    with_newline.write_bytes(b"x")
+
+    assert list(fido_mod.list_files([str(with_newline)])) == [str(with_newline)]
+
+    assert capsys.readouterr().err == ""
+
+
+def test_main_does_not_strip_a_newline_from_a_path_argument(monkeypatch, tmp_path, capsys):
+    record = tmp_path / "record"
+    record.write_bytes(id_test_data[0][0])
+
+    _run_main(monkeypatch, "-q", f"{record}\n")
+
+    captured = capsys.readouterr()
+    assert captured.err == f"FIDO: Not a file or directory: {record}\n\n"
+    assert captured.out == "", f"the file {record} was identified through a path that does not exist: {captured.out}"
+
+
+def test_main_identifies_crlf_terminated_paths_from_stdin_and_skips_blank_lines(monkeypatch, tmp_path, capsys):
+    first = tmp_path / "first"
+    first.write_bytes(id_test_data[0][0])
+    second = tmp_path / "second"
+    second.write_bytes(id_test_data[0][0])
+    monkeypatch.setattr(fido_mod.sys, "stdin", io.StringIO(f"{first}\r\n\r\n{second}\r\n"))
+
+    _run_main(monkeypatch, "-q", "-input", "-")
+
+    captured = capsys.readouterr()
+    assert captured.err == "FIDO: Empty path skipped\n", f"unexpected diagnostics: {captured.err!r}"
+    rows = list(csv.reader(io.StringIO(captured.out)))
+    assert [(row[2], row[6]) for row in rows] == [("fmt/1000", str(first)), ("fmt/1000", str(second))]
+
+
+def test_main_identifies_paths_listed_in_an_input_file_with_either_line_ending(monkeypatch, tmp_path, capsys):
+    unix = tmp_path / "unix"
+    unix.write_bytes(id_test_data[0][0])
+    windows = tmp_path / "windows"
+    windows.write_bytes(id_test_data[0][0])
+    listing = tmp_path / "paths.txt"
+    listing.write_bytes(f"{unix}\n{windows}\r\n".encode())
+
+    _run_main(monkeypatch, "-q", "-input", str(listing))
+
+    captured = capsys.readouterr()
+    assert captured.err == "", f"unexpected diagnostics: {captured.err!r}"
+    assert [row[6] for row in csv.reader(io.StringIO(captured.out))] == [str(unix), str(windows)]
 
 
 @needs_unprivileged_user

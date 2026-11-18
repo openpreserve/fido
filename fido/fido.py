@@ -791,11 +791,23 @@ def file_mode(path):
         return None
 
 
-def list_files(roots, recurse=False):
-    """Return the files one at a time. Roots could be a fileobj or a list."""
+def strip_line_ending(line):
+    r"""Drop the single \n or \r\n that ends a line read from a list of paths."""
+    for ending in ("\r\n", "\n"):
+        if line.endswith(ending):
+            return line[: -len(ending)]
+    return line
+
+
+def list_files(roots, recurse=False, strip_line_endings=False):
+    """Return the files one at a time. Roots could be a fileobj or a list.
+
+    Set strip_line_endings for roots read from a list of paths, one per line. Command line arguments are
+    taken as given, because a trailing newline is a legal part of a POSIX file name.
+    """
     for root in roots:
-        if root.endswith("\n"):
-            root = root[:-1]
+        if strip_line_endings:
+            root = strip_line_ending(root)
         if not root:
             sys.stderr.write("FIDO: Empty path skipped\n")
             continue
@@ -897,7 +909,7 @@ def main(args=None):
             else:
                 fido.identify_stream(sys.stdin, args.filename, extension=not args.noextension)
         else:
-            for file in list_files(args.files, args.recurse):
+            for file in list_files(args.files, args.recurse, strip_line_endings=bool(args.input)):
                 fido.identify_file(file, extension=not args.noextension)
     except KeyboardInterrupt:
         sys.stdout.flush()
