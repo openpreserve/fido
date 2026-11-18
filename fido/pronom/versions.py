@@ -153,9 +153,17 @@ def _get(url):
         sys.exit(f"Could not reach {safe_url}: {str(err).replace(url, safe_url)}")
 
 
+def _get_successful(url):
+    """GET a signature service URL, and give up with a message unless it answers 200."""
+    resp = _get(url)
+    if resp.status_code != 200:
+        sys.exit(f"Could not download {_without_credentials(url)}: HTTP status {resp.status_code}")
+    return resp
+
+
 def _list_available_versions(update_url):
     """List available signature files."""
-    resp = _get(update_url + "format/")
+    resp = _get_successful(update_url + "format/")
     tree = fromstring(resp.content)
     sys.stdout.write("Available signature versions:\n")
     for child in tree.iter("signature"):
@@ -224,5 +232,5 @@ def _write_sigs(latest, update_url, type, name_template):
     sig_out = str(importlib.resources.files("fido").joinpath("conf", name_template.format(latest)))
     if os.path.exists(sig_out):
         return
-    resp = _get(update_url + "format/{0}/{1}/".format(latest, type))
+    resp = _get_successful(update_url + "format/{0}/{1}/".format(latest, type))
     open(sig_out, "wb").write(resp.content)

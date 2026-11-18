@@ -485,6 +485,53 @@ def test_get_gives_up_on_a_service_that_accepts_the_connection_and_never_answers
     assert "Could not reach" in message and "timed out" in message, message
 
 
+@pytest.fixture
+def conf_dir(monkeypatch, tmp_path):
+    directory = tmp_path / "conf"
+    directory.mkdir()
+
+    class FakeFiles:
+        def joinpath(self, *parts):
+            return tmp_path.joinpath(*parts)
+
+    monkeypatch.setattr(versions.importlib.resources, "files", lambda _pkg: FakeFiles())
+    return directory
+
+
+@pytest.mark.parametrize("status_code", [404, 500])
+def test_write_sigs_saves_nothing_when_the_server_answers_with_an_error(monkeypatch, conf_dir, status_code):
+    error_page = b"<html><body>error</body></html>"
+    monkeypatch.setattr(
+        versions.requests,
+        "get",
+        lambda _url, **_kwargs: DummyResponse(status_code=status_code, content=error_page),
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        versions._write_sigs("116", "https://alice:hunter2@example.test/", "fido", "formats-v{}.xml")
+
+    message = str(exc.value)
+    assert f"Could not download https://example.test/format/116/fido/: HTTP status {status_code}" == message, message
+    assert list(conf_dir.iterdir()) == [], "a failed download left a file behind"
+
+
+@pytest.mark.parametrize("status_code", [404, 500])
+def test_list_available_versions_exits_when_the_server_answers_with_an_error(monkeypatch, capsys, status_code):
+    error_page = b"<html><body>error</body></html>"
+    monkeypatch.setattr(
+        versions.requests,
+        "get",
+        lambda _url, **_kwargs: DummyResponse(status_code=status_code, content=error_page),
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        versions._list_available_versions("https://alice:hunter2@example.test/")
+
+    message = str(exc.value)
+    assert f"Could not download https://example.test/format/: HTTP status {status_code}" == message, message
+    assert capsys.readouterr().out == "", "an error page was listed as signature versions"
+
+
 def test_write_sigs_passes_the_timeout(monkeypatch, tmp_path):
     conf_dir = tmp_path / "conf"
     conf_dir.mkdir()
