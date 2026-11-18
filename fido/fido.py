@@ -23,7 +23,7 @@ from fido import CONFIG_DIR, __version__
 from fido.cli_args import parse_cli_args
 from fido.package import OlePackage, ZipPackage
 from fido.pronom.versions import get_local_versions, sig_file_actions
-from fido.utils.char_handler import escape
+from fido.utils.char_handler import escape, expand_escapes
 from fido.utils.timer import PerfTimer
 
 defaults = {
@@ -826,17 +826,9 @@ def main(args=None):
         sys.exit(0)
 
     if args.matchprintf:
-        try:
-            args.matchprintf = args.matchprintf.decode("string_escape")
-        except AttributeError:
-            args.matchprintf = args.matchprintf.replace(r"\n", "\n")
-            args.matchprintf = args.matchprintf.replace(r"\t", "\t")
+        args.matchprintf = expand_escapes(args.matchprintf)
     if args.nomatchprintf:
-        try:
-            args.nomatchprintf = args.nomatchprintf.decode("string_escape")
-        except AttributeError:
-            args.matchprintf = args.matchprintf.replace(r"\n", "\n")
-            args.matchprintf = args.matchprintf.replace(r"\t", "\t")
+        args.nomatchprintf = expand_escapes(args.nomatchprintf)
 
     fido = Fido(
         quiet=args.q,

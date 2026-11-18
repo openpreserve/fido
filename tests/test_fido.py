@@ -406,6 +406,44 @@ def test_main_stdin_zip_raises_runtime(monkeypatch):
         fido_mod.main([])
 
 
+UNRECOGNISED_BYTES = b"\x01\x02\x03\x04"
+
+
+def _run_main(monkeypatch, *arguments):
+    """Run main() end to end: real argument parsing, real signatures, isolated module defaults."""
+    monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
+    fido_mod.main(list(arguments))
+
+
+def test_main_nomatchprintf_alone_expands_escapes(monkeypatch, tmp_path, capsys):
+    unknown = tmp_path / "unknown.zzz"
+    unknown.write_bytes(UNRECOGNISED_BYTES)
+
+    _run_main(monkeypatch, "-q", "-nomatchprintf", r"NOMATCH %(info.filename)s\n", str(unknown))
+
+    assert capsys.readouterr().out == f"NOMATCH {unknown}\n"
+
+
+def test_main_matchprintf_and_nomatchprintf_each_expand_their_own_escapes(monkeypatch, tmp_path, capsys):
+    known = tmp_path / "known"
+    known.write_bytes(id_test_data[0][0])
+    unknown = tmp_path / "unknown.zzz"
+    unknown.write_bytes(UNRECOGNISED_BYTES)
+
+    _run_main(
+        monkeypatch,
+        "-q",
+        "-matchprintf",
+        r"MATCH %(info.puid)s\t%(info.filename)s\n",
+        "-nomatchprintf",
+        r"NOMATCH\t%(info.filename)s\n",
+        str(known),
+        str(unknown),
+    )
+
+    assert capsys.readouterr().out == f"MATCH fmt/1000\t{known}\nNOMATCH\t{unknown}\n"
+
+
 def test_print_matches_no_match_outputs_ko(monkeypatch, capsys):
     fido = _make_fido(monkeypatch)
     fido.current_filesize = 12
