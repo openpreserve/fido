@@ -301,7 +301,10 @@ class FormatInfo:
             for xml_id in x.findall(TNA("DocumentIdentifier")):
                 xml_id_type = get_text_tna(xml_id, "IdentifierType")
                 if xml_id_type == "URL":
-                    ET.SubElement(r, "dc:identifier").text = "http://" + get_text_tna(xml_id, "Identifier")
+                    document_url = get_text_tna(xml_id, "Identifier")
+                    if "://" not in document_url:
+                        document_url = "http://" + document_url
+                    ET.SubElement(r, "dc:identifier").text = document_url
                 else:
                     ET.SubElement(r, "dc:identifier").text = (
                         get_text_tna(xml_id, "IdentifierType") + ":" + get_text_tna(xml_id, "Identifier")

@@ -237,7 +237,9 @@ def test_load_pronom_xml_rewrites_priority_ids(monkeypatch):
     assert len(info.formats) == 2
 
 
-def _minimal_pronom_xml(puid="x-fmt/263", include_reference_url=True, reference_url="example.test/file"):
+def _minimal_pronom_xml(
+    puid="x-fmt/263", include_reference_url=True, reference_url="example.test/file", document_url="example.test/spec"
+):
     ns = "http://pronom.nationalarchives.gov.uk"
 
     def n(tag):
@@ -297,7 +299,7 @@ def _minimal_pronom_xml(puid="x-fmt/263", include_reference_url=True, reference_
     XET.SubElement(doc, n("PublicationDate")).text = "2020"
     doc_id = XET.SubElement(doc, n("DocumentIdentifier"))
     XET.SubElement(doc_id, n("IdentifierType")).text = "URL"
-    XET.SubElement(doc_id, n("Identifier")).text = "example.test/spec"
+    XET.SubElement(doc_id, n("Identifier")).text = document_url
     XET.SubElement(doc, n("DocumentNote")).text = "note"
     XET.SubElement(doc, n("DocumentType")).text = "type"
     XET.SubElement(doc, n("AvailabilityDescription")).text = "avail"
@@ -634,6 +636,26 @@ def test_parse_pronom_xml_reference_file_over_http_or_https_is_fetched(monkeypat
 
     assert fetched == [fetched_url]
     assert result.find("details/example_file/checksum").text == "9dd4e461268c8034f5c8564e155c67a6"  # md5 of b"x"
+
+
+@pytest.mark.parametrize(
+    "document_url, recorded",
+    [
+        ("example.test/spec", "http://example.test/spec"),
+        ("example.test:8080/spec", "http://example.test:8080/spec"),
+        ("http://example.test/spec", "http://example.test/spec"),
+        ("https://example.test/spec", "https://example.test/spec"),
+    ],
+    ids=["no scheme", "no scheme with a port", "http", "https"],
+)
+def test_parse_pronom_xml_document_url_gets_http_only_when_it_has_no_scheme(monkeypatch, document_url, recorded):
+    monkeypatch.setattr(prepare, "urlopen", lambda _url, **_kwargs: io.BytesIO(b"x"))
+    info = prepare.FormatInfo("dummy.zip")
+
+    result = info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(document_url=document_url)))
+
+    identifiers = [node.text for node in result.findall("details/reference/*") if node.tag == "dc:identifier"]
+    assert identifiers == [recorded], f"document identifier {document_url!r} was recorded as {identifiers}"
 
 
 @pytest.fixture
