@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <versions>
-	<pronomVersion>116</pronomVersion>
-	<pronomSignature>formats-v116.xml</pronomSignature>
-	<pronomContainerSignature>container-signature-20231127.xml</pronomContainerSignature>
+	<pronomVersion>125</pronomVersion>
+	<pronomSignature>formats-v125.xml</pronomSignature>
+	<pronomContainerSignature>container-signature-20260907.xml</pronomContainerSignature>
 	<fidoExtensionSignature>format_extensions.xml</fidoExtensionSignature>
-	<updateScript>1.6.1</updateScript>
+	<updateScript>2.0.0-dev</updateScript>
 	<updateSite>https://fidosigs.openpreservation.org</updateSite>
 </versions>

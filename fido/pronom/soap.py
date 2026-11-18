@@ -21,7 +21,7 @@ PRONOM format signatures SOAP calls.
 """
 
 import sys
-import urllib
+import urllib.request
 from urllib.error import HTTPError, URLError
 from xml.etree import ElementTree as ET
 

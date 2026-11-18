@@ -644,3 +644,34 @@ def test_main_keyboard_interrupt_exits_with_context(monkeypatch):
         fido_mod.main([])
 
     assert "Interrupt while identifying file STDIN" in str(exc.value)
+
+
+def test_signature_regexes_are_compiled_once_and_re_cache_is_untouched(monkeypatch, tmp_path):
+    """Fido must not depend on (or resize) the re module cache: with more signatures than the
+    cache holds, every file used to recompile every regex."""
+    max_cache = fido_mod.re._MAXCACHE
+    compiled = []
+    real_compile = fido_mod.re.compile
+    monkeypatch.setattr(fido_mod.re, "compile", lambda p, *a: compiled.append(p) or real_compile(p, *a))
+    formats = tmp_path / "formats.xml"
+    formats.write_text(
+        "<formats>"
+        + "".join(
+            "<format><puid>fmt/{0}</puid><name>F{0}</name><signature><name>S{0}</name><pattern>"
+            "<position>BOF</position><regex>(?s)\\A{1}</regex></pattern></signature></format>".format(i, magic)
+            for i, magic in enumerate(("ZXTape", "GIF8", "%PDF"))
+        )
+        + "</formats>"
+    )
+    sample = tmp_path / "sample.bin"
+    sample.write_bytes(b"ZXTape!\x1a\x01")
+
+    f = Fido(quiet=True, nocontainer=True, format_files=[str(formats)])
+    f.identify_file(str(sample))
+    first_run = len(compiled)
+    f.identify_file(str(sample))
+
+    assert fido_mod.re._MAXCACHE == max_cache
+    assert first_run > 0
+    assert len(compiled) == first_run
+    assert len(set(compiled)) == len(compiled)

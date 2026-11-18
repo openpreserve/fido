@@ -1,22 +1,32 @@
 import importlib
 import os
+import subprocess
 import sys
-from types import ModuleType, SimpleNamespace
+import zipfile
+from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
 
 @pytest.fixture
-def update_signatures_module(monkeypatch):
-    fake_pronom = ModuleType("pronom")
-    fake_prepare = ModuleType("pronom.prepare")
-    fake_prepare.run = lambda: None
-    fake_pronom.prepare = fake_prepare
-
-    monkeypatch.setitem(sys.modules, "pronom", fake_pronom)
-    monkeypatch.setitem(sys.modules, "pronom.prepare", fake_prepare)
+def update_signatures_module():
     module = importlib.import_module("fido.pronom.update_signatures")
     return importlib.reload(module)
+
+
+@pytest.mark.parametrize(
+    "code",
+    (
+        # the fido-update-signatures entry point
+        "from fido.pronom.update_signatures import main",
+        # soap.py must import urllib.request itself, not rely on another module having done it
+        "import fido.pronom.soap as soap; soap.urllib.request.Request",
+    ),
+)
+def test_imports_work_in_a_fresh_interpreter(code):
+    result = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
 
 
 def test_get_puid_file_name(update_signatures_module):
@@ -376,3 +386,46 @@ def test_main_parses_cli_args_and_calls_run(update_signatures_module, monkeypatc
     assert captured["opts"]["http_throttle"] == 0.1
     assert captured["opts"]["version"] == "116"
     assert captured["opts"]["signatureFileName"] == update_signatures_module.DEFAULTS["signatureFileName"]
+
+
+def test_console_script_targets_main():
+    tomllib = pytest.importorskip("tomllib")
+    pyproject = Path(__file__).resolve().parents[2] / "pyproject.toml"
+    scripts = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]["scripts"]
+
+    # run() without arguments falls back to DEFAULTS, which has no tmp_dir/http_throttle
+    assert scripts["fido-update-signatures"] == "fido.pronom.update_signatures:main"
+
+
+def test_main_without_options_runs_the_whole_update(update_signatures_module, monkeypatch, tmp_path):
+    """Run the fido-update-signatures entry point with only the network and the final steps mocked."""
+    sig_xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<FFSignatureFile xmlns="{}" Version="125"><FileFormatCollection>'
+        '<FileFormat ID="1" Name="Test" PUID="fmt/1" Version=""/>'
+        "</FileFormatCollection></FFSignatureFile>"
+    ).format(update_signatures_module.NS["sig"])
+    conf_dir = tmp_path / "conf"
+    conf_dir.mkdir()
+    download_dir = tmp_path / "download"
+    final_steps = []
+
+    monkeypatch.setattr(update_signatures_module, "CONFIG_DIR", str(conf_dir))
+    monkeypatch.setattr(update_signatures_module, "get_pronom_sig_version", lambda: 125)
+    monkeypatch.setattr(update_signatures_module, "get_droid_signatures", lambda _v: (sig_xml, 1))
+    monkeypatch.setattr(update_signatures_module, "get_sig_xml_for_puid", lambda _p: b"<xml/>")
+    monkeypatch.setattr(update_signatures_module.time, "sleep", lambda _s: None)
+    monkeypatch.setattr("builtins.input", lambda: "y")
+    # these write to and read from the real fido/conf directory
+    monkeypatch.setattr(update_signatures_module, "update_versions_xml", lambda v: final_steps.append(("update_versions_xml", v)))
+    monkeypatch.setattr(update_signatures_module, "prepare_pronom_to_fido", lambda: final_steps.append(("prepare", None)))
+    monkeypatch.setattr(update_signatures_module.sys, "argv", ["fido-update-signatures", "-tmpdir", str(download_dir)])
+
+    update_signatures_module.main()
+
+    assert (conf_dir / "DROID_SignatureFile-v125.xml").read_text() == sig_xml
+    with zipfile.ZipFile(conf_dir / "pronom-xml-v125.zip") as archive:
+        assert archive.namelist() == ["puid.fmt.1.xml"]
+        assert archive.read("puid.fmt.1.xml") == b"<xml/>"
+    assert not download_dir.exists()
+    assert final_steps == [("update_versions_xml", 125), ("prepare", None)]

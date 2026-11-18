@@ -1,6 +1,5 @@
 from pathlib import Path
 from types import SimpleNamespace
-from xml.etree import ElementTree as XET
 
 import pytest
 
@@ -345,7 +344,6 @@ def test_local_versions_init_fallback_uses_empty_root(monkeypatch, tmp_path):
     versions_file = tmp_path / "missing-versions.xml"
 
     monkeypatch.setattr(versions, "parse", lambda _path: (_ for _ in ()).throw(IOError("missing")))
-    monkeypatch.setattr(versions, "ET", XET)
 
     local = versions.LocalVersions(str(versions_file))
 
@@ -356,7 +354,6 @@ def test_local_versions_setattr_creates_missing_field(monkeypatch, tmp_path):
     versions_file = tmp_path / "versions.xml"
     versions_file.write_text("<?xml version='1.0' encoding='utf-8'?><versions></versions>", encoding="utf-8")
 
-    monkeypatch.setattr(versions, "ET", XET)
     local = versions.LocalVersions(str(versions_file))
 
     local.pronom_version = "116"
