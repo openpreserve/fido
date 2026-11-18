@@ -20,6 +20,7 @@ limitations under the License.
 PRONOM format signatures SOAP calls.
 """
 
+import http.client
 import socket
 import sys
 import urllib.request
@@ -66,7 +67,7 @@ def get_pronom_sig_version():
     Get PRONOM signature version.
 
     Return latest signature file version number as an int.
-    Raises an HTTPError if there are problems.
+    Exits with a message naming the service URL if it cannot be reached.
     """
     tree = _get_soap_ele_tree("getSignatureFileVersionV1")
     ver_ele = tree.find(".//pronom:Version/pronom:Version", NS)
@@ -114,15 +115,17 @@ def _get_soap_ele_tree(soap_action):
 
 
 def _get_soap_response(soap_action, soap_string):
-    try:
-        req = urllib.request.Request("https://{}/pronom/service.asmx".format(PRONOM_HOST), data=soap_string)
-    except URLError:
-        print("There was a problem contacting the PRONOM service at http://{}/pronom/service.asmx.".format(PRONOM_HOST))
-        print("Please check your network connection and try again.")
-        sys.exit(1)
+    url = f"https://{PRONOM_HOST}/pronom/service.asmx"
+    req = urllib.request.Request(url, data=soap_string)
     for key, value in HEADERS.items():
         req.add_header(key, value)
     req.add_header("Content-length", "%d" % len(soap_string))
     req.add_header("SOAPAction", soap_action)
-    response = urllib.request.urlopen(req, timeout=HTTP_TIMEOUT_SECONDS)
-    return response.read().decode(ENCODING)
+    try:
+        response = urllib.request.urlopen(req, timeout=HTTP_TIMEOUT_SECONDS)
+        return response.read().decode(ENCODING)
+    except (OSError, http.client.HTTPException) as err:
+        sys.exit(
+            f"There was a problem contacting the PRONOM service at {url}: {err}\n"
+            "Please check your network connection and try again."
+        )
