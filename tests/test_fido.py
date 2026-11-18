@@ -762,6 +762,25 @@ def test_process_format_element_replaces_an_existing_format_without_a_deprecatio
     assert not [w for w in recwarn if issubclass(w.category, DeprecationWarning)]
 
 
+class _FalsyFormat(XET.Element):
+    def __bool__(self):
+        return False
+
+
+def test_process_format_element_replaces_an_existing_format_that_is_falsy(monkeypatch):
+    """An earlier format is found by identity, whatever its truth value, so a reload does not add a duplicate."""
+    fido = _make_fido(monkeypatch)
+    first = _FalsyFormat("format")
+    XET.SubElement(first, "puid").text = "fmt/1"
+    second = _format_element("fmt/1")
+
+    fido.process_format_element(first)
+    fido.process_format_element(second)
+
+    assert fido.formats == [second], f"expected the first format to be replaced, got {len(fido.formats)} formats"
+    assert fido.puid_format_map["fmt/1"] is second
+
+
 @pytest.mark.parametrize(
     "stream_errors, expected_name",
     [
