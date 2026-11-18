@@ -477,6 +477,45 @@ def test_main_reports_a_missing_path_even_when_quiet_and_identifies_the_rest(mon
     assert next(csv.reader(io.StringIO(captured.out)))[2] == "fmt/1000"
 
 
+def test_list_files_skips_an_empty_root_and_carries_on(tmp_path, capsys):
+    present = tmp_path / "present.bin"
+    present.write_bytes(b"x")
+
+    assert list(fido_mod.list_files(["", "\n", str(present)])) == [str(present)]
+
+    assert capsys.readouterr().err == "FIDO: Empty path skipped\n" * 2
+
+
+def test_main_skips_an_empty_path_argument_and_identifies_the_rest(monkeypatch, tmp_path, capsys):
+    present = tmp_path / "present"
+    present.write_bytes(id_test_data[0][0])
+
+    _run_main(monkeypatch, "-q", "", str(present))
+
+    captured = capsys.readouterr()
+    assert "FIDO: Empty path skipped" in captured.err
+    assert next(csv.reader(io.StringIO(captured.out)))[2] == "fmt/1000"
+
+
+@pytest.mark.skipif(
+    fido_mod.os.name == "nt" or (hasattr(fido_mod.os, "geteuid") and fido_mod.os.geteuid() == 0),
+    reason="needs a directory this user is not allowed to read",
+)
+def test_list_files_reports_a_directory_it_cannot_read_and_carries_on(tmp_path, capsys):
+    unreadable = tmp_path / "unreadable"
+    unreadable.mkdir()
+    present = tmp_path / "present.bin"
+    present.write_bytes(b"x")
+    unreadable.chmod(0o000)
+    try:
+        listed = list(fido_mod.list_files([str(unreadable), str(present)]))
+    finally:
+        unreadable.chmod(0o700)
+
+    assert listed == [str(present)]
+    assert capsys.readouterr().err == f"FIDO: Cannot scan directory: {unreadable}\n"
+
+
 def test_print_matches_no_match_outputs_ko(monkeypatch, capsys):
     fido = _make_fido(monkeypatch)
     fido.current_filesize = 12

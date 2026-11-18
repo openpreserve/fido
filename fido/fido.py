@@ -777,15 +777,24 @@ class Fido:
             target.write(buf)
 
 
+def report_unreadable_directory(error):
+    """Report a directory os.walk could not list, which it would otherwise skip without a word."""
+    sys.stderr.write(f"FIDO: Cannot scan directory: {error.filename}\n")
+
+
 def list_files(roots, recurse=False):
     """Return the files one at a time. Roots could be a fileobj or a list."""
     for root in roots:
-        root = root if root[-1] != "\n" else root[:-1]
+        if root.endswith("\n"):
+            root = root[:-1]
+        if not root:
+            sys.stderr.write("FIDO: Empty path skipped\n")
+            continue
         root = os.path.normpath(root)
         if os.path.isfile(root):
             yield root
         elif os.path.isdir(root):
-            for path, _, files in os.walk(root):
+            for path, _, files in os.walk(root, onerror=report_unreadable_directory):
                 for f in files:
                     yield os.path.join(path, f)
                 if not recurse:
