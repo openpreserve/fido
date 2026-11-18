@@ -21,6 +21,7 @@ import importlib.resources
 import os
 import re
 import sys
+from urllib.parse import urlsplit, urlunsplit
 from xml.etree import ElementTree as ET  # builds versions.xml; defusedxml only parses
 
 import requests
@@ -131,12 +132,20 @@ def sig_file_actions(sig_act):
     sys.exit(0)
 
 
+def _without_credentials(url):
+    """Drop any user:password@ from a URL so that it is safe to print."""
+    parts = urlsplit(url)
+    return urlunsplit(parts._replace(netloc=parts.netloc.rpartition("@")[2]))
+
+
 def _get(url):
     """GET a signature service URL, and give up with a message when it stops answering."""
     try:
         return requests.get(url, timeout=HTTP_TIMEOUT_SECONDS)
     except requests.exceptions.RequestException as err:
-        sys.exit(f"Could not reach {url}: {err}")
+        # requests quotes the full URL in some errors, for example an unsupported scheme
+        safe_url = _without_credentials(url)
+        sys.exit(f"Could not reach {safe_url}: {str(err).replace(url, safe_url)}")
 
 
 def _list_available_versions(update_url):

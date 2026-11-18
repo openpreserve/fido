@@ -419,6 +419,40 @@ def test_get_exits_naming_the_url_when_the_service_cannot_be_reached(monkeypatch
     assert "Could not reach https://example.test/format/latest/" in str(exc.value)
 
 
+@pytest.mark.parametrize(
+    "url, shown",
+    [
+        ("https://alice:hunter2@example.test/format/", "https://example.test/format/"),
+        ("https://alice:hunter2@example.test:8443/format/", "https://example.test:8443/format/"),
+        ("https://alice@example.test/format/", "https://example.test/format/"),
+        ("https://alice:hunter2@[::1]:8443/format/", "https://[::1]:8443/format/"),
+        ("https://alice:p@ss@example.test/format/", "https://example.test/format/"),
+    ],
+    ids=["password", "port", "user only", "ipv6", "at sign in password"],
+)
+def test_get_does_not_print_the_credentials_of_the_url(monkeypatch, url, shown):
+    def fail(requested, **_kwargs):
+        raise versions.requests.exceptions.ConnectionError(f"could not reach {requested}")
+
+    monkeypatch.setattr(versions.requests, "get", fail)
+
+    with pytest.raises(SystemExit) as exc:
+        versions._get(url)
+
+    message = str(exc.value)
+    assert message == f"Could not reach {shown}: could not reach {shown}", message
+    assert "alice" not in message and "hunter2" not in message and "ss@" not in message, message
+
+
+def test_get_does_not_print_the_credentials_of_an_unsupported_url():
+    with pytest.raises(SystemExit) as exc:
+        versions._get("ftp://alice:hunter2@example.test/format/")
+
+    message = str(exc.value)
+    assert "ftp://example.test/format/" in message, message
+    assert "alice" not in message and "hunter2" not in message, message
+
+
 def test_get_gives_up_on_a_service_that_accepts_the_connection_and_never_answers(monkeypatch):
     with socket.socket() as silent_server:
         silent_server.bind(("127.0.0.1", 0))
