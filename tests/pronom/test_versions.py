@@ -1,11 +1,13 @@
 import socket
-import time
+import threading
 from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
 from fido.pronom import versions
+
+DEADLINE_SECONDS = 5
 
 
 class DummyResponse:
@@ -454,16 +456,51 @@ def test_get_does_not_print_the_credentials_of_an_unsupported_url():
 
 
 def test_get_gives_up_on_a_service_that_accepts_the_connection_and_never_answers(monkeypatch):
+    for name in ("http_proxy", "https_proxy", "all_proxy"):
+        monkeypatch.delenv(name, raising=False)
+        monkeypatch.delenv(name.upper(), raising=False)
+    monkeypatch.setenv("NO_PROXY", "127.0.0.1,localhost")
+    monkeypatch.setenv("no_proxy", "127.0.0.1,localhost")
+    monkeypatch.setattr(versions, "HTTP_TIMEOUT_SECONDS", 0.5)
+    outcome = {}
+
+    def request(url):
+        try:
+            versions._get(url)
+        except SystemExit as exit_request:
+            outcome["exit"] = exit_request
+
     with socket.socket() as silent_server:
         silent_server.bind(("127.0.0.1", 0))
         silent_server.listen(1)
-        monkeypatch.setattr(versions, "HTTP_TIMEOUT_SECONDS", 0.5)
-        started = time.monotonic()
+        worker = threading.Thread(target=request, args=(f"http://127.0.0.1:{silent_server.getsockname()[1]}/",))
+        worker.daemon = True
+        worker.start()
+        worker.join(DEADLINE_SECONDS)
 
-        with pytest.raises(SystemExit) as exc:
-            versions._get(f"http://127.0.0.1:{silent_server.getsockname()[1]}/")
+        assert not worker.is_alive(), f"the request was not abandoned within {DEADLINE_SECONDS} seconds"
 
-        elapsed = time.monotonic() - started
+    assert "exit" in outcome, "the request ended without giving up through an exit message"
+    message = str(outcome["exit"])
+    assert "Could not reach" in message and "timed out" in message, message
 
-    assert "Could not reach" in str(exc.value)
-    assert elapsed < 5, "the request was not abandoned after the timeout"
+
+def test_write_sigs_passes_the_timeout(monkeypatch, tmp_path):
+    conf_dir = tmp_path / "conf"
+    conf_dir.mkdir()
+    timeouts = []
+
+    class FakeFiles:
+        def joinpath(self, *parts):
+            return tmp_path.joinpath(*parts)
+
+    def record(_url, **kwargs):
+        timeouts.append(kwargs.get("timeout"))
+        return DummyResponse(status_code=200, content=b"<xml/>")
+
+    monkeypatch.setattr(versions.importlib.resources, "files", lambda _pkg: FakeFiles())
+    monkeypatch.setattr(versions.requests, "get", record)
+
+    versions._write_sigs("116", "https://example.test/", "fido", "formats-v{}.xml")
+
+    assert timeouts == [versions.HTTP_TIMEOUT_SECONDS]
