@@ -68,7 +68,6 @@ class Fido:
         containersignature_file=None,
     ):
         """Initialise a FIDO class instance."""
-        global defaults
         self.quiet = quiet
         self.bufsize = defaults["bufsize"] if bufsize is None else bufsize
         self.container_bufsize = defaults["container_bufsize"] if container_bufsize is None else container_bufsize
