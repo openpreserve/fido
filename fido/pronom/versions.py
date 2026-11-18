@@ -92,12 +92,21 @@ class LocalVersions(object):
         """Obtain location to the current PRONOM signature file."""
         return os.path.join(self.conf_dir, self.pronom_signature)
 
+    def missing_fields(self):
+        """Return the names of the fields that versions.xml does not define."""
+        return [key for key, value in self.PROPS_MAPPING.items() if self.root.find(value) is None]
+
+    def is_complete(self):
+        """Tell whether every field is defined and the PRONOM version and update site have a value."""
+        return not self.missing_fields() and all(
+            self.root.findtext(self.PROPS_MAPPING[key], "").strip() for key in ("pronom_version", "update_site")
+        )
+
     def write(self):
         """Update versions.xml."""
-        # Check that all the fields are defined
-        for key, value in self.PROPS_MAPPING.items():
-            if self.root.find(value) is None:
-                raise ValueError("Field {} has not been defined!".format(key))
+        missing = self.missing_fields()
+        if missing:
+            raise ValueError("Field {} has not been defined!".format(missing[0]))
         self.tree.write(self.versions_file, xml_declaration=True, method="xml", encoding="utf-8")
 
 
@@ -109,6 +118,8 @@ def get_local_versions(config_dir=CONFIG_DIR):
 def sig_file_actions(sig_act, conf_dir=CONFIG_DIR):
     """Process signature file update actions on the signature files in conf_dir."""
     versions = get_local_versions(conf_dir)
+    if not versions.is_complete():
+        sys.exit("FIDO: {} is missing or incomplete, cannot use it with -sigs".format(versions.versions_file))
     sig_vers = versions.pronom_version
 
     # Get update URL, add trailing slash if missing

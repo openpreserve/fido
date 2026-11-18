@@ -1,6 +1,7 @@
 """The -sigs actions must work on the configuration directory they are given, not the packaged one."""
 
 import os
+import re
 from pathlib import Path
 
 import pytest
@@ -21,6 +22,25 @@ VERSIONS_XML = """<?xml version='1.0' encoding='utf-8'?>
 """
 
 DOWNLOADS = ("formats-v200.xml", "DROID_SignatureFile-v200.xml", "pronom-xml-v200.zip")
+
+
+def without(tag):
+    return re.sub(rf"\s*<{tag}>[^<]*</{tag}>", "", VERSIONS_XML)
+
+
+UNUSABLE_VERSIONS = [
+    pytest.param(None, id="missing file"),
+    pytest.param("", id="empty file"),
+    pytest.param("this is not xml", id="not xml"),
+    pytest.param("<versions/>", id="empty root"),
+    pytest.param(without("updateSite"), id="no updateSite"),
+    pytest.param(without("pronomVersion"), id="no pronomVersion"),
+    pytest.param(without("pronomSignature"), id="no pronomSignature, which a download rewrites"),
+    pytest.param(
+        VERSIONS_XML.replace("<pronomVersion>100</pronomVersion>", "<pronomVersion/>"), id="empty pronomVersion"
+    ),
+    pytest.param(VERSIONS_XML.replace("https://sigs.example.test", " "), id="blank updateSite"),
+]
 
 
 class Response:
@@ -144,6 +164,26 @@ def test_downloads_land_next_to_the_versions_xml_that_was_read_through_a_symlink
     resolved = os.path.realpath(config)
     assert updated.get_signature_file() == os.path.join(resolved, "formats-v200.xml")
     assert updated.get_zip_file() == os.path.join(resolved, "pronom-xml-v200.zip")
+
+
+@pytest.mark.parametrize("action", ["list", "check", "update", "v200"])
+@pytest.mark.parametrize("content", UNUSABLE_VERSIONS)
+def test_an_unusable_versions_xml_stops_the_sigs_actions_before_any_request_or_write(
+    content, action, tmp_path, signature_service
+):
+    conf_dir = tmp_path / "unusable_conf"
+    conf_dir.mkdir()
+    if content is not None:
+        (conf_dir / "versions.xml").write_text(content, encoding="utf-8")
+    before = read_files(conf_dir)
+
+    with pytest.raises(SystemExit) as exc:
+        versions.sig_file_actions(action, str(conf_dir))
+
+    message = str(exc.value)
+    assert message == f"FIDO: {conf_dir / 'versions.xml'} is missing or incomplete, cannot use it with -sigs", message
+    assert signature_service == [], "the update site was contacted"
+    assert read_files(conf_dir) == before, "something was written to the conf dir"
 
 
 def test_main_hands_confdir_to_the_sigs_actions(monkeypatch, custom_conf_dir, signature_service):
