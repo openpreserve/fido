@@ -694,3 +694,21 @@ def test_main_continues_past_a_filename_that_is_not_valid_utf8(monkeypatch, tmp_
     assert [row[2] for row in rows] == ["fmt/1000", "fmt/1000"], "the file after the bad name was not identified"
     assert rows[0][6].endswith("bad\\udcffname"), "the undecodable byte should be written as an escape"
     assert rows[1][6].endswith("good")
+
+
+def test_match_formats_names_the_format_whose_signature_fails(monkeypatch, capsys):
+    fido = _make_fido(monkeypatch)
+    fmt = _format_element("fmt/1558")
+    sig = XET.SubElement(fmt, "signature")
+    XET.SubElement(sig, "name").text = "bad range"
+    pat = XET.SubElement(sig, "pattern")
+    XET.SubElement(pat, "position").text = "BOF"
+    XET.SubElement(pat, "regex").text = r"(?s)\A.{3000,700}"
+    fido.formats = [fmt]
+    fido.puid_has_priority_over_map = {"fmt/1558": frozenset()}
+
+    assert fido.match_formats(b"abc", b"abc") == []
+
+    error = capsys.readouterr().err
+    assert error.startswith("FIDO: Error matching fmt/1558: "), error
+    assert "min repeat greater than max repeat" in error
