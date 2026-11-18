@@ -231,7 +231,7 @@ def test_load_pronom_xml_rewrites_priority_ids(monkeypatch):
     assert len(info.formats) == 2
 
 
-def _minimal_pronom_xml(puid="x-fmt/263", include_reference_url=True):
+def _minimal_pronom_xml(puid="x-fmt/263", include_reference_url=True, reference_url="example.test/file"):
     ns = "http://pronom.nationalarchives.gov.uk"
 
     def n(tag):
@@ -304,7 +304,7 @@ def _minimal_pronom_xml(puid="x-fmt/263", include_reference_url=True):
     XET.SubElement(ref_file, n("ReferenceFileIPR")).text = "ipr"
     ref_id = XET.SubElement(ref_file, n("ReferenceFileIdentifier"))
     XET.SubElement(ref_id, n("IdentifierType")).text = "URL" if include_reference_url else "DOI"
-    XET.SubElement(ref_id, n("Identifier")).text = "example.test/file" if include_reference_url else "10.1/xyz"
+    XET.SubElement(ref_id, n("Identifier")).text = reference_url if include_reference_url else "10.1/xyz"
 
     return XET.tostring(root, encoding="utf-8")
 
@@ -554,6 +554,49 @@ def test_parse_pronom_xml_reference_file_http_non_404_uses_empty_hash(monkeypatc
     checksum = result.find("details/example_file/checksum")
     assert checksum.text == hashlib.md5(b"").hexdigest()
     assert "HTTP 500 error loading resource" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(
+    "url",
+    ["file:///etc/hostname", "ftp://example.test/file", "gopher://example.test/file", "data:text/plain,abc"],
+)
+def test_parse_pronom_xml_reference_file_with_a_scheme_other_than_http_is_not_fetched(monkeypatch, capsys, url):
+    fetched = []
+    monkeypatch.setattr(prepare, "urlopen", lambda *args, **kwargs: fetched.append(args) or io.BytesIO(b"x"))
+    info = prepare.FormatInfo("dummy.zip")
+
+    result = info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(reference_url=url)))
+
+    assert fetched == []
+    assert url in [identifier.text for identifier in result.iter("dc:identifier")], "the identifier is still recorded"
+    assert result.find("details/example_file/checksum").text in (None, "")
+    assert f"Skipping the checksum of {url}: only http and https URLs are fetched" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(
+    "reference_url, fetched_url",
+    [
+        ("http://example.test/file", "http://example.test/file"),
+        ("https://example.test/file", "https://example.test/file"),
+        ("HTTPS://example.test/file", "HTTPS://example.test/file"),
+        ("example.test/file", "http://example.test/file"),
+    ],
+    ids=["http", "https", "upper case scheme", "no scheme"],
+)
+def test_parse_pronom_xml_reference_file_over_http_or_https_is_fetched(monkeypatch, reference_url, fetched_url):
+    fetched = []
+
+    def record(url, **_kwargs):
+        fetched.append(url)
+        return io.BytesIO(b"x")
+
+    monkeypatch.setattr(prepare, "urlopen", record)
+    info = prepare.FormatInfo("dummy.zip")
+
+    result = info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(reference_url=reference_url)))
+
+    assert fetched == [fetched_url]
+    assert result.find("details/example_file/checksum").text == hashlib.md5(b"x").hexdigest()
 
 
 def converted_patterns(monkeypatch, record_name):

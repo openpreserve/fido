@@ -20,6 +20,7 @@ from fido.pronom.versions import get_local_versions
 from fido.utils.char_handler import escape
 
 FLG_INCOMPATIBLE = "__INCOMPATIBLE_SIG__"
+REFERENCE_FILE_SCHEMES = ("http", "https")
 
 
 class NS:
@@ -307,6 +308,9 @@ class FormatInfo:
                     if not urlparse(url).scheme:
                         url = "http://" + url
                     ET.SubElement(rf, "dc:identifier").text = url
+                    if urlparse(url).scheme not in REFERENCE_FILE_SCHEMES:
+                        sys.stderr.write(f"Skipping the checksum of {url}: only http and https URLs are fetched\n")
+                        continue
                     # And calculate the checksum of this resource:
                     m = hashlib.md5()
                     try:
