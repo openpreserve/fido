@@ -3,6 +3,8 @@
 
 import csv
 import io
+import struct
+import zlib
 from xml.etree import ElementTree as XET
 from time import sleep
 from types import SimpleNamespace
@@ -95,11 +97,14 @@ def _text_stdin(content: bytes):
     return io.TextIOWrapper(io.BytesIO(content), encoding="utf-8")
 
 
-@pytest.mark.parametrize(
+STDIN_STREAMS = pytest.mark.parametrize(
     "stdin_factory",
     [_text_stdin, io.BytesIO],
     ids=["text wrapper over a binary buffer", "plain binary stream without a buffer attribute"],
 )
+
+
+@STDIN_STREAMS
 @pytest.mark.parametrize(
     "magic, expected_puid, expected_result",
     id_test_data,
@@ -119,6 +124,35 @@ def test_main_identifies_stdin(
     assert row[0] == expected_result, "row hasn't returned a positive identification"
     assert row[2] == expected_puid, "row doesn't contain expected PUID value"
     assert int(row[5]) == len(magic), "row doesn't contain stream length"
+
+
+def _png_with_crlf_and_high_bytes():
+    """A 1x1 PNG. Its signature holds a high byte and a CRLF pair, which text handling would damage."""
+
+    def chunk(kind, data):
+        return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data))
+
+    return (
+        b"\x89PNG\r\n\x1a\n"
+        + chunk(b"IHDR", struct.pack(">IIBBBBB", 1, 1, 8, 2, 0, 0, 0))
+        + chunk(b"IDAT", zlib.compress(b"\x00\xff\x00\x00"))
+        + chunk(b"IEND", b"")
+    )
+
+
+@STDIN_STREAMS
+def test_main_passes_stdin_bytes_through_unchanged(monkeypatch, capsys, stdin_factory):
+    """Only an intact signature identifies this over a pipe, so any decoding or newline conversion shows."""
+    png = _png_with_crlf_and_high_bytes()
+    monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
+    monkeypatch.setattr(fido_mod.sys, "stdin", stdin_factory(png))
+
+    fido_mod.main(["-q", "-"])
+
+    row = next(csv.reader(io.StringIO(capsys.readouterr().out)))
+    assert row[2] == "fmt/11"
+    assert row[8] == "signature"
+    assert int(row[5]) == len(png)
 
 
 def test_main_reports_an_empty_stdin_as_no_match(monkeypatch, capsys):
