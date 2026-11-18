@@ -696,6 +696,15 @@ def test_main_continues_past_a_filename_that_is_not_valid_utf8(monkeypatch, tmp_
     assert rows[1][6].endswith("good")
 
 
+def _add_signature(fmt, name, position, regex=None):
+    sig = XET.SubElement(fmt, "signature")
+    XET.SubElement(sig, "name").text = name
+    pat = XET.SubElement(sig, "pattern")
+    XET.SubElement(pat, "position").text = position
+    if regex is not None:
+        XET.SubElement(pat, "regex").text = regex
+
+
 def test_match_formats_names_the_format_whose_signature_fails(monkeypatch, capsys):
     fido = _make_fido(monkeypatch)
     fmt = _format_element("fmt/1558")
@@ -712,6 +721,24 @@ def test_match_formats_names_the_format_whose_signature_fails(monkeypatch, capsy
     error = capsys.readouterr().err
     assert error.startswith("FIDO: Error matching fmt/1558: "), error
     assert "min repeat greater than max repeat" in error
+
+
+def test_match_formats_reports_a_format_without_a_puid_and_continues(monkeypatch, capsys):
+    """The diagnostic for a broken entry must not itself fail on the entry that is broken."""
+    fido = _make_fido(monkeypatch)
+    without_puid = XET.Element("format")
+    _add_signature(without_puid, "no regex", "BOF")
+    valid = _format_element("fmt/1")
+    _add_signature(valid, "abc", "BOF", "abc")
+    fido.formats = [without_puid, valid]
+    fido.puid_has_priority_over_map = {"fmt/1": frozenset()}
+
+    matches = fido.match_formats(b"abc", b"abc")
+
+    assert [match[0] for match in matches] == [valid], "the format after the broken one was not matched"
+    error = capsys.readouterr().err
+    assert error.startswith("FIDO: Error matching unknown: "), error
+    assert "NoneType" in error, error
 
 
 def test_process_format_element_replaces_an_existing_format_without_a_deprecation_warning(monkeypatch, recwarn):

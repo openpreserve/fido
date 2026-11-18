@@ -745,7 +745,8 @@ class Fido:
                         if success:
                             result.append((format, sig.findtext("name")))
             except Exception as e:
-                sys.stderr.write(f"FIDO: Error matching {self.get_puid(format)}: {e}\n")
+                puid = format.findtext("puid") or "unknown"
+                sys.stderr.write(f"FIDO: Error matching {puid}: {e}\n")
                 continue
             # TODO: MdR: needs some <3
             # print "Unexpected error:", sys.exc_info()[0], e
