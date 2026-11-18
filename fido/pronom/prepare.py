@@ -328,7 +328,7 @@ class FormatInfo:
                         url = "http://" + url
                     ET.SubElement(rf, "dc:identifier").text = url
                     if urlparse(url).scheme not in REFERENCE_FILE_SCHEMES:
-                        sys.stderr.write(f"Skipping the checksum of {url}: only http and https URLs are fetched\n")
+                        sys.stderr.write(f"Skipping the checksum of {url!r}: only http and https URLs are fetched\n")
                         continue
                     # And calculate the checksum of this resource:
                     m = hashlib.md5()
@@ -337,10 +337,10 @@ class FormatInfo:
                         m.update(sock.read())
                         sock.close()
                     except RedirectSchemeError as err:
-                        sys.stderr.write(f"Skipping the checksum of {url}: {err.reason}\n")
+                        sys.stderr.write(f"Skipping the checksum of {url!r}: {err.reason}\n")
                         continue
                     except HTTPError as http_excep:
-                        sys.stderr.write("HTTP {} error loading resource {}\n".format(http_excep.code, url))
+                        sys.stderr.write("HTTP {} error loading resource {!r}\n".format(http_excep.code, url))
                         if http_excep.code == 404:
                             continue
 

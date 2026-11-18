@@ -576,7 +576,38 @@ def test_parse_pronom_xml_reference_file_with_a_scheme_other_than_http_is_not_fe
     assert fetched == []
     assert url in [identifier.text for identifier in result.iter("dc:identifier")], "the identifier is still recorded"
     assert result.find("details/example_file/checksum").text in (None, "")
-    assert f"Skipping the checksum of {url}: only http and https URLs are fetched" in capsys.readouterr().err
+    assert f"Skipping the checksum of {url!r}: only http and https URLs are fetched" in capsys.readouterr().err
+
+
+def test_parse_pronom_xml_reference_file_skip_message_stays_on_one_line_for_a_url_with_a_newline(capsys):
+    url = "ftp://example.test/file\nSkipping the checksum of http://forged.test/file: only http and https URLs are fetched"
+    info = prepare.FormatInfo("dummy.zip")
+
+    info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(reference_url=url)))
+
+    err = capsys.readouterr().err
+    assert err == f"Skipping the checksum of {url!r}: only http and https URLs are fetched\n"
+    assert len(err.splitlines()) == 1, f"the URL forged extra log lines: {err!r}"
+
+
+def test_parse_pronom_xml_reference_file_http_error_message_stays_on_one_line_for_a_url_with_a_newline(
+    monkeypatch, capsys
+):
+    url = "http://example.test/file\nHTTP 200 forged line"
+    monkeypatch.setattr(
+        prepare,
+        "urlopen",
+        lambda _url, **_kwargs: (_ for _ in ()).throw(
+            urllib.error.HTTPError(url=url, code=404, msg="missing", hdrs=None, fp=None)
+        ),
+    )
+    info = prepare.FormatInfo("dummy.zip")
+
+    info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(reference_url=url)))
+
+    err = capsys.readouterr().err
+    assert err == f"HTTP 404 error loading resource {url!r}\n"
+    assert len(err.splitlines()) == 1, f"the URL forged extra log lines: {err!r}"
 
 
 @pytest.mark.parametrize(
@@ -662,7 +693,7 @@ def test_parse_pronom_xml_reference_file_redirect_to_ftp_is_not_followed(loopbac
     assert ftp_peers == [], f"the redirect to ftp was followed, the FTP port saw connections from {ftp_peers}"
     assert url in [identifier.text for identifier in result.iter("dc:identifier")], "the identifier is still recorded"
     assert result.find("details/example_file/checksum").text in (None, "")
-    expected = f"Skipping the checksum of {url}: redirected to '{target}', only http and https URLs are fetched"
+    expected = f"Skipping the checksum of {url!r}: redirected to '{target}', only http and https URLs are fetched"
     assert expected in capsys.readouterr().err
 
 
