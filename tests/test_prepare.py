@@ -596,7 +596,7 @@ def test_parse_pronom_xml_reference_file_over_http_or_https_is_fetched(monkeypat
     result = info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(reference_url=reference_url)))
 
     assert fetched == [fetched_url]
-    assert result.find("details/example_file/checksum").text == hashlib.md5(b"x").hexdigest()
+    assert result.find("details/example_file/checksum").text == "9dd4e461268c8034f5c8564e155c67a6"  # md5 of b"x"
 
 
 def converted_patterns(monkeypatch, record_name):
