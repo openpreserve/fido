@@ -32,6 +32,7 @@ jobs:
       - name: Lint with flake8
         run: flake8 fido tests --count --show-source --statistics
       - name: Test with pytest
+        if: ${{ !cancelled() }}
         run: pytest --cov=fido --cov-report=xml
       - name: Generate coverage badge
         if: matrix.python-version == '3.12' && github.ref == 'refs/heads/master'
