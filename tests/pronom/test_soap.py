@@ -1,5 +1,6 @@
 """Offline contract tests for PRONOM SOAP helpers."""
 
+import socket
 import unittest.mock
 import urllib.error
 
@@ -114,3 +115,46 @@ def test_get_soap_response_exits_on_request_error(mock_request, capsys):
     captured = capsys.readouterr()
     assert exc.value.code == 1
     assert "There was a problem contacting the PRONOM service" in captured.out
+
+
+@unittest.mock.patch("fido.pronom.soap.urllib.request", create=True)
+def test_get_sig_xml_for_puid_sets_a_timeout(mock_request):
+    mock_request.urlopen.return_value = FakeResponse(b"<root/>")
+
+    fido.pronom.soap.get_sig_xml_for_puid("fmt/18")
+
+    assert mock_request.urlopen.call_args.kwargs["timeout"] == fido.pronom.HTTP_TIMEOUT_SECONDS
+
+
+@unittest.mock.patch("fido.pronom.soap.urllib.request", create=True)
+def test_get_droid_signatures_sets_a_timeout(mock_request):
+    mock_request.urlopen.return_value = FakeResponse(b"<SignatureFile/>")
+
+    fido.pronom.soap.get_droid_signatures(116)
+
+    assert mock_request.urlopen.call_args.kwargs["timeout"] == fido.pronom.HTTP_TIMEOUT_SECONDS
+
+
+@unittest.mock.patch("fido.pronom.soap.urllib.request", create=True)
+def test_get_soap_response_sets_a_timeout(mock_request):
+    mock_request.urlopen.return_value = FakeResponse(b"<soap/>")
+
+    fido.pronom.soap._get_soap_response('"action"', b"<soap/>")
+
+    assert mock_request.urlopen.call_args.kwargs["timeout"] == fido.pronom.HTTP_TIMEOUT_SECONDS
+
+
+@pytest.mark.parametrize(
+    "error",
+    [socket.timeout("timed out"), urllib.error.URLError("connection refused")],
+    ids=["timeout", "connection refused"],
+)
+@unittest.mock.patch("fido.pronom.soap.urllib.request", create=True)
+def test_get_droid_signatures_reports_an_unreachable_service(mock_request, error, capsys):
+    mock_request.urlopen.side_effect = error
+
+    xml, count = fido.pronom.soap.get_droid_signatures(116)
+
+    assert xml == []
+    assert count is False
+    assert "could not download signature file v116" in capsys.readouterr().err

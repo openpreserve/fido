@@ -1,5 +1,6 @@
 import os
 import re
+import socket
 from types import SimpleNamespace
 from xml.etree import ElementTree as XET
 import hashlib
@@ -324,7 +325,7 @@ def test_parse_pronom_xml_extracts_core_fields(monkeypatch):
             return None
 
     info = prepare.FormatInfo("dummy.zip")
-    monkeypatch.setattr(prepare, "urlopen", lambda _url: DummySock())
+    monkeypatch.setattr(prepare, "urlopen", lambda _url, **_kwargs: DummySock())
 
     result = info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml()))
 
@@ -513,7 +514,7 @@ def test_parse_pronom_xml_extracts_super_and_subtype_relationships(monkeypatch):
     XET.SubElement(rel_sub, _tna("RelatedFormatID")).text = "301"
 
     info = prepare.FormatInfo("dummy.zip")
-    monkeypatch.setattr(prepare, "urlopen", lambda _url: io.BytesIO(b"x"))
+    monkeypatch.setattr(prepare, "urlopen", lambda _url, **_kwargs: io.BytesIO(b"x"))
 
     result = info.parse_pronom_xml(io.BytesIO(XET.tostring(root, encoding="utf-8")))
 
@@ -526,7 +527,7 @@ def test_parse_pronom_xml_reference_file_http_404_continues(monkeypatch, capsys)
     monkeypatch.setattr(
         prepare,
         "urlopen",
-        lambda _url: (_ for _ in ()).throw(
+        lambda _url, **_kwargs: (_ for _ in ()).throw(
             urllib.error.HTTPError(url="http://example.test/file", code=404, msg="missing", hdrs=None, fp=None)
         ),
     )
@@ -544,7 +545,7 @@ def test_parse_pronom_xml_reference_file_http_non_404_uses_empty_hash(monkeypatc
     monkeypatch.setattr(
         prepare,
         "urlopen",
-        lambda _url: (_ for _ in ()).throw(
+        lambda _url, **_kwargs: (_ for _ in ()).throw(
             urllib.error.HTTPError(url="http://example.test/file", code=500, msg="error", hdrs=None, fp=None)
         ),
     )
@@ -614,3 +615,35 @@ def test_eof_window_runs_from_offset_to_offset_plus_max_offset(monkeypatch):
         assert not re.search(regex, sequence + "\x00" * trailing), "expected no match {} bytes before EOF".format(
             trailing
         )
+
+
+@pytest.mark.parametrize(
+    "error",
+    [socket.timeout("timed out"), urllib.error.URLError("connection refused")],
+    ids=["timeout", "connection refused"],
+)
+def test_parse_pronom_xml_reference_file_unreachable_continues(monkeypatch, capsys, error):
+    info = prepare.FormatInfo("dummy.zip")
+    monkeypatch.setattr(prepare, "urlopen", lambda _url, **_kwargs: (_ for _ in ()).throw(error))
+
+    result = info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml()))
+
+    checksum = result.find("details/example_file/checksum")
+    assert checksum is not None
+    assert checksum.text in (None, "")
+    assert "Error loading resource" in capsys.readouterr().err
+
+
+def test_parse_pronom_xml_reference_file_fetch_sets_a_timeout(monkeypatch):
+    seen = {}
+
+    def record(_url, **kwargs):
+        seen.update(kwargs)
+        return io.BytesIO(b"x")
+
+    info = prepare.FormatInfo("dummy.zip")
+    monkeypatch.setattr(prepare, "urlopen", record)
+
+    info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml()))
+
+    assert seen == {"timeout": prepare.HTTP_TIMEOUT_SECONDS}

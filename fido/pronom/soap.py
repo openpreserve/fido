@@ -20,14 +20,16 @@ limitations under the License.
 PRONOM format signatures SOAP calls.
 """
 
+import socket
 import sys
 import urllib.request
-from urllib.error import HTTPError, URLError
+from urllib.error import URLError
 from xml.etree import ElementTree as ET
 
 from defusedxml.ElementTree import fromstring
 
 from fido import __version__
+from fido.pronom import HTTP_TIMEOUT_SECONDS
 
 ENCODING = "utf-8"
 XML_PROC = '<?xml version="1.0" encoding="{}"?>'.format(ENCODING)
@@ -54,7 +56,7 @@ HEADERS = {
 def get_sig_xml_for_puid(puid):
     """Return the full PRONOM signature XML for the passed PUID."""
     req = urllib.request.Request("http://www.nationalarchives.gov.uk/pronom/{}.xml".format(puid))
-    response = urllib.request.urlopen(req)
+    response = urllib.request.urlopen(req, timeout=HTTP_TIMEOUT_SECONDS)
     xml = response.read()
     return xml
 
@@ -83,17 +85,18 @@ def get_droid_signatures(version):
     format_count = False
     try:
         with urllib.request.urlopen(
-            "https://www.nationalarchives.gov.uk/documents/DROID_SignatureFile_V{}.xml".format(version)
+            "https://www.nationalarchives.gov.uk/documents/DROID_SignatureFile_V{}.xml".format(version),
+            timeout=HTTP_TIMEOUT_SECONDS,
         ) as f:
             xml = f.read().decode("utf-8")
             root_ele = fromstring(xml)
             format_count = len(
                 root_ele.findall(".//{http://www.nationalarchives.gov.uk/pronom/SignatureFile}FileFormat")
             )
-    except HTTPError as httpe:
+    except (URLError, socket.timeout) as err:
         sys.stderr.write(
             "get_droid_signatures(): could not download signature file v{} due to exception: {}\n".format(
-                version, httpe
+                version, err
             )
         )
     return xml, format_count
@@ -121,5 +124,5 @@ def _get_soap_response(soap_action, soap_string):
         req.add_header(key, value)
     req.add_header("Content-length", "%d" % len(soap_string))
     req.add_header("SOAPAction", soap_action)
-    response = urllib.request.urlopen(req)
+    response = urllib.request.urlopen(req, timeout=HTTP_TIMEOUT_SECONDS)
     return response.read().decode(ENCODING)
