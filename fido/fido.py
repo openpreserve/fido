@@ -10,6 +10,7 @@ It is designed for simple integration into automated work-flows.
 
 import os
 import re
+import stat
 import sys
 import tarfile
 import tempfile
@@ -782,6 +783,14 @@ def report_unreadable_directory(error):
     sys.stderr.write(f"FIDO: Cannot scan directory: {error.filename}\n")
 
 
+def file_mode(path):
+    """Return the st_mode of path, or None when nothing exists there. Any other OSError propagates."""
+    try:
+        return os.stat(path).st_mode
+    except (FileNotFoundError, NotADirectoryError, ValueError):
+        return None
+
+
 def list_files(roots, recurse=False):
     """Return the files one at a time. Roots could be a fileobj or a list."""
     for root in roots:
@@ -791,9 +800,14 @@ def list_files(roots, recurse=False):
             sys.stderr.write("FIDO: Empty path skipped\n")
             continue
         root = os.path.normpath(root)
-        if os.path.isfile(root):
+        try:
+            mode = file_mode(root)
+        except OSError as error:
+            sys.stderr.write(f"FIDO: Cannot access {root}: {error.strerror}\n")
+            continue
+        if mode is not None and stat.S_ISREG(mode):
             yield root
-        elif os.path.isdir(root):
+        elif mode is not None and stat.S_ISDIR(mode):
             for path, _, files in os.walk(root, onerror=report_unreadable_directory):
                 for f in files:
                     yield os.path.join(path, f)

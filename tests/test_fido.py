@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import csv
+import errno
 import io
 from xml.etree import ElementTree as XET
 from time import sleep
@@ -408,6 +409,11 @@ def test_main_stdin_zip_raises_runtime(monkeypatch):
 
 UNRECOGNISED_BYTES = b"\x01\x02\x03\x04"
 
+needs_unprivileged_user = pytest.mark.skipif(
+    fido_mod.os.name == "nt" or (hasattr(fido_mod.os, "geteuid") and fido_mod.os.geteuid() == 0),
+    reason="needs a directory this user is not allowed to read",
+)
+
 
 def _run_main(monkeypatch, *arguments):
     """Run main() end to end: real argument parsing, real signatures, isolated module defaults."""
@@ -477,6 +483,88 @@ def test_main_reports_a_missing_path_even_when_quiet_and_identifies_the_rest(mon
     assert next(csv.reader(io.StringIO(captured.out)))[2] == "fmt/1000"
 
 
+def _make_stat_fail(monkeypatch, path, error):
+    real_stat = fido_mod.os.stat
+
+    def failing_stat(candidate, *args, **kwargs):
+        if candidate == str(path):
+            raise error
+        return real_stat(candidate, *args, **kwargs)
+
+    monkeypatch.setattr(fido_mod.os, "stat", failing_stat)
+
+
+def test_list_files_reports_a_path_it_cannot_access_and_carries_on(monkeypatch, tmp_path, capsys):
+    denied = tmp_path / "denied.bin"
+    denied.write_bytes(b"x")
+    present = tmp_path / "present.bin"
+    present.write_bytes(b"x")
+    _make_stat_fail(monkeypatch, denied, PermissionError(errno.EACCES, "Permission denied", str(denied)))
+
+    assert list(fido_mod.list_files([str(denied), str(present)])) == [str(present)]
+
+    assert capsys.readouterr().err == f"FIDO: Cannot access {denied}: Permission denied\n"
+
+
+def test_main_reports_a_path_it_cannot_access_even_when_quiet_and_identifies_the_rest(monkeypatch, tmp_path, capsys):
+    denied = tmp_path / "denied"
+    denied.write_bytes(b"x")
+    present = tmp_path / "present"
+    present.write_bytes(id_test_data[0][0])
+    _make_stat_fail(monkeypatch, denied, PermissionError(errno.EACCES, "Permission denied", str(denied)))
+
+    _run_main(monkeypatch, "-q", str(denied), str(present))
+
+    captured = capsys.readouterr()
+    assert f"FIDO: Cannot access {denied}: Permission denied\n" in captured.err
+    assert "Not a file or directory" not in captured.err
+    assert next(csv.reader(io.StringIO(captured.out)))[2] == "fmt/1000"
+
+
+@needs_unprivileged_user
+def test_list_files_reports_a_file_inside_an_unreadable_directory_as_inaccessible(tmp_path, capsys):
+    locked = tmp_path / "locked"
+    locked.mkdir()
+    inside = locked / "inside.bin"
+    inside.write_bytes(b"x")
+    present = tmp_path / "present.bin"
+    present.write_bytes(b"x")
+    locked.chmod(0o000)
+    try:
+        listed = list(fido_mod.list_files([str(inside), str(present)]))
+    finally:
+        locked.chmod(0o700)
+
+    assert listed == [str(present)]
+    assert capsys.readouterr().err == f"FIDO: Cannot access {inside}: {fido_mod.os.strerror(errno.EACCES)}\n"
+
+
+@pytest.mark.skipif(not hasattr(fido_mod.os, "symlink") or fido_mod.os.name == "nt", reason="needs POSIX symlinks")
+def test_list_files_reports_a_symlink_loop_as_inaccessible(tmp_path, capsys):
+    loop = tmp_path / "loop"
+    loop.symlink_to(loop)
+
+    assert list(fido_mod.list_files([str(loop)])) == []
+
+    assert capsys.readouterr().err == f"FIDO: Cannot access {loop}: {fido_mod.os.strerror(errno.ELOOP)}\n"
+
+
+@pytest.mark.skipif(not hasattr(fido_mod.os, "mkfifo"), reason="needs POSIX named pipes")
+def test_list_files_reports_a_named_pipe_as_not_a_file_or_directory(tmp_path, capsys):
+    pipe = tmp_path / "pipe"
+    fido_mod.os.mkfifo(pipe)
+
+    assert list(fido_mod.list_files([str(pipe)])) == []
+
+    assert capsys.readouterr().err == f"FIDO: Not a file or directory: {pipe}\n"
+
+
+def test_list_files_reports_a_path_with_a_nul_character_as_not_a_file_or_directory(capsys):
+    assert list(fido_mod.list_files(["bad\0name"])) == []
+
+    assert capsys.readouterr().err == "FIDO: Not a file or directory: bad\0name\n"
+
+
 def test_list_files_skips_an_empty_root_and_carries_on(tmp_path, capsys):
     present = tmp_path / "present.bin"
     present.write_bytes(b"x")
@@ -497,10 +585,7 @@ def test_main_skips_an_empty_path_argument_and_identifies_the_rest(monkeypatch, 
     assert next(csv.reader(io.StringIO(captured.out)))[2] == "fmt/1000"
 
 
-@pytest.mark.skipif(
-    fido_mod.os.name == "nt" or (hasattr(fido_mod.os, "geteuid") and fido_mod.os.geteuid() == 0),
-    reason="needs a directory this user is not allowed to read",
-)
+@needs_unprivileged_user
 def test_list_files_reports_a_directory_it_cannot_read_and_carries_on(tmp_path, capsys):
     unreadable = tmp_path / "unreadable"
     unreadable.mkdir()
