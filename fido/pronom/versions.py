@@ -139,7 +139,12 @@ def _without_credentials(url):
 
 
 def _get(url):
-    """GET a signature service URL, and give up with a message when it stops answering."""
+    """
+    GET a signature service URL, and give up with a message when it stops answering.
+
+    HTTP_TIMEOUT_SECONDS applies to the connection and to each read, not to the request as a
+    whole, so a server that keeps sending data slowly is not cut off.
+    """
     try:
         return requests.get(url, timeout=HTTP_TIMEOUT_SECONDS)
     except requests.exceptions.RequestException as err:

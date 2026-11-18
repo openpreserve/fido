@@ -19,4 +19,6 @@ limitations under the License.
 """
 """FIDO module to deal with all things PRONOM signature files."""
 
+# Seconds to wait for the connection and for each read, not a limit on the whole download:
+# a server that keeps sending data slowly can take longer than this in total.
 HTTP_TIMEOUT_SECONDS = 30
