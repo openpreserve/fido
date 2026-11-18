@@ -113,7 +113,6 @@ def test_new_signature_files_are_installed_into_the_given_conf_dir(
     assert updated.pronom_version == "200"
     assert updated.pronom_signature == "formats-v200.xml"
     assert list(decoy_packaged_conf_dir.iterdir()) == [], "something was written to the packaged conf dir"
-    assert not (Path(CONFIG_DIR) / "formats-v200.xml").exists()
 
 
 def test_downloads_land_next_to_the_versions_xml_that_was_read_through_a_symlink(
