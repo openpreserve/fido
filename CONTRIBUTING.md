@@ -59,7 +59,7 @@ You should run these tools locally before pushing a commit by running the follow
     $ pytest
     $ flake8 fido tests
 
-The flake8 settings live in `.flake8`, so this is the same command CI runs.
+The flake8 settings live in `.flake8`, so this applies the same lint rules as CI.
 
 
 ## Code Review & Approval
