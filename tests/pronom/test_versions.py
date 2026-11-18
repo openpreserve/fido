@@ -66,6 +66,75 @@ def test_local_versions_write_requires_all_fields(tmp_path):
         local.write()
 
 
+def write_versions_xml(tmp_path, body):
+    versions_file = tmp_path / "versions.xml"
+    versions_file.write_text(f"<?xml version='1.0' encoding='utf-8'?><versions>{body}</versions>", encoding="utf-8")
+    return versions_file
+
+
+def test_local_versions_missing_fields_lists_the_undefined_ones_in_order(tmp_path):
+    versions_file = write_versions_xml(
+        tmp_path, "<pronomVersion>100</pronomVersion><updateSite>https://example.test</updateSite>"
+    )
+
+    local = versions.LocalVersions(str(versions_file))
+
+    assert local.missing_fields() == [
+        "pronom_signature",
+        "pronom_container_signature",
+        "fido_extension_signature",
+        "update_script",
+    ]
+
+
+def test_local_versions_missing_fields_is_everything_for_a_missing_file(tmp_path):
+    local = versions.LocalVersions(str(tmp_path / "absent.xml"))
+
+    assert local.missing_fields() == list(versions.LocalVersions.PROPS_MAPPING)
+
+
+def test_local_versions_write_names_the_first_missing_field(tmp_path):
+    versions_file = write_versions_xml(tmp_path, "<pronomVersion>100</pronomVersion>")
+    local = versions.LocalVersions(str(versions_file))
+
+    with pytest.raises(ValueError, match="Field pronom_signature has not been defined!"):
+        local.write()
+
+
+FULL_BODY = (
+    "<pronomVersion>100</pronomVersion><pronomSignature>formats-v100.xml</pronomSignature>"
+    "<pronomContainerSignature>container.xml</pronomContainerSignature>"
+    "<fidoExtensionSignature>format_extensions.xml</fidoExtensionSignature>"
+    "<updateScript></updateScript><updateSite>https://example.test</updateSite>"
+)
+
+
+def test_local_versions_is_complete_for_a_file_that_defines_every_field(tmp_path):
+    local = versions.LocalVersions(str(write_versions_xml(tmp_path, FULL_BODY)))
+
+    assert local.is_complete(), "an empty updateScript is allowed, it is never read"
+
+
+def test_local_versions_is_complete_for_the_packaged_file():
+    assert versions.get_local_versions().is_complete()
+
+
+@pytest.mark.parametrize(
+    "old, new",
+    [
+        pytest.param("<pronomSignature>formats-v100.xml</pronomSignature>", "", id="no signature"),
+        pytest.param("<updateSite>https://example.test</updateSite>", "", id="no updateSite"),
+        pytest.param("<updateSite>https://example.test</updateSite>", "<updateSite/>", id="empty updateSite"),
+        pytest.param("<pronomVersion>100</pronomVersion>", "<pronomVersion> </pronomVersion>", id="blank version"),
+        pytest.param(FULL_BODY, "", id="empty root"),
+    ],
+)
+def test_local_versions_is_not_complete_when_a_field_or_a_needed_value_is_absent(tmp_path, old, new):
+    local = versions.LocalVersions(str(write_versions_xml(tmp_path, FULL_BODY.replace(old, new))))
+
+    assert not local.is_complete()
+
+
 def test_version_check_returns_newer_version(monkeypatch):
     monkeypatch.setattr(
         versions.requests,
@@ -170,9 +239,9 @@ def test_list_available_versions_prints_all(monkeypatch, capsys):
 )
 def test_sig_file_actions_dispatches(monkeypatch, sig_act, expected_call, expected_update_flag):
     calls = {}
-    fake_versions = SimpleNamespace(pronom_version="116", update_site="https://example.test")
+    fake_versions = SimpleNamespace(pronom_version="116", update_site="https://example.test", is_complete=lambda: True)
 
-    monkeypatch.setattr(versions, "get_local_versions", lambda: fake_versions)
+    monkeypatch.setattr(versions, "get_local_versions", lambda _conf_dir: fake_versions)
     monkeypatch.setattr(versions, "_list_available_versions", lambda update_url: calls.__setitem__("list", update_url))
     monkeypatch.setattr(
         versions,
@@ -267,18 +336,21 @@ def test_download_sig_version_exits_on_http_error(monkeypatch):
 
 def test_output_details_sets_versions_and_downloads(monkeypatch):
     calls = []
-    target = SimpleNamespace(pronom_version="", pronom_signature="")
+    target = SimpleNamespace(pronom_version="", pronom_signature="", conf_dir="/conf")
     target.write = lambda: calls.append("write")
-    monkeypatch.setattr(versions, "_write_sigs", lambda *args: calls.append(args))
+
+    def record_download(latest, update_url, kind, name_template, conf_dir):
+        calls.append((kind, conf_dir))
+
+    monkeypatch.setattr(versions, "_write_sigs", record_download)
 
     versions._output_details("117", "https://example.test/", target)
 
     assert target.pronom_version == "117"
     assert target.pronom_signature == "formats-v117.xml"
-    assert calls[0][2] == "fido"
-    assert calls[1][2] == "droid"
-    assert calls[2][2] == "pronom"
-    assert calls[3] == "write"
+    assert calls == [("fido", "/conf"), ("droid", "/conf"), ("pronom", "/conf"), "write"], (
+        "every download must go to the versions file's directory, before versions.xml is written"
+    )
 
 
 def test_local_versions_getattr_unknown_returns_none(tmp_path):
@@ -291,9 +363,9 @@ def test_local_versions_getattr_unknown_returns_none(tmp_path):
 
 def test_sig_file_actions_keeps_trailing_slash(monkeypatch):
     calls = {}
-    fake_versions = SimpleNamespace(pronom_version="116", update_site="https://example.test/")
+    fake_versions = SimpleNamespace(pronom_version="116", update_site="https://example.test/", is_complete=lambda: True)
 
-    monkeypatch.setattr(versions, "get_local_versions", lambda: fake_versions)
+    monkeypatch.setattr(versions, "get_local_versions", lambda _conf_dir: fake_versions)
     monkeypatch.setattr(versions, "_list_available_versions", lambda update_url: calls.__setitem__("list", update_url))
 
     with pytest.raises(SystemExit):

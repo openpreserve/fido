@@ -797,6 +797,12 @@ def main(args=None):
     if not args:
         args = sys.argv[1:]
     args = parse_cli_args(args, defaults)
+
+    # -sigs must not need the signature names read below, and -v still wins over it
+    if args.sigs and not args.v:
+        sig_file_actions(args.sigs.lower(), args.confdir)
+        sys.exit(0)
+
     timer = PerfTimer()
 
     versions = get_local_versions(args.confdir)
@@ -819,10 +825,6 @@ def main(args=None):
 
     if args.v:
         sys.stdout.write(versionHeader)
-        sys.exit(0)
-
-    if args.sigs:
-        sig_file_actions(args.sigs.lower())
         sys.exit(0)
 
     if args.matchprintf:
