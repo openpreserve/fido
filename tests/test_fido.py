@@ -677,13 +677,22 @@ def test_signature_regexes_are_compiled_once_and_re_cache_is_untouched(monkeypat
     assert len(set(compiled)) == len(compiled)
 
 
+def _create_file_named_with_bytes(directory, name, content):
+    """Create a file whose name is not valid UTF-8, or skip where the platform or file system cannot hold one."""
+    if fido_mod.sys.platform == "win32":
+        pytest.skip("Windows cannot build a name from a byte that is not valid UTF-8, os.fsdecode raises")
+    path = directory / fido_mod.os.fsdecode(name)
+    try:
+        path.write_bytes(content)
+    except OSError as error:
+        pytest.skip(f"this file system rejects names that are not valid UTF-8: {error}")
+    return path
+
+
 def test_main_continues_past_a_filename_that_is_not_valid_utf8(monkeypatch, tmp_path, capsys):
     """A name from a foreign file system must not abort the run, nor hide the files after it."""
-    if fido_mod.sys.platform.startswith(("win", "darwin")):
-        pytest.skip("this file system only stores names that are valid unicode")
     magic = id_test_data[0][0]
-    undecodable = tmp_path / fido_mod.os.fsdecode(b"bad\xffname")
-    undecodable.write_bytes(magic)
+    undecodable = _create_file_named_with_bytes(tmp_path, b"bad\xffname", magic)
     decodable = tmp_path / "good"
     decodable.write_bytes(magic)
     monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
@@ -751,18 +760,6 @@ def test_process_format_element_replaces_an_existing_format_without_a_deprecatio
     assert fido.formats == [second]
     assert fido.puid_format_map["fmt/1"] is second
     assert not [w for w in recwarn if issubclass(w.category, DeprecationWarning)]
-
-
-def _create_file_named_with_bytes(directory, name, content):
-    """Create a file whose name is not valid UTF-8, or skip where the platform or file system cannot hold one."""
-    if fido_mod.sys.platform == "win32":
-        pytest.skip("Windows cannot build a name from a byte that is not valid UTF-8, os.fsdecode raises")
-    path = directory / fido_mod.os.fsdecode(name)
-    try:
-        path.write_bytes(content)
-    except OSError as error:
-        pytest.skip(f"this file system rejects names that are not valid UTF-8: {error}")
-    return path
 
 
 @pytest.mark.parametrize(
