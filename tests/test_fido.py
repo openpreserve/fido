@@ -707,17 +707,16 @@ def _add_signature(fmt, name, position, regex=None):
 
 def test_match_formats_names_the_format_whose_signature_fails(monkeypatch, capsys):
     fido = _make_fido(monkeypatch)
-    fmt = _format_element("fmt/1558")
-    sig = XET.SubElement(fmt, "signature")
-    XET.SubElement(sig, "name").text = "bad range"
-    pat = XET.SubElement(sig, "pattern")
-    XET.SubElement(pat, "position").text = "BOF"
-    XET.SubElement(pat, "regex").text = r"(?s)\A.{3000,700}"
-    fido.formats = [fmt]
-    fido.puid_has_priority_over_map = {"fmt/1558": frozenset()}
+    broken = _format_element("fmt/1558")
+    _add_signature(broken, "bad range", "BOF", r"(?s)\A.{3000,700}")
+    valid = _format_element("fmt/1")
+    _add_signature(valid, "abc", "BOF", "abc")
+    fido.formats = [broken, valid]
+    fido.puid_has_priority_over_map = {"fmt/1558": frozenset(), "fmt/1": frozenset()}
 
-    assert fido.match_formats(b"abc", b"abc") == []
+    matches = fido.match_formats(b"abc", b"abc")
 
+    assert [match[0] for match in matches] == [valid], "the format after the broken one was not matched"
     error = capsys.readouterr().err
     assert error.startswith("FIDO: Error matching fmt/1558: "), error
     assert "min repeat greater than max repeat" in error
