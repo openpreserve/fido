@@ -65,7 +65,7 @@ include = ["fido*"]
 "fido" = ["*.*", "conf/*.*", "pronom/*.*"]
 
 [tool.pytest.ini_options]
-addopts = "--maxfail=1 --strict-markers"
+addopts = "--strict-markers"
 
 
 [tool.ruff]
