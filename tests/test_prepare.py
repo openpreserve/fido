@@ -1,3 +1,4 @@
+import http.client
 import os
 import re
 import socket
@@ -619,8 +620,13 @@ def test_eof_window_runs_from_offset_to_offset_plus_max_offset(monkeypatch):
 
 @pytest.mark.parametrize(
     "error",
-    [socket.timeout("timed out"), urllib.error.URLError("connection refused")],
-    ids=["timeout", "connection refused"],
+    [
+        socket.timeout("timed out"),
+        urllib.error.URLError("connection refused"),
+        http.client.IncompleteRead(b"partial"),
+        http.client.RemoteDisconnected("Remote end closed connection without response"),
+    ],
+    ids=["timeout", "connection refused", "incomplete read", "remote disconnected"],
 )
 def test_parse_pronom_xml_reference_file_unreachable_continues(monkeypatch, capsys, error):
     info = prepare.FormatInfo("dummy.zip")

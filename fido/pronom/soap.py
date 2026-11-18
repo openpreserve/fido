@@ -21,10 +21,8 @@ PRONOM format signatures SOAP calls.
 """
 
 import http.client
-import socket
 import sys
 import urllib.request
-from urllib.error import URLError
 from xml.etree import ElementTree as ET
 
 from defusedxml.ElementTree import fromstring
@@ -94,7 +92,7 @@ def get_droid_signatures(version):
             format_count = len(
                 root_ele.findall(".//{http://www.nationalarchives.gov.uk/pronom/SignatureFile}FileFormat")
             )
-    except (URLError, socket.timeout) as err:
+    except (OSError, http.client.HTTPException) as err:
         sys.stderr.write(
             "get_droid_signatures(): could not download signature file v{} due to exception: {}\n".format(
                 version, err

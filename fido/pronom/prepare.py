@@ -4,12 +4,12 @@
 """Format Identification for Digital Objects."""
 
 import hashlib
-import socket
+import http.client
 import sys
 import zipfile
 from argparse import ArgumentParser
 from io import StringIO
-from urllib.error import HTTPError, URLError
+from urllib.error import HTTPError
 from urllib.parse import urlparse
 from urllib.request import urlopen
 from xml.dom import minidom
@@ -319,7 +319,7 @@ class FormatInfo:
                         sys.stderr.write("HTTP {} error loading resource {}\n".format(http_excep.code, url))
                         if http_excep.code == 404:
                             continue
-                    except (URLError, socket.timeout) as err:
+                    except (OSError, http.client.HTTPException) as err:
                         sys.stderr.write(f"Error loading resource {url}: {err}\n")
                         continue
 

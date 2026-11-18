@@ -1,5 +1,6 @@
 """Offline contract tests for PRONOM SOAP helpers."""
 
+import http.client
 import socket
 import unittest.mock
 import urllib.error
@@ -172,8 +173,13 @@ def test_get_soap_response_sets_a_timeout(mock_request):
 
 @pytest.mark.parametrize(
     "error",
-    [socket.timeout("timed out"), urllib.error.URLError("connection refused")],
-    ids=["timeout", "connection refused"],
+    [
+        socket.timeout("timed out"),
+        urllib.error.URLError("connection refused"),
+        http.client.IncompleteRead(b"partial"),
+        http.client.RemoteDisconnected("Remote end closed connection without response"),
+    ],
+    ids=["timeout", "connection refused", "incomplete read", "remote disconnected"],
 )
 @unittest.mock.patch("fido.pronom.soap.urllib.request", create=True)
 def test_get_droid_signatures_reports_an_unreachable_service(mock_request, error, capsys):
