@@ -2,6 +2,7 @@ name: Pytest
 
 on:
   push:
+  pull_request:
 
 jobs:
   test:
@@ -25,7 +26,7 @@ jobs:
           pip install flake8 pytest pytest-cov coverage-badge
           pip install -e .
       - name: Lint with flake8
-        run: flake8 tests --count --show-source --ignore=E231,E241,E501,W503,E203 --max-line-length=120 --statistics
+        run: flake8 fido tests --count --show-source --statistics
       - name: Test with pytest
         run: pytest --cov=fido --cov-report=xml
       - name: Generate coverage badge
