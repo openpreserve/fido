@@ -208,11 +208,11 @@ def _version_check(sig_ver, update_url):
     return int(latest) > int(sig_ver), latest
 
 
-def _write_sigs(latest, update_url, type, name_template, conf_dir=None):
+def _write_sigs(latest, update_url, the_type, name_template, conf_dir=None):
     if conf_dir is None:
         conf_dir = str(importlib.resources.files("fido").joinpath("conf"))
     sig_out = os.path.join(conf_dir, name_template.format(latest))
     if os.path.exists(sig_out):
         return
-    resp = requests.get(update_url + "format/{0}/{1}/".format(latest, type))
+    resp = requests.get(update_url + "format/{0}/{1}/".format(latest, the_type))
     open(sig_out, "wb").write(resp.content)
