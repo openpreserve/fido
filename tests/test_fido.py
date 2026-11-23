@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import csv
+import errno
 import io
 import struct
 import zlib
@@ -482,6 +483,362 @@ def test_main_stdin_zip_raises_runtime(monkeypatch):
 
     with pytest.raises(RuntimeError):
         fido_mod.main([])
+
+
+UNRECOGNISED_BYTES = b"\x01\x02\x03\x04"
+
+needs_unprivileged_user = pytest.mark.skipif(
+    fido_mod.os.name == "nt" or (hasattr(fido_mod.os, "geteuid") and fido_mod.os.geteuid() == 0),
+    reason="needs a directory this user is not allowed to read",
+)
+
+
+def _run_main(monkeypatch, *arguments):
+    """Run main() end to end: real argument parsing, real signatures, isolated module defaults."""
+    monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
+    fido_mod.main(list(arguments))
+
+
+def test_main_nomatchprintf_alone_expands_escapes(monkeypatch, tmp_path, capsys):
+    unknown = tmp_path / "unknown.zzz"
+    unknown.write_bytes(UNRECOGNISED_BYTES)
+
+    _run_main(monkeypatch, "-q", "-nomatchprintf", r"NOMATCH %(info.filename)s\n", str(unknown))
+
+    assert capsys.readouterr().out == f"NOMATCH {unknown}\n"
+
+
+def test_main_matchprintf_and_nomatchprintf_each_expand_their_own_escapes(monkeypatch, tmp_path, capsys):
+    known = tmp_path / "known"
+    known.write_bytes(id_test_data[0][0])
+    unknown = tmp_path / "unknown.zzz"
+    unknown.write_bytes(UNRECOGNISED_BYTES)
+
+    _run_main(
+        monkeypatch,
+        "-q",
+        "-matchprintf",
+        r"MATCH %(info.puid)s\t%(info.filename)s\n",
+        "-nomatchprintf",
+        r"NOMATCH\t%(info.filename)s\n",
+        str(known),
+        str(unknown),
+    )
+
+    assert capsys.readouterr().out == f"MATCH fmt/1000\t{known}\nNOMATCH\t{unknown}\n"
+
+
+def test_list_files_yields_files_and_the_contents_of_directories(tmp_path):
+    single = tmp_path / "single.bin"
+    single.write_bytes(b"x")
+    folder = tmp_path / "folder"
+    folder.mkdir()
+    inside = folder / "inside.bin"
+    inside.write_bytes(b"x")
+
+    assert list(fido_mod.list_files([str(single), str(folder)])) == [str(single), str(inside)]
+
+
+def test_list_files_reports_a_missing_path_and_carries_on(tmp_path, capsys):
+    present = tmp_path / "present.bin"
+    present.write_bytes(b"x")
+    missing = tmp_path / "missing.bin"
+
+    assert list(fido_mod.list_files([str(missing), str(present)])) == [str(present)]
+
+    assert capsys.readouterr().err == f"FIDO: Not a file or directory: {missing}\n"
+
+
+def test_main_reports_a_missing_path_even_when_quiet_and_identifies_the_rest(monkeypatch, tmp_path, capsys):
+    present = tmp_path / "present"
+    present.write_bytes(id_test_data[0][0])
+    missing = tmp_path / "missing"
+
+    _run_main(monkeypatch, "-q", str(missing), str(present))
+
+    captured = capsys.readouterr()
+    assert f"FIDO: Not a file or directory: {missing}\n" in captured.err
+    assert next(csv.reader(io.StringIO(captured.out)))[2] == "fmt/1000"
+
+
+def _make_stat_fail(monkeypatch, path, error):
+    real_stat = fido_mod.os.stat
+
+    def failing_stat(candidate, *args, **kwargs):
+        if candidate == str(path):
+            raise error
+        return real_stat(candidate, *args, **kwargs)
+
+    monkeypatch.setattr(fido_mod.os, "stat", failing_stat)
+
+
+def test_list_files_reports_a_path_it_cannot_access_and_carries_on(monkeypatch, tmp_path, capsys):
+    denied = tmp_path / "denied.bin"
+    denied.write_bytes(b"x")
+    present = tmp_path / "present.bin"
+    present.write_bytes(b"x")
+    _make_stat_fail(monkeypatch, denied, PermissionError(errno.EACCES, "Permission denied", str(denied)))
+
+    assert list(fido_mod.list_files([str(denied), str(present)])) == [str(present)]
+
+    assert capsys.readouterr().err == f"FIDO: Cannot access {denied}: Permission denied\n"
+
+
+def test_main_reports_a_path_it_cannot_access_even_when_quiet_and_identifies_the_rest(monkeypatch, tmp_path, capsys):
+    denied = tmp_path / "denied"
+    denied.write_bytes(b"x")
+    present = tmp_path / "present"
+    present.write_bytes(id_test_data[0][0])
+    _make_stat_fail(monkeypatch, denied, PermissionError(errno.EACCES, "Permission denied", str(denied)))
+
+    _run_main(monkeypatch, "-q", str(denied), str(present))
+
+    captured = capsys.readouterr()
+    assert f"FIDO: Cannot access {denied}: Permission denied\n" in captured.err
+    assert "Not a file or directory" not in captured.err
+    assert next(csv.reader(io.StringIO(captured.out)))[2] == "fmt/1000"
+
+
+@needs_unprivileged_user
+def test_list_files_reports_a_file_inside_an_unreadable_directory_as_inaccessible(tmp_path, capsys):
+    locked = tmp_path / "locked"
+    locked.mkdir()
+    inside = locked / "inside.bin"
+    inside.write_bytes(b"x")
+    present = tmp_path / "present.bin"
+    present.write_bytes(b"x")
+    locked.chmod(0o000)
+    try:
+        listed = list(fido_mod.list_files([str(inside), str(present)]))
+    finally:
+        locked.chmod(0o700)
+
+    assert listed == [str(present)]
+    assert capsys.readouterr().err == f"FIDO: Cannot access {inside}: {fido_mod.os.strerror(errno.EACCES)}\n"
+
+
+@pytest.mark.skipif(not hasattr(fido_mod.os, "symlink") or fido_mod.os.name == "nt", reason="needs POSIX symlinks")
+def test_list_files_reports_a_symlink_loop_as_inaccessible(tmp_path, capsys):
+    loop = tmp_path / "loop"
+    loop.symlink_to(loop)
+
+    assert list(fido_mod.list_files([str(loop)])) == []
+
+    assert capsys.readouterr().err == f"FIDO: Cannot access {loop}: {fido_mod.os.strerror(errno.ELOOP)}\n"
+
+
+@pytest.mark.skipif(not hasattr(fido_mod.os, "mkfifo"), reason="needs POSIX named pipes")
+def test_list_files_reports_a_named_pipe_as_not_a_file_or_directory(tmp_path, capsys):
+    pipe = tmp_path / "pipe"
+    fido_mod.os.mkfifo(pipe)
+
+    assert list(fido_mod.list_files([str(pipe)])) == []
+
+    assert capsys.readouterr().err == f"FIDO: Not a file or directory: {pipe}\n"
+
+
+def test_list_files_reports_a_path_with_a_nul_character_as_not_a_file_or_directory(capsys):
+    assert list(fido_mod.list_files(["bad\0name"])) == []
+
+    assert capsys.readouterr().err == "FIDO: Not a file or directory: bad\0name\n"
+
+
+def test_list_files_skips_an_empty_root_and_carries_on(tmp_path, capsys):
+    present = tmp_path / "present.bin"
+    present.write_bytes(b"x")
+
+    assert list(fido_mod.list_files(["", "\n", str(present)], strip_line_endings=True)) == [str(present)]
+
+    assert capsys.readouterr().err == "FIDO: Empty path skipped\n" * 2
+
+
+def test_main_skips_an_empty_path_argument_and_identifies_the_rest(monkeypatch, tmp_path, capsys):
+    present = tmp_path / "present"
+    present.write_bytes(id_test_data[0][0])
+
+    _run_main(monkeypatch, "-q", "", str(present))
+
+    captured = capsys.readouterr()
+    assert "FIDO: Empty path skipped" in captured.err
+    assert next(csv.reader(io.StringIO(captured.out)))[2] == "fmt/1000"
+
+
+@pytest.mark.parametrize(
+    "line, expected",
+    [
+        ("path\n", "path"),
+        ("path\r\n", "path"),
+        ("path", "path"),
+        ("path\r", "path\r"),
+        ("path\n\n", "path\n"),
+        ("\r\n", ""),
+        ("\n", ""),
+        ("", ""),
+    ],
+)
+def test_strip_line_ending_drops_one_line_ending_only(line, expected):
+    assert fido_mod.strip_line_ending(line) == expected, f"{line!r} stripped to something other than {expected!r}"
+
+
+def test_list_files_strips_line_endings_from_listed_paths_when_asked(tmp_path):
+    unix = tmp_path / "unix.bin"
+    unix.write_bytes(b"x")
+    windows = tmp_path / "windows.bin"
+    windows.write_bytes(b"x")
+    last = tmp_path / "last.bin"
+    last.write_bytes(b"x")
+
+    listed = list(fido_mod.list_files([f"{unix}\n", f"{windows}\r\n", str(last)], strip_line_endings=True))
+
+    assert listed == [str(unix), str(windows), str(last)]
+
+
+def test_list_files_keeps_a_trailing_newline_of_a_root_by_default(tmp_path, capsys):
+    record = tmp_path / "record"
+    record.write_bytes(b"x")
+
+    assert list(fido_mod.list_files([f"{record}\n"])) == []
+
+    assert capsys.readouterr().err == f"FIDO: Not a file or directory: {record}\n\n"
+
+
+@pytest.mark.skipif(fido_mod.os.name == "nt", reason="Windows file names cannot contain a newline")
+def test_list_files_finds_a_file_whose_name_ends_in_a_newline_by_default(tmp_path, capsys):
+    plain = tmp_path / "record"
+    plain.write_bytes(b"x")
+    with_newline = tmp_path / "record\n"
+    with_newline.write_bytes(b"x")
+
+    assert list(fido_mod.list_files([str(with_newline)])) == [str(with_newline)]
+
+    assert capsys.readouterr().err == ""
+
+
+def _write_iso_like_image(path):
+    """Write what the ISO 9660 signature needs: a primary descriptor at 32768, a terminator one 2048 byte block on."""
+    primary_offset = 32768
+    terminator_offset = primary_offset + 2048
+    image = bytearray(terminator_offset + 4096)
+    image[primary_offset : primary_offset + 7] = b"\x01CD001\x01"
+    image[terminator_offset : terminator_offset + 7] = b"\xffCD001\x01"
+    path.write_bytes(image)
+
+
+def test_main_bufsize_shorter_than_a_signature_offset_falls_back_to_the_extension(monkeypatch, tmp_path, capsys):
+    image = tmp_path / "disc.iso"
+    _write_iso_like_image(image)
+
+    _run_main(monkeypatch, "-q", "-bufsize", "2048", str(image))
+
+    rows = list(csv.reader(io.StringIO(capsys.readouterr().out)))
+    assert rows, "no match line was printed"
+    assert {row[8] for row in rows} == {"extension"}, f"expected extension matches only, got {rows}"
+    assert "fmt/468" not in {row[2] for row in rows}, f"ISO 9660 matched in a buffer shorter than its signature: {rows}"
+
+
+def test_main_bufsize_beyond_a_signature_offset_matches_it(monkeypatch, tmp_path, capsys):
+    image = tmp_path / "disc.iso"
+    _write_iso_like_image(image)
+
+    _run_main(monkeypatch, "-q", "-bufsize", "131072", str(image))
+
+    rows = list(csv.reader(io.StringIO(capsys.readouterr().out)))
+    assert [(row[2], row[8]) for row in rows] == [("fmt/468", "signature")], f"unexpected matches: {rows}"
+
+
+def test_main_does_not_strip_a_newline_from_a_path_argument(monkeypatch, tmp_path, capsys):
+    record = tmp_path / "record"
+    record.write_bytes(id_test_data[0][0])
+
+    _run_main(monkeypatch, "-q", f"{record}\n")
+
+    captured = capsys.readouterr()
+    assert captured.err == f"FIDO: Not a file or directory: {record}\n\n"
+    assert captured.out == "", f"the file {record} was identified through a path that does not exist: {captured.out}"
+
+
+def test_main_identifies_crlf_terminated_paths_from_stdin_and_skips_blank_lines(monkeypatch, tmp_path, capsys):
+    first = tmp_path / "first"
+    first.write_bytes(id_test_data[0][0])
+    second = tmp_path / "second"
+    second.write_bytes(id_test_data[0][0])
+    monkeypatch.setattr(fido_mod.sys, "stdin", io.StringIO(f"{first}\r\n\r\n{second}\r\n"))
+
+    _run_main(monkeypatch, "-q", "-input", "-")
+
+    captured = capsys.readouterr()
+    assert captured.err == "FIDO: Empty path skipped\n", f"unexpected diagnostics: {captured.err!r}"
+    rows = list(csv.reader(io.StringIO(captured.out)))
+    assert [(row[2], row[6]) for row in rows] == [("fmt/1000", str(first)), ("fmt/1000", str(second))]
+
+
+def test_main_identifies_paths_listed_in_an_input_file_with_either_line_ending(monkeypatch, tmp_path, capsys):
+    unix = tmp_path / "unix"
+    unix.write_bytes(id_test_data[0][0])
+    windows = tmp_path / "windows"
+    windows.write_bytes(id_test_data[0][0])
+    listing = tmp_path / "paths.txt"
+    listing.write_bytes(f"{unix}\n{windows}\r\n".encode())
+
+    _run_main(monkeypatch, "-q", "-input", str(listing))
+
+    captured = capsys.readouterr()
+    assert captured.err == "", f"unexpected diagnostics: {captured.err!r}"
+    assert [row[6] for row in csv.reader(io.StringIO(captured.out))] == [str(unix), str(windows)]
+
+
+@pytest.fixture(params=[pytest.param("chmod", marks=needs_unprivileged_user), "faked scandir"])
+def make_unlistable(request, monkeypatch):
+    """Return a function that makes a directory fail to list, for real with chmod or, for any user, by faking the error."""
+    chmodded = []
+
+    def make(directory):
+        if request.param == "chmod":
+            directory.chmod(0o000)
+            chmodded.append(directory)
+            return
+        real_scandir = fido_mod.os.scandir
+
+        def failing_scandir(path="."):
+            if path == str(directory):
+                raise PermissionError(errno.EACCES, fido_mod.os.strerror(errno.EACCES), path)
+            return real_scandir(path)
+
+        monkeypatch.setattr(fido_mod.os, "scandir", failing_scandir)
+
+    yield make
+    for directory in chmodded:
+        directory.chmod(0o700)
+
+
+def test_list_files_reports_a_directory_it_cannot_read_and_carries_on(tmp_path, capsys, make_unlistable):
+    unreadable = tmp_path / "unreadable"
+    unreadable.mkdir()
+    present = tmp_path / "present.bin"
+    present.write_bytes(b"x")
+    make_unlistable(unreadable)
+
+    listed = list(fido_mod.list_files([str(unreadable), str(present)]))
+
+    assert listed == [str(present)]
+    assert capsys.readouterr().err == f"FIDO: Cannot scan directory: {unreadable}\n"
+
+
+def test_list_files_recurse_reports_an_unreadable_subdirectory_and_yields_the_rest(tmp_path, capsys, make_unlistable):
+    top = tmp_path / "top"
+    readable = top / "readable"
+    unreadable = top / "unreadable"
+    for directory in (readable, unreadable):
+        directory.mkdir(parents=True)
+    (top / "top.bin").write_bytes(b"x")
+    (readable / "readable.bin").write_bytes(b"x")
+    (unreadable / "hidden.bin").write_bytes(b"x")
+    make_unlistable(unreadable)
+
+    listed = sorted(fido_mod.list_files([str(top)], recurse=True))
+
+    assert listed == [str(readable / "readable.bin"), str(top / "top.bin")], f"unexpected files: {listed}"
+    assert capsys.readouterr().err == f"FIDO: Cannot scan directory: {unreadable}\n"
 
 
 def test_print_matches_no_match_outputs_ko(monkeypatch, capsys):

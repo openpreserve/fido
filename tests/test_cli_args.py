@@ -1,6 +1,6 @@
 import pytest
 
-from fido.cli_args import parse_cli_args
+from fido.cli_args import MIN_BUFSIZE, parse_cli_args
 from fido.fido import defaults
 
 # Common argument string
@@ -48,3 +48,27 @@ def test_parse_files_and_input_invalid():
     arg_string = "-q -zip -input files.txt file1.ext file2.ext"
     with pytest.raises(SystemExit):
         parse_cli_args(arg_string.split(), defaults)
+
+
+def test_parse_args_bufsize_defaults_to_none():
+    assert parse_cli_args(["file.ext"], defaults).bufsize is None
+
+
+@pytest.mark.parametrize("value", [str(MIN_BUFSIZE), "131072"])
+def test_parse_args_bufsize_accepts_the_minimum_and_above(value):
+    assert parse_cli_args(["-bufsize", value, "file.ext"], defaults).bufsize == int(value)
+
+
+@pytest.mark.parametrize("value", ["0", "-1", str(MIN_BUFSIZE - 1)])
+def test_parse_args_bufsize_below_the_minimum_is_a_usage_error(value, capsys):
+    with pytest.raises(SystemExit) as exc:
+        parse_cli_args(["-bufsize", value, "file.ext"], defaults)
+    assert exc.value.code == 2
+    assert f"at least {MIN_BUFSIZE} bytes" in capsys.readouterr().err
+
+
+def test_parse_args_bufsize_not_an_integer_is_a_usage_error(capsys):
+    with pytest.raises(SystemExit) as exc:
+        parse_cli_args(["-bufsize", "many", "file.ext"], defaults)
+    assert exc.value.code == 2
+    assert "invalid buffer_size value: 'many'" in capsys.readouterr().err

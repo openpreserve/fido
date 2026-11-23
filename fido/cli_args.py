@@ -1,6 +1,16 @@
 import argparse
-from argparse import ArgumentParser, RawTextHelpFormatter
+from argparse import ArgumentParser, ArgumentTypeError, RawTextHelpFormatter
 from typing import Any, Dict, List
+
+MIN_BUFSIZE = 1024
+
+
+def buffer_size(value: str) -> int:
+    """Parse a buffer size in bytes, which must be at least MIN_BUFSIZE."""
+    size = int(value)
+    if size < MIN_BUFSIZE:
+        raise ArgumentTypeError(f"must be at least {MIN_BUFSIZE} bytes, got {size}")
+    return size
 
 
 def parse_cli_args(argv: List[str], defaults: Dict[str, Any]) -> argparse.Namespace:
@@ -99,9 +109,13 @@ def parse_cli_args(argv: List[str], defaults: Dict[str, Any]) -> argparse.Namesp
     )
     parser.add_argument(
         "-bufsize",
-        type=int,
+        type=buffer_size,
         default=None,
-        help=f"size (in bytes) of the buffer to match against (default={defaults['bufsize']})",
+        help=(
+            f"size (in bytes) of the buffer to match against (minimum={MIN_BUFSIZE}, default={defaults['bufsize']}). "
+            "A signature cannot match beyond the buffer, so formats identified deep in a file need a larger one "
+            "(ISO 9660 needs more than 32768 bytes)."
+        ),
     )
     parser.add_argument(
         "-sigs",
