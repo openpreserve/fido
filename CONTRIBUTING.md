@@ -57,7 +57,9 @@ The checklist below contains some of our expectations, and will help you create 
 You should run these tools locally before pushing a commit by running the following commands:
 
     $ pytest
-    $ flake8 --ignore=E501 ./fido
+    $ flake8 fido tests
+
+The flake8 settings live in `.flake8`, so this applies the same lint rules as CI.
 
 
 ## Code Review & Approval

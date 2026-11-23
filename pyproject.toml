@@ -26,7 +26,8 @@ classifiers = [
 
 dependencies = [
     "olefile >= 0.46, < 1",
-    "requests >= 2",
+    "requests >= 2.33; python_version >= '3.10'",
+    "requests >= 2.32.4; python_version < '3.10'",
     "defusedxml >= 0.7"
     ]
 
@@ -65,14 +66,8 @@ include = ["fido*"]
 "fido" = ["*.*", "conf/*.*", "pronom/*.*"]
 
 [tool.pytest.ini_options]
-addopts = "--maxfail=1 --strict-markers"
+addopts = "--strict-markers"
 
-
-[tool.flake8]
-exclude = ['.venv']
-ignore = ['E231', 'E241', 'E501', 'W503', 'E203']
-max-line-length = 120
-# count = true
 
 [tool.ruff]
 line-length = 120
