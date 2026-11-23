@@ -214,5 +214,5 @@ def _write_sigs(latest, update_url, the_type, name_template, conf_dir=None):
     sig_out = os.path.join(conf_dir, name_template.format(latest))
     if os.path.exists(sig_out):
         return
-    resp = requests.get(update_url + "format/{0}/{1}/".format(latest, the_type))
+    resp = requests.get(update_url + "format/{0}/{1}/".format(latest, the_type), timeout=30)
     open(sig_out, "wb").write(resp.content)
