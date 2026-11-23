@@ -4,7 +4,6 @@ from types import SimpleNamespace
 import pytest
 
 from fido.pronom import versions
-from fido.pronom.versions import DEFAULT_REQUESTS_TIMEOUT
 
 
 class DummyResponse:
@@ -140,7 +139,7 @@ def test_version_check_returns_newer_version(monkeypatch):
     monkeypatch.setattr(
         versions.requests,
         "get",
-        lambda _url, timeout=DEFAULT_REQUESTS_TIMEOUT: DummyResponse(status_code=200, text='<signature version="v117" />'),
+        lambda _url: DummyResponse(status_code=200, text='<signature version="v117" />'),
     )
 
     is_new, latest = versions._version_check("116", "https://example.test/")
@@ -152,7 +151,7 @@ def test_version_check_returns_not_new(monkeypatch):
     monkeypatch.setattr(
         versions.requests,
         "get",
-        lambda _url, timeout=DEFAULT_REQUESTS_TIMEOUT: DummyResponse(status_code=200, text='<signature version="116" />'),
+        lambda _url: DummyResponse(status_code=200, text='<signature version="116" />'),
     )
 
     is_new, latest = versions._version_check("116", "https://example.test/")
@@ -164,7 +163,7 @@ def test_version_check_exits_on_http_error(monkeypatch):
     monkeypatch.setattr(
         versions.requests,
         "get",
-        lambda _url, timeout=DEFAULT_REQUESTS_TIMEOUT: DummyResponse(status_code=500, text=""),
+        lambda _url: DummyResponse(status_code=500, text=""),
     )
 
     with pytest.raises(SystemExit):
@@ -186,7 +185,7 @@ def test_write_sigs_downloads_when_target_missing(monkeypatch, tmp_path):
     monkeypatch.setattr(
         versions.requests,
         "get",
-        lambda _url, timeout=DEFAULT_REQUESTS_TIMEOUT: DummyResponse(status_code=200, content=b"<xml>payload</xml>"),
+        lambda _url: DummyResponse(status_code=200, content=b"<xml>payload</xml>"),
     )
 
     versions._write_sigs("116", "https://example.test/", "fido", "formats-v{}.xml")
@@ -219,7 +218,7 @@ def test_write_sigs_skips_when_target_exists(monkeypatch, tmp_path):
 
 def test_list_available_versions_prints_all(monkeypatch, capsys):
     payload = b"<root><signature version='116'/><signature version='117'/></root>"
-    monkeypatch.setattr(versions.requests, "get", lambda _url, timeout=DEFAULT_REQUESTS_TIMEOUT: DummyResponse(status_code=200, content=payload))
+    monkeypatch.setattr(versions.requests, "get", lambda _url: DummyResponse(status_code=200, content=payload))
 
     versions._list_available_versions("https://example.test/")
 
@@ -313,7 +312,7 @@ def test_check_update_signatures_emits_up_to_date_message(monkeypatch, capsys):
 
 def test_download_sig_version_normalizes_number(monkeypatch):
     calls = {}
-    monkeypatch.setattr(versions.requests, "get", lambda _url, timeout=DEFAULT_REQUESTS_TIMEOUT: DummyResponse(status_code=200, content=b"", text=""))
+    monkeypatch.setattr(versions.requests, "get", lambda _url: DummyResponse(status_code=200, content=b"", text=""))
     monkeypatch.setattr(
         versions,
         "_output_details",
@@ -327,7 +326,7 @@ def test_download_sig_version_normalizes_number(monkeypatch):
 
 
 def test_download_sig_version_exits_on_http_error(monkeypatch):
-    monkeypatch.setattr(versions.requests, "get", lambda _url, timeout=DEFAULT_REQUESTS_TIMEOUT: DummyResponse(status_code=404, content=b"", text=""))
+    monkeypatch.setattr(versions.requests, "get", lambda _url: DummyResponse(status_code=404, content=b"", text=""))
 
     with pytest.raises(SystemExit) as exc:
         versions._download_sig_version("104", "https://example.test/", object())
@@ -384,7 +383,7 @@ def test_download_sig_version_rejects_invalid_input():
 
 def test_download_sig_version_accepts_prefixed_version(monkeypatch):
     calls = {}
-    monkeypatch.setattr(versions.requests, "get", lambda _url, timeout=DEFAULT_REQUESTS_TIMEOUT: DummyResponse(status_code=200, content=b"", text=""))
+    monkeypatch.setattr(versions.requests, "get", lambda _url: DummyResponse(status_code=200, content=b"", text=""))
     monkeypatch.setattr(
         versions,
         "_output_details",
