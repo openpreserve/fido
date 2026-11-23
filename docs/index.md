@@ -18,7 +18,7 @@ Usage
 
 
     positional arguments:
-      FILE                  files to check. If the file is -, then read content from stdin. In this case, python must be invoked with -u or it may convert the line terminators.
+      FILE                  files to check. If the file is -, then read content from stdin.
 
     optional arguments:
       -h, --help            show this help message and exit
