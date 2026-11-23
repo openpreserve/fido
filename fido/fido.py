@@ -480,23 +480,10 @@ class Fido:
         if len(matches) > 0 and self.current_filesize > 0:
             self.handle_matches(self.current_file, matches, timer.duration(), "signature")
         elif extension and (len(matches) == 0 or self.current_filesize == 0):
-            # we can only determine the filename from the STDIN stream
-            # on Linux, on Windows there is not a (simple) way to do that
-            if os.name != "nt":
-                try:
-                    self.current_file = os.readlink("/proc/self/fd/0")
-                except OSError:
-                    if filename is not None:
-                        self.current_file = filename
-                    else:
-                        self.current_file = "STDIN"
-            else:
-                if filename is not None:
-                    self.current_file = filename
-            matches = self.match_extensions(self.current_file)
-            # we have to reset self.current_file if not on Windows
-            if os.name != "nt":
-                self.current_file = "STDIN"
+            matches = self.match_extensions(stdin_name(filename))
+            # Windows has always reported -filename as the name, elsewhere the row says STDIN
+            if os.name == "nt" and filename is not None:
+                self.current_file = filename
             self.handle_matches(self.current_file, matches, timer.duration(), "extension")
 
     def container_type(self, matches):
@@ -791,6 +778,20 @@ def file_mode(path):
         return os.stat(path).st_mode
     except (FileNotFoundError, NotADirectoryError, ValueError):
         return None
+
+
+def stdin_name(filename):
+    """Return the name whose extension identifies standard input: -filename, else the file stdin is redirected from."""
+    if filename is not None:
+        return filename
+    if os.name == "nt":
+        return "STDIN"
+    try:
+        path = os.readlink("/proc/self/fd/0")
+    except OSError:  # no /proc, as on macOS
+        return "STDIN"
+    # a pipe or socket links to "pipe:[1234]" or "socket:[1234]", which is not a file name
+    return path if path.startswith("/") else "STDIN"
 
 
 def strip_line_ending(line):
