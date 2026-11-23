@@ -4,7 +4,10 @@
 import csv
 import errno
 import io
+import os
 import struct
+import subprocess  # nosec B404  # runs fido itself in the stdin tests
+import sys
 import zlib
 from xml.etree import ElementTree as XET
 from time import sleep
@@ -374,6 +377,131 @@ def test_identify_stream_windows_uses_provided_filename(monkeypatch):
 
     assert calls["ext_filename"] == "provided.name"
     assert calls["handled_filename"] == "provided.name"
+
+
+def _readlink_returning(link):
+    def readlink(_path):
+        if isinstance(link, Exception):
+            raise link
+        return link
+
+    return readlink
+
+
+@pytest.mark.parametrize(
+    "link, filename, expected",
+    [
+        ("pipe:[1234]", None, "STDIN"),
+        ("pipe:[1234]", "provided.txt", "provided.txt"),
+        ("socket:[5678]", None, "STDIN"),
+        ("socket:[5678]", "provided.txt", "provided.txt"),
+        ("/data/redirected.csv", None, "/data/redirected.csv"),
+        ("/data/redirected.csv", "provided.txt", "provided.txt"),
+        (OSError("no /proc"), None, "STDIN"),
+        (OSError("no /proc"), "provided.txt", "provided.txt"),
+    ],
+    ids=[
+        "pipe",
+        "pipe with -filename",
+        "socket",
+        "socket with -filename",
+        "redirect",
+        "-filename wins over a redirect",
+        "no /proc (Windows, macOS)",
+        "no /proc with -filename",
+    ],
+)
+def test_stdin_name(monkeypatch, link, filename, expected):
+    monkeypatch.setattr(fido_mod, "os", SimpleNamespace(readlink=_readlink_returning(link)))
+
+    name = fido_mod.stdin_name(filename)
+
+    assert name == expected, f"/proc/self/fd/0 -> {link!r}, -filename {filename!r}: got {name!r}, expected {expected!r}"
+
+
+def test_identify_stream_linux_pipe_uses_provided_filename(monkeypatch):
+    """On Linux /proc/self/fd/0 of a pipe links to pipe:[N], which must not hide -filename (#260)."""
+    fido = _make_fido(monkeypatch)
+    calls = {}
+    monkeypatch.setattr(fido, "match_formats", lambda *_a: [])
+    monkeypatch.setattr(
+        fido,
+        "match_extensions",
+        lambda filename: calls.__setitem__("ext_filename", filename) or [],
+    )
+    monkeypatch.setattr(
+        fido,
+        "handle_matches",
+        lambda filename, _matches, _duration, matchtype: calls.update(
+            {"handled_filename": filename, "matchtype": matchtype}
+        ),
+    )
+    monkeypatch.setattr(fido_mod, "os", SimpleNamespace(name="posix", readlink=_readlink_returning("pipe:[1234]")))
+
+    fido.identify_stream(io.BytesIO(b"abc"), "provided.name", extension=True)
+
+    assert calls["ext_filename"] == "provided.name", f"extension step matched against {calls['ext_filename']!r}"
+    assert calls["handled_filename"] == "STDIN"
+    assert calls["matchtype"] == "extension"
+
+
+def _fido_row_for_stdin(args, piped=None, redirected=None):
+    """
+    Run `fido -q ARGS -` in a fresh interpreter and return its first output row.
+
+    A fresh process is needed because the bug depends on what file descriptor 0 really is:
+    `piped` bytes arrive through a pipe, `redirected` is an open file that becomes stdin.
+    """
+    result = subprocess.run(  # nosec B603  # fixed arguments, runs fido itself
+        [sys.executable, "-m", "fido.fido", "-q", *args, "-"],
+        input=piped,
+        stdin=redirected,
+        capture_output=True,
+        cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    )
+    assert result.returncode == 0, result.stderr.decode()
+    rows = list(csv.reader(io.StringIO(result.stdout.decode())))
+    assert rows, f"no output row, stderr: {result.stderr.decode()!r}"
+    return rows[0]
+
+
+needs_proc = pytest.mark.skipif(
+    not os.path.exists("/proc/self/fd/0"), reason="without /proc there is no stdin link to hide -filename"
+)
+
+
+@needs_proc
+@pytest.mark.parametrize(
+    "args, expected_result, expected_puid",
+    [(["-filename", "foo.txt"], "OK", "x-fmt/111"), ([], "KO", "")],
+    ids=["-filename foo.txt", "no -filename"],
+)
+def test_main_uses_filename_for_a_piped_stdin(args, expected_result, expected_puid):
+    """`cat hello.txt | fido -filename foo.txt -` matches the extension of foo.txt; text has no signature."""
+    row = _fido_row_for_stdin(args, piped=b"hello\n")
+
+    assert row[0] == expected_result, f"row {row}"
+    assert row[2] == expected_puid, f"row {row}"
+    assert row[6] == "STDIN", f"row {row}"
+
+
+@needs_proc
+@pytest.mark.parametrize(
+    "args, expected_puid",
+    [([], "x-fmt/111"), (["-filename", "foo.csv"], "x-fmt/18")],
+    ids=["redirect from hello.txt", "-filename foo.csv wins over the redirect"],
+)
+def test_main_names_a_redirected_stdin(tmp_path, args, expected_puid):
+    """`fido - < hello.txt` matches the extension of the redirected file, unless -filename says otherwise."""
+    hello = tmp_path / "hello.txt"
+    hello.write_bytes(b"hello\n")
+
+    with open(hello, "rb") as stdin:
+        row = _fido_row_for_stdin(args, redirected=stdin)
+
+    assert row[0] == "OK", f"row {row}"
+    assert row[2] == expected_puid, f"row {row}"
+    assert row[8] == "extension", f"row {row}"
 
 
 def test_walk_zip_handles_bad_zip(monkeypatch, capsys):
