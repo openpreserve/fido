@@ -62,7 +62,7 @@ class LocalVersions(object):
     def __init__(self, versions_file):
         """Instantiate class based on the file indicated in `versions_file`."""
         self.versions_file = versions_file
-        self.conf_dir = os.path.abspath(os.path.dirname(versions_file))
+        self.conf_dir = os.path.realpath(os.path.dirname(versions_file))
         try:
             self.tree = parse(versions_file)
             self.root = self.tree.getroot()
@@ -94,12 +94,21 @@ class LocalVersions(object):
         """Obtain location to the current PRONOM signature file."""
         return os.path.join(self.conf_dir, self.pronom_signature)
 
+    def missing_fields(self):
+        """Return the names of the fields that versions.xml does not define."""
+        return [key for key, value in self.PROPS_MAPPING.items() if self.root.find(value) is None]
+
+    def is_complete(self):
+        """Tell whether every field is defined and the PRONOM version and update site have a value."""
+        return not self.missing_fields() and all(
+            self.root.findtext(self.PROPS_MAPPING[key], "").strip() for key in ("pronom_version", "update_site")
+        )
+
     def write(self):
         """Update versions.xml."""
-        # Check that all the fields are defined
-        for key, value in self.PROPS_MAPPING.items():
-            if self.root.find(value) is None:
-                raise ValueError("Field {} has not been defined!".format(key))
+        missing = self.missing_fields()
+        if missing:
+            raise ValueError("Field {} has not been defined!".format(missing[0]))
         self.tree.write(self.versions_file, xml_declaration=True, method="xml", encoding="utf-8")
 
 
@@ -108,9 +117,11 @@ def get_local_versions(config_dir=CONFIG_DIR):
     return LocalVersions(os.path.join(config_dir, "versions.xml"))
 
 
-def sig_file_actions(sig_act):
-    """Process signature file update actions."""
-    versions = get_local_versions()
+def sig_file_actions(sig_act, conf_dir=CONFIG_DIR):
+    """Process signature file update actions on the signature files in conf_dir."""
+    versions = get_local_versions(conf_dir)
+    if not versions.is_complete():
+        sys.exit("FIDO: {} is missing or incomplete, cannot use it with -sigs".format(versions.versions_file))
     sig_vers = versions.pronom_version
 
     # Get update URL, add trailing slash if missing
@@ -211,9 +222,9 @@ def _get_version(ver_string):
 
 def _output_details(version, update_url, versions):
     sys.stdout.write("Updating signature file to {}.\n".format(version))
-    _write_sigs(version, update_url, "fido", "formats-v{}.xml")
-    _write_sigs(version, update_url, "droid", "DROID_SignatureFile-v{}.xml")
-    _write_sigs(version, update_url, "pronom", "pronom-xml-v{}.zip")
+    _write_sigs(version, update_url, "fido", "formats-v{}.xml", versions.conf_dir)
+    _write_sigs(version, update_url, "droid", "DROID_SignatureFile-v{}.xml", versions.conf_dir)
+    _write_sigs(version, update_url, "pronom", "pronom-xml-v{}.zip", versions.conf_dir)
     versions.pronom_version = "{}".format(version)
     versions.pronom_signature = "formats-v{}.xml".format(version)
     versions.write()
@@ -228,9 +239,11 @@ def _version_check(sig_ver, update_url):
     return int(latest) > int(sig_ver), latest
 
 
-def _write_sigs(latest, update_url, type, name_template):
-    sig_out = str(importlib.resources.files("fido").joinpath("conf", name_template.format(latest)))
+def _write_sigs(latest, update_url, the_type, name_template, conf_dir=None):
+    if conf_dir is None:
+        conf_dir = str(importlib.resources.files("fido").joinpath("conf"))
+    sig_out = os.path.join(conf_dir, name_template.format(latest))
     if os.path.exists(sig_out):
         return
-    resp = _get_successful(update_url + "format/{0}/{1}/".format(latest, type))
+    resp = _get_successful(update_url + "format/{0}/{1}/".format(latest, the_type))
     open(sig_out, "wb").write(resp.content)
