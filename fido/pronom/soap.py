@@ -55,7 +55,7 @@ HEADERS = {
 def get_sig_xml_for_puid(puid):
     """Return the full PRONOM signature XML for the passed PUID."""
     req = urllib.request.Request("http://www.nationalarchives.gov.uk/pronom/{}.xml".format(puid))
-    response = urllib.request.urlopen(req, timeout=HTTP_TIMEOUT_SECONDS)
+    response = urllib.request.urlopen(req, timeout=HTTP_TIMEOUT_SECONDS)  # nosec B310  # fixed TNA URL
     xml = response.read()
     return xml
 
@@ -83,7 +83,7 @@ def get_droid_signatures(version):
     xml = []
     format_count = False
     try:
-        with urllib.request.urlopen(
+        with urllib.request.urlopen(  # nosec B310  # fixed TNA URL
             "https://www.nationalarchives.gov.uk/documents/DROID_SignatureFile_V{}.xml".format(version),
             timeout=HTTP_TIMEOUT_SECONDS,
         ) as f:
@@ -120,7 +120,7 @@ def _get_soap_response(soap_action, soap_string):
     req.add_header("Content-length", "%d" % len(soap_string))
     req.add_header("SOAPAction", soap_action)
     try:
-        response = urllib.request.urlopen(req, timeout=HTTP_TIMEOUT_SECONDS)
+        response = urllib.request.urlopen(req, timeout=HTTP_TIMEOUT_SECONDS)  # nosec B310  # fixed TNA URL
         return response.read().decode(ENCODING)
     except (OSError, http.client.HTTPException) as err:
         sys.exit(
