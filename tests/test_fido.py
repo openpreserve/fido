@@ -407,16 +407,30 @@ def _readlink_returning(link):
         "socket with -filename",
         "redirect",
         "-filename wins over a redirect",
-        "no /proc (Windows, macOS)",
+        "no /proc (macOS)",
         "no /proc with -filename",
     ],
 )
 def test_stdin_name(monkeypatch, link, filename, expected):
-    monkeypatch.setattr(fido_mod, "os", SimpleNamespace(readlink=_readlink_returning(link)))
+    monkeypatch.setattr(fido_mod, "os", SimpleNamespace(name="posix", readlink=_readlink_returning(link)))
 
     name = fido_mod.stdin_name(filename)
 
     assert name == expected, f"/proc/self/fd/0 -> {link!r}, -filename {filename!r}: got {name!r}, expected {expected!r}"
+
+
+@pytest.mark.parametrize("filename, expected", [(None, "STDIN"), ("provided.txt", "provided.txt")])
+def test_stdin_name_on_windows_never_reads_proc(monkeypatch, filename, expected):
+    """Windows has no /proc; even a path that happens to resolve there must not name stdin."""
+    calls = []
+    monkeypatch.setattr(
+        fido_mod, "os", SimpleNamespace(name="nt", readlink=lambda path: calls.append(path) or "/data/redirected.txt")
+    )
+
+    name = fido_mod.stdin_name(filename)
+
+    assert name == expected, f"-filename {filename!r}: got {name!r}, expected {expected!r}"
+    assert calls == [], f"readlink was called on Windows with {calls!r}"
 
 
 def test_identify_stream_linux_pipe_uses_provided_filename(monkeypatch):

@@ -784,9 +784,11 @@ def stdin_name(filename):
     """Return the name whose extension identifies standard input: -filename, else the file stdin is redirected from."""
     if filename is not None:
         return filename
+    if os.name == "nt":
+        return "STDIN"
     try:
         path = os.readlink("/proc/self/fd/0")
-    except OSError:  # no /proc, as on Windows and macOS
+    except OSError:  # no /proc, as on macOS
         return "STDIN"
     # a pipe or socket links to "pipe:[1234]" or "socket:[1234]", which is not a file name
     return path if path.startswith("/") else "STDIN"
