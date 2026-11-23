@@ -230,8 +230,8 @@ class Fido:
         # TODO: Handle empty regexes properly; perhaps remove from the format list
         puid = self.get_puid(element)
         # Handle over-writes in multiple file loads
-        existing = self.puid_format_map.get(puid, False)
-        if existing:
+        existing = self.puid_format_map.get(puid)
+        if existing is not None:
             # Already have one, so replace old with new!
             self.formats[self.formats.index(existing)] = element
         else:
@@ -640,6 +640,8 @@ class Fido:
             sys.stderr.write("FIDO: ZipError {0}\n".format(filename))
         except zipfile.BadZipfile:
             sys.stderr.write("FIDO: ZipError {0}\n".format(filename))
+        except UnicodeDecodeError as error:
+            sys.stderr.write(f"FIDO: ZipError {filename}: {error}\n")
 
     def walk_tar(self, filename, fileobj, extension=True):
         """
@@ -745,7 +747,8 @@ class Fido:
                         if success:
                             result.append((format, sig.findtext("name")))
             except Exception as e:
-                sys.stderr.write(str(e) + "\n")
+                puid = format.findtext("puid") or "unknown"
+                sys.stderr.write(f"FIDO: Error matching {puid}: {e}\n")
                 continue
             # TODO: MdR: needs some <3
             # print "Unexpected error:", sys.exc_info()[0], e
@@ -835,6 +838,11 @@ def main(args=None):
     args = parse_cli_args(args, defaults)
     timer = PerfTimer()
 
+    # Names that are not valid in the locale encoding would otherwise abort the run at the first row written.
+    # Only a strict stdout is changed: surrogateescape (C locale, UTF-8 mode) writes the original byte back.
+    if hasattr(sys.stdout, "reconfigure") and sys.stdout.errors == "strict":
+        sys.stdout.reconfigure(errors="backslashreplace")
+
     versions = get_local_versions(args.confdir)
 
     defaults["xml_pronomSignature"] = versions.pronom_signature
@@ -892,9 +900,11 @@ def main(args=None):
 
     # Set up to use stdin, or open input files:
     if args.input == "-":
+        if hasattr(sys.stdin, "reconfigure"):
+            sys.stdin.reconfigure(errors="surrogateescape")
         args.files = sys.stdin
     elif args.input:
-        args.files = open(args.input, "r")
+        args.files = open(args.input, "r", errors="surrogateescape")
 
     # RUN
     try:
