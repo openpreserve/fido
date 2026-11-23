@@ -4,6 +4,7 @@
 """Format Identification for Digital Objects."""
 
 import hashlib
+import http.client
 import sys
 import zipfile
 from argparse import ArgumentParser
@@ -16,6 +17,7 @@ from xml.etree import ElementTree as ET  # builds the FIDO XML; defusedxml only 
 
 from defusedxml import ElementTree as DET
 
+from fido.pronom import HTTP_TIMEOUT_SECONDS
 from fido.pronom.versions import get_local_versions
 from fido.utils.char_handler import escape
 
@@ -336,7 +338,7 @@ class FormatInfo:
                     # And calculate the checksum of this resource:
                     m = hashlib.md5()
                     try:
-                        sock = urlopen(url)
+                        sock = urlopen(url, timeout=HTTP_TIMEOUT_SECONDS)
                         m.update(sock.read())
                         sock.close()
                     except RedirectSchemeError as err:
@@ -346,6 +348,9 @@ class FormatInfo:
                         sys.stderr.write("HTTP {} error loading resource {!r}\n".format(http_excep.code, url))
                         if http_excep.code == 404:
                             continue
+                    except (OSError, http.client.HTTPException) as err:
+                        sys.stderr.write(f"Error loading resource {url}: {err}\n")
+                        continue
 
                     checksum = m.hexdigest()
                 else:
