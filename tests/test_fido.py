@@ -4,6 +4,8 @@
 import csv
 import errno
 import io
+import struct
+import zlib
 from xml.etree import ElementTree as XET
 from time import sleep
 from types import SimpleNamespace
@@ -89,6 +91,82 @@ def test_stream_identification(capsys, magic: bytes, expected_puid: str, expecte
     assert row[0] == expected_result, "row hasn't returned a positive identification"
     assert row[2] == expected_puid, "row doesn't contain expected PUID value"
     assert int(row[5]) == len(magic), "row doesn't contain stream length"
+
+
+def _text_stdin(content: bytes):
+    """Behave like the interpreter's sys.stdin: a text wrapper around a binary buffer."""
+    return io.TextIOWrapper(io.BytesIO(content), encoding="utf-8")
+
+
+STDIN_STREAMS = pytest.mark.parametrize(
+    "stdin_factory",
+    [_text_stdin, io.BytesIO],
+    ids=["text wrapper over a binary buffer", "plain binary stream without a buffer attribute"],
+)
+
+
+@STDIN_STREAMS
+@pytest.mark.parametrize(
+    "magic, expected_puid, expected_result",
+    id_test_data,
+    # Add additional test cases here
+)
+def test_main_identifies_stdin(
+    monkeypatch, capsys, stdin_factory, magic: bytes, expected_puid: str, expected_result: str
+):
+    """`fido -` must identify the bytes on stdin; the stream tests bypass the wiring in main()."""
+    # main() stores the signature files it loads in this dict, so run it on a copy
+    monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
+    monkeypatch.setattr(fido_mod.sys, "stdin", stdin_factory(magic))
+
+    fido_mod.main(["-q", "-"])
+
+    row = next(csv.reader(io.StringIO(capsys.readouterr().out)))
+    assert row[0] == expected_result, "row hasn't returned a positive identification"
+    assert row[2] == expected_puid, "row doesn't contain expected PUID value"
+    assert int(row[5]) == len(magic), "row doesn't contain stream length"
+
+
+def _png_with_crlf_and_high_bytes():
+    """A 1x1 PNG. Its signature holds a high byte and a CRLF pair, which text handling would damage."""
+
+    def chunk(kind, data):
+        return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data))
+
+    return (
+        b"\x89PNG\r\n\x1a\n"
+        + chunk(b"IHDR", struct.pack(">IIBBBBB", 1, 1, 8, 2, 0, 0, 0))
+        + chunk(b"IDAT", zlib.compress(b"\x00\xff\x00\x00"))
+        + chunk(b"IEND", b"")
+    )
+
+
+@STDIN_STREAMS
+def test_main_passes_stdin_bytes_through_unchanged(monkeypatch, capsys, stdin_factory):
+    """Only an intact signature identifies this over a pipe, so any decoding or newline conversion shows."""
+    png = _png_with_crlf_and_high_bytes()
+    monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
+    monkeypatch.setattr(fido_mod.sys, "stdin", stdin_factory(png))
+
+    fido_mod.main(["-q", "-"])
+
+    row = next(csv.reader(io.StringIO(capsys.readouterr().out)))
+    assert row[2] == "fmt/11"
+    assert row[8] == "signature"
+    assert int(row[5]) == len(png)
+
+
+def test_main_reports_an_empty_stdin_as_no_match(monkeypatch, capsys):
+    """An empty buffer satisfies the RTF signatures, so it must not be matched at all, as for an empty file."""
+    monkeypatch.setattr(fido_mod, "defaults", dict(fido_mod.defaults))
+    monkeypatch.setattr(fido_mod.sys, "stdin", _text_stdin(b""))
+
+    fido_mod.main(["-q", "-"])
+
+    rows = list(csv.reader(io.StringIO(capsys.readouterr().out)))
+    assert len(rows) == 1, rows
+    assert rows[0][0] == "KO"
+    assert int(rows[0][5]) == 0
 
 
 def _format_element(puid, container=None, extension=None, has_priority_over=None):

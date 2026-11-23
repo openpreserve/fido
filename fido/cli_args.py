@@ -77,7 +77,7 @@ def parse_cli_args(argv: List[str], defaults: Dict[str, Any]) -> argparse.Namesp
         nargs="*",
         default=[],
         metavar="FILE",
-        help="files to check. If the file is -, then read content from stdin. In this case, python must be invoked with -u or it may convert the line terminators.",
+        help="files to check. If the file is -, then read content from stdin.",
     )
 
     parser.add_argument(
