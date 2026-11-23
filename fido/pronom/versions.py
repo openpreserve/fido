@@ -21,12 +21,14 @@ import importlib.resources
 import os
 import re
 import sys
+from urllib.parse import urlsplit, urlunsplit
 from xml.etree import ElementTree as ET  # builds versions.xml; defusedxml only parses
 
 import requests
 from defusedxml.ElementTree import ParseError, fromstring, parse
 
 from fido import CONFIG_DIR
+from fido.pronom import HTTP_TIMEOUT_SECONDS
 
 
 class LocalVersions(object):
@@ -141,9 +143,38 @@ def sig_file_actions(sig_act, conf_dir=CONFIG_DIR):
     sys.exit(0)
 
 
+def _without_credentials(url):
+    """Drop any user:password@ from a URL so that it is safe to print."""
+    parts = urlsplit(url)
+    return urlunsplit(parts._replace(netloc=parts.netloc.rpartition("@")[2]))
+
+
+def _get(url):
+    """
+    GET a signature service URL, and give up with a message when it stops answering.
+
+    HTTP_TIMEOUT_SECONDS applies to the connection and to each read, not to the request as a
+    whole, so a server that keeps sending data slowly is not cut off.
+    """
+    try:
+        return requests.get(url, timeout=HTTP_TIMEOUT_SECONDS)
+    except requests.exceptions.RequestException as err:
+        # requests quotes the full URL in some errors, for example an unsupported scheme
+        safe_url = _without_credentials(url)
+        sys.exit(f"Could not reach {safe_url}: {str(err).replace(url, safe_url)}")
+
+
+def _get_successful(url):
+    """GET a signature service URL, and give up with a message unless it answers 200."""
+    resp = _get(url)
+    if resp.status_code != 200:
+        sys.exit(f"Could not download {_without_credentials(url)}: HTTP status {resp.status_code}")
+    return resp
+
+
 def _list_available_versions(update_url):
     """List available signature files."""
-    resp = requests.get(update_url + "format/")
+    resp = _get_successful(update_url + "format/")
     tree = fromstring(resp.content)
     sys.stdout.write("Available signature versions:\n")
     for child in tree.iter("signature"):
@@ -172,7 +203,7 @@ def _download_sig_version(sig_act, update_url, versions):
     ver = sig_act
     if not ver.startswith("v"):
         ver = "v" + sig_act
-    resp = requests.get(update_url + "format/" + ver + "/")
+    resp = _get(update_url + "format/" + ver + "/")
     if resp.status_code != 200:
         sys.exit("No signature files found for {}, REST status {}".format(sig_act, resp.status_code))
     _output_details(re.search(r"\d+|$", ver).group(), update_url, versions)  # noqa: W605
@@ -200,7 +231,7 @@ def _output_details(version, update_url, versions):
 
 
 def _version_check(sig_ver, update_url):
-    resp = requests.get(update_url + "format/latest/")
+    resp = _get(update_url + "format/latest/")
     if resp.status_code != 200:
         sys.exit("Error getting latest version info: HTTP Status {}".format(resp.status_code))
     root_ele = fromstring(resp.text)
@@ -214,5 +245,5 @@ def _write_sigs(latest, update_url, type, name_template, conf_dir=None):
     sig_out = os.path.join(conf_dir, name_template.format(latest))
     if os.path.exists(sig_out):
         return
-    resp = requests.get(update_url + "format/{0}/{1}/".format(latest, type))
+    resp = _get_successful(update_url + "format/{0}/{1}/".format(latest, type))
     open(sig_out, "wb").write(resp.content)

@@ -4,22 +4,44 @@
 """Format Identification for Digital Objects."""
 
 import hashlib
+import http.client
 import sys
 import zipfile
 from argparse import ArgumentParser
 from io import StringIO
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
-from urllib.request import urlopen
+from urllib.request import HTTPRedirectHandler, build_opener
 from xml.dom import minidom
 from xml.etree import ElementTree as ET  # builds the FIDO XML; defusedxml only parses
 
 from defusedxml import ElementTree as DET
 
+from fido.pronom import HTTP_TIMEOUT_SECONDS
 from fido.pronom.versions import get_local_versions
 from fido.utils.char_handler import escape
 
 FLG_INCOMPATIBLE = "__INCOMPATIBLE_SIG__"
+REFERENCE_FILE_SCHEMES = ("http", "https")
+
+
+class RedirectSchemeError(URLError):
+    """A redirect to a URL whose scheme is not in REFERENCE_FILE_SCHEMES."""
+
+    def __init__(self, target):
+        super().__init__(f"redirected to {target!r}, only http and https URLs are fetched")
+
+
+class SchemeRestrictedRedirectHandler(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        if urlparse(newurl).scheme not in REFERENCE_FILE_SCHEMES:
+            raise RedirectSchemeError(newurl)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+def urlopen(url, *args, **kwargs):
+    # Built per call: ProxyHandler reads the proxy environment variables when it is created.
+    return build_opener(SchemeRestrictedRedirectHandler).open(url, *args, **kwargs)
 
 
 class NS:
@@ -281,7 +303,10 @@ class FormatInfo:
             for xml_id in x.findall(TNA("DocumentIdentifier")):
                 xml_id_type = get_text_tna(xml_id, "IdentifierType")
                 if xml_id_type == "URL":
-                    ET.SubElement(r, "dc:identifier").text = "http://" + get_text_tna(xml_id, "Identifier")
+                    document_url = get_text_tna(xml_id, "Identifier")
+                    if "://" not in document_url:
+                        document_url = "http://" + document_url
+                    ET.SubElement(r, "dc:identifier").text = document_url
                 else:
                     ET.SubElement(r, "dc:identifier").text = (
                         get_text_tna(xml_id, "IdentifierType") + ":" + get_text_tna(xml_id, "Identifier")
@@ -307,16 +332,25 @@ class FormatInfo:
                     if not urlparse(url).scheme:
                         url = "http://" + url
                     ET.SubElement(rf, "dc:identifier").text = url
+                    if urlparse(url).scheme not in REFERENCE_FILE_SCHEMES:
+                        sys.stderr.write(f"Skipping the checksum of {url!r}: only http and https URLs are fetched\n")
+                        continue
                     # And calculate the checksum of this resource:
                     m = hashlib.md5()
                     try:
-                        sock = urlopen(url)
+                        sock = urlopen(url, timeout=HTTP_TIMEOUT_SECONDS)
                         m.update(sock.read())
                         sock.close()
+                    except RedirectSchemeError as err:
+                        sys.stderr.write(f"Skipping the checksum of {url!r}: {err.reason}\n")
+                        continue
                     except HTTPError as http_excep:
-                        sys.stderr.write("HTTP {} error loading resource {}\n".format(http_excep.code, url))
+                        sys.stderr.write("HTTP {} error loading resource {!r}\n".format(http_excep.code, url))
                         if http_excep.code == 404:
                             continue
+                    except (OSError, http.client.HTTPException) as err:
+                        sys.stderr.write(f"Error loading resource {url}: {err}\n")
+                        continue
 
                     checksum = m.hexdigest()
                 else:

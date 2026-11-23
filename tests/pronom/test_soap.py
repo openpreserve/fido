@@ -1,5 +1,7 @@
 """Offline contract tests for PRONOM SOAP helpers."""
 
+import http.client
+import socket
 import unittest.mock
 import urllib.error
 
@@ -102,15 +104,89 @@ def test_get_sig_xml_for_puid_returns_raw_xml(mock_request):
     assert fido.pronom.soap.get_sig_xml_for_puid("fmt/18") == payload
 
 
+@pytest.mark.parametrize(
+    "error",
+    [
+        socket.timeout("timed out"),
+        urllib.error.URLError("offline"),
+        urllib.error.HTTPError(url="http://example.test", code=503, msg="unavailable", hdrs=None, fp=None),
+    ],
+    ids=["timeout", "unreachable", "http error"],
+)
 @unittest.mock.patch("fido.pronom.soap.urllib.request", create=True)
-def test_get_soap_response_exits_on_request_error(mock_request, capsys):
-    """Exit with code 1 when creating the request fails."""
+def test_get_soap_response_exits_with_a_message_when_the_service_fails(mock_request, error):
+    """Exit with a message naming the service instead of a traceback when the call fails."""
 
-    mock_request.Request.side_effect = urllib.error.URLError("offline")
+    mock_request.urlopen.side_effect = error
 
     with pytest.raises(SystemExit) as exc:
         fido.pronom.soap._get_soap_response('"action"', b"<soap/>")
 
-    captured = capsys.readouterr()
-    assert exc.value.code == 1
-    assert "There was a problem contacting the PRONOM service" in captured.out
+    message = str(exc.value.code)
+    assert "There was a problem contacting the PRONOM service at" in message, message
+    assert "https://www.nationalarchives.gov.uk/pronom/service.asmx" in message, message
+    assert str(error) in message, message
+
+
+@unittest.mock.patch("fido.pronom.soap.urllib.request", create=True)
+def test_get_soap_response_exits_with_a_message_when_the_reply_stalls(mock_request):
+    """A timeout while reading the body is reported like one while connecting."""
+
+    class StalledResponse(FakeResponse):
+        def read(self):
+            raise socket.timeout("timed out")
+
+    mock_request.urlopen.return_value = StalledResponse(b"")
+
+    with pytest.raises(SystemExit) as exc:
+        fido.pronom.soap._get_soap_response('"action"', b"<soap/>")
+
+    assert "timed out" in str(exc.value.code), exc.value.code
+
+
+@unittest.mock.patch("fido.pronom.soap.urllib.request", create=True)
+def test_get_sig_xml_for_puid_sets_a_timeout(mock_request):
+    mock_request.urlopen.return_value = FakeResponse(b"<root/>")
+
+    fido.pronom.soap.get_sig_xml_for_puid("fmt/18")
+
+    assert mock_request.urlopen.call_args.kwargs["timeout"] == fido.pronom.HTTP_TIMEOUT_SECONDS
+
+
+@unittest.mock.patch("fido.pronom.soap.urllib.request", create=True)
+def test_get_droid_signatures_sets_a_timeout(mock_request):
+    mock_request.urlopen.return_value = FakeResponse(b"<SignatureFile/>")
+
+    fido.pronom.soap.get_droid_signatures(116)
+
+    assert mock_request.urlopen.call_args.kwargs["timeout"] == fido.pronom.HTTP_TIMEOUT_SECONDS
+
+
+@unittest.mock.patch("fido.pronom.soap.urllib.request", create=True)
+def test_get_soap_response_sets_a_timeout(mock_request):
+    mock_request.urlopen.return_value = FakeResponse(b"<soap/>")
+
+    fido.pronom.soap._get_soap_response('"action"', b"<soap/>")
+
+    assert mock_request.urlopen.call_args.kwargs["timeout"] == fido.pronom.HTTP_TIMEOUT_SECONDS
+
+
+@pytest.mark.parametrize(
+    "error",
+    [
+        socket.timeout("timed out"),
+        urllib.error.URLError("connection refused"),
+        http.client.IncompleteRead(b"partial"),
+        http.client.RemoteDisconnected("Remote end closed connection without response"),
+    ],
+    ids=["timeout", "connection refused", "incomplete read", "remote disconnected"],
+)
+@unittest.mock.patch("fido.pronom.soap.urllib.request", create=True)
+def test_get_droid_signatures_reports_an_unreachable_service(mock_request, error, capsys):
+    mock_request.urlopen.side_effect = error
+
+    xml, count = fido.pronom.soap.get_droid_signatures(116)
+
+    assert xml == []
+    assert count is False
+    assert "could not download signature file v116" in capsys.readouterr().err
