@@ -2,6 +2,11 @@ name: Pytest
 
 on:
   push:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.repo.full_name || github.repository }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 jobs:
   test:
@@ -25,8 +30,9 @@ jobs:
           pip install flake8 pytest pytest-cov coverage-badge
           pip install -e .
       - name: Lint with flake8
-        run: flake8 tests --count --show-source --ignore=E231,E241,E501,W503,E203 --max-line-length=120 --statistics
+        run: flake8 fido tests --count --show-source --statistics
       - name: Test with pytest
+        if: ${{ !cancelled() }}
         run: pytest --cov=fido --cov-report=xml
       - name: Generate coverage badge
         if: matrix.python-version == '3.12' && github.ref == 'refs/heads/master'

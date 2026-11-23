@@ -30,3 +30,8 @@ def escape_char(c):
 def escape(string):
     """Escape characters in pattern that are non-printable, non-ascii, or special for regexes."""
     return "".join(c if c in ORDINARY else escape_char(c) for c in string)
+
+
+def expand_escapes(text):
+    r"""Turn the two character sequences \n and \t into the newline and tab they name."""
+    return text.replace("\\n", "\n").replace("\\t", "\t")
