@@ -5,6 +5,12 @@ from xml.etree import ElementTree as XET
 import hashlib
 import io
 import urllib.error
+import contextlib
+import http.server
+import socketserver
+import threading
+import urllib.request
+import urllib.response
 
 import pytest
 
@@ -231,7 +237,9 @@ def test_load_pronom_xml_rewrites_priority_ids(monkeypatch):
     assert len(info.formats) == 2
 
 
-def _minimal_pronom_xml(puid="x-fmt/263", include_reference_url=True):
+def _minimal_pronom_xml(
+    puid="x-fmt/263", include_reference_url=True, reference_url="example.test/file", document_url="example.test/spec"
+):
     ns = "http://pronom.nationalarchives.gov.uk"
 
     def n(tag):
@@ -291,7 +299,7 @@ def _minimal_pronom_xml(puid="x-fmt/263", include_reference_url=True):
     XET.SubElement(doc, n("PublicationDate")).text = "2020"
     doc_id = XET.SubElement(doc, n("DocumentIdentifier"))
     XET.SubElement(doc_id, n("IdentifierType")).text = "URL"
-    XET.SubElement(doc_id, n("Identifier")).text = "example.test/spec"
+    XET.SubElement(doc_id, n("Identifier")).text = document_url
     XET.SubElement(doc, n("DocumentNote")).text = "note"
     XET.SubElement(doc, n("DocumentType")).text = "type"
     XET.SubElement(doc, n("AvailabilityDescription")).text = "avail"
@@ -304,7 +312,7 @@ def _minimal_pronom_xml(puid="x-fmt/263", include_reference_url=True):
     XET.SubElement(ref_file, n("ReferenceFileIPR")).text = "ipr"
     ref_id = XET.SubElement(ref_file, n("ReferenceFileIdentifier"))
     XET.SubElement(ref_id, n("IdentifierType")).text = "URL" if include_reference_url else "DOI"
-    XET.SubElement(ref_id, n("Identifier")).text = "example.test/file" if include_reference_url else "10.1/xyz"
+    XET.SubElement(ref_id, n("Identifier")).text = reference_url if include_reference_url else "10.1/xyz"
 
     return XET.tostring(root, encoding="utf-8")
 
@@ -554,6 +562,181 @@ def test_parse_pronom_xml_reference_file_http_non_404_uses_empty_hash(monkeypatc
     checksum = result.find("details/example_file/checksum")
     assert checksum.text == hashlib.md5(b"").hexdigest()
     assert "HTTP 500 error loading resource" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(
+    "url",
+    ["file:///etc/hostname", "ftp://example.test/file", "gopher://example.test/file", "data:text/plain,abc"],
+)
+def test_parse_pronom_xml_reference_file_with_a_scheme_other_than_http_is_not_fetched(monkeypatch, capsys, url):
+    fetched = []
+    monkeypatch.setattr(prepare, "urlopen", lambda *args, **kwargs: fetched.append(args) or io.BytesIO(b"x"))
+    info = prepare.FormatInfo("dummy.zip")
+
+    result = info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(reference_url=url)))
+
+    assert fetched == []
+    assert url in [identifier.text for identifier in result.iter("dc:identifier")], "the identifier is still recorded"
+    assert result.find("details/example_file/checksum").text in (None, "")
+    assert f"Skipping the checksum of {url!r}: only http and https URLs are fetched" in capsys.readouterr().err
+
+
+def test_parse_pronom_xml_reference_file_skip_message_stays_on_one_line_for_a_url_with_a_newline(capsys):
+    url = "ftp://example.test/file\nSkipping the checksum of http://forged.test/file: only http and https URLs are fetched"
+    info = prepare.FormatInfo("dummy.zip")
+
+    info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(reference_url=url)))
+
+    err = capsys.readouterr().err
+    assert err == f"Skipping the checksum of {url!r}: only http and https URLs are fetched\n"
+    assert len(err.splitlines()) == 1, f"the URL forged extra log lines: {err!r}"
+
+
+def test_parse_pronom_xml_reference_file_http_error_message_stays_on_one_line_for_a_url_with_a_newline(
+    monkeypatch, capsys
+):
+    url = "http://example.test/file\nHTTP 200 forged line"
+    monkeypatch.setattr(
+        prepare,
+        "urlopen",
+        lambda _url, **_kwargs: (_ for _ in ()).throw(
+            urllib.error.HTTPError(url=url, code=404, msg="missing", hdrs=None, fp=None)
+        ),
+    )
+    info = prepare.FormatInfo("dummy.zip")
+
+    info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(reference_url=url)))
+
+    err = capsys.readouterr().err
+    assert err == f"HTTP 404 error loading resource {url!r}\n"
+    assert len(err.splitlines()) == 1, f"the URL forged extra log lines: {err!r}"
+
+
+@pytest.mark.parametrize(
+    "reference_url, fetched_url",
+    [
+        ("http://example.test/file", "http://example.test/file"),
+        ("https://example.test/file", "https://example.test/file"),
+        ("HTTPS://example.test/file", "HTTPS://example.test/file"),
+        ("example.test/file", "http://example.test/file"),
+    ],
+    ids=["http", "https", "upper case scheme", "no scheme"],
+)
+def test_parse_pronom_xml_reference_file_over_http_or_https_is_fetched(monkeypatch, reference_url, fetched_url):
+    fetched = []
+
+    def record(url, **_kwargs):
+        fetched.append(url)
+        return io.BytesIO(b"x")
+
+    monkeypatch.setattr(prepare, "urlopen", record)
+    info = prepare.FormatInfo("dummy.zip")
+
+    result = info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(reference_url=reference_url)))
+
+    assert fetched == [fetched_url]
+    assert result.find("details/example_file/checksum").text == "9dd4e461268c8034f5c8564e155c67a6"  # md5 of b"x"
+
+
+@pytest.mark.parametrize(
+    "document_url, recorded",
+    [
+        ("example.test/spec", "http://example.test/spec"),
+        ("example.test:8080/spec", "http://example.test:8080/spec"),
+        ("http://example.test/spec", "http://example.test/spec"),
+        ("https://example.test/spec", "https://example.test/spec"),
+    ],
+    ids=["no scheme", "no scheme with a port", "http", "https"],
+)
+def test_parse_pronom_xml_document_url_gets_http_only_when_it_has_no_scheme(monkeypatch, document_url, recorded):
+    monkeypatch.setattr(prepare, "urlopen", lambda _url, **_kwargs: io.BytesIO(b"x"))
+    info = prepare.FormatInfo("dummy.zip")
+
+    result = info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(document_url=document_url)))
+
+    identifiers = [node.text for node in result.findall("details/reference/*") if node.tag == "dc:identifier"]
+    assert identifiers == [recorded], f"document identifier {document_url!r} was recorded as {identifiers}"
+
+
+@pytest.fixture
+def loopback_only(monkeypatch):
+    for name in ("http_proxy", "https_proxy", "all_proxy", "ftp_proxy"):
+        monkeypatch.delenv(name, raising=False)
+        monkeypatch.delenv(name.upper(), raising=False)
+    monkeypatch.setenv("NO_PROXY", "127.0.0.1")
+    monkeypatch.setenv("no_proxy", "127.0.0.1")
+
+
+@contextlib.contextmanager
+def serving(server):
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        yield server.server_address[1]
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=5)
+        assert not thread.is_alive(), "the test server did not stop"
+
+
+def redirecting_to(location):
+    class Redirect(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(302)
+            self.send_header("Location", location)
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+
+        def log_message(self, *_args):
+            pass
+
+    return Redirect
+
+
+def recording_connections(peers):
+    class Record(socketserver.BaseRequestHandler):
+        def handle(self):
+            peers.append(self.client_address)
+
+    return Record
+
+
+def test_parse_pronom_xml_reference_file_redirect_to_ftp_is_not_followed(loopback_only, capsys):
+    info = prepare.FormatInfo("dummy.zip")
+    ftp_peers = []
+    with serving(socketserver.TCPServer(("127.0.0.1", 0), recording_connections(ftp_peers))) as ftp_port:
+        target = f"ftp://127.0.0.1:{ftp_port}/x"
+        with serving(http.server.HTTPServer(("127.0.0.1", 0), redirecting_to(target))) as http_port:
+            url = f"http://127.0.0.1:{http_port}/start"
+
+            result = info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(reference_url=url)))
+
+    assert ftp_peers == [], f"the redirect to ftp was followed, the FTP port saw connections from {ftp_peers}"
+    assert url in [identifier.text for identifier in result.iter("dc:identifier")], "the identifier is still recorded"
+    assert result.find("details/example_file/checksum").text in (None, "")
+    expected = f"Skipping the checksum of {url!r}: redirected to '{target}', only http and https URLs are fetched"
+    assert expected in capsys.readouterr().err
+
+
+def test_parse_pronom_xml_reference_file_redirect_to_https_is_followed(monkeypatch, loopback_only):
+    requested = []
+
+    def https_open(_handler, request):
+        requested.append(request.full_url)
+        response = urllib.response.addinfourl(io.BytesIO(b"x"), {}, request.full_url, 200)
+        response.msg = "OK"
+        return response
+
+    monkeypatch.setattr(urllib.request.HTTPSHandler, "https_open", https_open)
+    info = prepare.FormatInfo("dummy.zip")
+    with serving(http.server.HTTPServer(("127.0.0.1", 0), redirecting_to("https://example.test/final"))) as http_port:
+        url = f"http://127.0.0.1:{http_port}/start"
+
+        result = info.parse_pronom_xml(io.BytesIO(_minimal_pronom_xml(reference_url=url)))
+
+    assert requested == ["https://example.test/final"]
+    assert result.find("details/example_file/checksum").text == "9dd4e461268c8034f5c8564e155c67a6"  # md5 of b"x"
 
 
 def converted_patterns(monkeypatch, record_name):

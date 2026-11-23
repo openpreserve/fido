@@ -34,7 +34,7 @@ usage: fido [-h] [-v] [-q] [-recurse] [-zip] [-noextension] [-nocontainer]
 
 positional arguments:
 
-* `FILE`: files to check. If the file is -, then read content from stdin. In this case, python must be invoked with `-u` or it may convert the line terminators.
+* `FILE`: files to check. If the file is -, then read content from stdin.
 
 optional arguments:
 
@@ -51,7 +51,7 @@ optional arguments:
 * `-nouseformats EXCLUDEPUIDS`: comma separated string of formats not to use in identification
 * `-matchprintf FORMATSTRING`: format string (Python style) to use on match. See nomatchprintf, README.txt.
 * `-nomatchprintf FORMATSTRING`: format string (Python style) to use if no match. See README.txt
-* `-bufsize BUFSIZE`: size (in bytes) of the buffer to match against (default=131072 bytes)
+* `-bufsize BUFSIZE`: size (in bytes) of the buffer to match against (minimum=1024 bytes, default=131072 bytes). A signature cannot match beyond the buffer, so formats identified deep in a file need a larger one (ISO 9660 needs more than 32768 bytes).
 * `-sigs SIG_ACT`: SIG_ACT "check" for new version of signature file for download.
                    SIG_ACT "list" list all available sig file versions.
                    SIG_ACT "update" to automatically update to latest available sig file.
@@ -171,6 +171,12 @@ The defaults for FIDO 1.0 are:
 
 It can be useful to provide an empty string for either, for example to ignore all failed matches, or all successful ones (see examples below).
 Note that a newline needs to be added to the end of the string using \n.
+
+A byte in a file name that is not valid in the encoding of standard output is
+written as an escape such as `\udcff`, so that one such name does not stop the
+run. This is lossy: the original byte cannot be recovered from the escape. When
+standard output already uses `surrogateescape` (the C/POSIX locale, Python UTF-8
+mode, or `PYTHONIOENCODING=utf-8:surrogateescape`) the byte is written unchanged.
 
 Matchtypes
 -----------

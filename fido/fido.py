@@ -10,6 +10,7 @@ It is designed for simple integration into automated work-flows.
 
 import os
 import re
+import stat
 import sys
 import tarfile
 import tempfile
@@ -23,7 +24,7 @@ from fido import CONFIG_DIR, __version__
 from fido.cli_args import parse_cli_args
 from fido.package import OlePackage, ZipPackage
 from fido.pronom.versions import get_local_versions, sig_file_actions
-from fido.utils.char_handler import escape
+from fido.utils.char_handler import escape, expand_escapes
 from fido.utils.timer import PerfTimer
 
 defaults = {
@@ -68,7 +69,6 @@ class Fido:
         containersignature_file=None,
     ):
         """Initialise a FIDO class instance."""
-        global defaults
         self.quiet = quiet
         self.bufsize = defaults["bufsize"] if bufsize is None else bufsize
         self.container_bufsize = defaults["container_bufsize"] if container_bufsize is None else container_bufsize
@@ -230,8 +230,8 @@ class Fido:
         # TODO: Handle empty regexes properly; perhaps remove from the format list
         puid = self.get_puid(element)
         # Handle over-writes in multiple file loads
-        existing = self.puid_format_map.get(puid, False)
-        if existing:
+        existing = self.puid_format_map.get(puid)
+        if existing is not None:
             # Already have one, so replace old with new!
             self.formats[self.formats.index(existing)] = element
         else:
@@ -477,7 +477,7 @@ class Fido:
         self.current_file = "STDIN"
         matches = self.match_formats(bofbuffer, eofbuffer)
         # MdR: this needs attention
-        if len(matches) > 0:
+        if len(matches) > 0 and self.current_filesize > 0:
             self.handle_matches(self.current_file, matches, timer.duration(), "signature")
         elif extension and (len(matches) == 0 or self.current_filesize == 0):
             # we can only determine the filename from the STDIN stream
@@ -640,6 +640,8 @@ class Fido:
             sys.stderr.write("FIDO: ZipError {0}\n".format(filename))
         except zipfile.BadZipfile:
             sys.stderr.write("FIDO: ZipError {0}\n".format(filename))
+        except UnicodeDecodeError as error:
+            sys.stderr.write(f"FIDO: ZipError {filename}: {error}\n")
 
     def walk_tar(self, filename, fileobj, extension=True):
         """
@@ -745,7 +747,8 @@ class Fido:
                         if success:
                             result.append((format, sig.findtext("name")))
             except Exception as e:
-                sys.stderr.write(str(e) + "\n")
+                puid = format.findtext("puid") or "unknown"
+                sys.stderr.write(f"FIDO: Error matching {puid}: {e}\n")
                 continue
             # TODO: MdR: needs some <3
             # print "Unexpected error:", sys.exc_info()[0], e
@@ -777,19 +780,55 @@ class Fido:
             target.write(buf)
 
 
-def list_files(roots, recurse=False):
-    """Return the files one at a time. Roots could be a fileobj or a list."""
+def report_unreadable_directory(error):
+    """Report a directory os.walk could not list, which it would otherwise skip without a word."""
+    sys.stderr.write(f"FIDO: Cannot scan directory: {error.filename}\n")
+
+
+def file_mode(path):
+    """Return the st_mode of path, or None when nothing exists there. Any other OSError propagates."""
+    try:
+        return os.stat(path).st_mode
+    except (FileNotFoundError, NotADirectoryError, ValueError):
+        return None
+
+
+def strip_line_ending(line):
+    r"""Drop the single \n or \r\n that ends a line read from a list of paths."""
+    for ending in ("\r\n", "\n"):
+        if line.endswith(ending):
+            return line[: -len(ending)]
+    return line
+
+
+def list_files(roots, recurse=False, strip_line_endings=False):
+    """Return the files one at a time. Roots could be a fileobj or a list.
+
+    Set strip_line_endings for roots read from a list of paths, one per line. Command line arguments are
+    taken as given, because a trailing newline is a legal part of a POSIX file name.
+    """
     for root in roots:
-        root = root if root[-1] != "\n" else root[:-1]
+        if strip_line_endings:
+            root = strip_line_ending(root)
+        if not root:
+            sys.stderr.write("FIDO: Empty path skipped\n")
+            continue
         root = os.path.normpath(root)
-        if os.path.isfile(root):
+        try:
+            mode = file_mode(root)
+        except OSError as error:
+            sys.stderr.write(f"FIDO: Cannot access {root}: {error.strerror}\n")
+            continue
+        if mode is not None and stat.S_ISREG(mode):
             yield root
-        else:
-            for path, _, files in os.walk(root):
+        elif mode is not None and stat.S_ISDIR(mode):
+            for path, _, files in os.walk(root, onerror=report_unreadable_directory):
                 for f in files:
                     yield os.path.join(path, f)
                 if not recurse:
                     break
+        else:
+            sys.stderr.write(f"FIDO: Not a file or directory: {root}\n")
 
 
 def main(args=None):
@@ -798,6 +837,11 @@ def main(args=None):
         args = sys.argv[1:]
     args = parse_cli_args(args, defaults)
     timer = PerfTimer()
+
+    # Names that are not valid in the locale encoding would otherwise abort the run at the first row written.
+    # Only a strict stdout is changed: surrogateescape (C locale, UTF-8 mode) writes the original byte back.
+    if hasattr(sys.stdout, "reconfigure") and sys.stdout.errors == "strict":
+        sys.stdout.reconfigure(errors="backslashreplace")
 
     versions = get_local_versions(args.confdir)
 
@@ -826,17 +870,9 @@ def main(args=None):
         sys.exit(0)
 
     if args.matchprintf:
-        try:
-            args.matchprintf = args.matchprintf.decode("string_escape")
-        except AttributeError:
-            args.matchprintf = args.matchprintf.replace(r"\n", "\n")
-            args.matchprintf = args.matchprintf.replace(r"\t", "\t")
+        args.matchprintf = expand_escapes(args.matchprintf)
     if args.nomatchprintf:
-        try:
-            args.nomatchprintf = args.nomatchprintf.decode("string_escape")
-        except AttributeError:
-            args.matchprintf = args.matchprintf.replace(r"\n", "\n")
-            args.matchprintf = args.matchprintf.replace(r"\t", "\t")
+        args.nomatchprintf = expand_escapes(args.nomatchprintf)
 
     fido = Fido(
         quiet=args.q,
@@ -864,9 +900,11 @@ def main(args=None):
 
     # Set up to use stdin, or open input files:
     if args.input == "-":
+        if hasattr(sys.stdin, "reconfigure"):
+            sys.stdin.reconfigure(errors="surrogateescape")
         args.files = sys.stdin
     elif args.input:
-        args.files = open(args.input, "r")
+        args.files = open(args.input, "r", errors="surrogateescape")
 
     # RUN
     try:
@@ -878,9 +916,11 @@ def main(args=None):
                 raise RuntimeError("Multiple content read from stdin not yet supported.")
                 fido.identify_multi_object_stream(sys.stdin, extension=not args.noextension)
             else:
-                fido.identify_stream(sys.stdin, args.filename, extension=not args.noextension)
+                # sys.stdin is a text wrapper, identification needs the raw bytes behind it
+                stdin = getattr(sys.stdin, "buffer", sys.stdin)
+                fido.identify_stream(stdin, args.filename, extension=not args.noextension)
         else:
-            for file in list_files(args.files, args.recurse):
+            for file in list_files(args.files, args.recurse, strip_line_endings=bool(args.input)):
                 fido.identify_file(file, extension=not args.noextension)
     except KeyboardInterrupt:
         sys.stdout.flush()
