@@ -16,6 +16,7 @@ import urllib.response
 import zipfile
 
 import pytest
+from defusedxml import ElementTree as DET
 
 from fido.pronom import prepare
 from fido.pronom.prepare import absolute_max_offset, convert_to_regex
@@ -562,7 +563,7 @@ def test_malformed_set_raises_value_error(pronom_bytesequence):
 def test_parse_pronom_xml_keeps_a_signature_with_a_multi_byte_range(capsys):
     """fmt/899 and fmt/900 end in [0000:1000]; their only signature used to be dropped (#103)."""
     info = prepare.FormatInfo("dummy.zip")
-    record = XET.fromstring(_minimal_pronom_xml(include_reference_url=False))
+    record = DET.fromstring(_minimal_pronom_xml(include_reference_url=False))
     record.find(".//" + _tna("ByteSequenceValue")).text = "4D5A{126-128500}50450000{20}0B01{66}[0000:1000]"
 
     result = info.parse_pronom_xml(io.BytesIO(XET.tostring(record)))
@@ -578,7 +579,7 @@ def test_every_shipped_pronom_byte_sequence_converts():
     sequences = []
     with zipfile.ZipFile(zip_file) as pronom_zip:
         for item in pronom_zip.infolist():
-            record = XET.fromstring(pronom_zip.read(item))
+            record = DET.fromstring(pronom_zip.read(item))
             sequences += [node.text for node in record.iter(_tna("ByteSequenceValue")) if node.text]
 
     failures = []
@@ -598,7 +599,7 @@ def test_every_shipped_pronom_byte_sequence_converts():
 
 def test_shipped_signatures_follow_droid_semantics():
     """The shipped file must be regenerated with the converter: no zero-width negation, no optional ??."""
-    formats = XET.parse(get_local_versions().get_signature_file()).getroot()
+    formats = DET.parse(get_local_versions().get_signature_file()).getroot()
     puids_with_signature = {fmt.findtext("puid") for fmt in formats.iter("format") if fmt.find("signature") is not None}
     regexes = [node.text for node in formats.iter("regex")]
 
