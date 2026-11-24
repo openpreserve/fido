@@ -269,12 +269,9 @@ class FormatInfo:
                         "Error: incompatible PRONOM signature found for puid {} skipping...".format(puid),
                         file=sys.stderr,
                     )
-                    # remove the empty 'signature' nodes
-                    # now that the signature is not compatible and thus "regex" is empty
-                    remove = fido_format.findall("signature")
-                    for r in remove:
-                        fido_format.remove(r)
-                    continue
+                    # the format's other signatures are independent alternatives, so they stay
+                    fido_format.remove(fido_sig)
+                    break
                 ET.SubElement(fido_pat, "position").text = pos
                 ET.SubElement(fido_pat, "pronom_pattern").text = byte_seq
                 ET.SubElement(fido_pat, "regex").text = regex

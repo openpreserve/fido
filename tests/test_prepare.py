@@ -8,6 +8,7 @@ import hashlib
 import io
 import urllib.error
 import contextlib
+import copy
 import http.server
 import socketserver
 import threading
@@ -571,6 +572,26 @@ def test_parse_pronom_xml_keeps_a_signature_with_a_multi_byte_range(capsys):
     regexes = [node.text for node in result.findall("signature/pattern/regex")]
     assert regexes == ["(?s)\\AMZ.{126,128500}PE\\x00\\x00.{20}\\x0b\\x01.{66}[\\x00-\\x10]"]
     assert "incompatible" not in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(
+    "sequences", [("41", "[!&00]42"), ("[!&00]42", "41")], ids=["failing signature last", "failing signature first"]
+)
+def test_parse_pronom_xml_drops_only_the_signature_that_fails(sequences, capsys):
+    """Each signature is an independent alternative, so a malformed one must not take the others with it."""
+    info = prepare.FormatInfo("dummy.zip")
+    record = DET.fromstring(_minimal_pronom_xml(include_reference_url=False))
+    file_format = record.find(".//" + _tna("FileFormat"))
+    first = file_format.find(_tna("InternalSignature"))
+    second = copy.deepcopy(first)
+    file_format.insert(list(file_format).index(first) + 1, second)
+    for signature, sequence in zip((first, second), sequences):
+        signature.find(".//" + _tna("ByteSequenceValue")).text = sequence
+
+    result = info.parse_pronom_xml(io.BytesIO(XET.tostring(record)))
+
+    assert [node.text for node in result.findall("signature/pattern/pronom_pattern")] == ["41"]
+    assert "incompatible PRONOM signature found for puid x-fmt/263" in capsys.readouterr().err
 
 
 def test_every_shipped_pronom_byte_sequence_converts():
