@@ -13,11 +13,13 @@ import socketserver
 import threading
 import urllib.request
 import urllib.response
+import zipfile
 
 import pytest
 
 from fido.pronom import prepare
 from fido.pronom.prepare import absolute_max_offset, convert_to_regex
+from fido.pronom.versions import get_local_versions
 
 TEST_DATA_PRONOM = os.path.normpath(os.path.join(__file__, "..", "test_data/pronom"))
 
@@ -446,8 +448,149 @@ def test_convert_to_regex_question_mark_requires_double_question_mark():
     assert "Illegal character after ?" in str(exc.value)
 
 
-def test_convert_to_regex_bracket_returns_incompatible_for_bad_separator():
-    assert prepare.convert_to_regex("[0102]") == prepare.FLG_INCOMPATIBLE
+ALL_BYTES = set(range(0x100))
+
+
+@pytest.mark.parametrize(
+    "pronom_set, expected_bytes",
+    [
+        ("[41:5A]", set(range(0x41, 0x5B))),
+        ("[10:00]", set(range(0x00, 0x11))),
+        ("[0102]", {0x01, 0x02}),
+        ("[0000:1000]", set(range(0x00, 0x11))),
+        ("[!00]", ALL_BYTES - {0x00}),
+        ("[!0000]", ALL_BYTES - {0x00}),
+        ("[!4001C80000000000]", ALL_BYTES - {0x40, 0x01, 0xC8, 0x00}),
+        ("[&01]", {byt for byt in ALL_BYTES if byt & 0x01}),
+        ("[!&01]", {byt for byt in ALL_BYTES if not byt & 0x01}),
+        ("[!~81]", {byt for byt in ALL_BYTES if not byt & 0x81}),
+        ("[2D:2F]", {0x2D, 0x2E, 0x2F}),
+    ],
+    ids=[
+        "range",
+        "reversed range, normalised",
+        "two bytes, no separator",
+        "multi-byte range, fmt/899 (#103)",
+        "inverted byte",
+        "inverted multi-byte, x-fmt/4 and x-fmt/12",
+        "inverted eight bytes, x-fmt/223",
+        "all-bitmask",
+        "inverted all-bitmask, fmt/1105 and fmt/2068",
+        "inverted any-bitmask",
+        "range bounded by '-'",
+    ],
+)
+def test_set_matches_one_byte_as_droid_reads_it(pronom_set, expected_bytes):
+    """DROID hands a set to byteseek, which reads every two hex digits as one byte, so a set is one byte wide."""
+    patt = re.compile(convert_to_regex(pronom_set))
+
+    matched = {byt for byt in ALL_BYTES if patt.fullmatch(chr(byt))}
+
+    assert matched == expected_bytes, f"{pronom_set} -> {patt.pattern}: differs on {sorted(matched ^ expected_bytes)[:8]}"
+    assert not patt.fullmatch(""), f"{pronom_set} -> {patt.pattern} matches zero bytes"
+    assert not patt.fullmatch(chr(min(expected_bytes)) * 2), f"{pronom_set} -> {patt.pattern} matches two bytes"
+
+
+@pytest.mark.parametrize(
+    "pronom_bytesequence, input_, matches",
+    [
+        ("00[!01]02", "\x00\x05\x02", True),
+        ("00[!01]02", "\x00\x01\x02", False),
+        ("00[!01]02", "\x00\x02", False),
+        ("41????42", "A\x00\x00B", True),
+        ("41????42", "A\x00B", False),
+        ("41????42", "AB", False),
+        ("(0100|00[01:08])", "\x00\x05", True),
+        ("(0100|00[!01])", "\x00\x01", False),
+    ],
+    ids=[
+        "[!01] consumes a byte",
+        "[!01] rejects 01",
+        "[!01] is not zero-width",
+        "?? is one byte each",
+        "?? is not optional",
+        "???? is not optional",
+        "set inside alternatives",
+        "inverted set inside alternatives",
+    ],
+)
+def test_sets_and_wildcards_keep_later_bytes_in_place(pronom_bytesequence, input_, matches):
+    patt = convert_to_regex(pronom_bytesequence)
+
+    assert bool(re.fullmatch(patt, input_)) is matches, f"{pronom_bytesequence} -> {patt} on {input_!r}"
+
+
+@pytest.mark.parametrize(
+    "pronom_bytesequence, pos, input_, matches",
+    [
+        ("41????", "BOF", "A", True),
+        ("41{45-1726}", "BOF", "A", True),
+        ("41??", "VAR", "\x00A", True),
+        ("{2}41", "BOF", "\x00\x00A", True),
+        ("{2}41", "BOF", "A", False),
+        ("??41", "EOF", "A", True),
+        ("41{2}", "EOF", "A\x00\x00", True),
+        ("41{2}", "EOF", "A", False),
+    ],
+    ids=[
+        "trailing ?? at BOF, x-fmt/184",
+        "trailing gap at BOF, fmt/198 and fmt/347",
+        "trailing ?? in a variable sequence",
+        "leading gap at BOF is the offset",
+        "leading gap at BOF is required",
+        "leading ?? at EOF",
+        "trailing gap at EOF is the offset",
+        "trailing gap at EOF is required",
+    ],
+)
+def test_wildcards_facing_away_from_the_anchor_are_dropped(pronom_bytesequence, pos, input_, matches):
+    """DROID's signature file has no trace of a gap with nothing beyond it, so it constrains nothing."""
+    patt = convert_to_regex(pronom_bytesequence, pos=pos)
+
+    assert bool(re.search(patt, input_)) is matches, f"{pronom_bytesequence} at {pos} -> {patt} on {input_!r}"
+
+
+@pytest.mark.parametrize("pronom_bytesequence", ["[00:]", "[:00]", "[00:10:20]", "[0]", "[GG]", "[]", "[!]", "[!&00]", "[00"])
+def test_malformed_set_raises_value_error(pronom_bytesequence):
+    with pytest.raises(ValueError):
+        convert_to_regex(pronom_bytesequence)
+
+
+def test_parse_pronom_xml_keeps_a_signature_with_a_multi_byte_range(capsys):
+    """fmt/899 and fmt/900 end in [0000:1000]; their only signature used to be dropped (#103)."""
+    info = prepare.FormatInfo("dummy.zip")
+    record = XET.fromstring(_minimal_pronom_xml(include_reference_url=False))
+    record.find(".//" + _tna("ByteSequenceValue")).text = "4D5A{126-128500}50450000{20}0B01{66}[0000:1000]"
+
+    result = info.parse_pronom_xml(io.BytesIO(XET.tostring(record)))
+
+    regexes = [node.text for node in result.findall("signature/pattern/regex")]
+    assert regexes == ["(?s)\\AMZ.{126,128500}PE\\x00\\x00.{20}\\x0b\\x01.{66}[\\x00-\\x10]"]
+    assert "incompatible" not in capsys.readouterr().err
+
+
+def test_every_shipped_pronom_byte_sequence_converts():
+    """No signature in the shipped PRONOM data may be dropped, and every pattern must compile."""
+    zip_file = get_local_versions().get_zip_file()
+    sequences = []
+    with zipfile.ZipFile(zip_file) as pronom_zip:
+        for item in pronom_zip.infolist():
+            record = XET.fromstring(pronom_zip.read(item))
+            sequences += [node.text for node in record.iter(_tna("ByteSequenceValue")) if node.text]
+
+    failures = []
+    for sequence in sequences:
+        try:
+            regex = convert_to_regex(sequence)
+            re.compile(regex)
+        except (ValueError, re.error) as err:
+            failures.append(f"{sequence}: {err}")
+            continue
+        if regex == prepare.FLG_INCOMPATIBLE:
+            failures.append(f"{sequence}: incompatible")
+
+    assert len(sequences) > 2000, f"only {len(sequences)} byte sequences found in {zip_file}"
+    assert failures == [], f"{len(failures)} of {len(sequences)} byte sequences do not convert: {failures[:5]}"
 
 
 def test_convert_to_regex_paren_raises_on_illegal_char():
