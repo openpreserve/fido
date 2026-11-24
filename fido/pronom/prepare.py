@@ -5,6 +5,8 @@
 
 import hashlib
 import http.client
+import re
+import string
 import sys
 import zipfile
 from argparse import ArgumentParser
@@ -267,12 +269,9 @@ class FormatInfo:
                         "Error: incompatible PRONOM signature found for puid {} skipping...".format(puid),
                         file=sys.stderr,
                     )
-                    # remove the empty 'signature' nodes
-                    # now that the signature is not compatible and thus "regex" is empty
-                    remove = fido_format.findall("signature")
-                    for r in remove:
-                        fido_format.remove(r)
-                    continue
+                    # the format's other signatures are independent alternatives, so they stay
+                    fido_format.remove(fido_sig)
+                    break
                 ET.SubElement(fido_pat, "position").text = pos
                 ET.SubElement(fido_pat, "pronom_pattern").text = byte_seq
                 ET.SubElement(fido_pat, "regex").text = regex
@@ -532,14 +531,24 @@ def calculate_repetition(char, pos, offset, maxoffset):
     return val
 
 
+def all_bits_set(byt, bitmask):
+    """(byte & bitmask) == bitmask."""
+    return (byt & bitmask) == bitmask
+
+
+def any_bit_set(byt, bitmask):
+    """(byte & bitmask) != 0."""
+    return (byt & bitmask) != 0
+
+
 def do_all_bitmasks(chars, i, littleendian):
     """(byte & bitmask) == bitmask."""
-    return do_any_all_bitmasks(chars, i, lambda byt, bitmask: ((byt & bitmask) == bitmask), littleendian)
+    return do_any_all_bitmasks(chars, i, all_bits_set, littleendian)
 
 
 def do_any_bitmasks(chars, i, littleendian):
     """(byte & bitmask) != 0."""
-    return do_any_all_bitmasks(chars, i, lambda byt, bitmask: ((byt & bitmask) != 0), littleendian)
+    return do_any_all_bitmasks(chars, i, any_bit_set, littleendian)
 
 
 def do_any_all_bitmasks(chars, i, predicate, littleendian):
@@ -563,6 +572,112 @@ def do_any_all_bitmasks(chars, i, predicate, littleendian):
     return regex, inc + 1
 
 
+SET_BITMASKS = {"&": all_bits_set, "~": any_bit_set}
+
+
+def _class_member(value):
+    # '-', '&' and '~' are ordinary outside a class, but inside one they can form a range or a set operation
+    char = chr(value)
+    return "\\x{:02x}".format(value) if char in "-&~" else escape(char)
+
+
+def byte_class(values):
+    """Return a regex character class that matches exactly one byte, any of @param values."""
+    runs = []
+    for value in sorted(values):
+        if runs and value == runs[-1][1] + 1:
+            runs[-1][1] = value
+        else:
+            runs.append([value, value])
+    members = (
+        _class_member(low) if low == high else "{}-{}".format(_class_member(low), _class_member(high))
+        for low, high in runs
+    )
+    return "[" + "".join(members) + "]"
+
+
+def _set_byte(body, j, littleendian, chars):
+    if len(body) < j + 2 or not all(c in string.hexdigits for c in body[j : j + 2]):
+        raise ValueError("Bad byte {!r} in set in {}".format(body[j : j + 2], chars))
+    return ord(do_byte(body, j, littleendian, esc=False)[0])
+
+
+def do_set(chars, i, littleendian):
+    """
+    Convert the set at chars[i], from '[' to ']', into a regex that matches exactly one byte.
+
+    This is how DROID reads a set. It hands the set to the byteseek library, which reads two
+    hex digits as one byte, ':' as a range between the bytes either side of it, &xx and ~xx
+    as the bytes that match a bitmask, and a leading '!' as inversion. So [0000:1000] is one
+    byte from 00 to 10 and [!0000] is one byte other than 00, never a multi-byte value.
+
+    @return a tuple (regex, number of chars consumed)
+    """
+    end = chars.find("]", i)
+    if end < 0:
+        raise ValueError("Set without a closing ']' in {}".format(chars))
+    body = chars[i + 1 : end]
+    inverted = body.startswith("!")
+    # DROID drops every '!' inside a set; only one right after '[' inverts it
+    body = body.replace("!", "")
+    values = set()
+    range_start = None
+    awaiting_range_end = False
+    j = 0
+    while j < len(body):
+        if body[j].isspace():
+            j += 1
+        elif body[j] == ":":
+            if range_start is None or awaiting_range_end:
+                raise ValueError("Range without a first byte in set in {}".format(chars))
+            awaiting_range_end = True
+            j += 1
+        elif body[j] in SET_BITMASKS:
+            if awaiting_range_end:
+                raise ValueError("Range without a second byte in set in {}".format(chars))
+            bitmask = _set_byte(body, j + 1, littleendian, chars)
+            values.update(byt for byt in range(0x100) if SET_BITMASKS[body[j]](byt, bitmask))
+            range_start = None
+            j += 3
+        else:
+            byt = _set_byte(body, j, littleendian, chars)
+            if awaiting_range_end:
+                values.update(range(min(range_start, byt), max(range_start, byt) + 1))
+                range_start = None
+                awaiting_range_end = False
+            else:
+                values.add(byt)
+                range_start = byt
+            j += 2
+    if awaiting_range_end:
+        raise ValueError("Range without a second byte in set in {}".format(chars))
+    if not values:
+        raise ValueError("Empty set in {}".format(chars))
+    if inverted:
+        values = set(range(0x100)) - values
+    if not values:
+        raise ValueError("Set matches no byte in {}".format(chars))
+    return byte_class(values), end - i + 1
+
+
+WILDCARDS = r"(?:\?\?|\{[0-9*-]+\}|\*)+"
+
+
+def strip_unanchored_wildcards(chars, pos):
+    """
+    Drop the wildcards at the edge of a sequence that faces away from its anchor.
+
+    DROID stores a sequence as fragments anchored at the start of the file, at its end, or
+    at the previous fragment, so a gap with nothing beyond it constrains nothing and is not
+    in its signature file: x-fmt/184 59A66A95{8}000000{5}000000??000000?? ends in 000000.
+    """
+    if "EOF" in pos:
+        stripped = re.sub("^" + WILDCARDS, "", chars)
+    else:
+        stripped = re.sub(WILDCARDS + "$", "", chars)
+    return stripped or chars
+
+
 def convert_to_regex(chars, endianness="", pos="BOF", offset="0", maxoffset=""):
     """
     Convert to regular expression.
@@ -572,6 +687,7 @@ def convert_to_regex(chars, endianness="", pos="BOF", offset="0", maxoffset=""):
     @param chars, a pronom bytesequence, into a
     @return regular expression.
     """
+    chars = strip_unanchored_wildcards(chars, pos)
     if "Big" in endianness:
         littleendian = False
     else:
@@ -605,10 +721,8 @@ def convert_to_regex(chars, endianness="", pos="BOF", offset="0", maxoffset=""):
                 state = "all-bitmask"
             elif chars[i] == "~":
                 state = "any-bitmask"
-            elif chars[i] == "[" and chars[i + 1] == "!":
-                state = "non-match"
             elif chars[i] == "[":
-                state = "bracket"
+                state = "set"
             elif chars[i] == "{":
                 state = "curly"
             elif chars[i] == "(":
@@ -632,53 +746,10 @@ def convert_to_regex(chars, endianness="", pos="BOF", offset="0", maxoffset=""):
             buf.write(byt)
             i += inc
             state = "start"
-        elif state == "non-match":
-            buf.write("(?!")
-            i += 2
-            while True:
-                if chars[i].isalnum():
-                    (byt, inc) = do_byte(chars, i, littleendian)
-                    buf.write(byt)
-                    i += inc
-                elif chars[i] == "&":
-                    (byt, inc) = do_all_bitmasks(chars, i, littleendian)
-                    buf.write(byt)
-                    i += inc
-                elif chars[i] == "~":
-                    (byt, inc) = do_any_bitmasks(chars, i, littleendian)
-                    buf.write(byt)
-                    i += inc
-                elif chars[i] == "]":
-                    break
-                else:
-                    raise Exception(_convert_err_msg("Illegal character in non-match", chars[i], i, chars, buf))
-            buf.write(")")
-            i += 1
-            state = "start"
-
-        elif state == "bracket":
-            try:
-                buf.write("[")
-                i += 1
-                (byt, inc) = do_byte(chars, i, littleendian)
-                buf.write(byt)
-                i += inc
-                # assert(chars[i] == ':')
-                if chars[i] != ":":
-                    return "__INCOMPATIBLE_SIG__"
-                buf.write("-")
-                i += 1
-                (byt, inc) = do_byte(chars, i, littleendian)
-                buf.write(byt)
-                i += inc
-                # assert(chars[i] == ']')
-                if chars[i] != "]":
-                    return "__INCOMPATIBLE_SIG__"
-                buf.write("]")
-                i += 1
-            except Exception:
-                print(_convert_err_msg("Illegal character in bracket", chars[i], i, chars, buf))
-                raise
+        elif state == "set":
+            (byt, inc) = do_set(chars, i, littleendian)
+            buf.write(byt)
+            i += inc
             if i < len(chars) and chars[i] == "{":
                 state = "curly-after-bracket"
             else:
@@ -698,25 +769,9 @@ def convert_to_regex(chars, endianness="", pos="BOF", offset="0", maxoffset=""):
                     break
                 # START fix FIDO-20
                 elif chars[i] == "[":
-                    buf.write("[")
-                    i += 1
-                    (byt, inc) = do_byte(chars, i, littleendian)
+                    (byt, inc) = do_set(chars, i, littleendian)
                     buf.write(byt)
                     i += inc
-                    # assert(chars[i] == ':')
-                    if chars[i] != ":":
-                        return "__INCOMPATIBLE_SIG__"
-                    buf.write("-")
-                    i += 1
-                    (byt, inc) = do_byte(chars, i, littleendian)
-                    buf.write(byt)
-                    i += inc
-
-                    # assert(chars[i] == ']')
-                    if chars[i] != "]":
-                        return "__INCOMPATIBLE_SIG__"
-                    buf.write("]")
-                    i += 1
                 else:
                     raise Exception(
                         _convert_err_msg(
@@ -767,7 +822,7 @@ def convert_to_regex(chars, endianness="", pos="BOF", offset="0", maxoffset=""):
             elif chars[i] == "?":
                 if chars[i + 1] != "?":
                     raise Exception(_convert_err_msg("Illegal character after ?", chars[i + 1], i + 1, chars, buf))
-                buf.write(".?")
+                buf.write(".")  # ?? is exactly one byte; DROID's signature file stores it as a one-byte gap
                 i += 2
             state = "start"
         else:

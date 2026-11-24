@@ -60,6 +60,41 @@ def test_file_identification(tmp_path, capsys, magic: bytes, expected_puid: str,
     assert int(row[5]) == len(magic), "row doesn't contain stream length"
 
 
+def _portable_executable(magic, subsystem, tail=b""):
+    """MZ, then PE\\0\\0 at 0x80, a 20 byte COFF header, and an optional header with its Subsystem at offset 68."""
+    return b"MZ" + bytes(0x80 - 2) + b"PE\x00\x00" + bytes(20) + magic + bytes(66) + subsystem + bytes(64) + tail
+
+
+@pytest.mark.parametrize(
+    "content, expected_puid",
+    [
+        (_portable_executable(b"\x0b\x01", b"\x02\x00"), "fmt/899"),
+        (_portable_executable(b"\x0b\x01", b"\x10\x00"), "fmt/899"),
+        (_portable_executable(b"\x0b\x01", b"\x10\x01"), "fmt/899"),
+        (_portable_executable(b"\x0b\x01", b"\x11\x00"), "x-fmt/411"),
+        (_portable_executable(b"\x0b\x02", b"\x03\x00"), "fmt/900"),
+        (_portable_executable(b"\x0b\x01", b"\x02\x00", "ToolBook".encode("utf-16-le")), "fmt/1795"),
+    ],
+    ids=[
+        "PE32 GUI",
+        "PE32 subsystem 16",
+        "PE32 10 01, in DROID's one-byte reading of [0000:1000]",
+        "PE32 11 00, outside it",
+        "PE32+ console",
+        "ToolBook",
+    ],
+)
+def test_portable_executable_identification(tmp_path, capsys, content, expected_puid):
+    """fmt/899, fmt/900 and fmt/1795 end in [0000:1000], which DROID reads as one byte from 00 to 10 (#103)."""
+    sample = tmp_path / "sample"
+    sample.write_bytes(content)
+
+    Fido().identify_file(str(sample), extension=False)
+
+    rows = list(csv.reader(io.StringIO(capsys.readouterr().out)))
+    assert [row[2] for row in rows] == [expected_puid], f"rows: {rows}"
+
+
 @pytest.mark.parametrize(
     "magic, expected_puid, expected_result",
     id_test_data,
