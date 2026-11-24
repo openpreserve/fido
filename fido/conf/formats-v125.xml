@@ -88,7 +88,7 @@
       <pattern>
         <position>BOF</position>
         <pronom_pattern>32BE000000AB0000000000000000{82}[!0000]</pronom_pattern>
-        <regex>(?s)\A2\xbe\x00\x00\x00\xab\x00\x00\x00\x00\x00\x00\x00\x00.{82}(?!\x00\x00)</regex>
+        <regex>(?s)\A2\xbe\x00\x00\x00\xab\x00\x00\x00\x00\x00\x00\x00\x00.{82}[\x01-\xff]</regex>
       </pattern>
     </signature>
     <details>
@@ -184,7 +184,7 @@
       <pattern>
         <position>BOF</position>
         <pronom_pattern>02{2}[01:1C][01:1F]????[00:03]([41:5A]|[61:7A]){10}(43|4E|4C)</pronom_pattern>
-        <regex>(?s)\A\x02.{2}[\x01-\x1c][\x01-\x1f].?.?[\x00-\x03](?:[A-Z]|[a-z]).{10}(?:C|N|L)</regex>
+        <regex>(?s)\A\x02.{2}[\x01-\x1c][\x01-\x1f]..[\x00-\x03](?:[A-Z]|[a-z]).{10}(?:C|N|L)</regex>
       </pattern>
     </signature>
     <signature>
@@ -193,7 +193,7 @@
       <pattern>
         <position>BOF</position>
         <pronom_pattern>02{2}000000??[00:03]([41:5A]|[61:7A]){10}(43|4E|4C)</pronom_pattern>
-        <regex>(?s)\A\x02.{2}\x00\x00\x00.?[\x00-\x03](?:[A-Z]|[a-z]).{10}(?:C|N|L)</regex>
+        <regex>(?s)\A\x02.{2}\x00\x00\x00.[\x00-\x03](?:[A-Z]|[a-z]).{10}(?:C|N|L)</regex>
       </pattern>
     </signature>
     <details>
@@ -224,7 +224,7 @@
       <pattern>
         <position>BOF</position>
         <pronom_pattern>03??[01:0C][01:1F]{28}([41:5A]|[61:7A]){10}(43|44|4C|4D|4E)</pronom_pattern>
-        <regex>(?s)\A\x03.?[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|L|M|N)</regex>
+        <regex>(?s)\A\x03.[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|L|M|N)</regex>
       </pattern>
     </signature>
     <details>
@@ -256,7 +256,7 @@
       <pattern>
         <position>BOF</position>
         <pronom_pattern>04??[01:0C][01:1F]{28}([41:5A]|[61:7A]){10}(43|44|46|4C|4E)</pronom_pattern>
-        <regex>(?s)\A\x04.?[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|F|L|N)</regex>
+        <regex>(?s)\A\x04.[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|F|L|N)</regex>
       </pattern>
     </signature>
     <signature>
@@ -265,7 +265,7 @@
       <pattern>
         <position>BOF</position>
         <pronom_pattern>43??[01:0C][01:1F]{28}([41:5A]|[61:7A]){10}(43|44|46|4C|4E)</pronom_pattern>
-        <regex>(?s)\AC.?[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|F|L|N)</regex>
+        <regex>(?s)\AC.[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|F|L|N)</regex>
       </pattern>
     </signature>
     <signature>
@@ -274,7 +274,7 @@
       <pattern>
         <position>BOF</position>
         <pronom_pattern>63??[01:0C][01:1F]{28}([41:5A]|[61:7A]){10}(43|44|46|4C|4E)</pronom_pattern>
-        <regex>(?s)\Ac.?[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|F|L|N)</regex>
+        <regex>(?s)\Ac.[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|F|L|N)</regex>
       </pattern>
     </signature>
     <signature>
@@ -283,7 +283,7 @@
       <pattern>
         <position>BOF</position>
         <pronom_pattern>CB??[01:0C][01:1F]{28}([41:5A]|[61:7A]){10}(43|44|46|4C|4D|4E)</pronom_pattern>
-        <regex>(?s)\A\xcb.?[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|F|L|M|N)</regex>
+        <regex>(?s)\A\xcb.[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|F|L|M|N)</regex>
       </pattern>
     </signature>
     <signature>
@@ -292,7 +292,7 @@
       <pattern>
         <position>BOF</position>
         <pronom_pattern>7B??[01:0C][01:1F]{28}([41:5A]|[61:7A]){10}(43|44|46|4C|4D|4E)</pronom_pattern>
-        <regex>(?s)\A\{.?[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|F|L|M|N)</regex>
+        <regex>(?s)\A\{.[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|F|L|M|N)</regex>
       </pattern>
     </signature>
     <signature>
@@ -301,7 +301,7 @@
       <pattern>
         <position>BOF</position>
         <pronom_pattern>8B??[01:0C][01:1F]{28}([41:5A]|[61:7A]){10}(43|44|46|4C|4D|4E)</pronom_pattern>
-        <regex>(?s)\A\x8b.?[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|F|L|M|N)</regex>
+        <regex>(?s)\A\x8b.[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|F|L|M|N)</regex>
       </pattern>
     </signature>
     <signature>
@@ -310,7 +310,7 @@
       <pattern>
         <position>BOF</position>
         <pronom_pattern>8E??[01:0C][01:1F]{28}([41:5A]|[61:7A]){10}(43|44|46|4C|4D|4E)</pronom_pattern>
-        <regex>(?s)\A\x8e.?[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|F|L|M|N)</regex>
+        <regex>(?s)\A\x8e.[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|F|L|M|N)</regex>
       </pattern>
     </signature>
     <details>
@@ -362,7 +362,7 @@
       <pattern>
         <position>BOF</position>
         <pronom_pattern>31BE000000AB0000000000000000{82}[!0000]</pronom_pattern>
-        <regex>(?s)\A1\xbe\x00\x00\x00\xab\x00\x00\x00\x00\x00\x00\x00\x00.{82}(?!\x00\x00)</regex>
+        <regex>(?s)\A1\xbe\x00\x00\x00\xab\x00\x00\x00\x00\x00\x00\x00\x00.{82}[\x01-\xff]</regex>
       </pattern>
     </signature>
     <details>
@@ -1431,7 +1431,7 @@ The only difference between Windows bitmap 2.0 and OS/2 bitmap 1.0 is the data t
       <pattern>
         <position>BOF</position>
         <pronom_pattern>28445746205630??2E????29</pronom_pattern>
-        <regex>(?s)\A\(DWF V0.?\..?.?\)</regex>
+        <regex>(?s)\A\(DWF V0.\...\)</regex>
       </pattern>
     </signature>
     <details>
@@ -4262,7 +4262,7 @@ File format specifications available at http://standards.iso.org/ittf/PubliclyAv
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4354000000000000000000000000??0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000{879}(00|01)??00(07|08|FF)</pronom_pattern>
-        <regex>(?s)\A.{80}CT\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00.?\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00.{879}(?:\x00|\x01).?\x00(?:\x07|\x08|\xff)</regex>
+        <regex>(?s)\A.{80}CT\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00.{879}(?:\x00|\x01).\x00(?:\x07|\x08|\xff)</regex>
       </pattern>
     </signature>
     <details>
@@ -4378,7 +4378,7 @@ File format specifications available at http://standards.iso.org/ittf/PubliclyAv
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0004000000000000000000000A00[!00]{1009}03000200FFFFFFFFFFFFFFFF{1}01FFFF{2}0F0F{491}[41:5A]000A{502}2B00[0B:0F]0000002B00{512}[!00]00[!00]00FFFFFFFFFFFFFFFF</pronom_pattern>
-        <regex>(?s)\A\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\n\x00(?!\x00).{1009}\x03\x00\x02\x00\xff\xff\xff\xff\xff\xff\xff\xff.{1}\x01\xff\xff.{2}\x0f\x0f.{491}[A-Z]\x00\n.{502}\+\x00[\x0b-\x0f]\x00\x00\x00\+\x00.{512}(?!\x00)\x00(?!\x00)\x00\xff\xff\xff\xff\xff\xff\xff\xff</regex>
+        <regex>(?s)\A\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\n\x00[\x01-\xff].{1009}\x03\x00\x02\x00\xff\xff\xff\xff\xff\xff\xff\xff.{1}\x01\xff\xff.{2}\x0f\x0f.{491}[A-Z]\x00\n.{502}\+\x00[\x0b-\x0f]\x00\x00\x00\+\x00.{512}[\x01-\xff]\x00[\x01-\xff]\x00\xff\xff\xff\xff\xff\xff\xff\xff</regex>
       </pattern>
     </signature>
     <details>
@@ -5359,7 +5359,7 @@ QCD - QuarkXPress Article</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>59A66A95{8}000000{5}000000??000000??</pronom_pattern>
-        <regex>(?s)\AY\xa6j\x95.{8}\x00\x00\x00.{5}\x00\x00\x00.?\x00\x00\x00.?</regex>
+        <regex>(?s)\AY\xa6j\x95.{8}\x00\x00\x00.{5}\x00\x00\x00.\x00\x00\x00</regex>
       </pattern>
     </signature>
     <details>
@@ -6432,7 +6432,7 @@ QCD - QuarkXPress Article</dc:description>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>1991[!4001C80000000000]</pronom_pattern>
-        <regex>(?s)\A\x19\x91(?!@\x01\xc8\x00\x00\x00\x00\x00)</regex>
+        <regex>(?s)\A\x19\x91[\x02-\?A-\xc7\xc9-\xff]</regex>
       </pattern>
     </signature>
     <details>
@@ -6691,7 +6691,7 @@ Full specifications can be found at http://www.opengeospatial.org/standards/gml<
       <pattern>
         <position>BOF</position>
         <pronom_pattern>56(45|65)(52|72)(53|73)(49|69)??(4E|6E){5-9}(43|63)(48|68)(41|61)(52|72)(53|73)(45|65)(54|74)*43(4F|6F)(4C|6C)(55|75)(4D|6D)(4E|6E)(53|73)</pronom_pattern>
-        <regex>(?s)\A.{0,10}V(?:E|e)(?:R|r)(?:S|s)(?:I|i).?(?:N|n).{5,9}(?:C|c)(?:H|h)(?:A|a)(?:R|r)(?:S|s)(?:E|e)(?:T|t).*C(?:O|o)(?:L|l)(?:U|u)(?:M|m)(?:N|n)(?:S|s)</regex>
+        <regex>(?s)\A.{0,10}V(?:E|e)(?:R|r)(?:S|s)(?:I|i).(?:N|n).{5,9}(?:C|c)(?:H|h)(?:A|a)(?:R|r)(?:S|s)(?:E|e)(?:T|t).*C(?:O|o)(?:L|l)(?:U|u)(?:M|m)(?:N|n)(?:S|s)</regex>
       </pattern>
     </signature>
     <signature>
@@ -6700,7 +6700,7 @@ Full specifications can be found at http://www.opengeospatial.org/standards/gml<
       <pattern>
         <position>BOF</position>
         <pronom_pattern>56(45|65)(52|72)(53|73)(49|69)??(4E|6E){5-9}(43|63)(48|68)(41|61)(52|72)(53|73)(45|65)(54|74)*63(4F|6F)(4C|6C)(55|75)(4D|6D)(4E|6E)(53|73)</pronom_pattern>
-        <regex>(?s)\AV(?:E|e)(?:R|r)(?:S|s)(?:I|i).?(?:N|n).{5,9}(?:C|c)(?:H|h)(?:A|a)(?:R|r)(?:S|s)(?:E|e)(?:T|t).*c(?:O|o)(?:L|l)(?:U|u)(?:M|m)(?:N|n)(?:S|s)</regex>
+        <regex>(?s)\AV(?:E|e)(?:R|r)(?:S|s)(?:I|i).(?:N|n).{5,9}(?:C|c)(?:H|h)(?:A|a)(?:R|r)(?:S|s)(?:E|e)(?:T|t).*c(?:O|o)(?:L|l)(?:U|u)(?:M|m)(?:N|n)(?:S|s)</regex>
       </pattern>
     </signature>
     <signature>
@@ -6709,7 +6709,7 @@ Full specifications can be found at http://www.opengeospatial.org/standards/gml<
       <pattern>
         <position>BOF</position>
         <pronom_pattern>76(45|65)(52|72)(53|73)(49|69)??(4E|6E){5-9}(43|63)(48|68)(41|61)(52|72)(53|73)(45|65)(54|74)*43(4F|6F)(4C|6C)(55|75)(4D|6D)(4E|6E)(53|73)</pronom_pattern>
-        <regex>(?s)\Av(?:E|e)(?:R|r)(?:S|s)(?:I|i).?(?:N|n).{5,9}(?:C|c)(?:H|h)(?:A|a)(?:R|r)(?:S|s)(?:E|e)(?:T|t).*C(?:O|o)(?:L|l)(?:U|u)(?:M|m)(?:N|n)(?:S|s)</regex>
+        <regex>(?s)\Av(?:E|e)(?:R|r)(?:S|s)(?:I|i).(?:N|n).{5,9}(?:C|c)(?:H|h)(?:A|a)(?:R|r)(?:S|s)(?:E|e)(?:T|t).*C(?:O|o)(?:L|l)(?:U|u)(?:M|m)(?:N|n)(?:S|s)</regex>
       </pattern>
     </signature>
     <signature>
@@ -6718,7 +6718,7 @@ Full specifications can be found at http://www.opengeospatial.org/standards/gml<
       <pattern>
         <position>BOF</position>
         <pronom_pattern>76(45|65)(52|72)(53|73)(49|69)??(4E|6E){5-9}(43|63)(48|68)(41|61)(52|72)(53|73)(45|65)(54|74)*63(4F|6F)(4C|6C)(55|75)(4D|6D)(4E|6E)(53|73)</pronom_pattern>
-        <regex>(?s)\Av(?:E|e)(?:R|r)(?:S|s)(?:I|i).?(?:N|n).{5,9}(?:C|c)(?:H|h)(?:A|a)(?:R|r)(?:S|s)(?:E|e)(?:T|t).*c(?:O|o)(?:L|l)(?:U|u)(?:M|m)(?:N|n)(?:S|s)</regex>
+        <regex>(?s)\Av(?:E|e)(?:R|r)(?:S|s)(?:I|i).(?:N|n).{5,9}(?:C|c)(?:H|h)(?:A|a)(?:R|r)(?:S|s)(?:E|e)(?:T|t).*c(?:O|o)(?:L|l)(?:U|u)(?:M|m)(?:N|n)(?:S|s)</regex>
       </pattern>
     </signature>
     <details>
@@ -7910,7 +7910,7 @@ It should be possible to write a simple decoder application for WS4 files, howev
       <pattern>
         <position>BOF</position>
         <pronom_pattern>425A68??314159265359</pronom_pattern>
-        <regex>(?s)\ABZh.?1AY&amp;SY</regex>
+        <regex>(?s)\ABZh.1AY&amp;SY</regex>
       </pattern>
     </signature>
     <details>
@@ -8028,7 +8028,7 @@ The 2 byte file type identifier BM indicates that the BMP was created by OS/2 or
       <pattern>
         <position>BOF</position>
         <pronom_pattern>83??[01:0C][01:1F]{28}([41:5A]|[61:7A]){10}(43|44|4C|4D|4E)</pronom_pattern>
-        <regex>(?s)\A\x83.?[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|L|M|N)</regex>
+        <regex>(?s)\A\x83.[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:C|D|L|M|N)</regex>
       </pattern>
     </signature>
     <details>
@@ -8828,7 +8828,7 @@ Full specifications can be found at http://www.w3.org/TR/xmlschema-0/</dc:descri
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0000002800000006{4}000000??000000(00|01)</pronom_pattern>
-        <regex>(?s)\A\x00\x00\x00\(\x00\x00\x00\x06.{4}\x00\x00\x00.?\x00\x00\x00(?:\x00|\x01)</regex>
+        <regex>(?s)\A\x00\x00\x00\(\x00\x00\x00\x06.{4}\x00\x00\x00.\x00\x00\x00(?:\x00|\x01)</regex>
       </pattern>
     </signature>
     <details>
@@ -9950,7 +9950,7 @@ Full specifications can be found at http://www.w3.org/TR/xmlschema-0/</dc:descri
       <pattern>
         <position>BOF</position>
         <pronom_pattern>00{3}000000[!00]{504}000000[00:02]{4}[!00]</pronom_pattern>
-        <regex>(?s)\A\x00.{3}\x00\x00\x00(?!\x00).{504}\x00\x00\x00[\x00-\x02].{4}(?!\x00)</regex>
+        <regex>(?s)\A\x00.{3}\x00\x00\x00[\x01-\xff].{504}\x00\x00\x00[\x00-\x02].{4}[\x01-\xff]</regex>
       </pattern>
     </signature>
     <signature>
@@ -9959,7 +9959,7 @@ Full specifications can be found at http://www.w3.org/TR/xmlschema-0/</dc:descri
       <pattern>
         <position>BOF</position>
         <pronom_pattern>00{3}000000[!00]{520}000000[00:02]{4}[!00]</pronom_pattern>
-        <regex>(?s)\A\x00.{3}\x00\x00\x00(?!\x00).{520}\x00\x00\x00[\x00-\x02].{4}(?!\x00)</regex>
+        <regex>(?s)\A\x00.{3}\x00\x00\x00[\x01-\xff].{520}\x00\x00\x00[\x00-\x02].{4}[\x01-\xff]</regex>
       </pattern>
     </signature>
     <signature>
@@ -9968,7 +9968,7 @@ Full specifications can be found at http://www.w3.org/TR/xmlschema-0/</dc:descri
       <pattern>
         <position>BOF</position>
         <pronom_pattern>00{3}000000[!00]{504}000000[00:02]000000010000000001000000[!00]</pronom_pattern>
-        <regex>(?s)\A\x00.{3}\x00\x00\x00(?!\x00).{504}\x00\x00\x00[\x00-\x02]\x00\x00\x00\x01\x00\x00\x00\x00\x01\x00\x00\x00(?!\x00)</regex>
+        <regex>(?s)\A\x00.{3}\x00\x00\x00[\x01-\xff].{504}\x00\x00\x00[\x00-\x02]\x00\x00\x00\x01\x00\x00\x00\x00\x01\x00\x00\x00[\x01-\xff]</regex>
       </pattern>
     </signature>
     <details>
@@ -17316,7 +17316,7 @@ PDF/A supports two levels of compliance PDF/A1-a (Accessible) and PDF/A1-b (Basi
       <pattern>
         <position>BOF</position>
         <pronom_pattern>52494646{4}57415645666D7420[!10]{21-*}64617461</pronom_pattern>
-        <regex>(?s)\ARIFF.{4}WAVEfmt (?!\x10).{21,}data</regex>
+        <regex>(?s)\ARIFF.{4}WAVEfmt [\x00-\x0f\x11-\xff].{21,}data</regex>
       </pattern>
     </signature>
     <details>
@@ -17888,7 +17888,7 @@ This version was published in February 2005 and corrected the flaws in the first
       <pattern>
         <position>BOF</position>
         <pronom_pattern>49492A00{4-4080}AF870300??000000</pronom_pattern>
-        <regex>(?s)\AII\*\x00.{4,4080}\xaf\x87\x03\x00.?\x00\x00\x00</regex>
+        <regex>(?s)\AII\*\x00.{4,4080}\xaf\x87\x03\x00.\x00\x00\x00</regex>
       </pattern>
     </signature>
     <signature>
@@ -17902,7 +17902,7 @@ This version was published in February 2005 and corrected the flaws in the first
       <pattern>
         <position>EOF</position>
         <pronom_pattern>AF870300??000000</pronom_pattern>
-        <regex>(?s)\xaf\x87\x03\x00.?\x00\x00\x00.{4,5004}\Z</regex>
+        <regex>(?s)\xaf\x87\x03\x00.\x00\x00\x00.{4,5004}\Z</regex>
       </pattern>
     </signature>
     <signature>
@@ -19840,7 +19840,7 @@ EOF: ....</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>3330302C??2C{3}2C</pronom_pattern>
-        <regex>(?s)\A300,.?,.{3},</regex>
+        <regex>(?s)\A300,.,.{3},</regex>
       </pattern>
     </signature>
     <details>
@@ -19871,7 +19871,7 @@ EOF: ....</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>3338302C??2C{3}2C</pronom_pattern>
-        <regex>(?s)\A380,.?,.{3},</regex>
+        <regex>(?s)\A380,.,.{3},</regex>
       </pattern>
     </signature>
     <details>
@@ -19902,7 +19902,7 @@ EOF: ....</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>3339302C??2C{3}2C</pronom_pattern>
-        <regex>(?s)\A390,.?,.{3},</regex>
+        <regex>(?s)\A390,.,.{3},</regex>
       </pattern>
     </signature>
     <details>
@@ -19933,7 +19933,7 @@ EOF: ....</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>3430302C??2C{3}2C</pronom_pattern>
-        <regex>(?s)\A400,.?,.{3},</regex>
+        <regex>(?s)\A400,.,.{3},</regex>
       </pattern>
     </signature>
     <details>
@@ -19964,7 +19964,7 @@ EOF: ....</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>3432302C??2C{3}2C</pronom_pattern>
-        <regex>(?s)\A420,.?,.{3},</regex>
+        <regex>(?s)\A420,.,.{3},</regex>
       </pattern>
     </signature>
     <details>
@@ -19995,7 +19995,7 @@ EOF: ....</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>3433302C??2C{3}2C</pronom_pattern>
-        <regex>(?s)\A430,.?,.{3},</regex>
+        <regex>(?s)\A430,.,.{3},</regex>
       </pattern>
     </signature>
     <details>
@@ -20326,7 +20326,7 @@ The majority of INX files included with an installation are named "setup.inx". T
       <pattern>
         <position>BOF</position>
         <pronom_pattern>FFFC[10:EB]{45-1726}FFFC[10:EB]{45-1726}FFFC[10:EB]{45-1726}FFFC[10:EB]{45-1726}</pronom_pattern>
-        <regex>(?s)\A\xff\xfc[\x10-\xeb].{45,1726}\xff\xfc[\x10-\xeb].{45,1726}\xff\xfc[\x10-\xeb].{45,1726}\xff\xfc[\x10-\xeb].{45,1726}</regex>
+        <regex>(?s)\A\xff\xfc[\x10-\xeb].{45,1726}\xff\xfc[\x10-\xeb].{45,1726}\xff\xfc[\x10-\xeb].{45,1726}\xff\xfc[\x10-\xeb]</regex>
       </pattern>
     </signature>
     <signature>
@@ -20335,7 +20335,7 @@ The majority of INX files included with an installation are named "setup.inx". T
       <pattern>
         <position>BOF</position>
         <pronom_pattern>FFFD[10:EB]{45-1726}FFFD[10:EB]{45-1726}FFFD[10:EB]{45-1726}FFFD[10:EB]{45-1726}</pronom_pattern>
-        <regex>(?s)\A\xff\xfd[\x10-\xeb].{45,1726}\xff\xfd[\x10-\xeb].{45,1726}\xff\xfd[\x10-\xeb].{45,1726}\xff\xfd[\x10-\xeb].{45,1726}</regex>
+        <regex>(?s)\A\xff\xfd[\x10-\xeb].{45,1726}\xff\xfd[\x10-\xeb].{45,1726}\xff\xfd[\x10-\xeb].{45,1726}\xff\xfd[\x10-\xeb]</regex>
       </pattern>
     </signature>
     <signature>
@@ -20344,7 +20344,7 @@ The majority of INX files included with an installation are named "setup.inx". T
       <pattern>
         <position>BOF</position>
         <pronom_pattern>FFF4[10:EB]{45-1726}FFF4[10:EB]{45-1726}FFF4[10:EB]{45-1726}FFF4[10:EB]{45-1726}</pronom_pattern>
-        <regex>(?s)\A\xff\xf4[\x10-\xeb].{45,1726}\xff\xf4[\x10-\xeb].{45,1726}\xff\xf4[\x10-\xeb].{45,1726}\xff\xf4[\x10-\xeb].{45,1726}</regex>
+        <regex>(?s)\A\xff\xf4[\x10-\xeb].{45,1726}\xff\xf4[\x10-\xeb].{45,1726}\xff\xf4[\x10-\xeb].{45,1726}\xff\xf4[\x10-\xeb]</regex>
       </pattern>
     </signature>
     <signature>
@@ -20353,7 +20353,7 @@ The majority of INX files included with an installation are named "setup.inx". T
       <pattern>
         <position>BOF</position>
         <pronom_pattern>FFF5[10:EB]{45-1726}FFF5[10:EB]{45-1726}FFF5[10:EB]{45-1726}FFF5[10:EB]{45-1726}</pronom_pattern>
-        <regex>(?s)\A\xff\xf5[\x10-\xeb].{45,1726}\xff\xf5[\x10-\xeb].{45,1726}\xff\xf5[\x10-\xeb].{45,1726}\xff\xf5[\x10-\xeb].{45,1726}</regex>
+        <regex>(?s)\A\xff\xf5[\x10-\xeb].{45,1726}\xff\xf5[\x10-\xeb].{45,1726}\xff\xf5[\x10-\xeb].{45,1726}\xff\xf5[\x10-\xeb]</regex>
       </pattern>
     </signature>
     <signature>
@@ -22439,7 +22439,7 @@ SPSS creates an SPSS Output File which represents data in a two dimensional form
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0D0A582D436F6E7665727465642D42793A20456D61696C6368656D7920??2E</pronom_pattern>
-        <regex>(?s)\A.{0,4096}\r\nX-Converted-By: Emailchemy .?\.</regex>
+        <regex>(?s)\A.{0,4096}\r\nX-Converted-By: Emailchemy .\.</regex>
       </pattern>
     </signature>
     <details>
@@ -23598,7 +23598,7 @@ WARC format has been written by the members of the IIPC (http://www.netpreserve.
       <pattern>
         <position>BOF</position>
         <pronom_pattern>AC9EBD8F0000??00</pronom_pattern>
-        <regex>(?s)\A\xac\x9e\xbd\x8f\x00\x00.?\x00</regex>
+        <regex>(?s)\A\xac\x9e\xbd\x8f\x00\x00.\x00</regex>
       </pattern>
     </signature>
     <details>
@@ -24940,7 +24940,7 @@ DATA: VERSION:160 SECURITY: ENCODING: CHARSET: COMPRESSION: OLDFILEUID: NEWFILEU
       <pattern>
         <position>BOF</position>
         <pronom_pattern>FFF6[10:EB]{29-769}FFF6[10:EB]{29-769}FFF6[10:EB]{29-769}FFF6[10:EB]{29-769}</pronom_pattern>
-        <regex>(?s)\A\xff\xf6[\x10-\xeb].{29,769}\xff\xf6[\x10-\xeb].{29,769}\xff\xf6[\x10-\xeb].{29,769}\xff\xf6[\x10-\xeb].{29,769}</regex>
+        <regex>(?s)\A\xff\xf6[\x10-\xeb].{29,769}\xff\xf6[\x10-\xeb].{29,769}\xff\xf6[\x10-\xeb].{29,769}\xff\xf6[\x10-\xeb]</regex>
       </pattern>
     </signature>
     <signature>
@@ -24949,7 +24949,7 @@ DATA: VERSION:160 SECURITY: ENCODING: CHARSET: COMPRESSION: OLDFILEUID: NEWFILEU
       <pattern>
         <position>BOF</position>
         <pronom_pattern>FFF7[10:EB]{29-769}FFF7[10:EB]{29-769}FFF7[10:EB]{29-769}FFF7[10:EB]{29-769}</pronom_pattern>
-        <regex>(?s)\A\xff\xf7[\x10-\xeb].{29,769}\xff\xf7[\x10-\xeb].{29,769}\xff\xf7[\x10-\xeb].{29,769}\xff\xf7[\x10-\xeb].{29,769}</regex>
+        <regex>(?s)\A\xff\xf7[\x10-\xeb].{29,769}\xff\xf7[\x10-\xeb].{29,769}\xff\xf7[\x10-\xeb].{29,769}\xff\xf7[\x10-\xeb]</regex>
       </pattern>
     </signature>
     <signature>
@@ -24958,7 +24958,7 @@ DATA: VERSION:160 SECURITY: ENCODING: CHARSET: COMPRESSION: OLDFILEUID: NEWFILEU
       <pattern>
         <position>BOF</position>
         <pronom_pattern>FFFE[10:EB]{29-769}FFFE[10:EB]{29-769}FFFE[10:EB]{29-769}FFFE[10:EB]{29-769}</pronom_pattern>
-        <regex>(?s)\A\xff\xfe[\x10-\xeb].{29,769}\xff\xfe[\x10-\xeb].{29,769}\xff\xfe[\x10-\xeb].{29,769}\xff\xfe[\x10-\xeb].{29,769}</regex>
+        <regex>(?s)\A\xff\xfe[\x10-\xeb].{29,769}\xff\xfe[\x10-\xeb].{29,769}\xff\xfe[\x10-\xeb].{29,769}\xff\xfe[\x10-\xeb]</regex>
       </pattern>
     </signature>
     <signature>
@@ -24967,7 +24967,7 @@ DATA: VERSION:160 SECURITY: ENCODING: CHARSET: COMPRESSION: OLDFILEUID: NEWFILEU
       <pattern>
         <position>BOF</position>
         <pronom_pattern>FFFF[10:EB]{29-769}FFFF[10:EB]{29-769}FFFF[10:EB]{29-769}FFFF[10:EB]{29-769}</pronom_pattern>
-        <regex>(?s)\A\xff\xff[\x10-\xeb].{29,769}\xff\xff[\x10-\xeb].{29,769}\xff\xff[\x10-\xeb].{29,769}\xff\xff[\x10-\xeb].{29,769}</regex>
+        <regex>(?s)\A\xff\xff[\x10-\xeb].{29,769}\xff\xff[\x10-\xeb].{29,769}\xff\xff[\x10-\xeb].{29,769}\xff\xff[\x10-\xeb]</regex>
       </pattern>
     </signature>
     <details>
@@ -25556,7 +25556,7 @@ Additional information regarding violations of PDF/A 1b conformance added Februa
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0000{15}[!00]{3}[!00]{2}(0100|00[01:08])</pronom_pattern>
-        <regex>(?s)\A.{3200}\x00\x00.{15}(?!\x00).{3}(?!\x00).{2}(?:\x01\x00|\x00[\x01-\x08])</regex>
+        <regex>(?s)\A.{3200}\x00\x00.{15}[\x01-\xff].{3}[\x01-\xff].{2}(?:\x01\x00|\x00[\x01-\x08])</regex>
       </pattern>
     </signature>
     <signature>
@@ -25570,7 +25570,7 @@ Additional information regarding violations of PDF/A 1b conformance added Februa
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0000{15}[!00]{3}[!00]{2}(0100|00[01:08])</pronom_pattern>
-        <regex>(?s)\A.{3600}\x00\x00.{15}(?!\x00).{3}(?!\x00).{2}(?:\x01\x00|\x00[\x01-\x08])</regex>
+        <regex>(?s)\A.{3600}\x00\x00.{15}[\x01-\xff].{3}[\x01-\xff].{2}(?:\x01\x00|\x00[\x01-\x08])</regex>
       </pattern>
     </signature>
     <details>
@@ -25901,7 +25901,7 @@ Specifications available at http://www.asprs.org/Committee-General/LASer-LAS-Fil
       <pattern>
         <position>BOF</position>
         <pronom_pattern>F5??[01:0C][01:1F]{28}([41:5A]|[61:7A]){10}(42|43|44|49|4C|4D|4E|50|54|59)</pronom_pattern>
-        <regex>(?s)\A\xf5.?[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:B|C|D|I|L|M|N|P|T|Y)</regex>
+        <regex>(?s)\A\xf5.[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:B|C|D|I|L|M|N|P|T|Y)</regex>
       </pattern>
     </signature>
     <details>
@@ -25932,7 +25932,7 @@ Specifications available at http://www.asprs.org/Committee-General/LASer-LAS-Fil
       <pattern>
         <position>BOF</position>
         <pronom_pattern>30??[01:0C][01:1F]{28}([41:5A]|[61:7A]){10}(42|43|44|49|4C|4D|4E|50|54|59)</pronom_pattern>
-        <regex>(?s)\A0.?[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:B|C|D|I|L|M|N|P|T|Y)</regex>
+        <regex>(?s)\A0.[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:B|C|D|I|L|M|N|P|T|Y)</regex>
       </pattern>
     </signature>
     <signature>
@@ -25941,7 +25941,7 @@ Specifications available at http://www.asprs.org/Committee-General/LASer-LAS-Fil
       <pattern>
         <position>BOF</position>
         <pronom_pattern>31??[01:0C][01:1F]{28}([41:5A]|[61:7A]){10}(42|43|44|49|4C|4D|4E|50|54|59)</pronom_pattern>
-        <regex>(?s)\A1.?[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:B|C|D|I|L|M|N|P|T|Y)</regex>
+        <regex>(?s)\A1.[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:B|C|D|I|L|M|N|P|T|Y)</regex>
       </pattern>
     </signature>
     <signature>
@@ -25950,7 +25950,7 @@ Specifications available at http://www.asprs.org/Committee-General/LASer-LAS-Fil
       <pattern>
         <position>BOF</position>
         <pronom_pattern>32??[01:0C][01:1F]{28}([41:5A]|[61:7A]){10}(42|43|44|49|4C|4D|4E|50|54|59)</pronom_pattern>
-        <regex>(?s)\A2.?[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:B|C|D|I|L|M|N|P|T|Y)</regex>
+        <regex>(?s)\A2.[\x01-\x0c][\x01-\x1f].{28}(?:[A-Z]|[a-z]).{10}(?:B|C|D|I|L|M|N|P|T|Y)</regex>
       </pattern>
     </signature>
     <details>
@@ -25981,7 +25981,7 @@ Specifications available at http://www.asprs.org/Committee-General/LASer-LAS-Fil
       <pattern>
         <position>BOF</position>
         <pronom_pattern>00??0000{8}0A00[!00]{487}(0000|0001){2}010000000100{512-4608}03{3}FFFFFFFFFFFFFFFF{2}FFFF{2}0F0F</pronom_pattern>
-        <regex>(?s)\A\x00.?\x00\x00.{8}\n\x00(?!\x00).{487}(?:\x00\x00|\x00\x01).{2}\x01\x00\x00\x00\x01\x00.{512,4608}\x03.{3}\xff\xff\xff\xff\xff\xff\xff\xff.{2}\xff\xff.{2}\x0f\x0f</regex>
+        <regex>(?s)\A\x00.\x00\x00.{8}\n\x00[\x01-\xff].{487}(?:\x00\x00|\x00\x01).{2}\x01\x00\x00\x00\x01\x00.{512,4608}\x03.{3}\xff\xff\xff\xff\xff\xff\xff\xff.{2}\xff\xff.{2}\x0f\x0f</regex>
       </pattern>
     </signature>
     <details>
@@ -26015,7 +26015,7 @@ http://www.mattslay.com/pages/FoxPro-Report-FRX-Structure.html</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>F5??[01:0C][01:1F]{1}00000061091D{21}504C4154464F524D00000043{20}554E49515545494400000043{52}4F424A54595045000000004E</pronom_pattern>
-        <regex>(?s)\A\xf5.?[\x01-\x0c][\x01-\x1f].{1}\x00\x00\x00a\x09\x1d.{21}PLATFORM\x00\x00\x00C.{20}UNIQUEID\x00\x00\x00C.{52}OBJTYPE\x00\x00\x00\x00N</regex>
+        <regex>(?s)\A\xf5.[\x01-\x0c][\x01-\x1f].{1}\x00\x00\x00a\x09\x1d.{21}PLATFORM\x00\x00\x00C.{20}UNIQUEID\x00\x00\x00C.{52}OBJTYPE\x00\x00\x00\x00N</regex>
       </pattern>
     </signature>
     <details>
@@ -26049,7 +26049,7 @@ http://www.mattslay.com/pages/FoxPro-Report-FRX-Structure.html</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>30??[01:0C][01:1F]{1}000000880AE5{21}504C4154464F524D00000043{20}554E49515545494400000043{52}4F424A54595045000000004E</pronom_pattern>
-        <regex>(?s)\A0.?[\x01-\x0c][\x01-\x1f].{1}\x00\x00\x00\x88\n\xe5.{21}PLATFORM\x00\x00\x00C.{20}UNIQUEID\x00\x00\x00C.{52}OBJTYPE\x00\x00\x00\x00N</regex>
+        <regex>(?s)\A0.[\x01-\x0c][\x01-\x1f].{1}\x00\x00\x00\x88\n\xe5.{21}PLATFORM\x00\x00\x00C.{20}UNIQUEID\x00\x00\x00C.{52}OBJTYPE\x00\x00\x00\x00N</regex>
       </pattern>
     </signature>
     <details>
@@ -26113,7 +26113,7 @@ http://www.mattslay.com/pages/FoxPro-Report-FRX-Structure.html</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>30??[01:0C][01:1F]{28}504C4154464F524D00000043{20}554E49515545494400000043{52}434C4153530000000000004D</pronom_pattern>
-        <regex>(?s)\A0.?[\x01-\x0c][\x01-\x1f].{28}PLATFORM\x00\x00\x00C.{20}UNIQUEID\x00\x00\x00C.{52}CLASS\x00\x00\x00\x00\x00\x00M</regex>
+        <regex>(?s)\A0.[\x01-\x0c][\x01-\x1f].{28}PLATFORM\x00\x00\x00C.{20}UNIQUEID\x00\x00\x00C.{52}CLASS\x00\x00\x00\x00\x00\x00M</regex>
       </pattern>
     </signature>
     <details>
@@ -26145,7 +26145,7 @@ http://www.mattslay.com/pages/FoxPro-Report-FRX-Structure.html</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>30??[01:0C][01:1F]{4}A80482{21}4E414D45000000000000004D{20}545950450000000000000043{20}49440000000000000000004E{20}54494D455354414D5000004E</pronom_pattern>
-        <regex>(?s)\A0.?[\x01-\x0c][\x01-\x1f].{4}\xa8\x04\x82.{21}NAME\x00\x00\x00\x00\x00\x00\x00M.{20}TYPE\x00\x00\x00\x00\x00\x00\x00C.{20}ID\x00\x00\x00\x00\x00\x00\x00\x00\x00N.{20}TIMESTAMP\x00\x00N</regex>
+        <regex>(?s)\A0.[\x01-\x0c][\x01-\x1f].{4}\xa8\x04\x82.{21}NAME\x00\x00\x00\x00\x00\x00\x00M.{20}TYPE\x00\x00\x00\x00\x00\x00\x00C.{20}ID\x00\x00\x00\x00\x00\x00\x00\x00\x00N.{20}TIMESTAMP\x00\x00N</regex>
       </pattern>
     </signature>
     <details>
@@ -26177,7 +26177,7 @@ http://www.mattslay.com/pages/FoxPro-Report-FRX-Structure.html</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>F5??[01:0C][01:1F]{4}010488{21}4E414D45000000000000004D{20}545950450000000000000043{20}54494D455354414D5000004E</pronom_pattern>
-        <regex>(?s)\A\xf5.?[\x01-\x0c][\x01-\x1f].{4}\x01\x04\x88.{21}NAME\x00\x00\x00\x00\x00\x00\x00M.{20}TYPE\x00\x00\x00\x00\x00\x00\x00C.{20}TIMESTAMP\x00\x00N</regex>
+        <regex>(?s)\A\xf5.[\x01-\x0c][\x01-\x1f].{4}\x01\x04\x88.{21}NAME\x00\x00\x00\x00\x00\x00\x00M.{20}TYPE\x00\x00\x00\x00\x00\x00\x00C.{20}TIMESTAMP\x00\x00N</regex>
       </pattern>
     </signature>
     <details>
@@ -26209,7 +26209,7 @@ http://www.mattslay.com/pages/FoxPro-Report-FRX-Structure.html</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>30??[01:0C][01:1F]{4}2802A5{21}([41:5A]|[61:7A]){10}(42|43|44|49|4C|4D|4E|50|54|59){508}2001000000010000([41:5A]|[61:7A])</pronom_pattern>
-        <regex>(?s)\A0.?[\x01-\x0c][\x01-\x1f].{4}\(\x02\xa5.{21}(?:[A-Z]|[a-z]).{10}(?:B|C|D|I|L|M|N|P|T|Y).{508} \x01\x00\x00\x00\x01\x00\x00(?:[A-Z]|[a-z])</regex>
+        <regex>(?s)\A0.[\x01-\x0c][\x01-\x1f].{4}\(\x02\xa5.{21}(?:[A-Z]|[a-z]).{10}(?:B|C|D|I|L|M|N|P|T|Y).{508} \x01\x00\x00\x00\x01\x00\x00(?:[A-Z]|[a-z])</regex>
       </pattern>
     </signature>
     <details>
@@ -26345,7 +26345,7 @@ Full specifications available at http://www-mipl.jpl.nasa.gov/external/VICAR_fil
       <pattern>
         <position>BOF</position>
         <pronom_pattern>52494646{4}41434F4E{0-*}616E69682400000024000000[!00]*4C495354{4}6672616D69636F6E</pronom_pattern>
-        <regex>(?s)\ARIFF.{4}ACON.{0,}anih\$\x00\x00\x00\$\x00\x00\x00(?!\x00).*LIST.{4}framicon</regex>
+        <regex>(?s)\ARIFF.{4}ACON.{0,}anih\$\x00\x00\x00\$\x00\x00\x00[\x01-\xff].*LIST.{4}framicon</regex>
       </pattern>
     </signature>
     <details>
@@ -26857,7 +26857,7 @@ Internet standard: https://tools.ietf.org/html/rfc6350</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>000000??00000007000000(00|01|02)000000[01:20]{12}000000(00|01)000000(08|10|20)000000(00|01)000000(08|10|20)000000(01|02|03|04|05|06|07|08|09|0A|0B|0C|0D|0E|0F|10|18|20){4}000000[00:05]</pronom_pattern>
-        <regex>(?s)\A\x00\x00\x00.?\x00\x00\x00\x07\x00\x00\x00(?:\x00|\x01|\x02)\x00\x00\x00[\x01- ].{12}\x00\x00\x00(?:\x00|\x01)\x00\x00\x00(?:\x08|\x10| )\x00\x00\x00(?:\x00|\x01)\x00\x00\x00(?:\x08|\x10| )\x00\x00\x00(?:\x01|\x02|\x03|\x04|\x05|\x06|\x07|\x08|\x09|\n|\x0b|\x0c|\r|\x0e|\x0f|\x10|\x18| ).{4}\x00\x00\x00[\x00-\x05]</regex>
+        <regex>(?s)\A\x00\x00\x00.\x00\x00\x00\x07\x00\x00\x00(?:\x00|\x01|\x02)\x00\x00\x00[\x01- ].{12}\x00\x00\x00(?:\x00|\x01)\x00\x00\x00(?:\x08|\x10| )\x00\x00\x00(?:\x00|\x01)\x00\x00\x00(?:\x08|\x10| )\x00\x00\x00(?:\x01|\x02|\x03|\x04|\x05|\x06|\x07|\x08|\x09|\n|\x0b|\x0c|\r|\x0e|\x0f|\x10|\x18| ).{4}\x00\x00\x00[\x00-\x05]</regex>
       </pattern>
     </signature>
     <details>
@@ -28381,7 +28381,7 @@ This version, published June 2009, added various improvements, but the major cha
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4253444946463430{24}425A68??314159265359</pronom_pattern>
-        <regex>(?s)\ABSDIFF40.{24}BZh.?1AY&amp;SY</regex>
+        <regex>(?s)\ABSDIFF40.{24}BZh.1AY&amp;SY</regex>
       </pattern>
     </signature>
     <details>
@@ -44140,6 +44140,17 @@ https://github.com/lovasoa/ZIF/</note>
     <has_priority_over>x-fmt/409</has_priority_over>
     <has_priority_over>x-fmt/410</has_priority_over>
     <has_priority_over>x-fmt/411</has_priority_over>
+    <signature>
+      <name>Windows Portable Executable 32 bit</name>
+      <note>DWORD Signature; 
+IMAGE_FILE_HEADER FileHeader;
+IMAGE_OPTIONAL_HEADER OptionalHeader;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D5A{126-128500}50450000{20}0B01{66}[0000:1000]</pronom_pattern>
+        <regex>(?s)\AMZ.{126,128500}PE\x00\x00.{20}\x0b\x01.{66}[\x00-\x10]</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>A Windows Portable Executable (PE) 32-bit is synonymous with a program or application that can be run on Microsoft Windows. An executable is a file-format object that is compiled from source code files written in languages such as C, C++, Golang, or Rust among others. A PE is native to Windows and like other executables or programs, provided a means of distributing applications that performed a certain task or tasks for a specific operating system. Executables are compiled to a certain register width, e.g. 8-bit, 16-bit, 32-bit or 64-bit; which impacts the size of variables in memory, and may impact compatibilty on older or newer versions of an operating system, respectively. A PE 32-bit is compiled to a 32-bit architecture and so will not run on 16-bit architectures, and may require the existence of compatibility middleware on a 64-bit system to run there. Executables might require external libraries or configuration to function and so the technical environment needed to run an executable should be documented and understood in order to preserve functionality over time, and to protect future potential users of these files. The Windows Portable Executable format is used for the 'executable' component of a program, as well as external libraries such as dynamic link libraries (DLLs) other potential extensions are listed as '.acm, .ax, .cpl, .dll, .drv, .efi, .exe, .mui, .ocx, .scr, .sys, .tsp, .mun') (https://en.wikipedia.org/w/index.php?title=Portable_Executable&amp;oldid=1182679182). Despite the name, PE files will not run on other operating systems such as MacOS and Linux. Application programs must be compiled to a specific operating system architecture to run on different environments.</dc:description>
       <dcterms:available />
@@ -44169,6 +44180,17 @@ https://github.com/lovasoa/ZIF/</note>
     <has_priority_over>x-fmt/409</has_priority_over>
     <has_priority_over>x-fmt/410</has_priority_over>
     <has_priority_over>x-fmt/411</has_priority_over>
+    <signature>
+      <name>Windows Portable Executable 64 bit</name>
+      <note>DWORD Signature; 
+IMAGE_FILE_HEADER FileHeader;
+IMAGE_OPTIONAL_HEADER OptionalHeader;</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D5A{126-128500}50450000{20}0B02{66}[0000:1000]</pronom_pattern>
+        <regex>(?s)\AMZ.{126,128500}PE\x00\x00.{20}\x0b\x02.{66}[\x00-\x10]</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>A Windows Portable Executable (PE) 64-bit is synonymous with a program or application that can potentially be run on Microsoft Windows. An executable is a file-format object that is compiled from source code files written in languages such as C, C++, Golang, or Rust among others. A PE is native to Windows and like other executables or programs, provided a means of distributing applications that performed a certain task or tasks for a specific operating system. Executables are compiled to a certain register width, e.g. 8-bit, 16-bit, 32-bit or 64-bit; which impacts the size of variables in memory, and may impact compatibilty on older or newer versions of an operating system, respectively. A PE 64-bit is compiled to a 64-bit architecture and so will not run on 32-bit architectures or less. Executables might require external libraries or configuration to function and so the technical environment needed to run an executable should be documented and understood in order to preserve functionality over time and to protect future potential users of these files. The Windows Portable Executable format is used for the 'executable' component of a program, as well as external libraries such as dynamic link libraries (DLLs) other potential extensions are listed as '.acm, .ax, .cpl, .dll, .drv, .efi, .exe, .mui, .ocx, .scr, .sys, .tsp, .mun') (https://en.wikipedia.org/w/index.php?title=Portable_Executable&amp;oldid=1182679182). Despite the name, PE files will not run on other operating systems such as MacOS and Linux. Application programs must be compiled to a specific operating system architecture to run on different environments.</dc:description>
       <dcterms:available />
@@ -50324,7 +50346,7 @@ In Visual Studio for example, the .exclude extension is added to files that are 
       <pattern>
         <position>BOF</position>
         <pronom_pattern>0000{2}0018[!00]</pronom_pattern>
-        <regex>(?s)\A.{4}\x00\x00.{2}\x00\x18(?!\x00)</regex>
+        <regex>(?s)\A.{4}\x00\x00.{2}\x00\x18[\x01-\xff]</regex>
       </pattern>
     </signature>
     <details>
@@ -50772,7 +50794,7 @@ EOF, max offset 2: newline character 'end'</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>4244{12}0003{6}[!&amp;01]00</pronom_pattern>
-        <regex>(?s)\A.{1024}BD.{12}\x00\x03.{6}(?!(\x01|\x03|\x05|\x07|\x09|\x0b|\x0d|\x0f|\x11|\x13|\x15|\x17|\x19|\x1b|\x1d|\x1f|\x21|\x23|\x25|\x27|\x29|\x2b|\x2d|\x2f|\x31|\x33|\x35|\x37|\x39|\x3b|\x3d|\x3f|\x41|\x43|\x45|\x47|\x49|\x4b|\x4d|\x4f|\x51|\x53|\x55|\x57|\x59|\x5b|\x5d|\x5f|\x61|\x63|\x65|\x67|\x69|\x6b|\x6d|\x6f|\x71|\x73|\x75|\x77|\x79|\x7b|\x7d|\x7f|\x81|\x83|\x85|\x87|\x89|\x8b|\x8d|\x8f|\x91|\x93|\x95|\x97|\x99|\x9b|\x9d|\x9f|\xa1|\xa3|\xa5|\xa7|\xa9|\xab|\xad|\xaf|\xb1|\xb3|\xb5|\xb7|\xb9|\xbb|\xbd|\xbf|\xc1|\xc3|\xc5|\xc7|\xc9|\xcb|\xcd|\xcf|\xd1|\xd3|\xd5|\xd7|\xd9|\xdb|\xdd|\xdf|\xe1|\xe3|\xe5|\xe7|\xe9|\xeb|\xed|\xef|\xf1|\xf3|\xf5|\xf7|\xf9|\xfb|\xfd|\xff))\x00</regex>
+        <regex>(?s)\A.{1024}BD.{12}\x00\x03.{6}[\x00\x02\x04\x06\x08\n\x0c\x0e\x10\x12\x14\x16\x18\x1a\x1c\x1e "\$\x26\(\*,\.02468:\x3c\x3e@BDFHJLNPRTVXZ\\\^\x60bdfhjlnprtvxz\|\x7e\x80\x82\x84\x86\x88\x8a\x8c\x8e\x90\x92\x94\x96\x98\x9a\x9c\x9e\xa0\xa2\xa4\xa6\xa8\xaa\xac\xae\xb0\xb2\xb4\xb6\xb8\xba\xbc\xbe\xc0\xc2\xc4\xc6\xc8\xca\xcc\xce\xd0\xd2\xd4\xd6\xd8\xda\xdc\xde\xe0\xe2\xe4\xe6\xe8\xea\xec\xee\xf0\xf2\xf4\xf6\xf8\xfa\xfc\xfe]\x00</regex>
       </pattern>
     </signature>
     <details>
@@ -51711,7 +51733,7 @@ EOF: 8 null bytes</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>2A2A20546869732066696C6520636F6E7461696E7320616E2053514C69746520322E??206461746162617365202A2A</pronom_pattern>
-        <regex>(?s)\A\*\* This file contains an SQLite 2\..? database \*\*</regex>
+        <regex>(?s)\A\*\* This file contains an SQLite 2\.. database \*\*</regex>
       </pattern>
     </signature>
     <details>
@@ -72548,6 +72570,15 @@ A JPEG 2000 codestream uses a variant of the JPEG format, with a nearly identica
     <extension>tbk</extension>
     <extension>sbk</extension>
     <has_priority_over>fmt/899</has_priority_over>
+    <signature>
+      <name>Asymetrix Toolbook File v6-11.5</name>
+      <note>BOF; Offset: 0; Magic Bytes: Starting with 0x4D5A then between 126 to 128500 wildcard bytes followed by 0x50450000, then wildcard bytes of 20, followed by 0x0B01, then 66 wildcard bytes</note>
+      <pattern>
+        <position>BOF</position>
+        <pronom_pattern>4D5A{126-128500}50450000{20}0B01{66}[0000:1000]*54006F006F006C00(42|62)006F006F006B00</pronom_pattern>
+        <regex>(?s)\AMZ.{126,128500}PE\x00\x00.{20}\x0b\x01.{66}[\x00-\x10].*T\x00o\x00o\x00l\x00(?:B|b)\x00o\x00o\x00k\x00</regex>
+      </pattern>
+    </signature>
     <details>
       <dc:description>Asymetrix ToolBook was a Microsoft Windows based authoring software for creating e-learning systems. It was initially released in 1990 by Asymetrix Corporation, notably founded by Paul Allen, later merging with SumTotal Systems. ToolBook uses a book metaphor - a project file is thought of as a book containing pages of content. This is very similar to Microsoft PowerPoint&#8217;s use of the metaphor where presentations contain various slides. This entry records the .tbk file format described as ToolBook Books and .sbk format which are System Books containing scripts. This later version of format uses Portable Executable format. There were several versions of this software released, with version 11.5 as the final version of ToolBook, released in December 2012. SumTotal Systems ended all sales and support of Toolbook on December 31, 2021. Please see the full list of versions by following the links provided with this entry in Notes section.</dc:description>
       <dcterms:available />
@@ -81479,7 +81510,7 @@ EOF offset 0-16: &lt;/resources&gt;</note>
       <pattern>
         <position>BOF</position>
         <pronom_pattern>D2D7{12}0004{6}[!&amp;01]00</pronom_pattern>
-        <regex>(?s)\A.{1024}\xd2\xd7.{12}\x00\x04.{6}(?!(\x01|\x03|\x05|\x07|\x09|\x0b|\x0d|\x0f|\x11|\x13|\x15|\x17|\x19|\x1b|\x1d|\x1f|\x21|\x23|\x25|\x27|\x29|\x2b|\x2d|\x2f|\x31|\x33|\x35|\x37|\x39|\x3b|\x3d|\x3f|\x41|\x43|\x45|\x47|\x49|\x4b|\x4d|\x4f|\x51|\x53|\x55|\x57|\x59|\x5b|\x5d|\x5f|\x61|\x63|\x65|\x67|\x69|\x6b|\x6d|\x6f|\x71|\x73|\x75|\x77|\x79|\x7b|\x7d|\x7f|\x81|\x83|\x85|\x87|\x89|\x8b|\x8d|\x8f|\x91|\x93|\x95|\x97|\x99|\x9b|\x9d|\x9f|\xa1|\xa3|\xa5|\xa7|\xa9|\xab|\xad|\xaf|\xb1|\xb3|\xb5|\xb7|\xb9|\xbb|\xbd|\xbf|\xc1|\xc3|\xc5|\xc7|\xc9|\xcb|\xcd|\xcf|\xd1|\xd3|\xd5|\xd7|\xd9|\xdb|\xdd|\xdf|\xe1|\xe3|\xe5|\xe7|\xe9|\xeb|\xed|\xef|\xf1|\xf3|\xf5|\xf7|\xf9|\xfb|\xfd|\xff))\x00</regex>
+        <regex>(?s)\A.{1024}\xd2\xd7.{12}\x00\x04.{6}[\x00\x02\x04\x06\x08\n\x0c\x0e\x10\x12\x14\x16\x18\x1a\x1c\x1e "\$\x26\(\*,\.02468:\x3c\x3e@BDFHJLNPRTVXZ\\\^\x60bdfhjlnprtvxz\|\x7e\x80\x82\x84\x86\x88\x8a\x8c\x8e\x90\x92\x94\x96\x98\x9a\x9c\x9e\xa0\xa2\xa4\xa6\xa8\xaa\xac\xae\xb0\xb2\xb4\xb6\xb8\xba\xbc\xbe\xc0\xc2\xc4\xc6\xc8\xca\xcc\xce\xd0\xd2\xd4\xd6\xd8\xda\xdc\xde\xe0\xe2\xe4\xe6\xe8\xea\xec\xee\xf0\xf2\xf4\xf6\xf8\xfa\xfc\xfe]\x00</regex>
       </pattern>
     </signature>
     <details>

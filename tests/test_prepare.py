@@ -593,6 +593,16 @@ def test_every_shipped_pronom_byte_sequence_converts():
     assert failures == [], f"{len(failures)} of {len(sequences)} byte sequences do not convert: {failures[:5]}"
 
 
+def test_shipped_signatures_follow_droid_semantics():
+    """The shipped file must be regenerated with the converter: no zero-width negation, no optional ??."""
+    formats = XET.parse(get_local_versions().get_signature_file()).getroot()
+    puids_with_signature = {fmt.findtext("puid") for fmt in formats.iter("format") if fmt.find("signature") is not None}
+    regexes = [node.text for node in formats.iter("regex")]
+
+    assert {"fmt/899", "fmt/900", "fmt/1795"} <= puids_with_signature
+    assert [regex for regex in regexes if "(?!" in regex or ".?" in regex] == []
+
+
 def test_convert_to_regex_paren_raises_on_illegal_char():
     with pytest.raises(Exception):
         prepare.convert_to_regex("(01!)")
