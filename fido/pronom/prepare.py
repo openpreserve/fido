@@ -636,6 +636,8 @@ def do_set(chars, i, littleendian):
             awaiting_range_end = True
             j += 1
         elif body[j] in SET_BITMASKS:
+            if awaiting_range_end:
+                raise ValueError("Range without a second byte in set in {}".format(chars))
             bitmask = _set_byte(body, j + 1, littleendian, chars)
             values.update(byt for byt in range(0x100) if SET_BITMASKS[body[j]](byt, bitmask))
             range_start = None

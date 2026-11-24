@@ -550,7 +550,10 @@ def test_wildcards_facing_away_from_the_anchor_are_dropped(pronom_bytesequence, 
     assert bool(re.search(patt, input_)) is matches, f"{pronom_bytesequence} at {pos} -> {patt} on {input_!r}"
 
 
-@pytest.mark.parametrize("pronom_bytesequence", ["[00:]", "[:00]", "[00:10:20]", "[0]", "[GG]", "[]", "[!]", "[!&00]", "[00"])
+@pytest.mark.parametrize(
+    "pronom_bytesequence",
+    ["[00:]", "[:00]", "[00:10:20]", "[0]", "[GG]", "[]", "[!]", "[!&00]", "[00", "[0000:&0110]", "[00:~0110]"],
+)
 def test_malformed_set_raises_value_error(pronom_bytesequence):
     with pytest.raises(ValueError):
         convert_to_regex(pronom_bytesequence)
